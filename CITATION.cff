@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this framework, please cite it as below, and cite the primary literature for any specific result."
+title: "ADAMAS: A Referenced Framework for Diamond-Wafer Electronics and Room-Temperature Nitrogen-Vacancy Quantum Processors"
+authors:
+  - family-names: Norman
+    given-names: Aleksander
+version: 0.1.0
+date-released: 2026-09-19
+license: MIT
+repository-code: "https://github.com/Normansrule/adamas-diamond-framework"

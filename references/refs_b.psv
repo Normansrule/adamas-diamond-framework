@@ -1,0 +1,198 @@
+# ADAMAS reference database (part B: quantum). Same format as refs_a.psv:
+# key | authors | year | title | venue | locator | tags | status
+davies1976 | Davies, G.; Hamer, M. F. | 1976 | Optical studies of the 1.945 eV vibronic band in diamond | Proceedings of the Royal Society A | 348, 285 | nv | K
+loubser1978 | Loubser, J. H. N.; van Wyk, J. A. | 1978 | Electron spin resonance in the study of diamond | Reports on Progress in Physics | 41, 1201 | nv | K
+gruber1997 | Gruber, A.; Draebenstedt, A.; Tietz, C.; et al. | 1997 | Scanning confocal optical microscopy and magnetic resonance on single defect centers | Science | 276, 2012 | nv | K
+jelezko2004a | Jelezko, F.; Gaebel, T.; Popa, I.; Gruber, A.; Wrachtrup, J. | 2004 | Observation of coherent oscillations in a single electron spin | Physical Review Letters | 92, 076401 | nv,qc | K
+jelezko2004b | Jelezko, F.; Gaebel, T.; Popa, I.; et al. | 2004 | Observation of coherent oscillation of a single nuclear spin and realization of a two-qubit conditional quantum gate | Physical Review Letters | 93, 130501 | nv,qc | K
+doherty2013 | Doherty, M. W.; Manson, N. B.; Delaney, P.; Jelezko, F.; Wrachtrup, J.; Hollenberg, L. C. L. | 2013 | The nitrogen-vacancy colour centre in diamond | Physics Reports | 528, 1 | nv | K
+maze2011 | Maze, J. R.; Gali, A.; Togan, E.; et al. | 2011 | Properties of nitrogen-vacancy centers in diamond: the group theoretic approach | New Journal of Physics | 13, 025025 | nv | K
+doherty2011 | Doherty, M. W.; Manson, N. B.; Delaney, P.; Hollenberg, L. C. L. | 2011 | The negatively charged nitrogen-vacancy centre in diamond: the electronic solution | New Journal of Physics | 13, 025019 | nv | K
+gali2008 | Gali, A.; Fyta, M.; Kaxiras, E. | 2008 | Ab initio supercell calculations on nitrogen-vacancy center in diamond: electronic structure and hyperfine tensors | Physical Review B | 77, 155206 | nv | K
+gali2019 | Gali, A. | 2019 | Ab initio theory of the nitrogen-vacancy center in diamond | Nanophotonics | 8, 1907 | nv | K
+manson2006 | Manson, N. B.; Harrison, J. P.; Sellars, M. J. | 2006 | Nitrogen-vacancy center in diamond: model of the electronic structure and associated dynamics | Physical Review B | 74, 104303 | nv | K
+goldman2015 | Goldman, M. L.; Sipahigil, A.; Doherty, M. W.; et al. | 2015 | Phonon-induced population dynamics and intersystem crossing in nitrogen-vacancy centers | Physical Review Letters | 114, 145502 | nv | K
+felton2009 | Felton, S.; Edmonds, A. M.; Newton, M. E.; et al. | 2009 | Hyperfine interaction in the ground state of the negatively charged nitrogen vacancy center in diamond | Physical Review B | 79, 075203 | nv | K
+smeltzer2011 | Smeltzer, B.; Childress, L.; Gali, A. | 2011 | 13C hyperfine interactions in the nitrogen-vacancy centre in diamond | New Journal of Physics | 13, 025021 | nv | K
+acosta2010 | Acosta, V. M.; Bauch, E.; Ledbetter, M. P.; et al. | 2010 | Temperature dependence of the nitrogen-vacancy magnetic resonance in diamond | Physical Review Letters | 104, 070801 | nv | K
+jarmola2012 | Jarmola, A.; Acosta, V. M.; Jensen, K.; Chemerisov, S.; Budker, D. | 2012 | Temperature- and magnetic-field-dependent longitudinal spin relaxation in nitrogen-vacancy ensembles in diamond | Physical Review Letters | 108, 197601 | nv | K
+cambria2023 | Cambria, M. C.; Norambuena, A.; Dinani, H. T.; et al. | 2023 | Temperature-dependent spin-lattice relaxation of the nitrogen-vacancy spin triplet in diamond | Physical Review Letters | 130, 256903 | nv | K
+balasubramanian2009 | Balasubramanian, G.; Neumann, P.; Twitchen, D.; et al. | 2009 | Ultralong spin coherence time in isotopically engineered diamond | Nature Materials | 8, 383 | nv | K
+herbschleb2019 | Herbschleb, E. D.; Kato, H.; Maruyama, Y.; et al. | 2019 | Ultra-long coherence times amongst room-temperature solid-state spins | Nature Communications | 10, 3766 | nv | K
+maurer2012 | Maurer, P. C.; Kucsko, G.; Latta, C.; et al. | 2012 | Room-temperature quantum bit memory exceeding one second | Science | 336, 1283 | nv,qc | K
+mizuochi2009 | Mizuochi, N.; Neumann, P.; Rempp, F.; et al. | 2009 | Coherence of single spins coupled to a nuclear spin bath of varying density | Physical Review B | 80, 041201 | nv | K
+zhao2012 | Zhao, N.; Ho, S.-W.; Liu, R.-B. | 2012 | Decoherence and dynamical decoupling control of nitrogen vacancy center electron spins in nuclear spin baths | Physical Review B | 85, 115303 | nv | K
+delange2010 | de Lange, G.; Wang, Z. H.; Riste, D.; Dobrovitski, V. V.; Hanson, R. | 2010 | Universal dynamical decoupling of a single solid-state spin from a spin bath | Science | 330, 60 | nv | K
+bargill2013 | Bar-Gill, N.; Pham, L. M.; Jarmola, A.; Budker, D.; Walsworth, R. L. | 2013 | Solid-state electronic spin coherence time approaching one second | Nature Communications | 4, 1743 | nv | K
+abobeih2018 | Abobeih, M. H.; Cramer, J.; Bakker, M. A.; et al. | 2018 | One-second coherence for a single electron spin coupled to a multi-qubit nuclear-spin environment | Nature Communications | 9, 2552 | nv,qc | K
+bauch2018 | Bauch, E.; Hart, C. A.; Schloss, J. M.; et al. | 2018 | Ultralong dephasing times in solid-state spin ensembles via quantum control | Physical Review X | 8, 031025 | nv | K
+bauch2020 | Bauch, E.; Singh, S.; Lee, J.; et al. | 2020 | Decoherence of ensembles of nitrogen-vacancy centers in diamond | Physical Review B | 102, 134210 | nv | K
+vanwyk1997 | van Wyk, J. A.; Reynhardt, E. C.; High, G. L.; Kiflawi, I. | 1997 | The dependences of ESR line widths and spin-spin relaxation times of single nitrogen defects on the concentration of nitrogen defects in diamond | Journal of Physics D: Applied Physics | 30, 1790 | nv | K
+toyli2012 | Toyli, D. M.; Christle, D. J.; Alkauskas, A.; et al. | 2012 | Measurement and control of single nitrogen-vacancy center spins above 600 K | Physical Review X | 2, 031001 | nv | K
+fuchs2009 | Fuchs, G. D.; Dobrovitski, V. V.; Toyli, D. M.; Heremans, F. J.; Awschalom, D. D. | 2009 | Gigahertz dynamics of a strongly driven single quantum spin | Science | 326, 1520 | nv,qc | K
+robledo2011njp | Robledo, L.; Bernien, H.; van der Sar, T.; Hanson, R. | 2011 | Spin dynamics in the optical cycle of single nitrogen-vacancy centres in diamond | New Journal of Physics | 13, 025013 | nv | K
+tetienne2012 | Tetienne, J.-P.; Rondin, L.; Spinicelli, P.; et al. | 2012 | Magnetic-field-dependent photodynamics of single NV defects in diamond: an application to qualitative all-optical magnetic imaging | New Journal of Physics | 14, 103033 | nv | K
+dreau2011 | Dreau, A.; Lesik, M.; Rondin, L.; et al. | 2011 | Avoiding power broadening in optically detected magnetic resonance of single NV defects for enhanced dc magnetic field sensitivity | Physical Review B | 84, 195204 | nv,sens | K
+aslam2013 | Aslam, N.; Waldherr, G.; Neumann, P.; Jelezko, F.; Wrachtrup, J. | 2013 | Photo-induced ionization dynamics of the nitrogen vacancy defect in diamond investigated by single-shot charge state detection | New Journal of Physics | 15, 013064 | nv | K
+doi2014 | Doi, Y.; Makino, T.; Kato, H.; et al. | 2014 | Deterministic electrical charge-state initialization of single nitrogen-vacancy center in diamond | Physical Review X | 4, 011057 | nv,dev | K
+grotz2012 | Grotz, B.; Hauf, M. V.; Dankerl, M.; et al. | 2012 | Charge state manipulation of qubits in diamond | Nature Communications | 3, 729 | nv,dev | K
+hauf2011 | Hauf, M. V.; Grotz, B.; Naydenov, B.; et al. | 2011 | Chemical control of the charge state of nitrogen-vacancy centers in diamond | Physical Review B | 83, 081304 | nv | K
+jacques2009 | Jacques, V.; Neumann, P.; Beck, J.; et al. | 2009 | Dynamic polarization of single nuclear spins by optical pumping of nitrogen-vacancy color centers in diamond at room temperature | Physical Review Letters | 102, 057403 | nv,qc | K
+childress2006 | Childress, L.; Gurudev Dutt, M. V.; Taylor, J. M.; et al. | 2006 | Coherent dynamics of coupled electron and nuclear spin qubits in diamond | Science | 314, 281 | nv,qc | K
+rosskopf2014 | Rosskopf, T.; Dussaux, A.; Ohashi, K.; et al. | 2014 | Investigation of surface magnetic noise by shallow spins in diamond | Physical Review Letters | 112, 147602 | nv,fab | K
+myers2014 | Myers, B. A.; Das, A.; Dartiailh, M. C.; et al. | 2014 | Probing surface noise with depth-calibrated spins in diamond | Physical Review Letters | 113, 027602 | nv,fab | K
+romach2015 | Romach, Y.; Mueller, C.; Unden, T.; et al. | 2015 | Spectroscopy of surface-induced noise using shallow spins in diamond | Physical Review Letters | 114, 017601 | nv,fab | K
+sangtawesin2019 | Sangtawesin, S.; Dwyer, B. L.; Srinivasan, S.; et al. | 2019 | Origins of diamond surface noise probed by correlating single-spin measurements with surface spectroscopy | Physical Review X | 9, 031052 | nv,fab | K
+oforiokai2012 | Ofori-Okai, B. K.; Pezzagna, S.; Chang, K.; et al. | 2012 | Spin properties of very shallow nitrogen vacancy defects in diamond | Physical Review B | 86, 081406 | nv,fab | K
+taylor2008 | Taylor, J. M.; Cappellaro, P.; Childress, L.; et al. | 2008 | High-sensitivity diamond magnetometer with nanoscale resolution | Nature Physics | 4, 810 | sens | K
+maze2008 | Maze, J. R.; Stanwix, P. L.; Hodges, J. S.; et al. | 2008 | Nanoscale magnetic sensing with an individual electronic spin in diamond | Nature | 455, 644 | sens | K
+balasubramanian2008 | Balasubramanian, G.; Chan, I. Y.; Kolesov, R.; et al. | 2008 | Nanoscale imaging magnetometry with diamond spins under ambient conditions | Nature | 455, 648 | sens | K
+rondin2014 | Rondin, L.; Tetienne, J.-P.; Hingant, T.; et al. | 2014 | Magnetometry with nitrogen-vacancy defects in diamond | Reports on Progress in Physics | 77, 056503 | sens | K
+barry2020 | Barry, J. F.; Schloss, J. M.; Bauch, E.; et al. | 2020 | Sensitivity optimization for NV-diamond magnetometry | Reviews of Modern Physics | 92, 015004 | sens,nv | K
+degen2017 | Degen, C. L.; Reinhard, F.; Cappellaro, P. | 2017 | Quantum sensing | Reviews of Modern Physics | 89, 035002 | sens | K
+schirhagl2014 | Schirhagl, R.; Chang, K.; Loretz, M.; Degen, C. L. | 2014 | Nitrogen-vacancy centers in diamond: nanoscale sensors for physics and biology | Annual Review of Physical Chemistry | 65, 83 | sens | K
+dolde2011 | Dolde, F.; Fedder, H.; Doherty, M. W.; et al. | 2011 | Electric-field sensing using single diamond spins | Nature Physics | 7, 459 | sens | K
+kucsko2013 | Kucsko, G.; Maurer, P. C.; Yao, N. Y.; et al. | 2013 | Nanometre-scale thermometry in a living cell | Nature | 500, 54 | sens | K
+toyli2013 | Toyli, D. M.; de las Casas, C. F.; Christle, D. J.; Dobrovitski, V. V.; Awschalom, D. D. | 2013 | Fluorescence thermometry enhanced by the quantum coherence of single spins in diamond | Proceedings of the National Academy of Sciences | 110, 8417 | sens | K
+wolf2015 | Wolf, T.; Neumann, P.; Nakamura, K.; et al. | 2015 | Subpicotesla diamond magnetometry | Physical Review X | 5, 041001 | sens | K
+levine2019 | Levine, E. V.; Turner, M. J.; Kehayias, P.; et al. | 2019 | Principles and techniques of the quantum diamond microscope | Nanophotonics | 8, 1945 | sens | K
+casola2018 | Casola, F.; van der Sar, T.; Yacoby, A. | 2018 | Probing condensed matter physics with magnetometry based on nitrogen-vacancy centres in diamond | Nature Reviews Materials | 3, 17088 | sens | K
+glenn2018 | Glenn, D. R.; Bucher, D. B.; Lee, J.; et al. | 2018 | High-resolution magnetic resonance spectroscopy using a solid-state spin sensor | Nature | 555, 351 | sens | K
+turner2020 | Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. | 2020 | Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope | Physical Review Applied | 14, 014097 | sens,dev | K
+stuerner2021 | Stuerner, F. M.; Brenneis, A.; Buck, T.; et al. | 2021 | Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond | Advanced Quantum Technologies | 4, 2000111 | sens | K
+bucher2019 | Bucher, D. B.; Aude Craik, D. P. L.; Backlund, M. P.; et al. | 2019 | Quantum diamond spectrometer for nanoscale NMR and ESR spectroscopy | Nature Protocols | 14, 2707 | sens,edu | K
+sewani2020 | Sewani, V. K.; Vallabhapurapu, H. H.; Yang, Y.; et al. | 2020 | Coherent control of NV- centers in diamond in a quantum teaching lab | American Journal of Physics | 88, 1156 | edu | K
+meijer2005 | Meijer, J.; Burchard, B.; Domhan, M.; et al. | 2005 | Generation of single color centers by focused nitrogen implantation | Applied Physics Letters | 87, 261909 | fab | K
+rabeau2006 | Rabeau, J. R.; Reichart, P.; Tamanyan, G.; et al. | 2006 | Implantation of labelled single nitrogen vacancy centers in diamond using 15N | Applied Physics Letters | 88, 023113 | fab | K
+pezzagna2010 | Pezzagna, S.; Naydenov, B.; Jelezko, F.; Wrachtrup, J.; Meijer, J. | 2010 | Creation efficiency of nitrogen-vacancy centres in diamond | New Journal of Physics | 12, 065017 | fab | K
+pezzagna2010small | Pezzagna, S.; Wildanger, D.; Mazarov, P.; et al. | 2010 | Nanoscale engineering and optical addressing of single spins in diamond | Small | 6, 2117 | fab | K
+toyli2010 | Toyli, D. M.; Weis, C. D.; Fuchs, G. D.; Schenkel, T.; Awschalom, D. D. | 2010 | Chip-scale nanofabrication of single spins and spin arrays in diamond | Nano Letters | 10, 3168 | fab | K
+spinicelli2011 | Spinicelli, P.; Dreau, A.; Rondin, L.; et al. | 2011 | Engineered arrays of nitrogen-vacancy color centers in diamond based on implantation of CN- molecules through nanoapertures | New Journal of Physics | 13, 025014 | fab | K
+bayn2015 | Bayn, I.; Chen, E. H.; Trusheim, M. E.; et al. | 2015 | Generation of ensembles of individually resolvable nitrogen vacancies using nanometer-scale apertures in ultrahigh-aspect ratio planar implantation masks | Nano Letters | 15, 1751 | fab | K
+scarabelli2016 | Scarabelli, D.; Trusheim, M.; Gaathon, O.; Englund, D.; Wind, S. J. | 2016 | Nanoscale engineering of closely-spaced coupled spins in diamond | Nano Letters | 16, 4982 | fab,qc | K
+jakobi2016 | Jakobi, I.; Momenzadeh, S. A.; Favaro de Oliveira, F.; et al. | 2016 | Efficient creation of dipolar coupled nitrogen-vacancy spin qubits in diamond | Journal of Physics: Conference Series | 752, 012001 | fab,qc | K
+ohno2012 | Ohno, K.; Heremans, F. J.; Bassett, L. C.; et al. | 2012 | Engineering shallow spins in diamond with nitrogen delta-doping | Applied Physics Letters | 101, 082413 | fab | K
+ohno2014 | Ohno, K.; Heremans, F. J.; de las Casas, C. F.; et al. | 2014 | Three-dimensional localization of spins in diamond using 12C implantation | Applied Physics Letters | 105, 052406 | fab | K
+mclellan2016 | McLellan, C. A.; Myers, B. A.; Kraemer, S.; et al. | 2016 | Patterned formation of highly coherent nitrogen-vacancy centers using a focused electron irradiation technique | Nano Letters | 16, 2450 | fab | K
+chen2017 | Chen, Y.-C.; Salter, P. S.; Knauer, S.; et al. | 2017 | Laser writing of coherent colour centres in diamond | Nature Photonics | 11, 77 | fab | K
+chen2019 | Chen, Y.-C.; Griffiths, B.; Weng, L.; et al. | 2019 | Laser writing of individual nitrogen-vacancy defects in diamond with near-unity yield | Optica | 6, 662 | fab | K
+luhmann2019 | Luehmann, T.; John, R.; Wunderlich, R.; Meijer, J.; Pezzagna, S. | 2019 | Coulomb-driven single defect engineering for scalable qubits and spin sensors in diamond | Nature Communications | 10, 4956 | fab,qc | K
+luhmann2018 | Luehmann, T.; Raatz, N.; John, R.; et al. | 2018 | Screening and engineering of colour centres in diamond | Journal of Physics D: Applied Physics | 51, 483002 | fab | K
+favaro2017 | Favaro de Oliveira, F.; Antonov, D.; Wang, Y.; et al. | 2017 | Tailoring spin defects in diamond by lattice charging | Nature Communications | 8, 15409 | fab | K
+naydenov2010 | Naydenov, B.; Reinhard, F.; Laemmle, A.; et al. | 2010 | Increasing the coherence time of single electron spins in diamond by high temperature annealing | Applied Physics Letters | 97, 242511 | fab | K
+yamamoto2013 | Yamamoto, T.; Umeda, T.; Watanabe, K.; et al. | 2013 | Extending spin coherence times of diamond qubits by high-temperature annealing | Physical Review B | 88, 075206 | fab | K
+deak2014 | Deak, P.; Aradi, B.; Kaviani, M.; Frauenheim, T.; Gali, A. | 2014 | Formation of NV centers in diamond: a theoretical study based on calculated transitions and migration of nitrogen and vacancy related defects | Physical Review B | 89, 075203 | fab | K
+vandam2019 | van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. | 2019 | Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing | Physical Review B | 99, 161203 | fab,net | K
+chu2014 | Chu, Y.; de Leon, N. P.; Shields, B. J.; et al. | 2014 | Coherent optical transitions in implanted nitrogen vacancy centers | Nano Letters | 14, 1982 | fab,net | K
+schroder2017 | Schroeder, T.; Trusheim, M. E.; Walsh, M.; et al. | 2017 | Scalable focused ion beam creation of nearly lifetime-limited single quantum emitters in diamond nanostructures | Nature Communications | 8, 15376 | fab,net | K
+schukraft2016 | Schukraft, M.; Zheng, J.; Schroeder, T.; et al. | 2016 | Precision nanoimplantation of nitrogen vacancy centers into diamond photonic crystal cavities and waveguides | APL Photonics | 1, 020801 | fab,net | K
+michl2014 | Michl, J.; Teraji, T.; Zaiser, S.; et al. | 2014 | Perfect alignment and preferential orientation of nitrogen-vacancy centers during chemical vapor deposition diamond growth on (111) surfaces | Applied Physics Letters | 104, 102407 | fab | K
+lesik2014 | Lesik, M.; Tetienne, J.-P.; Tallaire, A.; et al. | 2014 | Perfect preferential orientation of nitrogen-vacancy defects in a synthetic diamond sample | Applied Physics Letters | 104, 113107 | fab | K
+fukui2014 | Fukui, T.; Doi, Y.; Miyazaki, T.; et al. | 2014 | Perfect selective alignment of nitrogen-vacancy centers in diamond | Applied Physics Express | 7, 055201 | fab | K
+edmonds2012 | Edmonds, A. M.; D'Haenens-Johansson, U. F. S.; Cruddace, R. J.; et al. | 2012 | Production of oriented nitrogen-vacancy color centers in synthetic diamond | Physical Review B | 86, 035201 | fab | K
+ozawa2017 | Ozawa, H.; Tahara, K.; Ishiwata, H.; Hatano, M.; Iwasaki, T. | 2017 | Formation of perfectly aligned nitrogen-vacancy-center ensembles in chemical-vapor-deposition-grown diamond (111) | Applied Physics Express | 10, 045501 | fab | K
+ishikawa2012 | Ishikawa, T.; Fu, K.-M. C.; Santori, C.; et al. | 2012 | Optical and spin coherence properties of nitrogen-vacancy centers placed in a 100 nm thick isotopically purified diamond layer | Nano Letters | 12, 2083 | fab | K
+itoh2014 | Itoh, K. M.; Watanabe, H. | 2014 | Isotope engineering of silicon and diamond for quantum computing and sensing applications | MRS Communications | 4, 143 | fab,qc | K
+smith2019 | Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. | 2019 | Colour centre generation in diamond for quantum technologies | Nanophotonics | 8, 1889 | fab | K
+ziegler2010 | Ziegler, J. F.; Ziegler, M. D.; Biersack, J. P. | 2010 | SRIM - The stopping and range of ions in matter (2010) | Nuclear Instruments and Methods in Physics Research B | 268, 1818 | fab | K
+grootberning2019 | Groot-Berning, K.; Kornher, T.; Jacob, G.; et al. | 2019 | Deterministic single-ion implantation of rare-earth ions for nanometer-resolution color-center generation | Physical Review Letters | 123, 106802 | fab | K
+jamieson2005 | Jamieson, D. N.; Yang, C.; Hopf, T.; et al. | 2005 | Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions | Applied Physics Letters | 86, 202101 | fab | K
+divincenzo2000 | DiVincenzo, D. P. | 2000 | The physical implementation of quantum computation | Fortschritte der Physik | 48, 771 | qc | K
+nielsen2010 | Nielsen, M. A.; Chuang, I. L. | 2010 | Quantum Computation and Quantum Information (10th anniversary ed.) | Cambridge University Press | book | qc | K
+ladd2010 | Ladd, T. D.; Jelezko, F.; Laflamme, R.; Nakamura, Y.; Monroe, C.; O'Brien, J. L. | 2010 | Quantum computers | Nature | 464, 45 | qc | K
+kane1998 | Kane, B. E. | 1998 | A silicon-based nuclear spin quantum computer | Nature | 393, 133 | qc | K
+fowler2012 | Fowler, A. G.; Mariantoni, M.; Martinis, J. M.; Cleland, A. N. | 2012 | Surface codes: towards practical large-scale quantum computation | Physical Review A | 86, 032324 | qc | K
+preskill2018 | Preskill, J. | 2018 | Quantum computing in the NISQ era and beyond | Quantum | 2, 79 | qc | K
+wrachtrup2006 | Wrachtrup, J.; Jelezko, F. | 2006 | Processing quantum information in diamond | Journal of Physics: Condensed Matter | 18, S807 | qc | K
+weber2010 | Weber, J. R.; Koehl, W. F.; Varley, J. B.; et al. | 2010 | Quantum computing with defects | Proceedings of the National Academy of Sciences | 107, 8513 | qc | K
+childress2013 | Childress, L.; Hanson, R. | 2013 | Diamond NV centers for quantum computing and quantum networks | MRS Bulletin | 38, 134 | qc,net | K
+awschalom2018 | Awschalom, D. D.; Hanson, R.; Wrachtrup, J.; Zhou, B. B. | 2018 | Quantum technologies with optically interfaced solid-state spins | Nature Photonics | 12, 516 | qc,net | K
+wolfowicz2021 | Wolfowicz, G.; Heremans, F. J.; Anderson, C. P.; et al. | 2021 | Quantum guidelines for solid-state spin defects | Nature Reviews Materials | 6, 906 | qc | K
+atature2018 | Atature, M.; Englund, D.; Vamivakas, N.; Lee, S.-Y.; Wrachtrup, J. | 2018 | Material platforms for spin-based photonic quantum technologies | Nature Reviews Materials | 3, 38 | qc,net | K
+pezzagna2021 | Pezzagna, S.; Meijer, J. | 2021 | Quantum computer based on color centers in diamond | Applied Physics Reviews | 8, 011308 | qc | K
+ruf2021 | Ruf, M.; Wan, N. H.; Choi, H.; Englund, D.; Hanson, R. | 2021 | Quantum networks based on color centers in diamond | Journal of Applied Physics | 130, 070901 | net | K
+dutt2007 | Gurudev Dutt, M. V.; Childress, L.; Jiang, L.; et al. | 2007 | Quantum register based on individual electronic and nuclear spin qubits in diamond | Science | 316, 1312 | qc | K
+neumann2008 | Neumann, P.; Mizuochi, N.; Rempp, F.; et al. | 2008 | Multipartite entanglement among single spins in diamond | Science | 320, 1326 | qc | K
+neumann2010science | Neumann, P.; Beck, J.; Steiner, M.; et al. | 2010 | Single-shot readout of a single nuclear spin | Science | 329, 542 | qc | K
+neumann2010natphys | Neumann, P.; Kolesov, R.; Naydenov, B.; et al. | 2010 | Quantum register based on coupled electron spins in a room-temperature solid | Nature Physics | 6, 249 | qc | V
+dolde2013 | Dolde, F.; Jakobi, I.; Naydenov, B.; et al. | 2013 | Room-temperature entanglement between single defect spins in diamond | Nature Physics | 9, 139 | qc | V
+dolde2014 | Dolde, F.; Bergholm, V.; Wang, Y.; et al. | 2014 | High-fidelity spin entanglement using optimal control | Nature Communications | 5, 3371 | qc | K
+yao2012 | Yao, N. Y.; Jiang, L.; Gorshkov, A. V.; et al. | 2012 | Scalable architecture for a room temperature solid-state quantum information processor | Nature Communications | 3, 800 | qc | V
+waldherr2014 | Waldherr, G.; Wang, Y.; Zaiser, S.; et al. | 2014 | Quantum error correction in a solid-state hybrid spin register | Nature | 506, 204 | qc | K
+taminiau2014 | Taminiau, T. H.; Cramer, J.; van der Sar, T.; Dobrovitski, V. V.; Hanson, R. | 2014 | Universal control and error correction in multi-qubit spin registers in diamond | Nature Nanotechnology | 9, 171 | qc | K
+cramer2016 | Cramer, J.; Kalb, N.; Rol, M. A.; et al. | 2016 | Repeated quantum error correction on a continuously encoded qubit by real-time feedback | Nature Communications | 7, 11526 | qc | K
+bradley2019 | Bradley, C. E.; Randall, J.; Abobeih, M. H.; et al. | 2019 | A ten-qubit solid-state spin register with quantum memory up to one minute | Physical Review X | 9, 031045 | qc | K
+abobeih2019 | Abobeih, M. H.; Randall, J.; Bradley, C. E.; et al. | 2019 | Atomic-scale imaging of a 27-nuclear-spin cluster using a quantum sensor | Nature | 576, 411 | qc,sens | K
+abobeih2022 | Abobeih, M. H.; Wang, Y.; Randall, J.; et al. | 2022 | Fault-tolerant operation of a logical qubit in a diamond quantum processor | Nature | 606, 884 | qc | K
+randall2021 | Randall, J.; Bradley, C. E.; van der Gronden, F. V.; et al. | 2021 | Many-body-localized discrete time crystal with a programmable spin-based quantum simulator | Science | 374, 1474 | qc | K
+rong2015 | Rong, X.; Geng, J.; Shi, F.; et al. | 2015 | Experimental fault-tolerant universal quantum gates with solid-state spins under ambient conditions | Nature Communications | 6, 8748 | qc | K
+xie2023 | Xie, T.; Zhao, Z.; Xu, S.; et al. | 2023 | 99.92%-fidelity CNOT gates in solids by noise filtering | Physical Review Letters | 130, 030601 | qc | K
+bartling2025 | Bartling, H. P.; Yun, J.; Schymik, K. N.; et al. | 2025 | Universal high-fidelity quantum gates for spin qubits in diamond | Physical Review Applied | TODO: verify volume and page | qc | K
+vandersar2012 | van der Sar, T.; Wang, Z. H.; Blok, M. S.; et al. | 2012 | Decoherence-protected quantum gates for a hybrid solid-state spin register | Nature | 484, 82 | qc | K
+robledo2011 | Robledo, L.; Childress, L.; Bernien, H.; et al. | 2011 | High-fidelity projective read-out of a solid-state spin quantum register | Nature | 477, 574 | qc | K
+jiang2009 | Jiang, L.; Hodges, J. S.; Maze, J. R.; et al. | 2009 | Repetitive readout of a single electronic spin via quantum logic with nuclear spin ancillae | Science | 326, 267 | qc | K
+steiner2010 | Steiner, M.; Neumann, P.; Beck, J.; Jelezko, F.; Wrachtrup, J. | 2010 | Universal enhancement of the optical readout fidelity of single electron spins at nitrogen-vacancy centers in diamond | Physical Review B | 81, 035205 | qc | K
+shields2015 | Shields, B. J.; Unterreithmeier, Q. P.; de Leon, N. P.; Park, H.; Lukin, M. D. | 2015 | Efficient readout of a single spin state in diamond via spin-to-charge conversion | Physical Review Letters | 114, 136402 | qc | K
+hopper2018 | Hopper, D. A.; Shulevitz, H. J.; Bassett, L. C. | 2018 | Spin readout techniques of the nitrogen-vacancy center in diamond | Micromachines | 9, 437 | qc | K
+bourgeois2015 | Bourgeois, E.; Jarmola, A.; Siyushev, P.; et al. | 2015 | Photoelectric detection of electron spin resonance of nitrogen-vacancy centres in diamond | Nature Communications | 6, 8577 | qc,dev | K
+siyushev2019 | Siyushev, P.; Nesladek, M.; Bourgeois, E.; et al. | 2019 | Photoelectrical imaging and coherent spin-state readout of single nitrogen-vacancy centers in diamond | Science | 363, 728 | qc,dev | K
+zu2014 | Zu, C.; Wang, W.-B.; He, L.; et al. | 2014 | Experimental realization of universal geometric quantum gates with solid-state spins | Nature | 514, 72 | qc | K
+arroyo2014 | Arroyo-Camejo, S.; Lazariev, A.; Hell, S. W.; Balasubramanian, G. | 2014 | Room temperature high-fidelity holonomic single-qubit gate on a solid-state spin | Nature Communications | 5, 4870 | qc | K
+wu2019 | Wu, Y.; Wang, Y.; Qin, X.; Rong, X.; Du, J. | 2019 | A programmable two-qubit solid-state quantum processor under ambient conditions | npj Quantum Information | 5, 9 | qc | K
+vorobyov2021 | Vorobyov, V.; Zaiser, S.; Abt, N.; et al. | 2021 | Quantum Fourier transform for nanoscale quantum sensing | npj Quantum Information | 7, 124 | qc,sens | K
+hirose2016 | Hirose, M.; Cappellaro, P. | 2016 | Coherent feedback control of a single qubit in diamond | Nature | 532, 77 | qc | K
+unden2016 | Unden, T.; Balasubramanian, P.; Louzon, D.; et al. | 2016 | Quantum metrology enhanced by repetitive quantum error correction | Physical Review Letters | 116, 230502 | qc,sens | K
+pfender2017 | Pfender, M.; Aslam, N.; Sumiya, H.; et al. | 2017 | Nonvolatile nuclear spin memory enables sensor-unlimited nanoscale spectroscopy of small spin clusters | Nature Communications | 8, 834 | qc,sens | K
+cappellaro2009 | Cappellaro, P.; Jiang, L.; Hodges, J. S.; Lukin, M. D. | 2009 | Coherence and control of quantum registers based on electronic spin in a nuclear spin bath | Physical Review Letters | 102, 210502 | qc | K
+bermudez2011 | Bermudez, A.; Jelezko, F.; Plenio, M. B.; Retzker, A. | 2011 | Electron-mediated nuclear-spin interactions between distant nitrogen-vacancy centers | Physical Review Letters | 107, 150503 | qc | K
+rabl2010 | Rabl, P.; Kolkowitz, S. J.; Koppens, F. H. L.; et al. | 2010 | A quantum spin transducer based on nanoelectromechanical resonator arrays | Nature Physics | 6, 602 | qc | K
+trifunovic2013 | Trifunovic, L.; Pedrocchi, F. L.; Loss, D. | 2013 | Long-distance entanglement of spin qubits via ferromagnet | Physical Review X | 3, 041023 | qc | K
+kubo2010 | Kubo, Y.; Ong, F. R.; Bertet, P.; et al. | 2010 | Strong coupling of a spin ensemble to a superconducting resonator | Physical Review Letters | 105, 140502 | qc | K
+zhu2011 | Zhu, X.; Saito, S.; Kemp, A.; et al. | 2011 | Coherent coupling of a superconducting flux qubit to an electron spin ensemble in diamond | Nature | 478, 221 | qc | K
+nemoto2014 | Nemoto, K.; Trupke, M.; Devitt, S. J.; et al. | 2014 | Photonic architecture for scalable quantum information processing in diamond | Physical Review X | 4, 031022 | qc,net | K
+nickerson2014 | Nickerson, N. H.; Fitzsimons, J. F.; Benjamin, S. C. | 2014 | Freely scalable quantum technologies using cells of 5-to-50 qubits with very lossy and noisy photonic links | Physical Review X | 4, 041041 | qc,net | K
+choi2019 | Choi, H.; Pant, M.; Guha, S.; Englund, D. | 2019 | Percolation-based architecture for cluster state creation using photon-mediated entanglement between atomic memories | npj Quantum Information | 5, 104 | qc,net | K
+barrett2005 | Barrett, S. D.; Kok, P. | 2005 | Efficient high-fidelity quantum computation using matter qubits and linear optics | Physical Review A | 71, 060310 | qc,net | K
+ji2022 | Ji, J.-W.; Wu, Y.-F.; Wein, S. C.; et al. | 2022 | Proposal for room-temperature quantum repeaters with nitrogen-vacancy centers and optomechanics | Quantum | 6, 669 | net,qc | V
+qbpawsey2023 | Quantum Brilliance and Pawsey Supercomputing Research Centre collaboration | 2023 | First quantum machine learning applications on an on-site room-temperature quantum computer | arXiv preprint | arXiv:2312.11673 | qc,ind | V
+olcf2025 | Oak Ridge Leadership Computing Facility | 2025 | Q&A: Inside Quantum Brilliance's quantum computer technology | OLCF news | 2 September 2025 | ind,qc | V
+qbtech2026 | Quantum Brilliance | 2026 | Diamond quantum technology (technology overview page) | quantumbrilliance.com | accessed September 2026 | ind,qc | V
+tqi2026 | The Quantum Insider | 2026 | Top diamond NV-centre quantum computing companies in 2026 | The Quantum Insider | 10 July 2026 | ind,qc | V
+saxonq2026 | Greene, T. | 2026 | Engineers build world's first portable diamond-powered quantum computer (report on SaxonQ; vendor claims, not yet peer reviewed) | Live Science (news) | 6 August 2026 | ind,qc | V
+togan2010 | Togan, E.; Chu, Y.; Trifonov, A. S.; et al. | 2010 | Quantum entanglement between an optical photon and a solid-state spin qubit | Nature | 466, 730 | net | K
+bernien2013 | Bernien, H.; Hensen, B.; Pfaff, W.; et al. | 2013 | Heralded entanglement between solid-state qubits separated by three metres | Nature | 497, 86 | net | K
+hensen2015 | Hensen, B.; Bernien, H.; Dreau, A. E.; et al. | 2015 | Loophole-free Bell inequality violation using electron spins separated by 1.3 kilometres | Nature | 526, 682 | net | K
+kalb2017 | Kalb, N.; Reiserer, A. A.; Humphreys, P. C.; et al. | 2017 | Entanglement distillation between solid-state quantum network nodes | Science | 356, 928 | net | K
+humphreys2018 | Humphreys, P. C.; Kalb, N.; Morits, J. P. J.; et al. | 2018 | Deterministic delivery of remote entanglement on a quantum network | Nature | 558, 268 | net | K
+pompili2021 | Pompili, M.; Hermans, S. L. N.; Baier, S.; et al. | 2021 | Realization of a multinode quantum network of remote solid-state qubits | Science | 372, 259 | net | K
+hermans2022 | Hermans, S. L. N.; Pompili, M.; Beukers, H. K. C.; et al. | 2022 | Qubit teleportation between non-neighbouring nodes in a quantum network | Nature | 605, 663 | net | K
+stolk2024 | Stolk, A. J.; van der Enden, K. L.; Slater, M.-C.; et al. | 2024 | Metropolitan-scale heralded entanglement of solid-state qubits | Science Advances | 10, eadp6442 | net | K
+faraon2011 | Faraon, A.; Barclay, P. E.; Santori, C.; Fu, K.-M. C.; Beausoleil, R. G. | 2011 | Resonant enhancement of the zero-phonon emission from a colour centre in a diamond cavity | Nature Photonics | 5, 301 | net | K
+riedel2017 | Riedel, D.; Soellner, I.; Shields, B. J.; et al. | 2017 | Deterministic enhancement of coherent photon generation from a nitrogen-vacancy center in ultrapure diamond | Physical Review X | 7, 031040 | net | K
+babinec2010 | Babinec, T. M.; Hausmann, B. J. M.; Khan, M.; et al. | 2010 | A diamond nanowire single-photon source | Nature Nanotechnology | 5, 195 | net | K
+hadden2010 | Hadden, J. P.; Harrison, J. P.; Stanley-Clarke, A. C.; et al. | 2010 | Strongly enhanced photon collection from diamond defect centers under microfabricated integrated solid immersion lenses | Applied Physics Letters | 97, 241901 | net | K
+burek2012 | Burek, M. J.; de Leon, N. P.; Shields, B. J.; et al. | 2012 | Free-standing mechanical and photonic nanostructures in single-crystal diamond | Nano Letters | 12, 6084 | net | K
+hausmann2012 | Hausmann, B. J. M.; Shields, B.; Quan, Q.; et al. | 2012 | Integrated diamond networks for quantum nanophotonics | Nano Letters | 12, 1578 | net | K
+aharonovich2011 | Aharonovich, I.; Greentree, A. D.; Prawer, S. | 2011 | Diamond photonics | Nature Photonics | 5, 397 | net | K
+lenzini2018 | Lenzini, F.; Gruhler, N.; Walter, N.; Pernice, W. H. P. | 2018 | Diamond as a platform for integrated quantum photonics | Advanced Quantum Technologies | 1, 1800061 | net | V
+mouradian2015 | Mouradian, S. L.; Schroeder, T.; Poitras, C. B.; et al. | 2015 | Scalable integration of long-lived quantum memories into a photonic circuit | Physical Review X | 5, 031009 | net | V
+wan2020 | Wan, N. H.; Lu, T.-J.; Chen, K. C.; et al. | 2020 | Large-scale integration of artificial atoms in hybrid photonic circuits | Nature | 583, 226 | net | V
+li2024 | Li, L.; De Santis, L.; Harris, I. B. W.; et al. | 2024 | Heterogeneous integration of spin-photon interfaces with a CMOS platform | Nature | 630, 70 | net,dev | V
+golter2023 | Golter, D. A.; Clark, G.; El Dandachi, T.; et al. | 2023 | Selective and scalable control of spin quantum memories in a photonic circuit | Nano Letters | 23, 7852 | net | V
+clark2024 | Clark, G.; Raniwala, H.; Koppa, M.; et al. | 2024 | Nanoelectromechanical control of spin-photon interfaces in a hybrid quantum system on chip | Nano Letters | 24, 1316 | net | V
+sipahigil2016 | Sipahigil, A.; Evans, R. E.; Sukachev, D. D.; et al. | 2016 | An integrated diamond nanophotonics platform for quantum-optical networks | Science | 354, 847 | net | K
+bhaskar2020 | Bhaskar, M. K.; Riedinger, R.; Machielse, B.; et al. | 2020 | Experimental demonstration of memory-enhanced quantum communication | Nature | 580, 60 | net | K
+stas2022 | Stas, P.-J.; Huan, Y. Q.; Machielse, B.; et al. | 2022 | Robust multi-qubit quantum network node with integrated error detection | Science | 378, 557 | net | K
+knaut2024 | Knaut, C. M.; Suleymanzade, A.; Wei, Y.-C.; et al. | 2024 | Entanglement of nanophotonic quantum memory nodes in a telecom network | Nature | 629, 573 | net | K
+sukachev2017 | Sukachev, D. D.; Sipahigil, A.; Nguyen, C. T.; et al. | 2017 | Silicon-vacancy spin qubit in diamond: a quantum memory exceeding 10 ms with single-shot state readout | Physical Review Letters | 119, 223602 | net | V
+hepp2014 | Hepp, C.; Mueller, T.; Waselowski, V.; et al. | 2014 | Electronic structure of the silicon vacancy color center in diamond | Physical Review Letters | 112, 036405 | net | K
+rose2018 | Rose, B. C.; Huang, D.; Zhang, Z.-H.; et al. | 2018 | Observation of an environmentally insensitive solid-state spin defect in diamond | Science | 361, 60 | net | K
+iwasaki2015 | Iwasaki, T.; Ishibashi, F.; Miyamoto, Y.; et al. | 2015 | Germanium-vacancy single color centers in diamond | Scientific Reports | 5, 12882 | net | K
+iwasaki2017 | Iwasaki, T.; Miyamoto, Y.; Taniguchi, T.; et al. | 2017 | Tin-vacancy quantum emitters in diamond | Physical Review Letters | 119, 253601 | net | K
+trusheim2020 | Trusheim, M. E.; Pingault, B.; Wan, N. H.; et al. | 2020 | Transform-limited photons from a coherent tin-vacancy spin in diamond | Physical Review Letters | 124, 023602 | net | K
+rugar2021 | Rugar, A. E.; Aghaeimeibodi, S.; Riedel, D.; et al. | 2021 | Quantum photonic interface for tin-vacancy centers in diamond | Physical Review X | 11, 031021 | net | K
+bradac2019 | Bradac, C.; Gao, W.; Forneris, J.; Trusheim, M. E.; Aharonovich, I. | 2019 | Quantum nanophotonics with group IV defects in diamond | Nature Communications | 10, 5625 | net | K
+mizuochi2012 | Mizuochi, N.; Makino, T.; Kato, H.; et al. | 2012 | Electrically driven single-photon source at room temperature in diamond | Nature Photonics | 6, 299 | net,dev | K
+lohrmann2011 | Lohrmann, A.; Pezzagna, S.; Dobrinets, I.; et al. | 2011 | Diamond based light-emitting diode for visible single-photon emission at room temperature | Applied Physics Letters | 99, 251106 | net,dev | K
+kim2019cmos | Kim, D.; Ibrahim, M. I.; Foy, C.; Trusheim, M. E.; Han, R.; Englund, D. R. | 2019 | A CMOS-integrated quantum sensor based on nitrogen-vacancy centres | Nature Electronics | 2, 284 | dev,sens | K
+ibrahim2021 | Ibrahim, M. I.; Foy, C.; Englund, D. R.; Han, R. | 2021 | High-scalability CMOS quantum magnetometer with spin-state excitation and detection of diamond color centers | IEEE Journal of Solid-State Circuits | 56, 1001 | dev,sens | K

@@ -1,0 +1,15 @@
+* ADAMAS: p-channel-only enhancement/depletion inverter on diamond, after [liu2017].
+* STATUS: UNTESTED netlist. Rails are negative, as in the laboratory: VSS = -10 V, logic swings 0 to -10 V.
+.include diamond_pfet.lib
+VSS vss 0 DC -10
+VIN in 0 DC 0
+* Driver: source at ground, pulls OUT up toward 0 V when IN is low (negative).
+M1 out in 0 0 DIAMOND_PE W=200u L=2u
+* Load: depletion device with gate tied to source (OUT), connects OUT to VSS.
+M2 vss out out 0 DIAMOND_PD W=25u L=2u
+.dc VIN 0 -10 -0.05
+.control
+run
+plot v(out) vs v(in)
+.endc
+.end
