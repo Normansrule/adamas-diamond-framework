@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures refs verify spice rtl synth clean
+.PHONY: all test figures refs verify apply-verify spice rtl synth clean
 
 all: refs test figures
 
@@ -13,8 +13,11 @@ figures:         ## regenerate all 25 figures into docs/img/
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
 	cd tools && $(PY) build_refs.py && $(PY) check_citations.py
 
-verify:          ## Crossref verification of the reference list (needs internet)
-	cd tools && $(PY) verify_refs.py
+verify:          ## Crossref verification (needs internet; resumable). Pass your address: make verify MAILTO=you@school.edu
+	cd tools && $(PY) verify_refs.py --mailto $(or $(MAILTO),set-your-email@example.org)
+
+apply-verify:    ## store DOIs of PASS rows, promote them to verified, rebuild the bibliography
+	cd tools && $(PY) apply_verification.py && $(PY) build_refs.py && $(PY) check_citations.py
 
 spice:           ## inverter sweep and ring oscillator in ngspice
 	cd circuits/spice && ngspice -b ed_inverter.cir > /dev/null && ngspice -b ring_oscillator.cir | grep -E "^(period|iavg)"

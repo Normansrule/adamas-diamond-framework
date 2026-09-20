@@ -51,7 +51,7 @@ make rtl                       # DIA-4 behavioral simulation  -> PASS
 make synth                     # Yosys synthesis + gate-level simulation -> cell counts, PASS
 ```
 
-Expected: 30 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
+Expected: 32 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
 
 ## 4 · Publish to GitHub
 
@@ -87,14 +87,16 @@ echo 'smith2027 | Smith, J. | 2027 | Title here | Journal Name | 12, 345 | lit |
 make refs
 ```
 
-### Verify the reference list against Crossref (needs internet; takes several minutes)
+### Verify the reference list against Crossref (needs internet; resumable)
 
 ```bash
-make verify
-column -s, -t references/verification_report.csv | less -S
+make verify MAILTO=you@school.edu          # a real address puts you in Crossref's faster "polite pool"
+python tools/verify_refs.py --retry-checks --mailto you@school.edu     # redo rows that were CHECK or ERROR
+python tools/show_checks.py                # readable list of everything still needing review
+make apply-verify                          # stores DOIs in references/dois.psv, promotes PASS rows to verified
 ```
 
-Entries the report flags should be corrected in the `.psv` files and their status changed from `K` to `V`.
+The run backs off automatically on HTTP 429 (rate limit). A `CHECK` row is a request for human review, not a verdict: fix the `.psv` line if the reference is wrong, or record your decision in `references/verification_overrides.psv` (for example `NOT-INDEXED` for a thesis or technical memo).
 
 ### Add a figure
 

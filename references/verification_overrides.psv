@@ -1,0 +1,10 @@
+# Human-reviewed verification decisions. Format: key | verdict | note
+# Verdicts: NOT-INDEXED (the work has no Crossref record), SECONDARY (cited through a secondary source), CONFIRMED (checked by hand elsewhere)
+johnson1965 | NOT-INDEXED | RCA Review is not deposited in Crossref; citation is the standard one for the Johnson figure of merit
+teal1950 | NOT-INDEXED | American Physical Society meeting abstract in Physical Review 78, 647; abstracts are not indexed individually
+nagel1973 | NOT-INDEXED | University of California, Berkeley technical memorandum ERL-M382; no DOI exists
+gottesman1997 | NOT-INDEXED | Doctoral thesis, available as arXiv:quant-ph/9705052; theses are outside Crossref
+chu2025 | SECONDARY | Title field is descriptive; known only through the Power Electronics Magazine report of IEDM 2025 paper 26.8.1. Replace with the proceedings title when available
+moore1965 | NOT-INDEXED | Original is Electronics 38(8), 114 (19 April 1965), a trade magazine outside Crossref; Crossref only holds the 1998 reprint in Proceedings of the IEEE 86, 82
+saha2020 | CONFIRMED | IEEE Electron Device Letters 41, 1066 (2020) confirmed from reference lists of later papers; Crossref search returns the group's 2024 J. Vac. Sci. Technol. B 42 paper instead
+gorini1976 | CONFIRMED | J. Math. Phys. 17, 821 (1976) confirmed against the publisher record and multiple reference lists; Crossref search returns a different paper

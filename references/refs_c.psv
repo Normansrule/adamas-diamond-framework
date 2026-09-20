@@ -8,31 +8,31 @@ mack2007 | Mack, C. A. | 2007 | Fundamental Principles of Optical Lithography: T
 levinson2019 | Levinson, H. J. | 2019 | Principles of Lithography (4th ed.) | SPIE Press | book | lit | K
 bakshi2018 | Bakshi, V. (Ed.) | 2018 | EUV Lithography (2nd ed.) | SPIE Press | book | lit | K
 wagner2010 | Wagner, C.; Harned, N. | 2010 | EUV lithography: lithography gets extreme | Nature Photonics | 4, 24 | lit | K
-fomenkov2017 | Fomenkov, I.; Brandt, D.; Ershov, A.; et al. | 2017 | Light sources for high-volume manufacturing EUV lithography: technology, performance, and power scaling | Advanced Optical Technologies | 6, 173 | lit | K
-vanschoot2017 | van Schoot, J.; Troost, K.; Bornebroek, F.; et al. | 2017 | High-numerical aperture extreme ultraviolet scanner for 8-nm lithography and beyond | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041010 | lit | K
-debisschop2017 | De Bisschop, P. | 2017 | Stochastic effects in EUV lithography: random, local CD variability, and printing failures | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041013 | lit | K
-gallatin2005 | Gallatin, G. M. | 2005 | Resist blur and line edge roughness | Proceedings of SPIE | 5754, 38 | lit | K
-kozawa2010 | Kozawa, T.; Tagawa, S. | 2010 | Radiation chemistry in chemically amplified resists | Japanese Journal of Applied Physics | 49, 030001 | lit | K
-ito2005 | Ito, H. | 2005 | Chemical amplification resists for microlithography | Advances in Polymer Science | 172, 37 | lit | K
-bajt2002 | Bajt, S.; Alameda, J. B.; Barbee, T. W.; et al. | 2002 | Improved reflectance and stability of Mo/Si multilayers | Optical Engineering | 41, 1797 | lit | K
-henke1993 | Henke, B. L.; Gullikson, E. M.; Davis, J. C. | 1993 | X-ray interactions: photoabsorption, scattering, transmission, and reflection at E = 50-30,000 eV, Z = 1-92 | Atomic Data and Nuclear Data Tables | 54, 181 | lit | K
+fomenkov2017 | Fomenkov, I.; Brandt, D.; Ershov, A.; et al. | 2017 | Light sources for high-volume manufacturing EUV lithography: technology, performance, and power scaling | Advanced Optical Technologies | 6, 173 | lit | V
+vanschoot2017 | van Schoot, J.; Troost, K.; Bornebroek, F.; et al. | 2017 | High-numerical aperture extreme ultraviolet scanner for 8-nm lithography and beyond | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041010 | lit | V
+debisschop2017 | De Bisschop, P. | 2017 | Stochastic effects in EUV lithography: random, local CD variability, and printing failures | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041013 | lit | V
+gallatin2005 | Gallatin, G. M. | 2005 | Resist blur and line edge roughness | Proceedings of SPIE | 5754, 38 | lit | V
+kozawa2010 | Kozawa, T.; Tagawa, S. | 2010 | Radiation chemistry in chemically amplified resists | Japanese Journal of Applied Physics | 49, 030001 | lit | V
+ito2005 | Ito, H. | 2005 | Chemical amplification resists for microlithography | Advances in Polymer Science | 172, 37 | lit | V
+bajt2002 | Bajt, S.; Alameda, J. B.; Barbee, T. W.; et al. | 2002 | Improved reflectance and stability of Mo/Si multilayers | Optical Engineering | 41, 1797 | lit | V
+henke1993 | Henke, B. L.; Gullikson, E. M.; Davis, J. C. | 1993 | X-ray interactions: photoabsorption, scattering, transmission, and reflection at E = 50-30,000 eV, Z = 1-92 | Atomic Data and Nuclear Data Tables | 54, 181 | lit | V
 asmleuv2026 | ASML | 2026 | EUV lithography systems (product page: 0.33 and 0.55 numerical aperture platforms) | asml.com | accessed September 2026 | lit,ind | V
 imec2026 | imec | 2026 | Imec receives the world's most advanced High NA EUV system (press release) | imec-int.com | 18 March 2026 | lit,ind | V
 asmlhighna2026 | ASML | 2026 | High NA EUV reaches new readiness milestone with first high-volume logic product (press release) | asml.com | 15 July 2026 | lit,ind | V
-chou1995 | Chou, S. Y.; Krauss, P. R.; Renstrom, P. J. | 1995 | Imprint of sub-25 nm vias and trenches in polymers | Applied Physics Letters | 67, 3114 | lit | K
-chou1996 | Chou, S. Y.; Krauss, P. R.; Renstrom, P. J. | 1996 | Nanoimprint lithography | Journal of Vacuum Science and Technology B | 14, 4129 | lit | K
-manfrinato2013 | Manfrinato, V. R.; Zhang, L.; Su, D.; et al. | 2013 | Resolution limits of electron-beam lithography toward the atomic scale | Nano Letters | 13, 1555 | lit | K
-chang1975 | Chang, T. H. P. | 1975 | Proximity effect in electron-beam lithography | Journal of Vacuum Science and Technology | 12, 1271 | lit | K
-grigorescu2009 | Grigorescu, A. E.; Hagen, C. W. | 2009 | Resists for sub-20-nm electron beam lithography with a focus on HSQ: state of the art | Nanotechnology | 20, 292001 | lit | K
-kanaya1972 | Kanaya, K.; Okayama, S. | 1972 | Penetration and energy-loss theory of electrons in solid targets | Journal of Physics D: Applied Physics | 5, 43 | lit | K
+chou1995 | Chou, S. Y.; Krauss, P. R.; Renstrom, P. J. | 1995 | Imprint of sub-25 nm vias and trenches in polymers | Applied Physics Letters | 67, 3114 | lit | V
+chou1996 | Chou, S. Y.; Krauss, P. R.; Renstrom, P. J. | 1996 | Nanoimprint lithography | Journal of Vacuum Science and Technology B | 14, 4129 | lit | V
+manfrinato2013 | Manfrinato, V. R.; Zhang, L.; Su, D.; et al. | 2013 | Resolution limits of electron-beam lithography toward the atomic scale | Nano Letters | 13, 1555 | lit | V
+chang1975 | Chang, T. H. P. | 1975 | Proximity effect in electron-beam lithography | Journal of Vacuum Science and Technology | 12, 1271 | lit | V
+grigorescu2009 | Grigorescu, A. E.; Hagen, C. W. | 2009 | Resists for sub-20-nm electron beam lithography with a focus on HSQ: state of the art | Nanotechnology | 20, 292001 | lit | V
+kanaya1972 | Kanaya, K.; Okayama, S. | 1972 | Penetration and energy-loss theory of electrons in solid targets | Journal of Physics D: Applied Physics | 5, 43 | lit | V
 reimer1998 | Reimer, L. | 1998 | Scanning Electron Microscopy: Physics of Image Formation and Microanalysis (2nd ed.) | Springer | book | lit | K
-shih1997 | Shih, A.; Yater, J.; Pehrsson, P.; et al. | 1997 | Secondary electron emission from diamond surfaces | Journal of Applied Physics | 82, 1860 | lit,dop | K
-yater2000 | Yater, J. E.; Shih, A. | 2000 | Secondary electron emission characteristics of single-crystal and polycrystalline diamond | Journal of Applied Physics | 87, 8103 | lit,dop | K
+shih1997 | Shih, A.; Yater, J.; Pehrsson, P.; et al. | 1997 | Secondary electron emission from diamond surfaces | Journal of Applied Physics | 82, 1860 | lit,dop | V
+yater2000 | Yater, J. E.; Shih, A. | 2000 | Secondary electron emission characteristics of single-crystal and polycrystalline diamond | Journal of Applied Physics | 87, 8103 | lit,dop | V
 zaitsev2001 | Zaitsev, A. M. | 2001 | Optical Properties of Diamond: A Data Handbook | Springer | book | lit,mat | K
-khanaliloo2015 | Khanaliloo, B.; Mitchell, M.; Hryciw, A. C.; Barclay, P. E. | 2015 | High-Q/V monolithic diamond microdisks fabricated with quasi-isotropic etching | Nano Letters | 15, 5131 | lit,net | K
-fuechsle2012 | Fuechsle, M.; Miwa, J. A.; Mahapatra, S.; et al. | 2012 | A single-atom transistor | Nature Nanotechnology | 7, 242 | lit,bey | K
-schofield2003 | Schofield, S. R.; Curson, N. J.; Simmons, M. Y.; et al. | 2003 | Atomically precise placement of single dopants in Si | Physical Review Letters | 91, 136104 | lit,bey | K
-bobrov2001 | Bobrov, K.; Mayne, A. J.; Dujardin, G. | 2001 | Atomic-scale imaging of insulating diamond through resonant electron injection | Nature | 413, 616 | lit,bey | K
+khanaliloo2015 | Khanaliloo, B.; Mitchell, M.; Hryciw, A. C.; Barclay, P. E. | 2015 | High-Q/V monolithic diamond microdisks fabricated with quasi-isotropic etching | Nano Letters | 15, 5131 | lit,net | V
+fuechsle2012 | Fuechsle, M.; Miwa, J. A.; Mahapatra, S.; et al. | 2012 | A single-atom transistor | Nature Nanotechnology | 7, 242 | lit,bey | V
+schofield2003 | Schofield, S. R.; Curson, N. J.; Simmons, M. Y.; et al. | 2003 | Atomically precise placement of single dopants in Si | Physical Review Letters | 91, 136104 | lit,bey | V
+bobrov2001 | Bobrov, K.; Mayne, A. J.; Dujardin, G. | 2001 | Atomic-scale imaging of insulating diamond through resonant electron injection | Nature | 413, 616 | lit,bey | V
 #
 # ---- Digital design, processors, and design automation ----
 meadconway1980 | Mead, C.; Conway, L. | 1980 | Introduction to VLSI Systems | Addison-Wesley | book | eda | K
@@ -44,20 +44,20 @@ waterman2019 | Waterman, A.; Asanovic, K. (Eds.) | 2019 | The RISC-V Instruction
 wolf2013 | Wolf, C.; Glaser, J.; Kepler, J. | 2013 | Yosys - a free Verilog synthesis suite | Proceedings of the 21st Austrian Workshop on Microelectronics (Austrochip) | conference paper | eda | K
 ajayi2019 | Ajayi, T.; Chhabria, V. A.; Fogaca, M.; et al. | 2019 | Toward an open-source digital flow: first learnings from the OpenROAD project | Proceedings of the 56th Design Automation Conference (DAC) | article 76 | eda | K
 shalan2020 | Shalan, M.; Edwards, T. | 2020 | Building OpenLANE: a 130nm OpenROAD-based tapeout-proven flow | Proceedings of the International Conference on Computer-Aided Design (ICCAD) | invited paper | eda | K
-faggin1996 | Faggin, F.; Hoff, M. E.; Mazor, S.; Shima, M. | 1996 | The history of the 4004 | IEEE Micro | 16(6), 10 | eda,si | K
-faggin1970 | Faggin, F.; Klein, T. | 1970 | Silicon gate technology | Solid-State Electronics | 13, 1125 | eda,si | K
-shulaker2013 | Shulaker, M. M.; Hills, G.; Patil, N.; et al. | 2013 | Carbon nanotube computer | Nature | 501, 526 | eda | K
-hills2019 | Hills, G.; Lau, C.; Wright, A.; et al. | 2019 | Modern microprocessor built from complementary carbon nanotube transistors | Nature | 572, 595 | eda | K
-myny2012 | Myny, K.; van Veenendaal, E.; Gelinck, G. H.; et al. | 2012 | An 8-bit, 40-instructions-per-second organic microprocessor on plastic foil | IEEE Journal of Solid-State Circuits | 47, 284 | eda | K
-biggs2021 | Biggs, J.; Myers, J.; Kufel, J.; et al. | 2021 | A natively flexible 32-bit Arm microprocessor | Nature | 595, 532 | eda | K
-ozer2024 | Ozer, E.; Kufel, J.; Prakash, S.; et al. | 2024 | Bendable non-silicon RISC-V microprocessor | Nature | 634, 341 | eda | K
-neudeck2019 | Neudeck, P. G.; Spry, D. J.; Krasowski, M. J.; et al. | 2019 | Operational testing of 4H-SiC JFET ICs for 60 days directly exposed to Venus surface atmospheric conditions | IEEE Journal of the Electron Devices Society | 7, 100 | eda,dev | K
-elmore1948 | Elmore, W. C. | 1948 | The transient response of damped linear networks with particular regard to wideband amplifiers | Journal of Applied Physics | 19, 55 | eda | K
-landman1971 | Landman, B. S.; Russo, R. L. | 1971 | On a pin versus block relationship for partitions of logic graphs | IEEE Transactions on Computers | C-20, 1469 | eda | K
-landauer1961 | Landauer, R. | 1961 | Irreversibility and heat generation in the computing process | IBM Journal of Research and Development | 5, 183 | eda | K
-pop2010 | Pop, E. | 2010 | Energy dissipation and transport in nanoscale devices | Nano Research | 3, 147 | eda,thm | K
-huang2018 | Huang, B.; Bai, X.; Lam, S. K.; Tsang, K. K. | 2018 | Diamond FinFET without hydrogen termination | Scientific Reports | 8, 3063 | dev,eda | K
-oi2018 | Oi, N.; Inaba, M.; Okubo, S.; et al. | 2018 | Vertical-type two-dimensional hole gas diamond metal oxide semiconductor field-effect transistors | Scientific Reports | 8, 10660 | dev | K
+faggin1996 | Faggin, F.; Hoff, M. E.; Mazor, S.; Shima, M. | 1996 | The history of the 4004 | IEEE Micro | 16(6), 10 | eda,si | V
+faggin1970 | Faggin, F.; Klein, T. | 1970 | Silicon gate technology | Solid-State Electronics | 13, 1125 | eda,si | V
+shulaker2013 | Shulaker, M. M.; Hills, G.; Patil, N.; et al. | 2013 | Carbon nanotube computer | Nature | 501, 526 | eda | V
+hills2019 | Hills, G.; Lau, C.; Wright, A.; et al. | 2019 | Modern microprocessor built from complementary carbon nanotube transistors | Nature | 572, 595 | eda | V
+myny2012 | Myny, K.; van Veenendaal, E.; Gelinck, G. H.; et al. | 2012 | An 8-bit, 40-instructions-per-second organic microprocessor on plastic foil | IEEE Journal of Solid-State Circuits | 47, 284 | eda | V
+biggs2021 | Biggs, J.; Myers, J.; Kufel, J.; et al. | 2021 | A natively flexible 32-bit Arm microprocessor | Nature | 595, 532 | eda | V
+ozer2024 | Ozer, E.; Kufel, J.; Prakash, S.; et al. | 2024 | Bendable non-silicon RISC-V microprocessor | Nature | 634, 341 | eda | V
+neudeck2019 | Neudeck, P. G.; Spry, D. J.; Krasowski, M. J.; et al. | 2019 | Operational testing of 4H-SiC JFET ICs for 60 days directly exposed to Venus surface atmospheric conditions | IEEE Journal of the Electron Devices Society | 7, 100 | eda,dev | V
+elmore1948 | Elmore, W. C. | 1948 | The transient response of damped linear networks with particular regard to wideband amplifiers | Journal of Applied Physics | 19, 55 | eda | V
+landman1971 | Landman, B. S.; Russo, R. L. | 1971 | On a pin versus block relationship for partitions of logic graphs | IEEE Transactions on Computers | C-20, 1469 | eda | V
+landauer1961 | Landauer, R. | 1961 | Irreversibility and heat generation in the computing process | IBM Journal of Research and Development | 5, 183 | eda | V
+pop2010 | Pop, E. | 2010 | Energy dissipation and transport in nanoscale devices | Nano Research | 3, 147 | eda,thm | V
+huang2018 | Huang, B.; Bai, X.; Lam, S. K.; Tsang, K. K. | 2018 | Diamond FinFET without hydrogen termination | Scientific Reports | 8, 3063 | dev,eda | V
+oi2018 | Oi, N.; Inaba, M.; Okubo, S.; et al. | 2018 | Vertical-type two-dimensional hole gas diamond metal oxide semiconductor field-effect transistors | Scientific Reports | 8, 10660 | dev | V
 kawai2025 | Kawai, S.; Oi, N.; Isobe, T.; Ota, K.; Amazutsumi, K.; Fujishima, T.; Kawarada, H. | 2025 | Fast power switching with cascode diamond MOSFET-SiC MOSFET/GaN HEMT complementary half-bridge inverter | APL Electronic Devices | 1, 046103 | dev,eda | V
 chu2025 | Chu, C.; Yang, S.; et al. | 2025 | GaN/diamond complementary power circuit (reported via Power Electronics Magazine; original: 71st IEEE International Electron Devices Meeting) | IEEE IEDM Technical Digest | p. 26.8.1 | dev,eda | V
 #
@@ -65,78 +65,78 @@ chu2025 | Chu, C.; Yang, S.; et al. | 2025 | GaN/diamond complementary power cir
 razavi2017 | Razavi, B. | 2017 | Design of Analog CMOS Integrated Circuits (2nd ed.) | McGraw-Hill | book | ana | K
 gray2009 | Gray, P. R.; Hurst, P. J.; Lewis, S. H.; Meyer, R. G. | 2009 | Analysis and Design of Analog Integrated Circuits (5th ed.) | Wiley | book | ana | K
 tsividis2011 | Tsividis, Y.; McAndrew, C. | 2011 | Operation and Modeling of the MOS Transistor (3rd ed.) | Oxford University Press | book | ana | K
-enz1995 | Enz, C. C.; Krummenacher, F.; Vittoz, E. A. | 1995 | An analytical MOS transistor model valid in all regions of operation and dedicated to low-voltage and low-current applications | Analog Integrated Circuits and Signal Processing | 8, 83 | ana | K
-silveira1996 | Silveira, F.; Flandre, D.; Jespers, P. G. A. | 1996 | A gm/ID based methodology for the design of CMOS analog circuits and its application to the synthesis of a silicon-on-insulator micropower OTA | IEEE Journal of Solid-State Circuits | 31, 1314 | ana | K
-pelgrom1989 | Pelgrom, M. J. M.; Duinmaijer, A. C. J.; Welbers, A. P. G. | 1989 | Matching properties of MOS transistors | IEEE Journal of Solid-State Circuits | 24, 1433 | ana | K
-widlar1971 | Widlar, R. J. | 1971 | New developments in IC voltage regulators | IEEE Journal of Solid-State Circuits | 6, 2 | ana | K
-brokaw1974 | Brokaw, A. P. | 1974 | A simple three-terminal IC bandgap reference | IEEE Journal of Solid-State Circuits | 9, 388 | ana | K
-blauschild1978 | Blauschild, R. A.; Tucci, P. A.; Muller, R. S.; Meyer, R. G. | 1978 | A new NMOS temperature-stable voltage reference | IEEE Journal of Solid-State Circuits | 13, 767 | ana | K
-hooge1994 | Hooge, F. N. | 1994 | 1/f noise sources | IEEE Transactions on Electron Devices | 41, 1926 | ana | K
+enz1995 | Enz, C. C.; Krummenacher, F.; Vittoz, E. A. | 1995 | An analytical MOS transistor model valid in all regions of operation and dedicated to low-voltage and low-current applications | Analog Integrated Circuits and Signal Processing | 8, 83 | ana | V
+silveira1996 | Silveira, F.; Flandre, D.; Jespers, P. G. A. | 1996 | A gm/ID based methodology for the design of CMOS analog circuits and its application to the synthesis of a silicon-on-insulator micropower OTA | IEEE Journal of Solid-State Circuits | 31, 1314 | ana | V
+pelgrom1989 | Pelgrom, M. J. M.; Duinmaijer, A. C. J.; Welbers, A. P. G. | 1989 | Matching properties of MOS transistors | IEEE Journal of Solid-State Circuits | 24, 1433 | ana | V
+widlar1971 | Widlar, R. J. | 1971 | New developments in IC voltage regulators | IEEE Journal of Solid-State Circuits | 6, 2 | ana | V
+brokaw1974 | Brokaw, A. P. | 1974 | A simple three-terminal IC bandgap reference | IEEE Journal of Solid-State Circuits | 9, 388 | ana | V
+blauschild1978 | Blauschild, R. A.; Tucci, P. A.; Muller, R. S.; Meyer, R. G. | 1978 | A new NMOS temperature-stable voltage reference | IEEE Journal of Solid-State Circuits | 13, 767 | ana | V
+hooge1994 | Hooge, F. N. | 1994 | 1/f noise sources | IEEE Transactions on Electron Devices | 41, 1926 | ana | V
 nagel1973 | Nagel, L. W.; Pederson, D. O. | 1973 | SPICE (Simulation Program with Integrated Circuit Emphasis) | University of California, Berkeley, Electronics Research Laboratory Memorandum | ERL-M382 | ana,eda | K
-johnson1928 | Johnson, J. B. | 1928 | Thermal agitation of electricity in conductors | Physical Review | 32, 97 | ana | K
-nyquist1928 | Nyquist, H. | 1928 | Thermal agitation of electric charge in conductors | Physical Review | 32, 110 | ana | K
+johnson1928 | Johnson, J. B. | 1928 | Thermal agitation of electricity in conductors | Physical Review | 32, 97 | ana | V
+nyquist1928 | Nyquist, H. | 1928 | Thermal agitation of electric charge in conductors | Physical Review | 32, 110 | ana | V
 #
 # ---- Quantum control, open systems, and error correction ----
-rabi1937 | Rabi, I. I. | 1937 | Space quantization in a gyrating magnetic field | Physical Review | 51, 652 | ctl | K
-ramsey1950 | Ramsey, N. F. | 1950 | A molecular beam resonance method with separated oscillating fields | Physical Review | 78, 695 | ctl | K
-hahn1950 | Hahn, E. L. | 1950 | Spin echoes | Physical Review | 80, 580 | ctl | K
-carr1954 | Carr, H. Y.; Purcell, E. M. | 1954 | Effects of diffusion on free precession in nuclear magnetic resonance experiments | Physical Review | 94, 630 | ctl | K
-meiboom1958 | Meiboom, S.; Gill, D. | 1958 | Modified spin-echo method for measuring nuclear relaxation times | Review of Scientific Instruments | 29, 688 | ctl | K
-gullion1990 | Gullion, T.; Baker, D. B.; Conradi, M. S. | 1990 | New, compensated Carr-Purcell sequences | Journal of Magnetic Resonance | 89, 479 | ctl | K
-viola1999 | Viola, L.; Knill, E.; Lloyd, S. | 1999 | Dynamical decoupling of open quantum systems | Physical Review Letters | 82, 2417 | ctl | K
-cywinski2008 | Cywinski, L.; Lutchyn, R. M.; Nave, C. P.; Das Sarma, S. | 2008 | How to enhance dephasing time in superconducting qubits | Physical Review B | 77, 174509 | ctl | K
-lindblad1976 | Lindblad, G. | 1976 | On the generators of quantum dynamical semigroups | Communications in Mathematical Physics | 48, 119 | ctl | K
+rabi1937 | Rabi, I. I. | 1937 | Space quantization in a gyrating magnetic field | Physical Review | 51, 652 | ctl | V
+ramsey1950 | Ramsey, N. F. | 1950 | A molecular beam resonance method with separated oscillating fields | Physical Review | 78, 695 | ctl | V
+hahn1950 | Hahn, E. L. | 1950 | Spin echoes | Physical Review | 80, 580 | ctl | V
+carr1954 | Carr, H. Y.; Purcell, E. M. | 1954 | Effects of diffusion on free precession in nuclear magnetic resonance experiments | Physical Review | 94, 630 | ctl | V
+meiboom1958 | Meiboom, S.; Gill, D. | 1958 | Modified spin-echo method for measuring nuclear relaxation times | Review of Scientific Instruments | 29, 688 | ctl | V
+gullion1990 | Gullion, T.; Baker, D. B.; Conradi, M. S. | 1990 | New, compensated Carr-Purcell sequences | Journal of Magnetic Resonance | 89, 479 | ctl | V
+viola1999 | Viola, L.; Knill, E.; Lloyd, S. | 1999 | Dynamical decoupling of open quantum systems | Physical Review Letters | 82, 2417 | ctl | V
+cywinski2008 | Cywinski, L.; Lutchyn, R. M.; Nave, C. P.; Das Sarma, S. | 2008 | How to enhance dephasing time in superconducting qubits | Physical Review B | 77, 174509 | ctl | V
+lindblad1976 | Lindblad, G. | 1976 | On the generators of quantum dynamical semigroups | Communications in Mathematical Physics | 48, 119 | ctl | V
 gorini1976 | Gorini, V.; Kossakowski, A.; Sudarshan, E. C. G. | 1976 | Completely positive dynamical semigroups of N-level systems | Journal of Mathematical Physics | 17, 821 | ctl | K
-johansson2012 | Johansson, J. R.; Nation, P. D.; Nori, F. | 2012 | QuTiP: an open-source Python framework for the dynamics of open quantum systems | Computer Physics Communications | 183, 1760 | ctl | K
-yang2008 | Yang, W.; Liu, R.-B. | 2008 | Quantum many-body theory of qubit decoherence in a finite-size spin bath | Physical Review B | 78, 085315 | ctl,nv | K
-maze2008prb | Maze, J. R.; Taylor, J. M.; Lukin, M. D. | 2008 | Electron spin decoherence of single nitrogen-vacancy defects in diamond | Physical Review B | 78, 094303 | ctl,nv | K
-dobrovitski2008 | Dobrovitski, V. V.; Feiguin, A. E.; Awschalom, D. D.; Hanson, R. | 2008 | Decoherence dynamics of a single spin versus spin ensemble | Physical Review B | 77, 245212 | ctl,nv | K
-khaneja2005 | Khaneja, N.; Reiss, T.; Kehlet, C.; Schulte-Herbruggen, T.; Glaser, S. J. | 2005 | Optimal control of coupled spin dynamics: design of NMR pulse sequences by gradient ascent algorithms | Journal of Magnetic Resonance | 172, 296 | ctl | K
-motzoi2009 | Motzoi, F.; Gambetta, J. M.; Rebentrost, P.; Wilhelm, F. K. | 2009 | Simple pulses for elimination of leakage in weakly nonlinear qubits | Physical Review Letters | 103, 110501 | ctl | K
-knill2008 | Knill, E.; Leibfried, D.; Reichle, R.; et al. | 2008 | Randomized benchmarking of quantum gates | Physical Review A | 77, 012307 | ctl | K
-magesan2011 | Magesan, E.; Gambetta, J. M.; Emerson, J. | 2011 | Scalable and robust randomized benchmarking of quantum processes | Physical Review Letters | 106, 180504 | ctl | K
-cross2019 | Cross, A. W.; Bishop, L. S.; Sheldon, S.; Nation, P. D.; Gambetta, J. M. | 2019 | Validating quantum computers using randomized model circuits | Physical Review A | 100, 032328 | ctl | K
-shor1995 | Shor, P. W. | 1995 | Scheme for reducing decoherence in quantum computer memory | Physical Review A | 52, R2493 | ctl | K
-steane1996 | Steane, A. M. | 1996 | Error correcting codes in quantum theory | Physical Review Letters | 77, 793 | ctl | K
+johansson2012 | Johansson, J. R.; Nation, P. D.; Nori, F. | 2012 | QuTiP: an open-source Python framework for the dynamics of open quantum systems | Computer Physics Communications | 183, 1760 | ctl | V
+yang2008 | Yang, W.; Liu, R.-B. | 2008 | Quantum many-body theory of qubit decoherence in a finite-size spin bath | Physical Review B | 78, 085315 | ctl,nv | V
+maze2008prb | Maze, J. R.; Taylor, J. M.; Lukin, M. D. | 2008 | Electron spin decoherence of single nitrogen-vacancy defects in diamond | Physical Review B | 78, 094303 | ctl,nv | V
+dobrovitski2008 | Dobrovitski, V. V.; Feiguin, A. E.; Awschalom, D. D.; Hanson, R. | 2008 | Decoherence dynamics of a single spin versus spin ensemble | Physical Review B | 77, 245212 | ctl,nv | V
+khaneja2005 | Khaneja, N.; Reiss, T.; Kehlet, C.; Schulte-Herbruggen, T.; Glaser, S. J. | 2005 | Optimal control of coupled spin dynamics: design of NMR pulse sequences by gradient ascent algorithms | Journal of Magnetic Resonance | 172, 296 | ctl | V
+motzoi2009 | Motzoi, F.; Gambetta, J. M.; Rebentrost, P.; Wilhelm, F. K. | 2009 | Simple pulses for elimination of leakage in weakly nonlinear qubits | Physical Review Letters | 103, 110501 | ctl | V
+knill2008 | Knill, E.; Leibfried, D.; Reichle, R.; et al. | 2008 | Randomized benchmarking of quantum gates | Physical Review A | 77, 012307 | ctl | V
+magesan2011 | Magesan, E.; Gambetta, J. M.; Emerson, J. | 2011 | Scalable and robust randomized benchmarking of quantum processes | Physical Review Letters | 106, 180504 | ctl | V
+cross2019 | Cross, A. W.; Bishop, L. S.; Sheldon, S.; Nation, P. D.; Gambetta, J. M. | 2019 | Validating quantum computers using randomized model circuits | Physical Review A | 100, 032328 | ctl | V
+shor1995 | Shor, P. W. | 1995 | Scheme for reducing decoherence in quantum computer memory | Physical Review A | 52, R2493 | ctl | V
+steane1996 | Steane, A. M. | 1996 | Error correcting codes in quantum theory | Physical Review Letters | 77, 793 | ctl | V
 gottesman1997 | Gottesman, D. | 1997 | Stabilizer codes and quantum error correction (doctoral thesis) | California Institute of Technology; arXiv | quant-ph/9705052 | ctl | K
-kitaev2003 | Kitaev, A. Yu. | 2003 | Fault-tolerant quantum computation by anyons | Annals of Physics | 303, 2 | ctl | K
-dennis2002 | Dennis, E.; Kitaev, A.; Landahl, A.; Preskill, J. | 2002 | Topological quantum memory | Journal of Mathematical Physics | 43, 4452 | ctl | K
-bravyi2024 | Bravyi, S.; Cross, A. W.; Gambetta, J. M.; et al. | 2024 | High-threshold and low-overhead fault-tolerant quantum memory | Nature | 627, 778 | ctl | K
-shor1997 | Shor, P. W. | 1997 | Polynomial-time algorithms for prime factorization and discrete logarithms on a quantum computer | SIAM Journal on Computing | 26, 1484 | ctl | K
-grover1997 | Grover, L. K. | 1997 | Quantum mechanics helps in searching for a needle in a haystack | Physical Review Letters | 79, 325 | ctl | K
-peruzzo2014 | Peruzzo, A.; McClean, J.; Shadbolt, P.; et al. | 2014 | A variational eigenvalue solver on a photonic quantum processor | Nature Communications | 5, 4213 | ctl | K
-shi2010 | Shi, F.; Rong, X.; Xu, N.; et al. | 2010 | Room-temperature implementation of the Deutsch-Jozsa algorithm with a single electronic spin in diamond | Physical Review Letters | 105, 040504 | ctl,qc | K
-gulka2021 | Gulka, M.; Wirtitsch, D.; Ivady, V.; et al. | 2021 | Room-temperature control and electrical readout of individual nitrogen-vacancy nuclear spins | Nature Communications | 12, 4421 | ctl,qc | K
+kitaev2003 | Kitaev, A. Yu. | 2003 | Fault-tolerant quantum computation by anyons | Annals of Physics | 303, 2 | ctl | V
+dennis2002 | Dennis, E.; Kitaev, A.; Landahl, A.; Preskill, J. | 2002 | Topological quantum memory | Journal of Mathematical Physics | 43, 4452 | ctl | V
+bravyi2024 | Bravyi, S.; Cross, A. W.; Gambetta, J. M.; et al. | 2024 | High-threshold and low-overhead fault-tolerant quantum memory | Nature | 627, 778 | ctl | V
+shor1997 | Shor, P. W. | 1997 | Polynomial-time algorithms for prime factorization and discrete logarithms on a quantum computer | SIAM Journal on Computing | 26, 1484 | ctl | V
+grover1997 | Grover, L. K. | 1997 | Quantum mechanics helps in searching for a needle in a haystack | Physical Review Letters | 79, 325 | ctl | V
+peruzzo2014 | Peruzzo, A.; McClean, J.; Shadbolt, P.; et al. | 2014 | A variational eigenvalue solver on a photonic quantum processor | Nature Communications | 5, 4213 | ctl | V
+shi2010 | Shi, F.; Rong, X.; Xu, N.; et al. | 2010 | Room-temperature implementation of the Deutsch-Jozsa algorithm with a single electronic spin in diamond | Physical Review Letters | 105, 040504 | ctl,qc | V
+gulka2021 | Gulka, M.; Wirtitsch, D.; Ivady, V.; et al. | 2021 | Room-temperature control and electrical readout of individual nitrogen-vacancy nuclear spins | Nature Communications | 12, 4421 | ctl,qc | V
 #
 # ---- Beyond: adjacent platforms and frontier applications ----
-breeze2018 | Breeze, J. D.; Salvadori, E.; Sathian, J.; Alford, N. McN.; Kay, C. W. M. | 2018 | Continuous-wave room-temperature diamond maser | Nature | 555, 493 | bey | K
-choi2017 | Choi, S.; Choi, J.; Landig, R.; et al. | 2017 | Observation of discrete time-crystalline order in a disordered dipolar many-body system | Nature | 543, 221 | bey | K
-zu2021 | Zu, C.; Machado, F.; Ye, B.; et al. | 2021 | Emergent hydrodynamics in a strongly interacting dipolar spin ensemble | Nature | 597, 45 | bey | K
-cai2013 | Cai, J.; Retzker, A.; Jelezko, F.; Plenio, M. B. | 2013 | A large-scale quantum simulator on a diamond surface at room temperature | Nature Physics | 9, 168 | bey,qc | K
-london2013 | London, P.; Scheuer, J.; Cai, J.-M.; et al. | 2013 | Detecting and polarizing nuclear spins with double resonance on a single electron spin | Physical Review Letters | 111, 067601 | bey | K
-king2015 | King, J. P.; Jeong, K.; Vassiliou, C. C.; et al. | 2015 | Room-temperature in situ nuclear spin hyperpolarization from optically pumped nitrogen vacancy centres in diamond | Nature Communications | 6, 8965 | bey | K
-ajoy2018 | Ajoy, A.; Liu, K.; Nazaryan, R.; et al. | 2018 | Orientation-independent room temperature optical 13C hyperpolarization in powdered diamond | Science Advances | 4, eaar5492 | bey | K
-ledbetter2012 | Ledbetter, M. P.; Jensen, K.; Fischer, R.; Jarmola, A.; Budker, D. | 2012 | Gyroscopes based on nitrogen-vacancy centers in diamond | Physical Review A | 86, 052116 | bey,sens | K
-ajoy2012 | Ajoy, A.; Cappellaro, P. | 2012 | Stable three-axis nuclear-spin gyroscope in diamond | Physical Review A | 86, 062104 | bey,sens | K
-koehl2011 | Koehl, W. F.; Buckley, B. B.; Heremans, F. J.; Calusine, G.; Awschalom, D. D. | 2011 | Room temperature coherent control of defect spin qubits in silicon carbide | Nature | 479, 84 | bey | K
-widmann2015 | Widmann, M.; Lee, S.-Y.; Rendler, T.; et al. | 2015 | Coherent control of single spins in silicon carbide at room temperature | Nature Materials | 14, 164 | bey | K
-anderson2022 | Anderson, C. P.; Glen, E. O.; Zeledon, C.; et al. | 2022 | Five-second coherence of a single spin with single-shot readout in silicon carbide | Science Advances | 8, eabm5912 | bey | K
-tran2016 | Tran, T. T.; Bray, K.; Ford, M. J.; Toth, M.; Aharonovich, I. | 2016 | Quantum emission from hexagonal boron nitride monolayers | Nature Nanotechnology | 11, 37 | bey | K
-gottscholl2020 | Gottscholl, A.; Kianinia, M.; Soltamov, V.; et al. | 2020 | Initialization and read-out of intrinsic spin defects in a van der Waals crystal at room temperature | Nature Materials | 19, 540 | bey | K
-ovartchaiyapong2014 | Ovartchaiyapong, P.; Lee, K. W.; Myers, B. A.; Bleszynski Jayich, A. C. | 2014 | Dynamic strain-mediated coupling of a single diamond spin to a mechanical resonator | Nature Communications | 5, 4429 | bey | K
-teissier2014 | Teissier, J.; Barfuss, A.; Appel, P.; Neu, E.; Maletinsky, P. | 2014 | Strain coupling of a nitrogen-vacancy center spin to a diamond mechanical oscillator | Physical Review Letters | 113, 020503 | bey | K
-burek2016 | Burek, M. J.; Cohen, J. D.; Meenehan, S. M.; et al. | 2016 | Diamond optomechanical crystals | Optica | 3, 1404 | bey,net | K
-guo2021 | Guo, X.; Delegan, N.; Karsch, J. C.; et al. | 2021 | Tunable and transferable diamond membranes for integrated quantum technologies | Nano Letters | 21, 10392 | bey,fab | K
+breeze2018 | Breeze, J. D.; Salvadori, E.; Sathian, J.; Alford, N. McN.; Kay, C. W. M. | 2018 | Continuous-wave room-temperature diamond maser | Nature | 555, 493 | bey | V
+choi2017 | Choi, S.; Choi, J.; Landig, R.; et al. | 2017 | Observation of discrete time-crystalline order in a disordered dipolar many-body system | Nature | 543, 221 | bey | V
+zu2021 | Zu, C.; Machado, F.; Ye, B.; et al. | 2021 | Emergent hydrodynamics in a strongly interacting dipolar spin ensemble | Nature | 597, 45 | bey | V
+cai2013 | Cai, J.; Retzker, A.; Jelezko, F.; Plenio, M. B. | 2013 | A large-scale quantum simulator on a diamond surface at room temperature | Nature Physics | 9, 168 | bey,qc | V
+london2013 | London, P.; Scheuer, J.; Cai, J.-M.; et al. | 2013 | Detecting and polarizing nuclear spins with double resonance on a single electron spin | Physical Review Letters | 111, 067601 | bey | V
+king2015 | King, J. P.; Jeong, K.; Vassiliou, C. C.; et al. | 2015 | Room-temperature in situ nuclear spin hyperpolarization from optically pumped nitrogen vacancy centres in diamond | Nature Communications | 6, 8965 | bey | V
+ajoy2018 | Ajoy, A.; Liu, K.; Nazaryan, R.; et al. | 2018 | Orientation-independent room temperature optical 13C hyperpolarization in powdered diamond | Science Advances | 4, eaar5492 | bey | V
+ledbetter2012 | Ledbetter, M. P.; Jensen, K.; Fischer, R.; Jarmola, A.; Budker, D. | 2012 | Gyroscopes based on nitrogen-vacancy centers in diamond | Physical Review A | 86, 052116 | bey,sens | V
+ajoy2012 | Ajoy, A.; Cappellaro, P. | 2012 | Stable three-axis nuclear-spin gyroscope in diamond | Physical Review A | 86, 062104 | bey,sens | V
+koehl2011 | Koehl, W. F.; Buckley, B. B.; Heremans, F. J.; Calusine, G.; Awschalom, D. D. | 2011 | Room temperature coherent control of defect spin qubits in silicon carbide | Nature | 479, 84 | bey | V
+widmann2015 | Widmann, M.; Lee, S.-Y.; Rendler, T.; et al. | 2015 | Coherent control of single spins in silicon carbide at room temperature | Nature Materials | 14, 164 | bey | V
+anderson2022 | Anderson, C. P.; Glen, E. O.; Zeledon, C.; et al. | 2022 | Five-second coherence of a single spin with single-shot readout in silicon carbide | Science Advances | 8, eabm5912 | bey | V
+tran2016 | Tran, T. T.; Bray, K.; Ford, M. J.; Toth, M.; Aharonovich, I. | 2016 | Quantum emission from hexagonal boron nitride monolayers | Nature Nanotechnology | 11, 37 | bey | V
+gottscholl2020 | Gottscholl, A.; Kianinia, M.; Soltamov, V.; et al. | 2020 | Initialization and read-out of intrinsic spin defects in a van der Waals crystal at room temperature | Nature Materials | 19, 540 | bey | V
+ovartchaiyapong2014 | Ovartchaiyapong, P.; Lee, K. W.; Myers, B. A.; Bleszynski Jayich, A. C. | 2014 | Dynamic strain-mediated coupling of a single diamond spin to a mechanical resonator | Nature Communications | 5, 4429 | bey | V
+teissier2014 | Teissier, J.; Barfuss, A.; Appel, P.; Neu, E.; Maletinsky, P. | 2014 | Strain coupling of a nitrogen-vacancy center spin to a diamond mechanical oscillator | Physical Review Letters | 113, 020503 | bey | V
+burek2016 | Burek, M. J.; Cohen, J. D.; Meenehan, S. M.; et al. | 2016 | Diamond optomechanical crystals | Optica | 3, 1404 | bey,net | V
+guo2021 | Guo, X.; Delegan, N.; Karsch, J. C.; et al. | 2021 | Tunable and transferable diamond membranes for integrated quantum technologies | Nano Letters | 21, 10392 | bey,fab | V
 mildren2013 | Mildren, R. P.; Rabeau, J. R. (Eds.) | 2013 | Optical Engineering of Diamond | Wiley-VCH | book | bey,mat | K
-koeck2009 | Koeck, F. A. M.; Nemanich, R. J.; Lazea, A.; Haenen, K. | 2009 | Thermionic electron emission from low work-function phosphorus doped diamond films | Diamond and Related Materials | 18, 789 | bey | K
-hsieh2019 | Hsieh, S.; Bhattacharyya, P.; Zu, C.; et al. | 2019 | Imaging stress and magnetism at high pressures using a nanoscale quantum sensor | Science | 366, 1349 | bey,sens | K
-lesage2013 | Le Sage, D.; Arai, K.; Glenn, D. R.; et al. | 2013 | Optical magnetic imaging of living cells | Nature | 496, 486 | bey,sens | K
-barry2016 | Barry, J. F.; Turner, M. J.; Schloss, J. M.; et al. | 2016 | Optical magnetic detection of single-neuron action potentials using quantum defects in diamond | Proceedings of the National Academy of Sciences | 113, 14133 | bey,sens | K
-staudacher2013 | Staudacher, T.; Shi, F.; Pezzagna, S.; et al. | 2013 | Nuclear magnetic resonance spectroscopy on a (5-nanometer)^3 sample volume | Science | 339, 561 | bey,sens | K
-mamin2013 | Mamin, H. J.; Kim, M.; Sherwood, M. H.; et al. | 2013 | Nanoscale nuclear magnetic resonance with a nitrogen-vacancy spin sensor | Science | 339, 557 | bey,sens | K
-lovchinsky2016 | Lovchinsky, I.; Sushkov, A. O.; Urbach, E.; et al. | 2016 | Nuclear magnetic resonance detection and spectroscopy of single proteins using quantum logic | Science | 351, 836 | bey,sens | K
-aslam2017 | Aslam, N.; Pfender, M.; Neumann, P.; et al. | 2017 | Nanoscale nuclear magnetic resonance with chemical resolution | Science | 357, 67 | bey,sens | K
-kimble2008 | Kimble, H. J. | 2008 | The quantum internet | Nature | 453, 1023 | bey,net | K
-wehner2018 | Wehner, S.; Elkouss, D.; Hanson, R. | 2018 | Quantum internet: a vision for the road ahead | Science | 362, eaam9288 | bey,net | K
-briegel1998 | Briegel, H.-J.; Dur, W.; Cirac, J. I.; Zoller, P. | 1998 | Quantum repeaters: the role of imperfect local operations in quantum communication | Physical Review Letters | 81, 5932 | bey,net | K
-bennett1993 | Bennett, C. H.; Brassard, G.; Crepeau, C.; Jozsa, R.; Peres, A.; Wootters, W. K. | 1993 | Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels | Physical Review Letters | 70, 1895 | bey,net | K
+koeck2009 | Koeck, F. A. M.; Nemanich, R. J.; Lazea, A.; Haenen, K. | 2009 | Thermionic electron emission from low work-function phosphorus doped diamond films | Diamond and Related Materials | 18, 789 | bey | V
+hsieh2019 | Hsieh, S.; Bhattacharyya, P.; Zu, C.; et al. | 2019 | Imaging stress and magnetism at high pressures using a nanoscale quantum sensor | Science | 366, 1349 | bey,sens | V
+lesage2013 | Le Sage, D.; Arai, K.; Glenn, D. R.; et al. | 2013 | Optical magnetic imaging of living cells | Nature | 496, 486 | bey,sens | V
+barry2016 | Barry, J. F.; Turner, M. J.; Schloss, J. M.; et al. | 2016 | Optical magnetic detection of single-neuron action potentials using quantum defects in diamond | Proceedings of the National Academy of Sciences | 113, 14133 | bey,sens | V
+staudacher2013 | Staudacher, T.; Shi, F.; Pezzagna, S.; et al. | 2013 | Nuclear magnetic resonance spectroscopy on a (5-nanometer)^3 sample volume | Science | 339, 561 | bey,sens | V
+mamin2013 | Mamin, H. J.; Kim, M.; Sherwood, M. H.; et al. | 2013 | Nanoscale nuclear magnetic resonance with a nitrogen-vacancy spin sensor | Science | 339, 557 | bey,sens | V
+lovchinsky2016 | Lovchinsky, I.; Sushkov, A. O.; Urbach, E.; et al. | 2016 | Nuclear magnetic resonance detection and spectroscopy of single proteins using quantum logic | Science | 351, 836 | bey,sens | V
+aslam2017 | Aslam, N.; Pfender, M.; Neumann, P.; et al. | 2017 | Nanoscale nuclear magnetic resonance with chemical resolution | Science | 357, 67 | bey,sens | V
+kimble2008 | Kimble, H. J. | 2008 | The quantum internet | Nature | 453, 1023 | bey,net | V
+wehner2018 | Wehner, S.; Elkouss, D.; Hanson, R. | 2018 | Quantum internet: a vision for the road ahead | Science | 362, eaam9288 | bey,net | V
+briegel1998 | Briegel, H.-J.; Dur, W.; Cirac, J. I.; Zoller, P. | 1998 | Quantum repeaters: the role of imperfect local operations in quantum communication | Physical Review Letters | 81, 5932 | bey,net | V
+bennett1993 | Bennett, C. H.; Brassard, G.; Crepeau, C.; Jozsa, R.; Peres, A.; Wootters, W. K. | 1993 | Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels | Physical Review Letters | 70, 1895 | bey,net | V

@@ -218,7 +218,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 30 tests, including the citation check
+python -m pytest -q                     # 32 tests, including the citation check
 make spice rtl synth                    # ngspice ring oscillator; DIA-4 processor simulation and synthesis
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
