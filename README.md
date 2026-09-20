@@ -172,7 +172,7 @@ flowchart LR
 |---|---|---|
 | E1 | [Patterning diamond: extreme ultraviolet (EUV) to electron beam](docs/expert/E1_lithography_from_euv_to_electron_beam.md) | EUV scanners are 300 mm-only and leave 45 to 124 nm of focus depth, so diamond needs co-planar carriers; the one layer that truly needs EUV-class resolution is the qubit implant mask |
 | E2 | [Process integration and a process design kit (PDK)](docs/expert/E2_process_integration_and_pdk.md) | A six-mask "PDK-0" with monitor structures, a compact-model ladder, and an open-source flow |
-| E3 | [Digital and processor design](docs/expert/E3_digital_and_cpu_design.md) | **DIA-4**, a working 4-bit processor synthesized to 897 diamond transistors; static power caps single-polarity diamond logic near 10⁴ gates |
+| E3 | [Digital and processor design](docs/expert/E3_digital_and_cpu_design.md) | **DIA-4**, a working 4-bit processor synthesized to 830 to 900 diamond transistors; static power caps single-polarity diamond logic near 10⁴ gates |
 | E4 | [Analog and mixed signal](docs/expert/E4_analog_and_mixed_signal_design.md) | Threshold-difference references replace bandgaps; the picoampere qubit-readout noise budget |
 | E5 | [NV qubit engineering](docs/expert/E5_nv_qubit_engineering.md) | Lindblad gate model tightens the spacing rule to about 12 nm; bath and decoupling models reproduce published $T_2^{*}$ and $T_2$ |
 | E6 | [Error correction and architecture](docs/expert/E6_error_correction_and_system_architecture.md) | 145 NV cells per logical qubit at 10⁻³ error; link fidelity matters more than qubit count |

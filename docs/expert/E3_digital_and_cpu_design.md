@@ -59,8 +59,8 @@ Gate counts marked "about" are recalled from the papers and should be re-verifie
 | Step | Result |
 |---|---|
 | Behavioral simulation | PASS (countdown program) |
-| Synthesis to `adamas_ed.lib` | 220 cells: 13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3 |
-| Transistor count | **897** (39 percent of a 4004) |
+| Synthesis to `adamas_ed.lib` | 190 to 220 cells (varies with Yosys version): 13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3 |
+| Transistor count | **830 to 900** (39 percent of a 4004) |
 | Gate-level simulation of the synthesized netlist | PASS |
 | Estimate at 2 µm gates (about 311 gate-equivalents) | 2.4 MHz clock, 0.13 W |
 | Estimate at 0.5 µm gates | 31 MHz, 0.13 W (optimistic: no velocity saturation) |
