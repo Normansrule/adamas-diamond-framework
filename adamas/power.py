@@ -11,7 +11,19 @@ import math
 from .materials import Material, permittivity_f_cm
 
 # Measured lateral diamond MOSFET on a 2-inch-class heteroepitaxial wafer [saha2021]:
-MEASURED_DIAMOND = {"saha2021": {"bv_v": 2608.0, "ron_mohm_cm2": 19.74}}
+# Measured lateral NO2-doped diamond MOSFETs from one group, on heteroepitaxial wafers. Baliga figure of merit = BV^2 / R_on,sp.
+#   saha2021: 2608 V, 345 MW/cm^2                                      [saha2021]
+#   saha2022: 2568 V, 7.54 mOhm cm^2, 874.6 MW/cm^2 (polished surface) [saha2022]; numbers as reported in [kasu2022talk]
+#   saha2023: 3659 V, 173 MW/cm^2; R_on,sp derived here as BV^2 / BFOM [saha2023]
+MEASURED_DIAMOND = {
+    "saha2021": {"bv_v": 2608.0, "ron_mohm_cm2": 19.74},
+    "saha2022": {"bv_v": 2568.0, "ron_mohm_cm2": 7.54},
+    "saha2023": {"bv_v": 3659.0, "ron_mohm_cm2": 3659.0 ** 2 / 173e6 * 1e3},
+}
+
+
+def bfom_mw_cm2(bv_v: float, ron_mohm_cm2: float) -> float:
+    return bv_v ** 2 / (ron_mohm_cm2 * 1e-3) / 1e6
 
 
 def ron_sp_mohm_cm2(m: Material, bv_v: float, carrier: str = "n") -> float:

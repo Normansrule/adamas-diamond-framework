@@ -1,4 +1,4 @@
-"""Expert-track figures (17 to 25). Same rule as adamas.figures: every plotted number or equation carries a [bibkey]."""
+"""Expert-track figures (17 to 26). Same rule as adamas.figures: every plotted number or equation carries a [bibkey]."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from . import analog, coupling, digital, litho, opensys, qec
+from . import analog, coupling, digital, gate_budget, litho, opensys, qec
 from .figures import COLORS, GOLD, GREEN, INK, RED, _finish
 
 
@@ -214,8 +214,44 @@ def fig_stack_map(out: Path) -> Path:
     return _finish(fig, out, "fig25_length_scales.png", "[e6orbray2026] [liu2017] [chen2017] [dolde2013] [asmleuv2026] [pezzagna2010] [wort2008]")
 
 
+def fig_gate_budget(out: Path) -> Path:
+    r = np.linspace(6, 40, 60)
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 4.8))
+    ax = axes[0]
+    ax.plot(r, [opensys.cz_gate_fidelity(x, 0.6) for x in r], color=COLORS["Si"], lw=2.2, ls="--",
+            label="Markovian (Lindblad), T₂ = 0.6 ms: pessimistic")
+    ax.plot(r, [gate_budget.GateBudget(x, t2_us=600).fidelity for x in r], color=COLORS["Diamond"], lw=2.6,
+            label="Slow bath + echo, T₂ = 0.6 ms")
+    ax.plot(r, [gate_budget.GateBudget(x, t2_us=600, double_quantum=True).fidelity for x in r], color=RED, lw=2.6,
+            label="Same, double-quantum encoding (4× coupling)")
+    ax.plot(r, [gate_budget.GateBudget(x, echo=False).fidelity for x in r], color=INK, lw=1.4, ls=":",
+            label="No echo, T₂* = 30 µs")
+    ax.axhline(0.99, color=INK, ls=":", lw=1)
+    ax.set_ylim(0.0, 1.01)
+    ax.set_xlabel("Distance between NV centers (nm)")
+    ax.set_ylabel("Gate fidelity (perfect preparation and pulses)")
+    ax.set_title("Echoed gate: coherence is no longer the bottleneck", fontsize=11)
+    ax.legend(fontsize=8.5, loc="lower left")
+    ax.grid(True, alpha=0.15)
+    ax = axes[1]
+    q = np.linspace(0.5, 1.0, 90)
+    eps = np.linspace(0.0, 0.05, 90)
+    z = np.array([[gate_budget.GateBudget(25.0, t2_us=600, q_prep=a, pulse_error=e).fidelity for a in q] for e in eps])
+    im = ax.contourf(q, eps * 100, z, levels=np.linspace(0.25, 1.0, 16), cmap="viridis")
+    cs = ax.contour(q, eps * 100, z, levels=[0.67, 0.82, 0.99], colors=["white", "white", GOLD], linewidths=2)
+    ax.clabel(cs, fmt={0.67: "0.67 [dolde2013]", 0.82: "0.82 [dolde2014]", 0.99: "0.99"}, fontsize=8.5)
+    ax.axvspan(0.70, 0.75, color=RED, alpha=0.25)
+    ax.text(0.725, 4.6, "NV⁻ fraction under\ngreen light [aslam2013]", ha="center", va="top", fontsize=8.5, color="white")
+    ax.set_xlabel("Per-NV preparation probability q (charge state × spin polarization)")
+    ax.set_ylabel("Error per pulse (%)")
+    ax.set_title("At 25 nm: which imperfections give 0.67 and 0.82?", fontsize=11)
+    fig.colorbar(im, ax=ax, label="Gate fidelity")
+    return _finish(fig, out, "fig26_gate_error_budget.png",
+                   "[dolde2013] [dolde2014] [aslam2013] [mizuochi2009] [delange2010] [neumann2010natphys]; adamas.gate_budget model")
+
+
 ALL = [fig_litho_tools, fig_litho_stochastics, fig_processor_landscape, fig_logic_scaling, fig_analog, fig_lindblad,
-       fig_bath_and_dd, fig_qec, fig_stack_map]
+       fig_bath_and_dd, fig_qec, fig_stack_map, fig_gate_budget]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

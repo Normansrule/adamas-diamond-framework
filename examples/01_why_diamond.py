@@ -16,4 +16,5 @@ bv = 2608.0
 print(f"\nIdeal specific on-resistance at {bv:.0f} V (milliohm cm^2):")
 for key, m in materials.MATERIALS.items():
     print(f"  {key:8s} {power.ron_sp_mohm_cm2(m, bv, 'p' if key == 'Diamond' else 'n'):10.4f}")
-print("  measured diamond MOSFET [saha2021]:", power.MEASURED_DIAMOND["saha2021"]["ron_mohm_cm2"])
+for key, pt in power.MEASURED_DIAMOND.items():
+    print(f"  measured diamond MOSFET [{key}]: {pt['ron_mohm_cm2']:.2f} at {pt['bv_v']:.0f} V")

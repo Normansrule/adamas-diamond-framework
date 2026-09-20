@@ -7,7 +7,7 @@
 mack2007 | Mack, C. A. | 2007 | Fundamental Principles of Optical Lithography: The Science of Microfabrication | Wiley | book | lit | K
 levinson2019 | Levinson, H. J. | 2019 | Principles of Lithography (4th ed.) | SPIE Press | book | lit | K
 bakshi2018 | Bakshi, V. (Ed.) | 2018 | EUV Lithography (2nd ed.) | SPIE Press | book | lit | K
-wagner2010 | Wagner, C.; Harned, N. | 2010 | EUV lithography: lithography gets extreme | Nature Photonics | 4, 24 | lit | K
+wagner2010 | Wagner, C.; Harned, N. | 2010 | Lithography gets extreme | Nature Photonics | 4, 24 | lit | V
 fomenkov2017 | Fomenkov, I.; Brandt, D.; Ershov, A.; et al. | 2017 | Light sources for high-volume manufacturing EUV lithography: technology, performance, and power scaling | Advanced Optical Technologies | 6, 173 | lit | V
 vanschoot2017 | van Schoot, J.; Troost, K.; Bornebroek, F.; et al. | 2017 | High-numerical aperture extreme ultraviolet scanner for 8-nm lithography and beyond | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041010 | lit | V
 debisschop2017 | De Bisschop, P. | 2017 | Stochastic effects in EUV lithography: random, local CD variability, and printing failures | Journal of Micro/Nanolithography, MEMS, and MOEMS | 16(4), 041013 | lit | V
@@ -42,7 +42,7 @@ sutherland1999 | Sutherland, I.; Sproull, B.; Harris, D. | 1999 | Logical Effort
 patterson2017 | Patterson, D. A.; Hennessy, J. L. | 2017 | Computer Organization and Design RISC-V Edition: The Hardware Software Interface | Morgan Kaufmann | book | eda | K
 waterman2019 | Waterman, A.; Asanovic, K. (Eds.) | 2019 | The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA, Document Version 20191213 | RISC-V Foundation | report | eda | K
 wolf2013 | Wolf, C.; Glaser, J.; Kepler, J. | 2013 | Yosys - a free Verilog synthesis suite | Proceedings of the 21st Austrian Workshop on Microelectronics (Austrochip) | conference paper | eda | K
-ajayi2019 | Ajayi, T.; Chhabria, V. A.; Fogaca, M.; et al. | 2019 | Toward an open-source digital flow: first learnings from the OpenROAD project | Proceedings of the 56th Design Automation Conference (DAC) | article 76 | eda | K
+ajayi2019 | Ajayi, T.; Chhabria, V. A.; Fogaca, M.; et al. | 2019 | Toward an open-source digital flow: first learnings from the OpenROAD project | Proceedings of the 56th Design Automation Conference (DAC) | article 76 | eda | V
 shalan2020 | Shalan, M.; Edwards, T. | 2020 | Building OpenLANE: a 130nm OpenROAD-based tapeout-proven flow | Proceedings of the International Conference on Computer-Aided Design (ICCAD) | invited paper | eda | K
 faggin1996 | Faggin, F.; Hoff, M. E.; Mazor, S.; Shima, M. | 1996 | The history of the 4004 | IEEE Micro | 16(6), 10 | eda,si | V
 faggin1970 | Faggin, F.; Klein, T. | 1970 | Silicon gate technology | Solid-State Electronics | 13, 1125 | eda,si | V

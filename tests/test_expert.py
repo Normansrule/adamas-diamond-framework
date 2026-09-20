@@ -91,3 +91,29 @@ def test_ring_oscillator_runs():
                          capture_output=True, text=True).stdout
     period = [l for l in out.splitlines() if l.startswith("period")]
     assert period and 5e-9 < float(period[0].split("=")[1].split()[0]) < 1e-7
+
+
+def test_gate_budget_limits_and_closed_form():
+    from adamas.gate_budget import GateBudget, required_t2_us
+    perfect = GateBudget(10.0, t2star_us=1e9, t2_us=1e9)
+    assert math.isclose(perfect.fidelity, 1.0, abs_tol=1e-12)
+    assert math.isclose(GateBudget(25.0, echo=False, t2star_us=1.0).fidelity, 0.25, abs_tol=1e-6)      # fully dephased
+    assert math.isclose(GateBudget(25.0, q_prep=0.0).fidelity, 0.25, abs_tol=1e-12)                      # never prepared
+    g = GateBudget(25.0)
+    assert math.isclose(g.fidelity, (1 + g.w) ** 2 / 4, rel_tol=1e-12)
+    assert GateBudget(25.0, double_quantum=True).t_gate_us == g.t_gate_us / 4
+    assert GateBudget(25.0, double_quantum=True).fidelity > g.fidelity
+    assert required_t2_us(25, 0.99) > required_t2_us(10, 0.99)
+    parts = GateBudget(25.0, q_prep=0.85, pulse_error=0.01).breakdown()
+    assert math.isclose(1 - parts["total_fidelity"], parts["dephasing"] + parts["pulses"] + parts["preparation"], rel_tol=1e-9)
+
+
+def test_gate_budget_matches_lindblad_for_pure_dephasing_form():
+    # for diagonal noise the closed form F = (1 + w)^2 / 4 must agree with the master-equation result
+    import numpy as np
+    from adamas import opensys
+    from adamas.coupling import dipolar_coupling_khz
+    r, t2_ms = 20.0, 1.0
+    t_gate_us = 1e3 / (2 * float(dipolar_coupling_khz(r)))
+    w = np.exp(-t_gate_us / (t2_ms * 1e3))
+    assert math.isclose(opensys.cz_gate_fidelity(r, t2_ms, t1_ms=1e9), (1 + w) ** 2 / 4, rel_tol=1e-6)

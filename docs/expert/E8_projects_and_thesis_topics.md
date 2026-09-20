@@ -11,7 +11,7 @@ flowchart LR
 
 | Stage | ID | Project | Scope | Needs | Where specified |
 |---|---|---|---|---|---|
-| Wafer | S-1 | Reproduce all 25 figures and the test suite | W | Laptop | README |
+| Wafer | S-1 | Reproduce all 26 figures and the test suite | W | Laptop | README |
 | Wafer | L-1 | Flatness and bow statistics of commercial diamond plates | C | Optical profiler | [E1](E1_lithography_from_euv_to_electron_beam.md) |
 | Wafer | F-3 | (111) ¹²C phosphorus-doped quantum epilayer on heteroepitaxial wafer | G | Growth partner | [Ch. 11](../11_proposed_experiments_and_roadmap.md) |
 | Lithography | L-2 | Electron-beam proximity function on diamond versus silicon | C/T | Electron-beam tool | E1 |

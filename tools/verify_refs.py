@@ -57,6 +57,10 @@ def compare(ref, hit: dict) -> tuple[bool, float, list[str]]:
     theirs_title = (hit.get("title") or [""])[0]
     sim = max(difflib.SequenceMatcher(None, _norm(ref.title), _norm(theirs_title)).ratio(),
               difflib.SequenceMatcher(None, _squash(ref.title), _squash(theirs_title)).ratio())
+    a, b = _norm(ref.title), _norm(theirs_title)
+    shorter, longer = sorted((a, b), key=len)
+    if len(shorter.split()) >= 3 and longer.startswith(shorter):
+        sim = max(sim, 0.90)                 # publishers often deposit the main title without its subtitle
     if sim <= 0.85:
         problems.append("title differs")
     year = _year(hit)

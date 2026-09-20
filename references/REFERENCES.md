@@ -1,6 +1,6 @@
 # References
 
-**466 references.** 435 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 420 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**470 references.** 441 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 425 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -115,7 +115,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[verona2016]`** Verona, C.; Ciccognani, W.; Colangeli, S.; et al. (2016). Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators. *Journal of Applied Physics*, 120, 025104. [doi:10.1063/1.4955469](https://doi.org/10.1063/1.4955469)
 - ✅ **`[crawford2021]`** Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. (2021). Surface transfer doping of diamond: a review. *Progress in Surface Science*, 96, 100613. [doi:10.1016/j.progsurf.2021.100613](https://doi.org/10.1016/j.progsurf.2021.100613)
 
-## Devices and circuits (39)
+## Devices and circuits (42)
 
 - ✅ **`[kawarada1994]`** Kawarada, H.; Aoki, M.; Ito, M. (1994). Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds. *Applied Physics Letters*, 65, 1563. [doi:10.1063/1.112915](https://doi.org/10.1063/1.112915)
 - ✅ **`[aleksov2003]`** Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. (2003). Diamond field effect transistors - concepts and challenges. *Diamond and Related Materials*, 12, 391. [doi:10.1016/s0925-9635(02)00401-6](https://doi.org/10.1016/s0925-9635(02)00401-6)
@@ -151,7 +151,10 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[saha2020]`** Saha, N. C.; Oishi, T.; Kim, S.-W.; Kawamata, Y.; Koyama, K.; Kasu, M. (2020). 145-MW/cm2 heteroepitaxial diamond MOSFETs with NO2 p-type doping and an Al2O3 passivation layer. *IEEE Electron Device Letters*, 41, 1066.
 - ✅ **`[ibrahim2021]`** Ibrahim, M. I.; Foy, C.; Englund, D. R.; Han, R. (2021). High-scalability CMOS quantum magnetometer with spin-state excitation and detection of diamond color centers. *IEEE Journal of Solid-State Circuits*, 56, 1001. [doi:10.1109/jssc.2020.3027056](https://doi.org/10.1109/jssc.2020.3027056)
 - ✅ **`[saha2021]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kawamata, Y.; Koyama, K.; Kasu, M. (2021). 345-MW/cm2 2608-V NO2 p-type doped diamond MOSFETs with an Al2O3 passivation overlayer on heteroepitaxial diamond. *IEEE Electron Device Letters*, 42, 903. [doi:10.1109/led.2021.3075687](https://doi.org/10.1109/led.2021.3075687)
+- ✅ **`[saha2022]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. (2022). 875-MW/cm2 low-resistance NO2 p-type doped chemical mechanical planarized diamond MOSFETs. *IEEE Electron Device Letters*, 43, 777. [doi:10.1109/led.2022.3164603](https://doi.org/10.1109/led.2022.3164603)
+- ✅ **`[saha2022mod]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. (2022). 3326-V modulation-doped diamond MOSFETs. *IEEE Electron Device Letters*, 43, 1303. [doi:10.1109/led.2022.3181444](https://doi.org/10.1109/led.2022.3181444)
 - ✅ **`[sasama2022]`** Sasama, Y.; Kageura, T.; Imura, M.; et al. (2022). High-mobility p-channel wide-bandgap transistors based on hydrogen-terminated diamond/hexagonal boron nitride heterostructures. *Nature Electronics*, 5, 37. [doi:10.1038/s41928-021-00689-4](https://doi.org/10.1038/s41928-021-00689-4)
+- ✅ **`[saha2023]`** Saha, N. C.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. (2023). 3659-V NO2 p-type doped diamond MOSFETs on misoriented heteroepitaxial diamond substrates. *IEEE Electron Device Letters*, 44, 112. [doi:10.1109/led.2022.3226426](https://doi.org/10.1109/led.2022.3226426)
 - ✅ **`[liao2024]`** Liao, M.; Sun, H.; Koizumi, S. (2024). High-temperature and high-electron mobility metal-oxide-semiconductor field-effect transistors based on n-type diamond. *Advanced Science*, 11(13), 2306013. [doi:10.1002/advs.202306013](https://doi.org/10.1002/advs.202306013)
 - ✅ **`[zhao2024]`** Zhao, W.; Koizumi, S.; Liao, M. (2024). P-channel MOSFETs on phosphorous-doped n-type diamond. *IEEE Electron Device Letters*, 45(12), 2268. [doi:10.1109/led.2024.3485683](https://doi.org/10.1109/led.2024.3485683)
 - ✅ **`[chu2025]`** Chu, C.; Yang, S.; et al. (2025). GaN/diamond complementary power circuit (reported via Power Electronics Magazine; original: 71st IEEE International Electron Devices Meeting). *IEEE IEDM Technical Digest*, p. 26.8.1.
@@ -370,8 +373,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[li2024]`** Li, L.; De Santis, L.; Harris, I. B. W.; et al. (2024). Heterogeneous integration of spin-photon interfaces with a CMOS platform. *Nature*, 630, 70. [doi:10.1038/s41586-024-07371-7](https://doi.org/10.1038/s41586-024-07371-7)
 - ✅ **`[stolk2024]`** Stolk, A. J.; van der Enden, K. L.; Slater, M.-C.; et al. (2024). Metropolitan-scale heralded entanglement of solid-state qubits. *Science Advances*, 10, eadp6442. [doi:10.1126/sciadv.adp6442](https://doi.org/10.1126/sciadv.adp6442)
 
-## Industry and news (2025-2026) (8)
+## Industry and news (2025-2026) (9)
 
+- ✅ **`[kasu2022talk]`** Kasu, M. (2022). 2-inch diamond wafer growth and high-power diamond MOSFET fabrication (seminar abstract reporting 2568 V, 7.54 mOhm cm2, 874.6 MW/cm2). *MIT.nano seminar series*, 29 November 2022.
 - ✅ **`[olcf2025]`** Oak Ridge Leadership Computing Facility (2025). Q&A: Inside Quantum Brilliance's quantum computer technology. *OLCF news*, 2 September 2025.
 - ✅ **`[e6orbray2026]`** Semiconductor Today (2026). Element Six and Orbray accelerate wafer-scale single-crystal diamond for volume production. *Semiconductor Today (news)*, 16 June 2026.
 - ✅ **`[ookuma2026]`** Jiji Press (2026). Diamond semiconductor plant completed in northeastern Japan. *Jiji Press (news)*, 29 May 2026.
@@ -404,7 +408,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[mack2007]`** Mack, C. A. (2007). Fundamental Principles of Optical Lithography: The Science of Microfabrication. *Wiley*.
 - ✅ **`[grigorescu2009]`** Grigorescu, A. E.; Hagen, C. W. (2009). Resists for sub-20-nm electron beam lithography with a focus on HSQ: state of the art. *Nanotechnology*, 20, 292001. [doi:10.1088/0957-4484/20/29/292001](https://doi.org/10.1088/0957-4484/20/29/292001)
 - ✅ **`[kozawa2010]`** Kozawa, T.; Tagawa, S. (2010). Radiation chemistry in chemically amplified resists. *Japanese Journal of Applied Physics*, 49, 030001. [doi:10.1143/jjap.49.030001](https://doi.org/10.1143/jjap.49.030001)
-- 📚 **`[wagner2010]`** Wagner, C.; Harned, N. (2010). EUV lithography: lithography gets extreme. *Nature Photonics*, 4, 24.
+- ✅ **`[wagner2010]`** Wagner, C.; Harned, N. (2010). Lithography gets extreme. *Nature Photonics*, 4, 24. [doi:10.1038/nphoton.2009.251](https://doi.org/10.1038/nphoton.2009.251)
 - ✅ **`[fuechsle2012]`** Fuechsle, M.; Miwa, J. A.; Mahapatra, S.; et al. (2012). A single-atom transistor. *Nature Nanotechnology*, 7, 242. [doi:10.1038/nnano.2012.21](https://doi.org/10.1038/nnano.2012.21)
 - ✅ **`[manfrinato2013]`** Manfrinato, V. R.; Zhang, L.; Su, D.; et al. (2013). Resolution limits of electron-beam lithography toward the atomic scale. *Nano Letters*, 13, 1555. [doi:10.1021/nl304715p](https://doi.org/10.1021/nl304715p)
 - ✅ **`[khanaliloo2015]`** Khanaliloo, B.; Mitchell, M.; Hryciw, A. C.; Barclay, P. E. (2015). High-Q/V monolithic diamond microdisks fabricated with quasi-isotropic etching. *Nano Letters*, 15, 5131. [doi:10.1021/acs.nanolett.5b01346](https://doi.org/10.1021/acs.nanolett.5b01346)
@@ -433,7 +437,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[shulaker2013]`** Shulaker, M. M.; Hills, G.; Patil, N.; et al. (2013). Carbon nanotube computer. *Nature*, 501, 526. [doi:10.1038/nature12502](https://doi.org/10.1038/nature12502)
 - 📚 **`[wolf2013]`** Wolf, C.; Glaser, J.; Kepler, J. (2013). Yosys - a free Verilog synthesis suite. *Proceedings of the 21st Austrian Workshop on Microelectronics (Austrochip)*, conference paper.
 - 📚 **`[patterson2017]`** Patterson, D. A.; Hennessy, J. L. (2017). Computer Organization and Design RISC-V Edition: The Hardware Software Interface. *Morgan Kaufmann*.
-- 📚 **`[ajayi2019]`** Ajayi, T.; Chhabria, V. A.; Fogaca, M.; et al. (2019). Toward an open-source digital flow: first learnings from the OpenROAD project. *Proceedings of the 56th Design Automation Conference (DAC)*, article 76.
+- ✅ **`[ajayi2019]`** Ajayi, T.; Chhabria, V. A.; Fogaca, M.; et al. (2019). Toward an open-source digital flow: first learnings from the OpenROAD project. *Proceedings of the 56th Design Automation Conference (DAC)*, article 76. [doi:10.1145/3316781.3326334](https://doi.org/10.1145/3316781.3326334)
 - ✅ **`[hills2019]`** Hills, G.; Lau, C.; Wright, A.; et al. (2019). Modern microprocessor built from complementary carbon nanotube transistors. *Nature*, 572, 595. [doi:10.1038/s41586-019-1493-8](https://doi.org/10.1038/s41586-019-1493-8)
 - ✅ **`[neudeck2019]`** Neudeck, P. G.; Spry, D. J.; Krasowski, M. J.; et al. (2019). Operational testing of 4H-SiC JFET ICs for 60 days directly exposed to Venus surface atmospheric conditions. *IEEE Journal of the Electron Devices Society*, 7, 100. [doi:10.1109/jeds.2018.2882693](https://doi.org/10.1109/jeds.2018.2882693)
 - 📚 **`[waterman2019]`** Waterman, A.; Asanovic, K. (Eds.) (2019). The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA, Document Version 20191213. *RISC-V Foundation*.

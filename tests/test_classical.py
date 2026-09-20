@@ -30,6 +30,8 @@ def test_on_resistance_scaling_and_measured_point():
     ideal = power.ron_sp_mohm_cm2(c, 2608, "p")
     measured = power.MEASURED_DIAMOND["saha2021"]["ron_mohm_cm2"]
     assert ideal < measured < power.ron_sp_mohm_cm2(si, 2608)
+    for key, bfom in {"saha2021": 345, "saha2022": 875, "saha2023": 173}.items():      # reported figures of merit, MW/cm^2
+        assert math.isclose(power.bfom_mw_cm2(**power.MEASURED_DIAMOND[key]), bfom, rel_tol=0.01)
 
 
 def test_transit_frequency():

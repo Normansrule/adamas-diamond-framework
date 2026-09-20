@@ -21,7 +21,39 @@ Two electron-spin qubits with $H = 2\pi\nu_{dd}|11\rangle\langle 11|$, $\nu_{dd}
 
 ![Lindblad gate simulation](../img/fig22_lindblad_gate.png)
 
-**Reading the result.** Both spins dephase, so the true ceiling is lower than the earlier bound. The measured 0.67 [dolde2013] and 0.82 [dolde2014] at 25 nm lie below even this curve; plausible contributors that this model omits are the shorter coherence of that sample, imperfect charge-state and spin initialization ([aslam2013]), and accumulated pulse error over a long sequence. The design rule tightens: **99 percent needs spacing at or below about 12 nm, in ¹²C material, with the gate embedded in a decoupling sequence.** Coherence inputs: [balasubramanian2009], [herbschleb2019], [jarmola2012].
+**Reading the result.** Both spins dephase, so the true ceiling is lower than the earlier bound. The measured 0.67 [dolde2013] and 0.82 [dolde2014] at 25 nm lie below even this curve; plausible contributors that this model omits are the shorter coherence of that sample, imperfect charge-state and spin initialization ([aslam2013]), and accumulated pulse error over a long sequence. Under this memoryless-noise assumption, 99 percent needs spacing at or below about 12 nm in ¹²C material. Section E5.1b shows that assumption is pessimistic for an echoed gate. Coherence inputs: [balasubramanian2009], [herbschleb2019], [jarmola2012].
+
+### E5.1b Beyond the Markov approximation: an error budget (project Q-1, done)
+
+The master equation above assumes memoryless noise, which gives exponential decay. NV dephasing is dominated by a *slow* nuclear bath: coherence falls as $e^{-(t/T_2^*)^2}$ in free evolution and as $e^{-(t/T_2)^3}$ under an echo ([delange2010], [maze2008prb], [dobrovitski2008]). That changes the design conclusions, so `adamas.gate_budget` models the gate the way it is run in practice.
+
+**Echoed gate.** Write $|11\rangle\langle11| = (1 - Z_1 - Z_2 + Z_1Z_2)/4$. A simultaneous π pulse on both spins at half time [hahn1950] reverses every single-spin $Z$ term, including quasi-static detuning, and leaves $Z_1Z_2$ untouched. The result equals a controlled-phase gate up to local rotations, in the same time $t_g = 1/(2\nu_{dd})$.
+
+**Closed form.** For independent diagonal noise with single-spin coherence factors $w_1, w_2$, the fidelity of $\mathrm{CZ}|{+}{+}\rangle$ is exactly
+
+$$F_{coh} = \frac{(1+w_1)(1+w_2)}{4}$$
+
+(the test suite checks this against the Lindblad solver to six digits). Adding per-NV preparation probability $q$ (negative charge state times spin polarization; a failed preparation is taken as a fully mixed state) and an error $\epsilon$ on each of $n$ pulses:
+
+$$F = q^2 (1-\epsilon)^n F_{coh} + \frac{1-q^2}{4}$$
+
+**Double-quantum encoding.** Using $|{+1}\rangle, |{-1}\rangle$ as the qubit on both centers quadruples the coupling and doubles the magnetic-noise sensitivity, a technique used in NV–NV coupling experiments ([neumann2010natphys], [dolde2013]).
+
+![Gate error budget](../img/fig26_gate_error_budget.png)
+
+| Echo $T_2$ needed for fidelity | 0.90 | 0.99 | 0.999 |
+|---|---|---|---|
+| 10 nm spacing | 20 µs | 44 µs | 96 µs |
+| 15 nm | 68 µs | 150 µs | 324 µs |
+| 25 nm | 315 µs | 695 µs | 1.5 ms |
+| 25 nm, double quantum | 125 µs | 276 µs | 595 µs |
+
+**What this changes.**
+
+1. The Markov model is a pessimistic bound. With an echoed gate, natural-abundance coherence (0.6 ms [mizuochi2009]) already permits 0.98 at 25 nm, and ¹²C material (1.8 ms [balasubramanian2009]) permits 0.999. The spacing rule relaxes from "12 nm" to "**25 nm is enough for coherence**," which is a large relief for the placement problem of [Chapter 7](../07_nv_fabrication_and_placement.md).
+2. The bottleneck moves to **preparation and pulses**. Under green illumination the NV⁻ fraction is about 0.70 to 0.75 [aslam2013]. Without charge-state post-selection, $q \le 0.75$ caps the fidelity near 0.67 by itself, even with perfect coherence and pulses. The right panel shows every $(q, \epsilon)$ pair consistent with the reported 0.67 [dolde2013] and 0.82 [dolde2014].
+3. This is a consistency map, not an explanation of those experiments: their actual sample parameters and post-selection procedures must be read from the papers before drawing conclusions (follow-up Q-1b).
+4. Engineering priority therefore shifts toward **charge-state initialization and verification** ([hopper2018], [shields2015], [doi2014]) and robust pulses ([khaneja2005], [rong2015]).
 
 ## E5.2 The carbon-13 bath
 
@@ -65,7 +97,8 @@ where $y = \pm1$ flips at each pulse [cywinski2008]. With the bath parameters me
 
 | ID | Item | Success metric |
 |---|---|---|
-| Q-1 | Add non-Markovian (quasi-static plus Ornstein-Uhlenbeck) noise to `cz_gate_fidelity` and embed the gate in XY8 | Reproduce 0.67 and 0.82 with the sample parameters of [dolde2013], [dolde2014] |
+| Q-1 | Non-Markovian error budget for the echoed gate | **Done in v0.3.0** (`adamas.gate_budget`, Section E5.1b) |
+| Q-1b | Extract sample parameters ($T_2^*$, $T_2$, spacing, post-selection, pulse counts) from [dolde2013] and [dolde2014] and test whether the budget reproduces 0.67 and 0.82 with no free parameters | Agreement within 0.05, or identification of the missing mechanism |
 | Q-2 | Cluster-correlation-expansion $T_2$ (pairs, then triples) | 0.6 ms natural, 1.8 ms at 0.3% within a factor of two ([mizuochi2009], [balasubramanian2009]) |
 | Q-3 | Pulse optimization for the ¹⁴N-selective π pulse of `adamas.register` under 1 percent amplitude noise | Fidelity above 0.999 with amplitude robustness |
 | Q-4 | Randomized benchmarking on a benchtop ensemble ([Chapter 11](../11_proposed_experiments_and_roadmap.md), B-5) | Error per Clifford gate with uncertainty |

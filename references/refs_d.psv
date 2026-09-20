@@ -1,0 +1,5 @@
+# ADAMAS reference database (part D: added from v0.3.0 on). Same format as parts A to C.
+saha2022 | Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. | 2022 | 875-MW/cm2 low-resistance NO2 p-type doped chemical mechanical planarized diamond MOSFETs | IEEE Electron Device Letters | 43, 777 | dev | V
+saha2022mod | Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. | 2022 | 3326-V modulation-doped diamond MOSFETs | IEEE Electron Device Letters | 43, 1303 | dev | V
+saha2023 | Saha, N. C.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. | 2023 | 3659-V NO2 p-type doped diamond MOSFETs on misoriented heteroepitaxial diamond substrates | IEEE Electron Device Letters | 44, 112 | dev | V
+kasu2022talk | Kasu, M. | 2022 | 2-inch diamond wafer growth and high-power diamond MOSFET fabrication (seminar abstract reporting 2568 V, 7.54 mOhm cm2, 874.6 MW/cm2) | MIT.nano seminar series | 29 November 2022 | ind,dev | V
