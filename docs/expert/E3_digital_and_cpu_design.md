@@ -73,6 +73,17 @@ Gate counts marked "about" are recalled from the papers and should be re-verifie
 
 A diamond 4004-class processor would therefore run about three times faster than the original at one-fifth the feature size, on a process with six masks. Its reason to exist is the environment: 400 °C, radiation, or co-location with NV qubits as a sequencer ([Chapter 9](../09_cmos_control_integration.md)).
 
+### DIA-4 with subroutines (project D-1, done)
+
+Adding `CALL` and `RET` with a four-entry hardware return stack (the 4004 had three levels [faggin1996]) costs 18 more flip-flops. A nested-call test program passes at both register-transfer and gate level.
+
+| Version | Flip-flops | Cells | Transistors | Share in flip-flops | Model estimate at 2 µm |
+|---|---|---|---|---|---|
+| DIA-4, 9 instructions | 13 | about 190 to 220 | about 830 to 900 | 33% | 2.4 MHz, 0.13 W |
+| DIA-4 + CALL/RET, 11 instructions | 31 | about 370 (Yosys 0.33) | about 1,700 | 40% | 2.4 MHz, 0.24 W |
+
+Exact counts depend on the Yosys version. The lesson is architectural: **state is expensive** in this technology. A static flip-flop costs 22 transistors and burns static power in every internal gate, so the return stack alone doubled the design. That is the quantitative case for the two-phase dynamic latches of Section E3.5 and for experiment D-4.
+
 ## E3.5 Design methodology notes
 
 - **Sizing.** Logical effort [sutherland1999] applies with a ratioed twist: the pull-up is fixed by the static-power budget, so only the driver is sized. Keep driver-to-load strength above 8 ([Chapter 5](../05_digital_logic.md)).
@@ -86,7 +97,7 @@ A diamond 4004-class processor would therefore run about three times faster than
 
 | ID | Item | Success metric |
 |---|---|---|
-| D-1 | Run the `circuits/digital` flow; extend DIA-4 with a stack pointer and subroutine call | Still under 2,300 transistors; gate-level PASS |
+| D-1 | Run the `circuits/digital` flow; extend DIA-4 with a stack pointer and subroutine call | **Done in v0.2.1**: about 1,700 transistors, gate-level PASS. Next: replace static flip-flops with two-phase dynamic latches and re-measure |
 | D-2 | Fabricate 5- to 51-stage ring oscillators in PDK-0 ([E2](E2_process_integration_and_pdk.md)) | Measured stage delay within 2× of 2.2 ns; populate Liberty timing |
 | D-3 | 4-bit adder and 8-bit shift register at 25 to 400 °C | Functional across range; static current versus temperature |
 | D-4 | Dynamic (precharge) diamond logic gate | Hold time of a floating node > 1 s at 300 °C; power reduction > 10× over E/D |

@@ -19,12 +19,12 @@ verify:          ## Crossref verification of the reference list (needs internet)
 spice:           ## inverter sweep and ring oscillator in ngspice
 	cd circuits/spice && ngspice -b ed_inverter.cir > /dev/null && ngspice -b ring_oscillator.cir | grep -E "^(period|iavg)"
 
-rtl:             ## behavioral simulation of the DIA-4 processor
-	cd circuits/digital && iverilog -o /tmp/dia4 dia4.v dia4_tb.v && vvp /tmp/dia4
+rtl:             ## behavioral simulation of the DIA-4 processor (countdown program, then nested CALL/RET)
+	cd circuits/digital && for tb in dia4_tb dia4_call_tb; do iverilog -o /tmp/dia4 dia4.v $$tb.v && vvp /tmp/dia4 | grep -E "PASS|FAIL"; done
 
 synth:           ## synthesize DIA-4 onto the diamond cell library, then gate-level simulation
 	cd circuits/digital && yosys -q -l synth.log synth.ys && grep -A7 "Number of cells" synth.log | tail -8 \
-	&& iverilog -o /tmp/dia4g dia4_netlist.v cells_sim.v dia4_tb.v && vvp /tmp/dia4g
+	&& for tb in dia4_tb dia4_call_tb; do iverilog -o /tmp/dia4g dia4_netlist.v cells_sim.v $$tb.v && vvp /tmp/dia4g | grep -E "PASS|FAIL"; done
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log
