@@ -8,4 +8,5 @@ dependencies:
   - pytest
   - pip
   - pip:
+      - pymatching>=2.1
       - -e .

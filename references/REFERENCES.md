@@ -1,6 +1,6 @@
 # References
 
-**470 references.** 441 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 425 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**473 references.** 444 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 428 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -461,13 +461,14 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[tsividis2011]`** Tsividis, Y.; McAndrew, C. (2011). Operation and Modeling of the MOS Transistor (3rd ed.). *Oxford University Press*.
 - 📚 **`[razavi2017]`** Razavi, B. (2017). Design of Analog CMOS Integrated Circuits (2nd ed.). *McGraw-Hill*.
 
-## Quantum control, open systems, and error correction (30)
+## Quantum control, open systems, and error correction (33)
 
 - ✅ **`[rabi1937]`** Rabi, I. I. (1937). Space quantization in a gyrating magnetic field. *Physical Review*, 51, 652. [doi:10.1103/physrev.51.652](https://doi.org/10.1103/physrev.51.652)
 - ✅ **`[hahn1950]`** Hahn, E. L. (1950). Spin echoes. *Physical Review*, 80, 580. [doi:10.1103/physrev.80.580](https://doi.org/10.1103/physrev.80.580)
 - ✅ **`[ramsey1950]`** Ramsey, N. F. (1950). A molecular beam resonance method with separated oscillating fields. *Physical Review*, 78, 695. [doi:10.1103/physrev.78.695](https://doi.org/10.1103/physrev.78.695)
 - ✅ **`[carr1954]`** Carr, H. Y.; Purcell, E. M. (1954). Effects of diffusion on free precession in nuclear magnetic resonance experiments. *Physical Review*, 94, 630. [doi:10.1103/physrev.94.630](https://doi.org/10.1103/physrev.94.630)
 - ✅ **`[meiboom1958]`** Meiboom, S.; Gill, D. (1958). Modified spin-echo method for measuring nuclear relaxation times. *Review of Scientific Instruments*, 29, 688. [doi:10.1063/1.1716296](https://doi.org/10.1063/1.1716296)
+- ✅ **`[edmonds1965]`** Edmonds, J. (1965). Paths, trees, and flowers. *Canadian Journal of Mathematics*, 17, 449. [doi:10.4153/cjm-1965-045-4](https://doi.org/10.4153/cjm-1965-045-4)
 - 📚 **`[gorini1976]`** Gorini, V.; Kossakowski, A.; Sudarshan, E. C. G. (1976). Completely positive dynamical semigroups of N-level systems. *Journal of Mathematical Physics*, 17, 821.
 - ✅ **`[lindblad1976]`** Lindblad, G. (1976). On the generators of quantum dynamical semigroups. *Communications in Mathematical Physics*, 48, 119. [doi:10.1007/bf01608499](https://doi.org/10.1007/bf01608499)
 - ✅ **`[gullion1990]`** Gullion, T.; Baker, D. B.; Conradi, M. S. (1990). New, compensated Carr-Purcell sequences. *Journal of Magnetic Resonance*, 89, 479. [doi:10.1016/0022-2364(90)90331-3](https://doi.org/10.1016/0022-2364(90)90331-3)
@@ -479,6 +480,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[viola1999]`** Viola, L.; Knill, E.; Lloyd, S. (1999). Dynamical decoupling of open quantum systems. *Physical Review Letters*, 82, 2417. [doi:10.1103/physrevlett.82.2417](https://doi.org/10.1103/physrevlett.82.2417)
 - ✅ **`[dennis2002]`** Dennis, E.; Kitaev, A.; Landahl, A.; Preskill, J. (2002). Topological quantum memory. *Journal of Mathematical Physics*, 43, 4452. [doi:10.1063/1.1499754](https://doi.org/10.1063/1.1499754)
 - ✅ **`[kitaev2003]`** Kitaev, A. Yu. (2003). Fault-tolerant quantum computation by anyons. *Annals of Physics*, 303, 2. [doi:10.1016/s0003-4916(02)00018-0](https://doi.org/10.1016/s0003-4916(02)00018-0)
+- ✅ **`[wang2003]`** Wang, C.; Harrington, J.; Preskill, J. (2003). Confinement-Higgs transition in a disordered gauge theory and the accuracy threshold for quantum memory. *Annals of Physics*, 303, 31. [doi:10.1016/s0003-4916(02)00019-2](https://doi.org/10.1016/s0003-4916(02)00019-2)
 - ✅ **`[khaneja2005]`** Khaneja, N.; Reiss, T.; Kehlet, C.; Schulte-Herbruggen, T.; Glaser, S. J. (2005). Optimal control of coupled spin dynamics: design of NMR pulse sequences by gradient ascent algorithms. *Journal of Magnetic Resonance*, 172, 296. [doi:10.1016/j.jmr.2004.11.004](https://doi.org/10.1016/j.jmr.2004.11.004)
 - ✅ **`[cywinski2008]`** Cywinski, L.; Lutchyn, R. M.; Nave, C. P.; Das Sarma, S. (2008). How to enhance dephasing time in superconducting qubits. *Physical Review B*, 77, 174509. [doi:10.1103/physrevb.77.174509](https://doi.org/10.1103/physrevb.77.174509)
 - ✅ **`[dobrovitski2008]`** Dobrovitski, V. V.; Feiguin, A. E.; Awschalom, D. D.; Hanson, R. (2008). Decoherence dynamics of a single spin versus spin ensemble. *Physical Review B*, 77, 245212. [doi:10.1103/physrevb.77.245212](https://doi.org/10.1103/physrevb.77.245212)
@@ -492,6 +494,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[peruzzo2014]`** Peruzzo, A.; McClean, J.; Shadbolt, P.; et al. (2014). A variational eigenvalue solver on a photonic quantum processor. *Nature Communications*, 5, 4213. [doi:10.1038/ncomms5213](https://doi.org/10.1038/ncomms5213)
 - ✅ **`[cross2019]`** Cross, A. W.; Bishop, L. S.; Sheldon, S.; Nation, P. D.; Gambetta, J. M. (2019). Validating quantum computers using randomized model circuits. *Physical Review A*, 100, 032328. [doi:10.1103/physreva.100.032328](https://doi.org/10.1103/physreva.100.032328)
 - ✅ **`[gulka2021]`** Gulka, M.; Wirtitsch, D.; Ivady, V.; et al. (2021). Room-temperature control and electrical readout of individual nitrogen-vacancy nuclear spins. *Nature Communications*, 12, 4421. [doi:10.1038/s41467-021-24494-x](https://doi.org/10.1038/s41467-021-24494-x)
+- ✅ **`[higgott2022]`** Higgott, O. (2022). PyMatching: a Python package for decoding quantum codes with minimum-weight perfect matching. *ACM Transactions on Quantum Computing*, 3, 16. [doi:10.1145/3505637](https://doi.org/10.1145/3505637)
 - ✅ **`[bravyi2024]`** Bravyi, S.; Cross, A. W.; Gambetta, J. M.; et al. (2024). High-threshold and low-overhead fault-tolerant quantum memory. *Nature*, 627, 778. [doi:10.1038/s41586-024-07107-7](https://doi.org/10.1038/s41586-024-07107-7)
 
 ## Beyond: adjacent platforms and frontier applications (31)

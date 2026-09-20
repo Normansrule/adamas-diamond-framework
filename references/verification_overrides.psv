@@ -8,3 +8,4 @@ chu2025 | SECONDARY | Title field is descriptive; known only through the Power E
 moore1965 | NOT-INDEXED | Original is Electronics 38(8), 114 (19 April 1965), a trade magazine outside Crossref; Crossref only holds the 1998 reprint in Proceedings of the IEEE 86, 82
 saha2020 | CONFIRMED | IEEE Electron Device Letters 41, 1066 (2020) confirmed from reference lists of later papers; Crossref search returns the group's 2024 J. Vac. Sci. Technol. B 42 paper instead
 gorini1976 | CONFIRMED | J. Math. Phys. 17, 821 (1976) confirmed against the publisher record and multiple reference lists; Crossref search returns a different paper
+shalan2020 | CONFIRMED | Crossref returns the right record (same first author, year, venue, DOI 10.1145/3400302.3415735) but deposits only the two-word main title "Building OpenLANE", below the three-word floor of the automatic subtitle rule
