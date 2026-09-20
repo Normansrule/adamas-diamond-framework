@@ -5,145 +5,145 @@
 # tags: mat (materials), waf (wafers and growth), si (silicon baseline), dop (doping, surfaces, processing),
 #       dev (devices and circuits), thm (thermal), nv (NV physics), sens (sensing), fab (NV fabrication),
 #       qc (quantum computing), net (photonics and networks), ind (industry news), edu (teaching)
-isberg2002 | Isberg, J.; Hammersberg, J.; Johansson, E.; et al. | 2002 | High carrier mobility in single-crystal plasma-deposited diamond | Science | 297, 1670 | mat | K
-wort2008 | Wort, C. J. H.; Balmer, R. S. | 2008 | Diamond as an electronic material | Materials Today | 11(1-2), 22 | mat | K
-tsao2018 | Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. | 2018 | Ultrawide-bandgap semiconductors: research opportunities and challenges | Advanced Electronic Materials | 4, 1600501 | mat | K
-donato2020 | Donato, N.; Rouger, N.; Pernot, J.; Longobardi, G.; Udrea, F. | 2020 | Diamond power devices: state of the art, modelling, figures of merit and future perspective | Journal of Physics D: Applied Physics | 53, 093001 | mat,dev | K
-baliga1982 | Baliga, B. J. | 1982 | Semiconductors for high-voltage, vertical channel field-effect transistors | Journal of Applied Physics | 53, 1759 | mat | K
-baliga1989 | Baliga, B. J. | 1989 | Power semiconductor device figure of merit for high-frequency applications | IEEE Electron Device Letters | 10, 455 | mat | K
+isberg2002 | Isberg, J.; Hammersberg, J.; Johansson, E.; et al. | 2002 | High carrier mobility in single-crystal plasma-deposited diamond | Science | 297, 1670 | mat | V
+wort2008 | Wort, C. J. H.; Balmer, R. S. | 2008 | Diamond as an electronic material | Materials Today | 11(1-2), 22 | mat | V
+tsao2018 | Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. | 2018 | Ultrawide-bandgap semiconductors: research opportunities and challenges | Advanced Electronic Materials | 4, 1600501 | mat | V
+donato2020 | Donato, N.; Rouger, N.; Pernot, J.; Longobardi, G.; Udrea, F. | 2020 | Diamond power devices: state of the art, modelling, figures of merit and future perspective | Journal of Physics D: Applied Physics | 53, 093001 | mat,dev | V
+baliga1982 | Baliga, B. J. | 1982 | Semiconductors for high-voltage, vertical channel field-effect transistors | Journal of Applied Physics | 53, 1759 | mat | V
+baliga1989 | Baliga, B. J. | 1989 | Power semiconductor device figure of merit for high-frequency applications | IEEE Electron Device Letters | 10, 455 | mat | V
 johnson1965 | Johnson, E. O. | 1965 | Physical limitations on frequency and power parameters of transistors | RCA Review | 26, 163 | mat | K
-keyes1972 | Keyes, R. W. | 1972 | Figure of merit for semiconductors for high-speed switches | Proceedings of the IEEE | 60, 225 | mat | K
-huang2004 | Huang, A. Q. | 2004 | New unipolar switching power device figures of merit | IEEE Electron Device Letters | 25, 298 | mat | K
+keyes1972 | Keyes, R. W. | 1972 | Figure of merit for semiconductors for high-speed switches | Proceedings of the IEEE | 60, 225 | mat | V
+huang2004 | Huang, A. Q. | 2004 | New unipolar switching power device figures of merit | IEEE Electron Device Letters | 25, 298 | mat | V
 sze2006 | Sze, S. M.; Ng, K. K. | 2006 | Physics of Semiconductor Devices (3rd ed.) | Wiley | book | mat,si | K
-wei1993 | Wei, L.; Kuo, P. K.; Thomas, R. L.; Anthony, T. R.; Banholzer, W. F. | 1993 | Thermal conductivity of isotopically modified single crystal diamond | Physical Review Letters | 70, 3764 | mat,thm | K
-anthony1990 | Anthony, T. R.; Banholzer, W. F.; Fleischer, J. F.; et al. | 1990 | Thermal diffusivity of isotopically enriched 12C diamond | Physical Review B | 42, 1104 | mat,thm | K
-olson1993 | Olson, J. R.; Pohl, R. O.; Vandersande, J. W.; et al. | 1993 | Thermal conductivity of diamond between 170 and 1200 K and the isotope effect | Physical Review B | 47, 14850 | mat,thm | K
-inyushkin2018 | Inyushkin, A. V.; Taldenkov, A. N.; Ralchenko, V. G.; et al. | 2018 | Thermal conductivity of high purity synthetic single crystal diamonds | Physical Review B | 97, 144305 | mat,thm | K
+wei1993 | Wei, L.; Kuo, P. K.; Thomas, R. L.; Anthony, T. R.; Banholzer, W. F. | 1993 | Thermal conductivity of isotopically modified single crystal diamond | Physical Review Letters | 70, 3764 | mat,thm | V
+anthony1990 | Anthony, T. R.; Banholzer, W. F.; Fleischer, J. F.; et al. | 1990 | Thermal diffusivity of isotopically enriched 12C diamond | Physical Review B | 42, 1104 | mat,thm | V
+olson1993 | Olson, J. R.; Pohl, R. O.; Vandersande, J. W.; et al. | 1993 | Thermal conductivity of diamond between 170 and 1200 K and the isotope effect | Physical Review B | 47, 14850 | mat,thm | V
+inyushkin2018 | Inyushkin, A. V.; Taldenkov, A. N.; Ralchenko, V. G.; et al. | 2018 | Thermal conductivity of high purity synthetic single crystal diamonds | Physical Review B | 97, 144305 | mat,thm | V
 kimoto2014 | Kimoto, T.; Cooper, J. A. | 2014 | Fundamentals of Silicon Carbide Technology | Wiley | book | mat | K
-mishra2008 | Mishra, U. K.; Shen, L.; Kazior, T. E.; Wu, Y.-F. | 2008 | GaN-based RF power devices and amplifiers | Proceedings of the IEEE | 96, 287 | mat,dev | K
-higashiwaki2012 | Higashiwaki, M.; Sasaki, K.; Kuramata, A.; Masui, T.; Yamakoshi, S. | 2012 | Gallium oxide (Ga2O3) metal-semiconductor field-effect transistors on single-crystal beta-Ga2O3 (010) substrates | Applied Physics Letters | 100, 013504 | mat | K
-pearton2018 | Pearton, S. J.; Yang, J.; Cary, P. H.; et al. | 2018 | A review of Ga2O3 materials, processing, and devices | Applied Physics Reviews | 5, 011301 | mat | K
-neudeck2002 | Neudeck, P. G.; Okojie, R. S.; Chen, L.-Y. | 2002 | High-temperature electronics - a role for wide bandgap semiconductors? | Proceedings of the IEEE | 90, 1065 | mat,dev | K
-neudeck2016 | Neudeck, P. G.; Meredith, R. D.; Chen, L.; et al. | 2016 | Prolonged silicon carbide integrated circuit operation in Venus surface atmospheric conditions | AIP Advances | 6, 125119 | dev | K
-field2012 | Field, J. E. | 2012 | The mechanical and strength properties of diamond | Reports on Progress in Physics | 75, 126505 | mat | K
-nava1980 | Nava, F.; Canali, C.; Jacoboni, C.; Reggiani, L.; Kozlov, S. F. | 1980 | Electron effective masses and lattice scattering in natural diamond | Solid State Communications | 33, 475 | mat | K
-reggiani1981 | Reggiani, L.; Bosi, S.; Canali, C.; Nava, F.; Kozlov, S. F. | 1981 | Hole-drift velocity in natural diamond | Physical Review B | 23, 3050 | mat | K
-pernot2010 | Pernot, J.; Volpe, P. N.; Omnes, F.; et al. | 2010 | Hall hole mobility in boron-doped homoepitaxial diamond | Physical Review B | 81, 205203 | mat,dop | K
-pernot2008 | Pernot, J.; Koizumi, S. | 2008 | Electron mobility in phosphorous doped {111} homoepitaxial diamond | Applied Physics Letters | 93, 052105 | mat,dop | K
-volpe2009 | Volpe, P.-N.; Pernot, J.; Muret, P.; Omnes, F. | 2009 | High hole mobility in boron doped diamond for power device applications | Applied Physics Letters | 94, 092102 | mat,dop | K
-volpe2010 | Volpe, P.-N.; Muret, P.; Pernot, J.; et al. | 2010 | Extreme dielectric strength in boron doped homoepitaxial diamond | Applied Physics Letters | 97, 223501 | mat,dev | K
-akimoto2014 | Akimoto, I.; Handa, Y.; Fukai, K.; Naka, N. | 2014 | High carrier mobility in ultrapure diamond measured by time-resolved cyclotron resonance | Applied Physics Letters | 105, 032102 | mat | K
-clark1964 | Clark, C. D.; Dean, P. J.; Harris, P. V. | 1964 | Intrinsic edge absorption in diamond | Proceedings of the Royal Society A | 277, 312 | mat | K
-hudgins2003 | Hudgins, J. L.; Simin, G. S.; Santi, E.; Khan, M. A. | 2003 | An assessment of wide bandgap semiconductors for power devices | IEEE Transactions on Power Electronics | 18, 907 | mat | K
-chow1994 | Chow, T. P.; Tyagi, R. | 1994 | Wide bandgap compound semiconductors for superior high-voltage unipolar power devices | IEEE Transactions on Electron Devices | 41, 1481 | mat | K
-millan2014 | Millan, J.; Godignon, P.; Perpina, X.; Perez-Tomas, A.; Rebollo, J. | 2014 | A survey of wide bandgap power semiconductor devices | IEEE Transactions on Power Electronics | 29, 2155 | mat,dev | K
-bundy1955 | Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. | 1955 | Man-made diamonds | Nature | 176, 51 | waf | K
-angus1968 | Angus, J. C.; Will, H. A.; Stanko, W. S. | 1968 | Growth of diamond seed crystals by vapor deposition | Journal of Applied Physics | 39, 2915 | waf | K
-matsumoto1982 | Matsumoto, S.; Sato, Y.; Kamo, M.; Setaka, N. | 1982 | Vapor deposition of diamond particles from methane | Japanese Journal of Applied Physics | 21, L183 | waf | K
-kamo1983 | Kamo, M.; Sato, Y.; Matsumoto, S.; Setaka, N. | 1983 | Diamond synthesis from gas phase in microwave plasma | Journal of Crystal Growth | 62, 642 | waf | K
-bachmann1991 | Bachmann, P. K.; Leers, D.; Lydtin, H. | 1991 | Towards a general concept of diamond chemical vapour deposition | Diamond and Related Materials | 1, 1 | waf | K
-butler2009 | Butler, J. E.; Mankelevich, Y. A.; Cheesman, A.; Ma, J.; Ashfold, M. N. R. | 2009 | Understanding the chemical vapor deposition of diamond: recent progress | Journal of Physics: Condensed Matter | 21, 364201 | waf | K
-goodwin1993 | Goodwin, D. G. | 1993 | Scaling laws for diamond chemical-vapor deposition. I. Diamond surface chemistry | Journal of Applied Physics | 74, 6888 | waf | K
-balmer2009 | Balmer, R. S.; Brandon, J. R.; Clewes, S. L.; et al. | 2009 | Chemical vapour deposition synthetic diamond: materials, technology and applications | Journal of Physics: Condensed Matter | 21, 364221 | waf,mat | K
-yan2002 | Yan, C.-S.; Vohra, Y. K.; Mao, H.-K.; Hemley, R. J. | 2002 | Very high growth rate chemical vapor deposition of single-crystal diamond | Proceedings of the National Academy of Sciences | 99, 12523 | waf | K
-tallaire2013 | Tallaire, A.; Achard, J.; Silva, F.; Brinza, O.; Gicquel, A. | 2013 | Growth of large size diamond single crystals by plasma assisted chemical vapour deposition: recent achievements and remaining challenges | Comptes Rendus Physique | 14, 169 | waf | K
-schreck2014 | Schreck, M.; Asmussen, J.; Shikata, S.; Arnault, J.-C.; Fujimori, N. | 2014 | Large-area high-quality single crystal diamond | MRS Bulletin | 39, 504 | waf | K
-schreck2017 | Schreck, M.; Gsell, S.; Brescia, R.; Fischer, M. | 2017 | Ion bombardment induced buried lateral growth: the key mechanism for the synthesis of single crystal diamond wafers | Scientific Reports | 7, 44462 | waf | K
-yamada2014 | Yamada, H.; Chayahara, A.; Mokuno, Y.; Kato, Y.; Shikata, S. | 2014 | A 2-in. mosaic wafer made of a single-crystal diamond | Applied Physics Letters | 104, 102110 | waf | K
-mokuno2009 | Mokuno, Y.; Chayahara, A.; Yamada, H.; Tsubouchi, N. | 2009 | Improving purity and size of single-crystal diamond plates produced by high-rate CVD growth and lift-off process using ion implantation | Diamond and Related Materials | 18, 1258 | waf | K
+mishra2008 | Mishra, U. K.; Shen, L.; Kazior, T. E.; Wu, Y.-F. | 2008 | GaN-based RF power devices and amplifiers | Proceedings of the IEEE | 96, 287 | mat,dev | V
+higashiwaki2012 | Higashiwaki, M.; Sasaki, K.; Kuramata, A.; Masui, T.; Yamakoshi, S. | 2012 | Gallium oxide (Ga2O3) metal-semiconductor field-effect transistors on single-crystal beta-Ga2O3 (010) substrates | Applied Physics Letters | 100, 013504 | mat | V
+pearton2018 | Pearton, S. J.; Yang, J.; Cary, P. H.; et al. | 2018 | A review of Ga2O3 materials, processing, and devices | Applied Physics Reviews | 5, 011301 | mat | V
+neudeck2002 | Neudeck, P. G.; Okojie, R. S.; Chen, L.-Y. | 2002 | High-temperature electronics - a role for wide bandgap semiconductors? | Proceedings of the IEEE | 90, 1065 | mat,dev | V
+neudeck2016 | Neudeck, P. G.; Meredith, R. D.; Chen, L.; et al. | 2016 | Prolonged silicon carbide integrated circuit operation in Venus surface atmospheric conditions | AIP Advances | 6, 125119 | dev | V
+field2012 | Field, J. E. | 2012 | The mechanical and strength properties of diamond | Reports on Progress in Physics | 75, 126505 | mat | V
+nava1980 | Nava, F.; Canali, C.; Jacoboni, C.; Reggiani, L.; Kozlov, S. F. | 1980 | Electron effective masses and lattice scattering in natural diamond | Solid State Communications | 33, 475 | mat | V
+reggiani1981 | Reggiani, L.; Bosi, S.; Canali, C.; Nava, F.; Kozlov, S. F. | 1981 | Hole-drift velocity in natural diamond | Physical Review B | 23, 3050 | mat | V
+pernot2010 | Pernot, J.; Volpe, P. N.; Omnes, F.; et al. | 2010 | Hall hole mobility in boron-doped homoepitaxial diamond | Physical Review B | 81, 205203 | mat,dop | V
+pernot2008 | Pernot, J.; Koizumi, S. | 2008 | Electron mobility in phosphorous doped {111} homoepitaxial diamond | Applied Physics Letters | 93, 052105 | mat,dop | V
+volpe2009 | Volpe, P.-N.; Pernot, J.; Muret, P.; Omnes, F. | 2009 | High hole mobility in boron doped diamond for power device applications | Applied Physics Letters | 94, 092102 | mat,dop | V
+volpe2010 | Volpe, P.-N.; Muret, P.; Pernot, J.; et al. | 2010 | Extreme dielectric strength in boron doped homoepitaxial diamond | Applied Physics Letters | 97, 223501 | mat,dev | V
+akimoto2014 | Akimoto, I.; Handa, Y.; Fukai, K.; Naka, N. | 2014 | High carrier mobility in ultrapure diamond measured by time-resolved cyclotron resonance | Applied Physics Letters | 105, 032102 | mat | V
+clark1964 | Clark, C. D.; Dean, P. J.; Harris, P. V. | 1964 | Intrinsic edge absorption in diamond | Proceedings of the Royal Society A | 277, 312 | mat | V
+hudgins2003 | Hudgins, J. L.; Simin, G. S.; Santi, E.; Khan, M. A. | 2003 | An assessment of wide bandgap semiconductors for power devices | IEEE Transactions on Power Electronics | 18, 907 | mat | V
+chow1994 | Chow, T. P.; Tyagi, R. | 1994 | Wide bandgap compound semiconductors for superior high-voltage unipolar power devices | IEEE Transactions on Electron Devices | 41, 1481 | mat | V
+millan2014 | Millan, J.; Godignon, P.; Perpina, X.; Perez-Tomas, A.; Rebollo, J. | 2014 | A survey of wide bandgap power semiconductor devices | IEEE Transactions on Power Electronics | 29, 2155 | mat,dev | V
+bundy1955 | Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. | 1955 | Man-made diamonds | Nature | 176, 51 | waf | V
+angus1968 | Angus, J. C.; Will, H. A.; Stanko, W. S. | 1968 | Growth of diamond seed crystals by vapor deposition | Journal of Applied Physics | 39, 2915 | waf | V
+matsumoto1982 | Matsumoto, S.; Sato, Y.; Kamo, M.; Setaka, N. | 1982 | Vapor deposition of diamond particles from methane | Japanese Journal of Applied Physics | 21, L183 | waf | V
+kamo1983 | Kamo, M.; Sato, Y.; Matsumoto, S.; Setaka, N. | 1983 | Diamond synthesis from gas phase in microwave plasma | Journal of Crystal Growth | 62, 642 | waf | V
+bachmann1991 | Bachmann, P. K.; Leers, D.; Lydtin, H. | 1991 | Towards a general concept of diamond chemical vapour deposition | Diamond and Related Materials | 1, 1 | waf | V
+butler2009 | Butler, J. E.; Mankelevich, Y. A.; Cheesman, A.; Ma, J.; Ashfold, M. N. R. | 2009 | Understanding the chemical vapor deposition of diamond: recent progress | Journal of Physics: Condensed Matter | 21, 364201 | waf | V
+goodwin1993 | Goodwin, D. G. | 1993 | Scaling laws for diamond chemical-vapor deposition. I. Diamond surface chemistry | Journal of Applied Physics | 74, 6888 | waf | V
+balmer2009 | Balmer, R. S.; Brandon, J. R.; Clewes, S. L.; et al. | 2009 | Chemical vapour deposition synthetic diamond: materials, technology and applications | Journal of Physics: Condensed Matter | 21, 364221 | waf,mat | V
+yan2002 | Yan, C.-S.; Vohra, Y. K.; Mao, H.-K.; Hemley, R. J. | 2002 | Very high growth rate chemical vapor deposition of single-crystal diamond | Proceedings of the National Academy of Sciences | 99, 12523 | waf | V
+tallaire2013 | Tallaire, A.; Achard, J.; Silva, F.; Brinza, O.; Gicquel, A. | 2013 | Growth of large size diamond single crystals by plasma assisted chemical vapour deposition: recent achievements and remaining challenges | Comptes Rendus Physique | 14, 169 | waf | V
+schreck2014 | Schreck, M.; Asmussen, J.; Shikata, S.; Arnault, J.-C.; Fujimori, N. | 2014 | Large-area high-quality single crystal diamond | MRS Bulletin | 39, 504 | waf | V
+schreck2017 | Schreck, M.; Gsell, S.; Brescia, R.; Fischer, M. | 2017 | Ion bombardment induced buried lateral growth: the key mechanism for the synthesis of single crystal diamond wafers | Scientific Reports | 7, 44462 | waf | V
+yamada2014 | Yamada, H.; Chayahara, A.; Mokuno, Y.; Kato, Y.; Shikata, S. | 2014 | A 2-in. mosaic wafer made of a single-crystal diamond | Applied Physics Letters | 104, 102110 | waf | V
+mokuno2009 | Mokuno, Y.; Chayahara, A.; Yamada, H.; Tsubouchi, N. | 2009 | Improving purity and size of single-crystal diamond plates produced by high-rate CVD growth and lift-off process using ion implantation | Diamond and Related Materials | 18, 1258 | waf | V
 shikata2016 | Shikata, S. | 2016 | Single crystal diamond wafers for high power electronics | Diamond and Related Materials | 65, 168 | waf | V
 kim2020 | Kim, S.-W.; Kawamata, Y.; Takaya, R.; Koyama, K.; Kasu, M. | 2020 | Growth of high-quality one-inch free-standing heteroepitaxial (001) diamond on (11-20) sapphire substrate | Applied Physics Letters | 117, 202102 | waf | V
 kim2021 | Kim, S.-W.; Takaya, R.; Hirano, S.; Kasu, M. | 2021 | Two-inch high-quality (001) diamond heteroepitaxial growth on sapphire (11-20) misoriented substrate by step-flow mode | Applied Physics Express | 14, 115501 | waf | V
 saha2021 | Saha, N. C.; Kim, S.-W.; Oishi, T.; Kawamata, Y.; Koyama, K.; Kasu, M. | 2021 | 345-MW/cm2 2608-V NO2 p-type doped diamond MOSFETs with an Al2O3 passivation overlayer on heteroepitaxial diamond | IEEE Electron Device Letters | 42, 903 | dev,waf | V
 saha2020 | Saha, N. C.; Oishi, T.; Kim, S.-W.; Kawamata, Y.; Koyama, K.; Kasu, M. | 2020 | 145-MW/cm2 heteroepitaxial diamond MOSFETs with NO2 p-type doping and an Al2O3 passivation layer | IEEE Electron Device Letters | 41, 1066 | dev,waf | V
-teraji2015 | Teraji, T.; Yamamoto, T.; Watanabe, K.; et al. | 2015 | Homoepitaxial diamond film growth: high purity, high crystalline quality, isotopic enrichment, and single color center formation | Physica Status Solidi A | 212, 2365 | waf,fab | K
-markham2011 | Markham, M. L.; Dodson, J. M.; Scarsbrook, G. A.; et al. | 2011 | CVD diamond for spintronics | Diamond and Related Materials | 20, 134 | waf,fab | K
-achard2020 | Achard, J.; Jacques, V.; Tallaire, A. | 2020 | Chemical vapour deposition diamond single crystals with nitrogen-vacancy centres: a review of material synthesis and technology for quantum sensing applications | Journal of Physics D: Applied Physics | 53, 313001 | waf,fab | K
-schuelke2013 | Schuelke, T.; Grotjohn, T. A. | 2013 | Diamond polishing | Diamond and Related Materials | 32, 17 | waf,dop | K
-gicquel2001 | Gicquel, A.; Hassouni, K.; Silva, F.; Achard, J. | 2001 | CVD diamond films: from growth to applications | Current Applied Physics | 1, 479 | waf | K
-friel2009 | Friel, I.; Clewes, S. L.; Dhillon, H. K.; et al. | 2009 | Control of surface and bulk crystalline quality in single crystal diamond grown by chemical vapour deposition | Diamond and Related Materials | 18, 808 | waf | K
-gaukroger2008 | Gaukroger, M. P.; Martineau, P. M.; Crowder, M. J.; et al. | 2008 | X-ray topography studies of dislocations in single crystal CVD diamond | Diamond and Related Materials | 17, 262 | waf | K
-sumiya2012 | Sumiya, H.; Tamasaku, K. | 2012 | Large defect-free synthetic type IIa diamond crystals synthesized via high pressure and high temperature | Japanese Journal of Applied Physics | 51, 090102 | waf | K
-burns2009 | Burns, R. C.; Chumakov, A. I.; Connell, S. H.; et al. | 2009 | HPHT growth and x-ray characterization of high-quality type IIa diamond | Journal of Physics: Condensed Matter | 21, 364224 | waf | K
-aida2016 | Aida, H.; Kim, S.-W.; Ikejiri, K.; et al. | 2016 | Fabrication of freestanding heteroepitaxial diamond substrate via micropatterns and microneedles | Applied Physics Express | 9, 035504 | waf | K
-ohtsuka1996 | Ohtsuka, K.; Suzuki, K.; Sawabe, A.; Inuzuka, T. | 1996 | Epitaxial growth of diamond on iridium | Japanese Journal of Applied Physics | 35, L1072 | waf | K
-gsell2004 | Gsell, S.; Bauer, T.; Goldfuss, J.; Schreck, M.; Stritzker, B. | 2004 | A route to diamond wafers by epitaxial deposition on silicon via iridium/yttria-stabilized zirconia buffer layers | Applied Physics Letters | 84, 4541 | waf | K
+teraji2015 | Teraji, T.; Yamamoto, T.; Watanabe, K.; et al. | 2015 | Homoepitaxial diamond film growth: high purity, high crystalline quality, isotopic enrichment, and single color center formation | Physica Status Solidi A | 212, 2365 | waf,fab | V
+markham2011 | Markham, M. L.; Dodson, J. M.; Scarsbrook, G. A.; et al. | 2011 | CVD diamond for spintronics | Diamond and Related Materials | 20, 134 | waf,fab | V
+achard2020 | Achard, J.; Jacques, V.; Tallaire, A. | 2020 | Chemical vapour deposition diamond single crystals with nitrogen-vacancy centres: a review of material synthesis and technology for quantum sensing applications | Journal of Physics D: Applied Physics | 53, 313001 | waf,fab | V
+schuelke2013 | Schuelke, T.; Grotjohn, T. A. | 2013 | Diamond polishing | Diamond and Related Materials | 32, 17 | waf,dop | V
+gicquel2001 | Gicquel, A.; Hassouni, K.; Silva, F.; Achard, J. | 2001 | CVD diamond films: from growth to applications | Current Applied Physics | 1, 479 | waf | V
+friel2009 | Friel, I.; Clewes, S. L.; Dhillon, H. K.; et al. | 2009 | Control of surface and bulk crystalline quality in single crystal diamond grown by chemical vapour deposition | Diamond and Related Materials | 18, 808 | waf | V
+gaukroger2008 | Gaukroger, M. P.; Martineau, P. M.; Crowder, M. J.; et al. | 2008 | X-ray topography studies of dislocations in single crystal CVD diamond | Diamond and Related Materials | 17, 262 | waf | V
+sumiya2012 | Sumiya, H.; Tamasaku, K. | 2012 | Large defect-free synthetic type IIa diamond crystals synthesized via high pressure and high temperature | Japanese Journal of Applied Physics | 51, 090102 | waf | V
+burns2009 | Burns, R. C.; Chumakov, A. I.; Connell, S. H.; et al. | 2009 | HPHT growth and x-ray characterization of high-quality type IIa diamond | Journal of Physics: Condensed Matter | 21, 364224 | waf | V
+aida2016 | Aida, H.; Kim, S.-W.; Ikejiri, K.; et al. | 2016 | Fabrication of freestanding heteroepitaxial diamond substrate via micropatterns and microneedles | Applied Physics Express | 9, 035504 | waf | V
+ohtsuka1996 | Ohtsuka, K.; Suzuki, K.; Sawabe, A.; Inuzuka, T. | 1996 | Epitaxial growth of diamond on iridium | Japanese Journal of Applied Physics | 35, L1072 | waf | V
+gsell2004 | Gsell, S.; Bauer, T.; Goldfuss, J.; Schreck, M.; Stritzker, B. | 2004 | A route to diamond wafers by epitaxial deposition on silicon via iridium/yttria-stabilized zirconia buffer layers | Applied Physics Letters | 84, 4541 | waf | V
 koizumi2018book | Koizumi, S.; Umezawa, H.; Pernot, J.; Suzuki, M. (eds.) | 2018 | Power Electronics Device Applications of Diamond Semiconductors | Woodhead Publishing | book | waf,dev | V
 e6orbray2026 | Semiconductor Today | 2026 | Element Six and Orbray accelerate wafer-scale single-crystal diamond for volume production | Semiconductor Today (news) | 16 June 2026 | ind,waf | V
 pen2026 | Power Electronics News | 2026 | Analyzing industry efforts in scaling diamond semiconductor technology | Power Electronics News | 19 February 2026 | ind,waf | V
 ookuma2026 | Jiji Press | 2026 | Diamond semiconductor plant completed in northeastern Japan | Jiji Press (news) | 29 May 2026 | ind,dev | V
 patsnap2026 | Patsnap | 2026 | Diamond semiconductor wafer technology landscape 2026 | Patsnap R&D blog | 15 May 2026 | ind,thm | V
-czochralski1918 | Czochralski, J. | 1918 | Ein neues Verfahren zur Messung der Kristallisationsgeschwindigkeit der Metalle | Zeitschrift fuer Physikalische Chemie | 92, 219 | si | K
+czochralski1918 | Czochralski, J. | 1918 | Ein neues Verfahren zur Messung der Kristallisationsgeschwindigkeit der Metalle | Zeitschrift fuer Physikalische Chemie | 92, 219 | si | V
 teal1950 | Teal, G. K.; Little, J. B. | 1950 | Growth of germanium single crystals | Physical Review | 78, 647 | si | K
-dealgrove1965 | Deal, B. E.; Grove, A. S. | 1965 | General relationship for the thermal oxidation of silicon | Journal of Applied Physics | 36, 3770 | si | K
+dealgrove1965 | Deal, B. E.; Grove, A. S. | 1965 | General relationship for the thermal oxidation of silicon | Journal of Applied Physics | 36, 3770 | si | V
 moore1965 | Moore, G. E. | 1965 | Cramming more components onto integrated circuits | Electronics | 38(8), 114 | si | K
-dennard1974 | Dennard, R. H.; Gaensslen, F. H.; Yu, H.-N.; et al. | 1974 | Design of ion-implanted MOSFET's with very small physical dimensions | IEEE Journal of Solid-State Circuits | 9, 256 | si | K
+dennard1974 | Dennard, R. H.; Gaensslen, F. H.; Yu, H.-N.; et al. | 1974 | Design of ion-implanted MOSFET's with very small physical dimensions | IEEE Journal of Solid-State Circuits | 9, 256 | si | V
 plummer2000 | Plummer, J. D.; Deal, M. D.; Griffin, P. B. | 2000 | Silicon VLSI Technology: Fundamentals, Practice, and Modeling | Prentice Hall | book | si | K
 irds2023 | IEEE | 2023 | International Roadmap for Devices and Systems (IRDS), 2023 edition | IEEE | report | si | K
-stapper1983 | Stapper, C. H.; Armstrong, F. M.; Saji, K. | 1983 | Integrated circuit yield statistics | Proceedings of the IEEE | 71, 453 | si | K
-murphy1964 | Murphy, B. T. | 1964 | Cost-size optima of monolithic integrated circuits | Proceedings of the IEEE | 52, 1537 | si | K
-collins1971 | Collins, A. T.; Williams, A. W. S. | 1971 | The nature of the acceptor centre in semiconducting diamond | Journal of Physics C: Solid State Physics | 4, 1789 | dop | K
-chrenko1973 | Chrenko, R. M. | 1973 | Boron, the dominant acceptor in semiconducting diamond | Physical Review B | 7, 4560 | dop | K
-farrer1969 | Farrer, R. G. | 1969 | On the substitutional nitrogen donor in diamond | Solid State Communications | 7, 685 | dop | K
-koizumi1997 | Koizumi, S.; Kamo, M.; Sato, Y.; Ozaki, H.; Inuzuka, T. | 1997 | Growth and characterization of phosphorous doped {111} homoepitaxial diamond thin films | Applied Physics Letters | 71, 1065 | dop | K
-koizumi2001 | Koizumi, S.; Watanabe, K.; Hasegawa, M.; Kanda, H. | 2001 | Ultraviolet emission from a diamond pn junction | Science | 292, 1899 | dop,dev | K
-kato2005 | Kato, H.; Yamasaki, S.; Okushi, H. | 2005 | n-type doping of (001)-oriented single-crystalline diamond by phosphorus | Applied Physics Letters | 86, 222111 | dop | K
-katagiri2004 | Katagiri, M.; Isoya, J.; Koizumi, S.; Kanda, H. | 2004 | Lightly phosphorus-doped homoepitaxial diamond films grown by chemical vapor deposition | Applied Physics Letters | 85, 6365 | dop | K
-kalish1999 | Kalish, R. | 1999 | Doping of diamond | Carbon | 37, 781 | dop | K
-prins1988 | Prins, J. F. | 1988 | Activation of boron-dopant atoms in ion-implanted diamonds | Physical Review B | 38, 5576 | dop | K
-lagrange1998 | Lagrange, J.-P.; Deneuville, A.; Gheeraert, E. | 1998 | Activation energy in low compensated homoepitaxial boron-doped diamond films | Diamond and Related Materials | 7, 1390 | dop | K
-goss2004 | Goss, J. P.; Briddon, P. R.; Jones, R.; Sque, S. | 2004 | Donor and acceptor states in diamond | Diamond and Related Materials | 13, 684 | dop | K
-ekimov2004 | Ekimov, E. A.; Sidorov, V. A.; Bauer, E. D.; et al. | 2004 | Superconductivity in diamond | Nature | 428, 542 | dop | K
-landstrass1989 | Landstrass, M. I.; Ravi, K. V. | 1989 | Resistivity of chemical vapor deposited diamond films | Applied Physics Letters | 55, 975 | dop | K
-maier2000 | Maier, F.; Riedel, M.; Mantel, B.; Ristein, J.; Ley, L. | 2000 | Origin of surface conductivity in diamond | Physical Review Letters | 85, 3472 | dop | K
-strobel2004 | Strobel, P.; Riedel, M.; Ristein, J.; Ley, L. | 2004 | Surface transfer doping of diamond | Nature | 430, 439 | dop | K
-crawford2021 | Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. | 2021 | Surface transfer doping of diamond: a review | Progress in Surface Science | 96, 100613 | dop | K
-russell2013 | Russell, S. A. O.; Cao, L.; Qi, D.; et al. | 2013 | Surface transfer doping of diamond by MoO3: a combined spectroscopic and Hall measurement study | Applied Physics Letters | 103, 202112 | dop | K
-tordjman2014 | Tordjman, M.; Saguy, C.; Bolker, A.; Kalish, R. | 2014 | Superior surface transfer doping of diamond with MoO3 | Advanced Materials Interfaces | 1, 1300155 | dop | K
-verona2016 | Verona, C.; Ciccognani, W.; Colangeli, S.; et al. | 2016 | Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators | Journal of Applied Physics | 120, 025104 | dop | K
-crawford2016 | Crawford, K. G.; Cao, L.; Qi, D.; et al. | 2016 | Enhanced surface transfer doping of diamond by V2O5 with improved thermal stability | Applied Physics Letters | 108, 042103 | dop | K
-kubovic2010 | Kubovic, M.; Kasu, M. | 2010 | Sorption properties of NO2 gas and its strong influence on hole concentration of H-terminated diamond surfaces | Applied Physics Letters | 96, 052101 | dop | K
-himpsel1979 | Himpsel, F. J.; Knapp, J. A.; VanVechten, J. A.; Eastman, D. E. | 1979 | Quantum photoyield of diamond(111) - a stable negative-affinity emitter | Physical Review B | 20, 624 | dop | K
-kawarada1996 | Kawarada, H. | 1996 | Hydrogen-terminated diamond surfaces and interfaces | Surface Science Reports | 26, 205 | dop | K
-tachibana1992 | Tachibana, T.; Williams, B. E.; Glass, J. T. | 1992 | Correlation of the electrical properties of metal contacts on diamond films with the chemical nature of the metal-diamond interface. II. Titanium contacts: a carbide-forming metal | Physical Review B | 45, 11975 | dop | K
-moazed1990 | Moazed, K. L.; Zeidler, J. R.; Taylor, M. J. | 1990 | A thermally activated solid state reaction process for fabricating ohmic contacts to semiconducting diamond | Journal of Applied Physics | 68, 2246 | dop | K
-hwang2004 | Hwang, D. S.; Saito, T.; Fujimori, N. | 2004 | New etching process for device fabrication using diamond | Diamond and Related Materials | 13, 2207 | dop | K
-lee2008 | Lee, C. L.; Gu, E.; Dawson, M. D.; Friel, I.; Scarsbrook, G. A. | 2008 | Etching and micro-optics fabrication in diamond using chlorine-based inductively-coupled plasma | Diamond and Related Materials | 17, 1292 | dop | K
-hausmann2010 | Hausmann, B. J. M.; Khan, M.; Zhang, Y.; et al. | 2010 | Fabrication of diamond nanowires for quantum information processing applications | Diamond and Related Materials | 19, 621 | dop,net | K
-uzansaguy1995 | Uzan-Saguy, C.; Cytermann, C.; Brener, R.; et al. | 1995 | Damage threshold for ion-beam induced graphitization of diamond | Applied Physics Letters | 67, 1194 | dop,fab | K
-kawarada1994 | Kawarada, H.; Aoki, M.; Ito, M. | 1994 | Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds | Applied Physics Letters | 65, 1563 | dev | K
-aleksov2003 | Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. | 2003 | Diamond field effect transistors - concepts and challenges | Diamond and Related Materials | 12, 391 | dev | K
-ueda2006 | Ueda, K.; Kasu, M.; Yamauchi, Y.; et al. | 2006 | Diamond FET using high-quality polycrystalline diamond with fT of 45 GHz and fmax of 120 GHz | IEEE Electron Device Letters | 27, 570 | dev | K
-kasu2005 | Kasu, M.; Ueda, K.; Ye, H.; et al. | 2005 | 2 W/mm output power density at 1 GHz for diamond FETs | Electronics Letters | 41, 1249 | dev | K
-kasu2017 | Kasu, M. | 2017 | Diamond field-effect transistors for RF power electronics: novel NO2 hole doping and low-temperature deposited Al2O3 passivation | Japanese Journal of Applied Physics | 56, 01AA01 | dev | K
-russell2012 | Russell, S. A. O.; Sharabi, S.; Tallaire, A.; Moran, D. A. J. | 2012 | Hydrogen-terminated diamond field-effect transistors with cutoff frequency of 53 GHz | IEEE Electron Device Letters | 33, 1471 | dev | K
-imanishi2019 | Imanishi, S.; Horikawa, K.; Oi, N.; et al. | 2019 | 3.8 W/mm RF power density for ALD Al2O3-based two-dimensional hole gas diamond MOSFET operating at saturation velocity | IEEE Electron Device Letters | 40, 279 | dev | K
-yu2018 | Yu, X.; Zhou, J.; Qi, C.; et al. | 2018 | A high frequency hydrogen-terminated diamond MISFET with fT/fmax of 70/80 GHz | IEEE Electron Device Letters | 39, 1373 | dev | K
-kawarada2014 | Kawarada, H.; Tsuboi, H.; Naruo, T.; et al. | 2014 | C-H surface diamond field effect transistors for high temperature (400 C) and high voltage (500 V) operation | Applied Physics Letters | 105, 013510 | dev | K
-kawarada2017 | Kawarada, H.; Yamada, T.; Xu, D.; et al. | 2017 | Durability-enhanced two-dimensional hole gas of C-H diamond surface for complementary power inverter applications | Scientific Reports | 7, 42368 | dev | K
-kitabayashi2017 | Kitabayashi, Y.; Kudo, T.; Tsuboi, H.; et al. | 2017 | Normally-off C-H diamond MOSFETs with partial C-O channel achieving 2-kV breakdown voltage | IEEE Electron Device Letters | 38, 363 | dev | K
-matsumoto2016 | Matsumoto, T.; Kato, H.; Oyama, K.; et al. | 2016 | Inversion channel diamond metal-oxide-semiconductor field-effect transistor with normally off characteristics | Scientific Reports | 6, 31585 | dev | K
-liu2014 | Liu, J. W.; Liao, M. Y.; Imura, M.; et al. | 2014 | Diamond logic inverter with enhancement-mode metal-insulator-semiconductor field effect transistor | Applied Physics Letters | 105, 082110 | dev | K
-liu2017 | Liu, J. W.; Oosato, H.; Liao, M. Y.; Imura, M.; Watanabe, E.; Koide, Y. | 2017 | Logic circuits with hydrogenated diamond field-effect transistors | IEEE Electron Device Letters | 38, 922 | dev | K
+stapper1983 | Stapper, C. H.; Armstrong, F. M.; Saji, K. | 1983 | Integrated circuit yield statistics | Proceedings of the IEEE | 71, 453 | si | V
+murphy1964 | Murphy, B. T. | 1964 | Cost-size optima of monolithic integrated circuits | Proceedings of the IEEE | 52, 1537 | si | V
+collins1971 | Collins, A. T.; Williams, A. W. S. | 1971 | The nature of the acceptor centre in semiconducting diamond | Journal of Physics C: Solid State Physics | 4, 1789 | dop | V
+chrenko1973 | Chrenko, R. M. | 1973 | Boron, the dominant acceptor in semiconducting diamond | Physical Review B | 7, 4560 | dop | V
+farrer1969 | Farrer, R. G. | 1969 | On the substitutional nitrogen donor in diamond | Solid State Communications | 7, 685 | dop | V
+koizumi1997 | Koizumi, S.; Kamo, M.; Sato, Y.; Ozaki, H.; Inuzuka, T. | 1997 | Growth and characterization of phosphorous doped {111} homoepitaxial diamond thin films | Applied Physics Letters | 71, 1065 | dop | V
+koizumi2001 | Koizumi, S.; Watanabe, K.; Hasegawa, M.; Kanda, H. | 2001 | Ultraviolet emission from a diamond pn junction | Science | 292, 1899 | dop,dev | V
+kato2005 | Kato, H.; Yamasaki, S.; Okushi, H. | 2005 | n-type doping of (001)-oriented single-crystalline diamond by phosphorus | Applied Physics Letters | 86, 222111 | dop | V
+katagiri2004 | Katagiri, M.; Isoya, J.; Koizumi, S.; Kanda, H. | 2004 | Lightly phosphorus-doped homoepitaxial diamond films grown by chemical vapor deposition | Applied Physics Letters | 85, 6365 | dop | V
+kalish1999 | Kalish, R. | 1999 | Doping of diamond | Carbon | 37, 781 | dop | V
+prins1988 | Prins, J. F. | 1988 | Activation of boron-dopant atoms in ion-implanted diamonds | Physical Review B | 38, 5576 | dop | V
+lagrange1998 | Lagrange, J.-P.; Deneuville, A.; Gheeraert, E. | 1998 | Activation energy in low compensated homoepitaxial boron-doped diamond films | Diamond and Related Materials | 7, 1390 | dop | V
+goss2004 | Goss, J. P.; Briddon, P. R.; Jones, R.; Sque, S. | 2004 | Donor and acceptor states in diamond | Diamond and Related Materials | 13, 684 | dop | V
+ekimov2004 | Ekimov, E. A.; Sidorov, V. A.; Bauer, E. D.; et al. | 2004 | Superconductivity in diamond | Nature | 428, 542 | dop | V
+landstrass1989 | Landstrass, M. I.; Ravi, K. V. | 1989 | Resistivity of chemical vapor deposited diamond films | Applied Physics Letters | 55, 975 | dop | V
+maier2000 | Maier, F.; Riedel, M.; Mantel, B.; Ristein, J.; Ley, L. | 2000 | Origin of surface conductivity in diamond | Physical Review Letters | 85, 3472 | dop | V
+strobel2004 | Strobel, P.; Riedel, M.; Ristein, J.; Ley, L. | 2004 | Surface transfer doping of diamond | Nature | 430, 439 | dop | V
+crawford2021 | Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. | 2021 | Surface transfer doping of diamond: a review | Progress in Surface Science | 96, 100613 | dop | V
+russell2013 | Russell, S. A. O.; Cao, L.; Qi, D.; et al. | 2013 | Surface transfer doping of diamond by MoO3: a combined spectroscopic and Hall measurement study | Applied Physics Letters | 103, 202112 | dop | V
+tordjman2014 | Tordjman, M.; Saguy, C.; Bolker, A.; Kalish, R. | 2014 | Superior surface transfer doping of diamond with MoO3 | Advanced Materials Interfaces | 1, 1300155 | dop | V
+verona2016 | Verona, C.; Ciccognani, W.; Colangeli, S.; et al. | 2016 | Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators | Journal of Applied Physics | 120, 025104 | dop | V
+crawford2016 | Crawford, K. G.; Cao, L.; Qi, D.; et al. | 2016 | Enhanced surface transfer doping of diamond by V2O5 with improved thermal stability | Applied Physics Letters | 108, 042103 | dop | V
+kubovic2010 | Kubovic, M.; Kasu, M. | 2010 | Sorption properties of NO2 gas and its strong influence on hole concentration of H-terminated diamond surfaces | Applied Physics Letters | 96, 052101 | dop | V
+himpsel1979 | Himpsel, F. J.; Knapp, J. A.; VanVechten, J. A.; Eastman, D. E. | 1979 | Quantum photoyield of diamond(111) - a stable negative-affinity emitter | Physical Review B | 20, 624 | dop | V
+kawarada1996 | Kawarada, H. | 1996 | Hydrogen-terminated diamond surfaces and interfaces | Surface Science Reports | 26, 205 | dop | V
+tachibana1992 | Tachibana, T.; Williams, B. E.; Glass, J. T. | 1992 | Correlation of the electrical properties of metal contacts on diamond films with the chemical nature of the metal-diamond interface. II. Titanium contacts: a carbide-forming metal | Physical Review B | 45, 11975 | dop | V
+moazed1990 | Moazed, K. L.; Zeidler, J. R.; Taylor, M. J. | 1990 | A thermally activated solid state reaction process for fabricating ohmic contacts to semiconducting diamond | Journal of Applied Physics | 68, 2246 | dop | V
+hwang2004 | Hwang, D. S.; Saito, T.; Fujimori, N. | 2004 | New etching process for device fabrication using diamond | Diamond and Related Materials | 13, 2207 | dop | V
+lee2008 | Lee, C. L.; Gu, E.; Dawson, M. D.; Friel, I.; Scarsbrook, G. A. | 2008 | Etching and micro-optics fabrication in diamond using chlorine-based inductively-coupled plasma | Diamond and Related Materials | 17, 1292 | dop | V
+hausmann2010 | Hausmann, B. J. M.; Khan, M.; Zhang, Y.; et al. | 2010 | Fabrication of diamond nanowires for quantum information processing applications | Diamond and Related Materials | 19, 621 | dop,net | V
+uzansaguy1995 | Uzan-Saguy, C.; Cytermann, C.; Brener, R.; et al. | 1995 | Damage threshold for ion-beam induced graphitization of diamond | Applied Physics Letters | 67, 1194 | dop,fab | V
+kawarada1994 | Kawarada, H.; Aoki, M.; Ito, M. | 1994 | Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds | Applied Physics Letters | 65, 1563 | dev | V
+aleksov2003 | Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. | 2003 | Diamond field effect transistors - concepts and challenges | Diamond and Related Materials | 12, 391 | dev | V
+ueda2006 | Ueda, K.; Kasu, M.; Yamauchi, Y.; et al. | 2006 | Diamond FET using high-quality polycrystalline diamond with fT of 45 GHz and fmax of 120 GHz | IEEE Electron Device Letters | 27, 570 | dev | V
+kasu2005 | Kasu, M.; Ueda, K.; Ye, H.; et al. | 2005 | 2 W/mm output power density at 1 GHz for diamond FETs | Electronics Letters | 41, 1249 | dev | V
+kasu2017 | Kasu, M. | 2017 | Diamond field-effect transistors for RF power electronics: novel NO2 hole doping and low-temperature deposited Al2O3 passivation | Japanese Journal of Applied Physics | 56, 01AA01 | dev | V
+russell2012 | Russell, S. A. O.; Sharabi, S.; Tallaire, A.; Moran, D. A. J. | 2012 | Hydrogen-terminated diamond field-effect transistors with cutoff frequency of 53 GHz | IEEE Electron Device Letters | 33, 1471 | dev | V
+imanishi2019 | Imanishi, S.; Horikawa, K.; Oi, N.; et al. | 2019 | 3.8 W/mm RF power density for ALD Al2O3-based two-dimensional hole gas diamond MOSFET operating at saturation velocity | IEEE Electron Device Letters | 40, 279 | dev | V
+yu2018 | Yu, X.; Zhou, J.; Qi, C.; et al. | 2018 | A high frequency hydrogen-terminated diamond MISFET with fT/fmax of 70/80 GHz | IEEE Electron Device Letters | 39, 1373 | dev | V
+kawarada2014 | Kawarada, H.; Tsuboi, H.; Naruo, T.; et al. | 2014 | C-H surface diamond field effect transistors for high temperature (400 C) and high voltage (500 V) operation | Applied Physics Letters | 105, 013510 | dev | V
+kawarada2017 | Kawarada, H.; Yamada, T.; Xu, D.; et al. | 2017 | Durability-enhanced two-dimensional hole gas of C-H diamond surface for complementary power inverter applications | Scientific Reports | 7, 42368 | dev | V
+kitabayashi2017 | Kitabayashi, Y.; Kudo, T.; Tsuboi, H.; et al. | 2017 | Normally-off C-H diamond MOSFETs with partial C-O channel achieving 2-kV breakdown voltage | IEEE Electron Device Letters | 38, 363 | dev | V
+matsumoto2016 | Matsumoto, T.; Kato, H.; Oyama, K.; et al. | 2016 | Inversion channel diamond metal-oxide-semiconductor field-effect transistor with normally off characteristics | Scientific Reports | 6, 31585 | dev | V
+liu2014 | Liu, J. W.; Liao, M. Y.; Imura, M.; et al. | 2014 | Diamond logic inverter with enhancement-mode metal-insulator-semiconductor field effect transistor | Applied Physics Letters | 105, 082110 | dev | V
+liu2017 | Liu, J. W.; Oosato, H.; Liao, M. Y.; Imura, M.; Watanabe, E.; Koide, Y. | 2017 | Logic circuits with hydrogenated diamond field-effect transistors | IEEE Electron Device Letters | 38, 922 | dev | V
 liao2024 | Liao, M.; Sun, H.; Koizumi, S. | 2024 | High-temperature and high-electron mobility metal-oxide-semiconductor field-effect transistors based on n-type diamond | Advanced Science | 11(13), 2306013 | dev | V
 zhao2024 | Zhao, W.; Koizumi, S.; Liao, M. | 2024 | P-channel MOSFETs on phosphorous-doped n-type diamond | IEEE Electron Device Letters | 45(12), 2268 | dev | V
-sasama2018 | Sasama, Y.; Komatsu, K.; Moriyama, S.; et al. | 2018 | High-mobility diamond field effect transistor with a monocrystalline h-BN gate dielectric | APL Materials | 6, 111105 | dev | K
-sasama2022 | Sasama, Y.; Kageura, T.; Imura, M.; et al. | 2022 | High-mobility p-channel wide-bandgap transistors based on hydrogen-terminated diamond/hexagonal boron nitride heterostructures | Nature Electronics | 5, 37 | dev | K
-ren2017 | Ren, Z.; Zhang, J.; Zhang, J.; et al. | 2017 | Diamond field effect transistors with MoO3 gate dielectric | IEEE Electron Device Letters | 38, 786 | dev | K
-umezawa2018 | Umezawa, H. | 2018 | Recent advances in diamond power semiconductor devices | Materials Science in Semiconductor Processing | 78, 147 | dev | K
-geis2018 | Geis, M. W.; Wade, T. C.; Wuorio, C. H.; et al. | 2018 | Progress toward diamond power field-effect transistors | Physica Status Solidi A | 215, 1800681 | dev | K
-twitchen2004 | Twitchen, D. J.; Whitehead, A. J.; Coe, S. E.; et al. | 2004 | High-voltage single-crystal diamond diodes | IEEE Transactions on Electron Devices | 51, 826 | dev | K
-butler2003 | Butler, J. E.; Geis, M. W.; Krohn, K. E.; et al. | 2003 | Exceptionally high voltage Schottky diamond diodes and low boron doping | Semiconductor Science and Technology | 18, S67 | dev | K
-traore2014 | Traore, A.; Muret, P.; Fiori, A.; et al. | 2014 | Zr/oxidized diamond interface for high power Schottky diodes | Applied Physics Letters | 104, 052105 | dev | K
-makino2009 | Makino, T.; Tanimoto, S.; Hayashi, Y.; et al. | 2009 | Diamond Schottky-pn diode with high forward current density and fast switching operation | Applied Physics Letters | 94, 262101 | dev | K
-iwasaki2013jfet | Iwasaki, T.; Hoshino, Y.; Tsuzuki, K.; et al. | 2013 | High-temperature operation of diamond junction field-effect transistors with lateral p-n junctions | IEEE Electron Device Letters | 34, 1175 | dev | K
-kato2012bjt | Kato, H.; Oyama, K.; Makino, T.; et al. | 2012 | Diamond bipolar junction transistor device with phosphorus-doped diamond base layer | Diamond and Related Materials | 27-28, 19 | dev | K
-pernegger2005 | Pernegger, H.; Roe, S.; Weilhammer, P.; et al. | 2005 | Charge-carrier properties in synthetic single-crystal diamond measured with the transient-current technique | Journal of Applied Physics | 97, 073704 | dev,mat | K
-isberg2013 | Isberg, J.; Gabrysch, M.; Hammersberg, J.; et al. | 2013 | Generation, transport and detection of valley-polarized electrons in diamond | Nature Materials | 12, 760 | dev | K
-bormashov2018 | Bormashov, V. S.; Troschiev, S. Y.; Tarelkin, S. A.; et al. | 2018 | High power density nuclear battery prototype based on diamond Schottky diodes | Diamond and Related Materials | 84, 41 | dev | K
-francis2010 | Francis, D.; Faili, F.; Babic, D.; et al. | 2010 | Formation and characterization of 4-inch GaN-on-diamond substrates | Diamond and Related Materials | 19, 229 | thm | K
-pomeroy2014 | Pomeroy, J. W.; Bernardoni, M.; Dumka, D. C.; Fanning, D. M.; Kuball, M. | 2014 | Low thermal resistance GaN-on-diamond transistors characterized by three-dimensional Raman thermography mapping | Applied Physics Letters | 104, 083513 | thm | K
-sun2015 | Sun, H.; Simon, R. B.; Pomeroy, J. W.; et al. | 2015 | Reducing GaN-on-diamond interfacial thermal resistance for high power transistor applications | Applied Physics Letters | 106, 111906 | thm | K
-malakoutian2021 | Malakoutian, M.; Field, D. E.; Hines, N. J.; et al. | 2021 | Record-low thermal boundary resistance between diamond and GaN-on-SiC for enabling radiofrequency device cooling | ACS Applied Materials and Interfaces | 13, 60553 | thm | K
+sasama2018 | Sasama, Y.; Komatsu, K.; Moriyama, S.; et al. | 2018 | High-mobility diamond field effect transistor with a monocrystalline h-BN gate dielectric | APL Materials | 6, 111105 | dev | V
+sasama2022 | Sasama, Y.; Kageura, T.; Imura, M.; et al. | 2022 | High-mobility p-channel wide-bandgap transistors based on hydrogen-terminated diamond/hexagonal boron nitride heterostructures | Nature Electronics | 5, 37 | dev | V
+ren2017 | Ren, Z.; Zhang, J.; Zhang, J.; et al. | 2017 | Diamond field effect transistors with MoO3 gate dielectric | IEEE Electron Device Letters | 38, 786 | dev | V
+umezawa2018 | Umezawa, H. | 2018 | Recent advances in diamond power semiconductor devices | Materials Science in Semiconductor Processing | 78, 147 | dev | V
+geis2018 | Geis, M. W.; Wade, T. C.; Wuorio, C. H.; et al. | 2018 | Progress toward diamond power field-effect transistors | Physica Status Solidi A | 215, 1800681 | dev | V
+twitchen2004 | Twitchen, D. J.; Whitehead, A. J.; Coe, S. E.; et al. | 2004 | High-voltage single-crystal diamond diodes | IEEE Transactions on Electron Devices | 51, 826 | dev | V
+butler2003 | Butler, J. E.; Geis, M. W.; Krohn, K. E.; et al. | 2003 | Exceptionally high voltage Schottky diamond diodes and low boron doping | Semiconductor Science and Technology | 18, S67 | dev | V
+traore2014 | Traore, A.; Muret, P.; Fiori, A.; et al. | 2014 | Zr/oxidized diamond interface for high power Schottky diodes | Applied Physics Letters | 104, 052105 | dev | V
+makino2009 | Makino, T.; Tanimoto, S.; Hayashi, Y.; et al. | 2009 | Diamond Schottky-pn diode with high forward current density and fast switching operation | Applied Physics Letters | 94, 262101 | dev | V
+iwasaki2013jfet | Iwasaki, T.; Hoshino, Y.; Tsuzuki, K.; et al. | 2013 | High-temperature operation of diamond junction field-effect transistors with lateral p-n junctions | IEEE Electron Device Letters | 34, 1175 | dev | V
+kato2012bjt | Kato, H.; Oyama, K.; Makino, T.; et al. | 2012 | Diamond bipolar junction transistor device with phosphorus-doped diamond base layer | Diamond and Related Materials | 27-28, 19 | dev | V
+pernegger2005 | Pernegger, H.; Roe, S.; Weilhammer, P.; et al. | 2005 | Charge-carrier properties in synthetic single-crystal diamond measured with the transient-current technique | Journal of Applied Physics | 97, 073704 | dev,mat | V
+isberg2013 | Isberg, J.; Gabrysch, M.; Hammersberg, J.; et al. | 2013 | Generation, transport and detection of valley-polarized electrons in diamond | Nature Materials | 12, 760 | dev | V
+bormashov2018 | Bormashov, V. S.; Troschiev, S. Y.; Tarelkin, S. A.; et al. | 2018 | High power density nuclear battery prototype based on diamond Schottky diodes | Diamond and Related Materials | 84, 41 | dev | V
+francis2010 | Francis, D.; Faili, F.; Babic, D.; et al. | 2010 | Formation and characterization of 4-inch GaN-on-diamond substrates | Diamond and Related Materials | 19, 229 | thm | V
+pomeroy2014 | Pomeroy, J. W.; Bernardoni, M.; Dumka, D. C.; Fanning, D. M.; Kuball, M. | 2014 | Low thermal resistance GaN-on-diamond transistors characterized by three-dimensional Raman thermography mapping | Applied Physics Letters | 104, 083513 | thm | V
+sun2015 | Sun, H.; Simon, R. B.; Pomeroy, J. W.; et al. | 2015 | Reducing GaN-on-diamond interfacial thermal resistance for high power transistor applications | Applied Physics Letters | 106, 111906 | thm | V
+malakoutian2021 | Malakoutian, M.; Field, D. E.; Hines, N. J.; et al. | 2021 | Record-low thermal boundary resistance between diamond and GaN-on-SiC for enabling radiofrequency device cooling | ACS Applied Materials and Interfaces | 13, 60553 | thm | V
 liang2021 | Liang, J.; Kobayashi, A.; Shimizu, Y.; et al. | 2021 | Fabrication of GaN/diamond heterointerface and interfacial chemical bonding state for highly efficient device design | Advanced Materials | 33, 2104564 | thm | V
 carslaw1959 | Carslaw, H. S.; Jaeger, J. C. | 1959 | Conduction of Heat in Solids (2nd ed.) | Oxford University Press | book | thm | K
