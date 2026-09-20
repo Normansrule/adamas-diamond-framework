@@ -117,3 +117,18 @@ def test_gate_budget_matches_lindblad_for_pure_dephasing_form():
     t_gate_us = 1e3 / (2 * float(dipolar_coupling_khz(r)))
     w = np.exp(-t_gate_us / (t2_ms * 1e3))
     assert math.isclose(opensys.cz_gate_fidelity(r, t2_ms, t1_ms=1e9), (1 + w) ** 2 / 4, rel_tol=1e-6)
+
+
+def test_surface_code_simulator_reproduces_threshold_behavior():
+    sim = pytest.importorskip("adamas.surface_sim")
+    if sim.pymatching is None:
+        pytest.skip("PyMatching not installed")
+    assert sim.logical_error_rate(5, 0.0, 0.0, shots=200)[0] == 0.0
+    below = [sim.logical_error_rate(d, 0.015, 0.015, shots=3000, seed=d)[0] for d in (3, 7)]
+    above = [sim.logical_error_rate(d, 0.045, 0.045, shots=3000, seed=d)[0] for d in (3, 7)]
+    assert below[1] < below[0] / 3            # below threshold a larger code is much better
+    assert above[1] > above[0]                # above threshold it is worse
+    assert 0.025 < sim.threshold_estimate(shots=3000, steps=5) < 0.036      # published: 0.0293 [wang2003]
+    p_d, p_m = sim.effective_rates(1e-3, 3e-3, 1e-2)
+    assert math.isclose(p_d, 1e-3 + 4 * 8 / 15 * 3e-3) and math.isclose(p_m, 1e-2 + 4 * 8 / 15 * 3e-3)
+    assert sim.effective_rates(1e-3, 3e-3, 1e-2, f_link=0.0) == (1e-3, 1e-2)

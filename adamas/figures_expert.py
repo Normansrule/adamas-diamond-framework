@@ -1,4 +1,4 @@
-"""Expert-track figures (17 to 26). Same rule as adamas.figures: every plotted number or equation carries a [bibkey]."""
+"""Expert-track figures (17 to 27). Same rule as adamas.figures: every plotted number or equation carries a [bibkey]."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from . import analog, coupling, digital, gate_budget, litho, opensys, qec
+from . import analog, coupling, digital, gate_budget, litho, opensys, qec, surface_sim
 from .figures import COLORS, GOLD, GREEN, INK, RED, _finish
 
 
@@ -250,9 +250,54 @@ def fig_gate_budget(out: Path) -> Path:
                    "[dolde2013] [dolde2014] [aslam2013] [mizuochi2009] [delange2010] [neumann2010natphys]; adamas.gate_budget model")
 
 
+def fig_surface_sim(out: Path) -> Path:
+    """Figure 27: threshold reproduction and the link/readout trade-off for NV cells. Needs PyMatching."""
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 4.8))
+    ax = axes[0]
+    ps = np.array([0.015, 0.02, 0.025, 0.03, 0.035, 0.04])
+    for d, c in [(3, COLORS["Si"]), (5, COLORS["4H-SiC"]), (7, COLORS["Diamond"]), (9, RED)]:
+        res = [surface_sim.logical_error_rate(d, p, p, shots=6000, seed=d) for p in ps]
+        ax.errorbar(ps * 100, [r[0] for r in res], yerr=[r[1] for r in res], marker="o", lw=2, color=c, label=f"d = {d}", capsize=2)
+    ax.axvline(2.93, color=INK, ls=":", lw=1)
+    ax.text(2.96, 0.012, "2.93% [wang2003]", fontsize=8.5)
+    ax.set_yscale("log")
+    ax.set_xlabel("Error per round, data = readout (%)")
+    ax.set_ylabel("Logical error after d rounds")
+    ax.set_title("Validation: curves cross at the known threshold", fontsize=11)
+    ax.legend(fontsize=8.5)
+    ax.grid(True, which="both", alpha=0.15)
+    ax = axes[1]
+    links = np.logspace(-3, np.log10(2e-2), 9)
+    meas = np.logspace(-3, -1, 9)
+    ratio = np.zeros((len(meas), len(links)))
+    shots = 3000
+    for i, pm in enumerate(meas):
+        for j, pl in enumerate(links):
+            a = surface_sim.nv_logical_error(3, 1e-3, pl, pm, shots=shots, seed=3)[0]
+            b = surface_sim.nv_logical_error(7, 1e-3, pl, pm, shots=shots, seed=7)[0]
+            ratio[i, j] = np.log10((b + 0.5 / shots) / (a + 0.5 / shots))
+    im = ax.contourf(links * 100, meas * 100, ratio, levels=np.linspace(-2, 1, 13), cmap="RdYlGn_r", extend="both")
+    ax.contour(links * 100, meas * 100, ratio, levels=[0.0], colors=[INK], linewidths=2.5)
+    ax.set_xscale("log"); ax.set_yscale("log")
+    ax.plot(0.8, 1.0, "*", ms=14, color="white", mec=INK)
+    ax.annotate("if links matched today's in-cell gates [rong2015]", (0.8, 1.0), xytext=(0.105, 0.115), fontsize=8,
+                arrowprops=dict(arrowstyle="->"))
+    ax.set_xlabel("Inter-cell link error per gate (%)")
+    ax.set_ylabel("Readout error (%)")
+    ax.set_title("Does a bigger code help? (black line: break-even)", fontsize=11)
+    fig.colorbar(im, ax=ax, label="log₁₀ of p_L(7)/p_L(3); green = scaling works")
+    return _finish(fig, out, "fig27_surface_code_three_rates.png",
+                   "[dennis2002] [wang2003] [fowler2012] [edmonds1965] [higgott2022] [rong2015]; adamas.surface_sim model")
+
+
 ALL = [fig_litho_tools, fig_litho_stochastics, fig_processor_landscape, fig_logic_scaling, fig_analog, fig_lindblad,
        fig_bath_and_dd, fig_qec, fig_stack_map, fig_gate_budget]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
-    return [f(Path(out)) for f in ALL]
+    paths = [f(Path(out)) for f in ALL]
+    if surface_sim.pymatching is None:
+        print("skipped fig27 (optional dependency missing):  pip install pymatching")
+    else:
+        paths.append(fig_surface_sim(Path(out)))
+    return paths
