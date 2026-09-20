@@ -1,0 +1,21 @@
+# DIA-4: a processor sized for p-channel-only diamond logic
+
+| File | Purpose |
+|---|---|
+| `dia4.v` | 4-bit accumulator processor, 9 instructions, synchronous reset |
+| `dia4_tb.v` | Testbench: counts down from 5 on the output port, prints PASS |
+| `adamas_ed.lib` | Liberty logic view of enhancement/depletion cells; `area` = transistor count |
+| `cells_sim.v` | Behavioral cell models for gate-level simulation |
+| `synth.ys` | Yosys script [wolf2013] mapping the design onto the cell library |
+
+```bash
+iverilog -o /tmp/dia4 dia4.v dia4_tb.v && vvp /tmp/dia4          # behavioral simulation
+yosys -q -l synth.log synth.ys && grep -A8 "Number of cells" synth.log | tail -9
+iverilog -o /tmp/dia4g dia4_netlist.v cells_sim.v dia4_tb.v && vvp /tmp/dia4g   # gate-level simulation
+```
+
+**Tested result (Yosys 0.33, Icarus Verilog):** both simulations print PASS. Synthesis gives 220 cells
+(13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3) = **897 transistors**, about 40 percent of an Intel 4004 [faggin1996].
+Feeding the gate count to `adamas.digital.processor_estimate` gives the clock and power estimates in
+`docs/expert/E3_digital_and_cpu_design.md`. Timing in the Liberty file is intentionally absent: no measured
+diamond cell delays exist yet (experiment D-2).

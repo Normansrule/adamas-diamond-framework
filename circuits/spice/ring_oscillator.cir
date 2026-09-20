@@ -1,0 +1,21 @@
+* ADAMAS: 5-stage enhancement/depletion ring oscillator, p-channel diamond transistors, after [liu2017].
+* Tested with ngspice 42. Rails negative: VSS = -10 V. Each stage drives the next gate plus 20 fF of wire.
+.include diamond_pfet.lib
+.subckt edinv in out vss
+M1 out in 0 0 DIAMOND_PE W=16u L=2u
+M2 vss out out 0 DIAMOND_PD W=2u L=2u
+C1 out 0 20f
+.ends
+VSS vss 0 DC -10
+X1 n1 n2 vss edinv
+X2 n2 n3 vss edinv
+X3 n3 n4 vss edinv
+X4 n4 n5 vss edinv
+X5 n5 n1 vss edinv
+.ic v(n1)=0 v(n2)=-10 v(n3)=0 v(n4)=-10 v(n5)=0
+.tran 0.05n 200n uic
+.measure tran t1 when v(n1)=-5 rise=2
+.measure tran t2 when v(n1)=-5 rise=3
+.measure tran period param='t2-t1'
+.measure tran iavg avg i(VSS) from=50n to=200n
+.end

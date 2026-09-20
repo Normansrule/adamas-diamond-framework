@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
 <p align="center">
-<b>338 references</b> · <b>16 reproducible figures</b> · <b>14 chapters</b> · <b>a tested Python package</b> · <b>26 proposed experiments</b>
+<b>466 references</b> · <b>25 reproducible figures</b> · <b>22 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -152,12 +152,42 @@ flowchart TB
 | Two NV centers entangled at 25 nm ([dolde2013], [dolde2014]) | Dark-spin chain bus beyond 50 nm (F-2, after [yao2012]) |
 | Diamond chiplets on foundry CMOS [li2024] | Room-temperature logical qubit in one NV cluster (F-6) |
 
-Full list with success metrics, budget tiers, and decision gates: [Chapter 11](docs/11_proposed_experiments_and_roadmap.md).
+Full list with success metrics, budget tiers, and decision gates: [Chapter 11](docs/11_proposed_experiments_and_roadmap.md). The expert track adds 39 more, sized from a weekend to a doctoral program: [E8](docs/expert/E8_projects_and_thesis_topics.md).
 
 ```mermaid
 flowchart LR
     T0["Tier 0<br/>Simulation<br/>(this repo)"] --> T1["Tier 1<br/>Benchtop magnetic<br/>resonance kit"] --> T2["Tier 2<br/>University cleanroom"] --> T3["Tier 3<br/>Foundry and consortium"]
 ```
+
+## 7 · Expert track: from the lithography tool to the logical qubit
+
+Eight research-level chapters follow the technology stack in order. Each adds tested models, new references, and numbered experiments.
+
+```mermaid
+flowchart LR
+    E1["E1 · Lithography<br/>EUV to electron beam"] --> E2["E2 · Process integration<br/>and design kit"] --> E3["E3 · Digital and<br/>processor design"] --> E4["E4 · Analog and<br/>mixed signal"] --> E5["E5 · NV qubit<br/>engineering"] --> E6["E6 · Error correction<br/>and architecture"] --> E7["E7 · Beyond"] --> E8["E8 · Project ladder"]
+```
+
+| # | Chapter | Headline result |
+|---|---|---|
+| E1 | [Patterning diamond: extreme ultraviolet (EUV) to electron beam](docs/expert/E1_lithography_from_euv_to_electron_beam.md) | EUV scanners are 300 mm-only and leave 45 to 124 nm of focus depth, so diamond needs co-planar carriers; the one layer that truly needs EUV-class resolution is the qubit implant mask |
+| E2 | [Process integration and a process design kit (PDK)](docs/expert/E2_process_integration_and_pdk.md) | A six-mask "PDK-0" with monitor structures, a compact-model ladder, and an open-source flow |
+| E3 | [Digital and processor design](docs/expert/E3_digital_and_cpu_design.md) | **DIA-4**, a working 4-bit processor synthesized to 897 diamond transistors; static power caps single-polarity diamond logic near 10⁴ gates |
+| E4 | [Analog and mixed signal](docs/expert/E4_analog_and_mixed_signal_design.md) | Threshold-difference references replace bandgaps; the picoampere qubit-readout noise budget |
+| E5 | [NV qubit engineering](docs/expert/E5_nv_qubit_engineering.md) | Lindblad gate model tightens the spacing rule to about 12 nm; bath and decoupling models reproduce published $T_2^{*}$ and $T_2$ |
+| E6 | [Error correction and architecture](docs/expert/E6_error_correction_and_system_architecture.md) | 145 NV cells per logical qubit at 10⁻³ error; link fidelity matters more than qubit count |
+| E7 | [Beyond](docs/expert/E7_beyond_the_framework.md) | Masers, hyperpolarization, gyroscopes, simulators, harsh-environment systems, rival hosts, six moonshots |
+| E8 | [Project ladder](docs/expert/E8_projects_and_thesis_topics.md) | Every experiment sized from a weekend to a multi-group program |
+
+| Lithography limits on diamond | Processors built with one transistor polarity |
+|---|---|
+| ![Lithography tools](docs/img/fig17_litho_tools.png) | ![Processor landscape](docs/img/fig19_processor_landscape.png) |
+
+| Open-system NV–NV gate | Surface-code overhead in NV cells |
+|---|---|
+| ![Lindblad gate](docs/img/fig22_lindblad_gate.png) | ![Error-correction overhead](docs/img/fig24_qec_overhead.png) |
+
+![Nine orders of magnitude on one wafer](docs/img/fig25_length_scales.png)
 
 ## 📚 Chapters
 
@@ -177,21 +207,25 @@ flowchart LR
 | 11 | [Proposed experiments and roadmap](docs/11_proposed_experiments_and_roadmap.md) | 26 experiments in four tiers |
 | 12 | [Silicon versus diamond scorecard](docs/12_silicon_vs_diamond_scorecard.md) | Row-by-row comparison |
 | 13 | [Economics and risk](docs/13_economics_and_risk.md) | Product sequence and risk register |
-| — | [Glossary](docs/glossary.md) · [All 338 references](references/REFERENCES.md) · [BibTeX](references/references.bib) | |
+| E1–E8 | [Expert track](docs/expert/) | Lithography → design kit → processors → analog → qubit engineering → error correction → beyond → projects |
+| — | [Glossary](docs/glossary.md) · [All 466 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
 
 ## ⚙️ Quick start
 
 ```bash
 git clone git@github.com:Normansrule/adamas-diamond-framework.git
 cd adamas-diamond-framework
-conda create -n adamas python=3.12 -y && conda activate adamas
-pip install -e ".[dev]"
+sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
+conda env create -f environment.yml && conda activate adamas
 
-pytest -q                               # 18 tests, including the citation check
+python -m pytest -q                     # 29 tests, including the citation check
+make spice rtl synth                    # ngspice ring oscillator; DIA-4 processor simulation and synthesis
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
 python examples/make_all_figures.py     # regenerate every figure in docs/img/
 ```
+
+Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT_UBUNTU.md](docs/DEVELOPMENT_UBUNTU.md).
 
 | Module | What it computes | Key sources |
 |---|---|---|
@@ -204,7 +238,13 @@ python examples/make_all_figures.py     # regenerate every figure in docs/img/
 | `adamas.nv` | Spin Hamiltonian, magnetic resonance spectra, Rabi, Ramsey, echo, sensitivity | [doherty2013], [dreau2011] |
 | `adamas.coupling` | Dipolar coupling, gate bound, Monte Carlo placement yield | [dolde2013], [neumann2010natphys] |
 | `adamas.register` | Electron plus nuclear two-qubit gate simulation | [felton2009], [dutt2007] |
-| `adamas.figures` | Every figure in this README | all of the above |
+| `adamas.litho` | Rayleigh scaling, EUV photon statistics, mirror throughput, electron range | [mack2007], [debisschop2017], [kanaya1972] |
+| `adamas.digital` | Delay, power, and gate budgets for single-polarity logic; reference processors | [rabaey2003], [faggin1996], [biggs2021] |
+| `adamas.analog` | gm/I_D, gain, mismatch, noise, references, photocurrent readout budget | [silveira1996], [pelgrom1989], [blauschild1978] |
+| `adamas.opensys` | Lindblad two-qubit gate, carbon-13 bath, dynamical decoupling | [lindblad1976], [maze2008prb], [delange2010] |
+| `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
+| `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
+| `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |
 
 ## 🔖 The citation rule
 
@@ -212,7 +252,7 @@ python examples/make_all_figures.py     # regenerate every figure in docs/img/
 2. `tools/check_citations.py` runs in continuous integration and fails the build on any unknown key.
 3. Models that originate in this repository (the gate-fidelity bound, the placement Monte Carlo, the yield plot's defect densities) are labeled as such wherever they appear.
 
-**Honest status of the reference list.** 29 of the 338 entries (marked ✅) were checked against an online source while this repository was written. The remaining entries (marked 📚) were entered from knowledge of the literature and **may contain errors in volume, page, or year**. No Digital Object Identifiers (DOIs) were typed by hand. Before citing anything in a paper, run:
+**Honest status of the reference list.** 34 of the 466 entries (marked ✅) were checked against an online source while this repository was written. The remaining entries (marked 📚) were entered from knowledge of the literature and **may contain errors in volume, page, or year**. No Digital Object Identifiers (DOIs) were typed by hand. Before citing anything in a paper, run:
 
 ```bash
 python tools/verify_refs.py        # queries Crossref, writes references/verification_report.csv

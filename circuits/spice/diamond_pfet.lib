@@ -1,10 +1,11 @@
 * ADAMAS starter models: hydrogen-terminated diamond p-channel MOSFETs (SPICE level 1).
-* STATUS: UNTESTED in a simulator (no ngspice in the build sandbox). Syntax follows standard SPICE3 level-1 cards.
+* STATUS: tested with ngspice 42 (DC inverter sweep and 5-stage ring oscillator). Parameters are still placeholders, not fits.
 * Parameters are placeholders chosen to match adamas.logic defaults, which follow the device class
 * reported in [liu2014], [liu2017], [kawarada2014]: channel mobility 150 cm^2/Vs, 30 nm ALD Al2O3 (eps_r = 9).
 * KP = mu * Cox = 150 * (9 * 8.854e-14 / 30e-7) = 3.98e-5 A/V^2.  Fit to your own measured curves before use (experiment S-5).
+* TOX is the silicon-dioxide-EQUIVALENT thickness (30 nm x 3.9 / 9 = 13 nm) because SPICE level 1 assumes SiO2 when it computes gate capacitance.
 *
 * Enhancement-mode (normally-off) device, partial C-O channel style [kitabayashi2017]:
-.model DIAMOND_PE PMOS (LEVEL=1 VTO=-1.5 KP=3.98e-5 LAMBDA=0.02 TOX=30e-9)
+.model DIAMOND_PE PMOS (LEVEL=1 VTO=-1.5 KP=3.98e-5 LAMBDA=0.02 TOX=13e-9 CGSO=0 CGDO=0)
 * Depletion-mode (normally-on) device, plain C-H channel [kawarada1994]:
-.model DIAMOND_PD PMOS (LEVEL=1 VTO=2.0 KP=3.98e-5 LAMBDA=0.02 TOX=30e-9)
+.model DIAMOND_PD PMOS (LEVEL=1 VTO=2.0 KP=3.98e-5 LAMBDA=0.02 TOX=13e-9)

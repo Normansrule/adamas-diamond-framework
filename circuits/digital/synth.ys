@@ -1,0 +1,10 @@
+# Yosys flow [wolf2013]: map DIA-4 onto the ADAMAS enhancement/depletion cell library.
+read_verilog dia4.v
+synth -top dia4 -flatten
+dfflegalize -cell $_DFF_P_ 01
+opt
+dfflibmap -liberty adamas_ed.lib
+abc -liberty adamas_ed.lib
+opt_clean
+stat -liberty adamas_ed.lib
+write_verilog -noattr dia4_netlist.v

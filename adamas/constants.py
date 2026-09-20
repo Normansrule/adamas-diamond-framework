@@ -13,3 +13,5 @@ MU_B = 9.2740100783e-24       # Bohr magneton, J/T
 G_E = 2.0028                  # NV ground-state electron g-factor [doherty2013]
 GAMMA_E_HZ_PER_T = G_E * MU_B / H          # about 28.03 GHz/T [doherty2013]
 GAMMA_E_MHZ_PER_G = GAMMA_E_HZ_PER_T * 1e-10  # about 2.803 MHz/G
+C_LIGHT = 2.99792458e8           # speed of light, m/s
+GAMMA_13C_HZ_PER_T = 10.7084e6   # carbon-13 nuclear gyromagnetic ratio, Hz/T

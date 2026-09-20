@@ -7,3 +7,4 @@ dist/
 .venv/
 references/verification_report.csv
 .DS_Store
+circuits/digital/synth.log

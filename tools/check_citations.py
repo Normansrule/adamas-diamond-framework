@@ -9,7 +9,7 @@ CITE = re.compile(r"\[([a-z][a-z0-9]+(?:\d{4})[a-z0-9]*)\]")
 
 def main() -> int:
     keys = {r.key for r in load()}
-    files = [ROOT / "README.md", *ROOT.glob("docs/*.md"), *ROOT.glob("adamas/*.py"),
+    files = [ROOT / "README.md", *ROOT.glob("docs/**/*.md"), *ROOT.glob("adamas/*.py"),
              *ROOT.glob("circuits/**/*.*"), *ROOT.glob("examples/*.py")]
     cited: set[str] = set()
     missing: list[tuple[str, str]] = []

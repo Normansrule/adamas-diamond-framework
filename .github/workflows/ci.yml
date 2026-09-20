@@ -11,7 +11,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - run: sudo apt-get update && sudo apt-get install -y ngspice iverilog yosys
       - run: pip install -e ".[dev]"
-      - run: pytest -q
+      - run: python -m pytest -q
+      - run: make spice rtl synth
       - run: cd tools && python build_refs.py && python check_citations.py
       - run: python examples/make_all_figures.py

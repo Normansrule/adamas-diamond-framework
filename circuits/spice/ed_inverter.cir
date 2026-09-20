@@ -1,5 +1,5 @@
 * ADAMAS: p-channel-only enhancement/depletion inverter on diamond, after [liu2017].
-* STATUS: UNTESTED netlist. Rails are negative, as in the laboratory: VSS = -10 V, logic swings 0 to -10 V.
+* STATUS: tested with ngspice 42; transition near -2.2 V, matching adamas.logic. Rails are negative, as in the laboratory: VSS = -10 V, logic swings 0 to -10 V.
 .include diamond_pfet.lib
 VSS vss 0 DC -10
 VIN in 0 DC 0

@@ -4,7 +4,7 @@ title: "ADAMAS: A Referenced Framework for Diamond-Wafer Electronics and Room-Te
 authors:
   - family-names: Norman
     given-names: Aleksander
-version: 0.1.0
-date-released: 2026-09-19
+version: 0.2.0
+date-released: 2026-09-20
 license: MIT
 repository-code: "https://github.com/Normansrule/adamas-diamond-framework"

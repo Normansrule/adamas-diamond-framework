@@ -1,0 +1,13 @@
+/* ADAMAS enhancement/depletion (p-channel only) diamond standard cells: logic view for synthesis.
+   area = transistor count (drivers + one depletion load per gate), after the gate style of [liu2017].
+   Timing and power are NOT in this file; use adamas.digital for first-order estimates. */
+library(adamas_ed) {
+  cell(BUF)   { area: 4;  pin(A) { direction: input; } pin(Y) { direction: output; function: "A"; } }
+  cell(INV)   { area: 2;  pin(A) { direction: input; } pin(Y) { direction: output; function: "A'"; } }
+  cell(NAND2) { area: 3;  pin(A) { direction: input; } pin(B) { direction: input; } pin(Y) { direction: output; function: "(A*B)'"; } }
+  cell(NOR2)  { area: 3;  pin(A) { direction: input; } pin(B) { direction: input; } pin(Y) { direction: output; function: "(A+B)'"; } }
+  cell(NOR3)  { area: 4;  pin(A) { direction: input; } pin(B) { direction: input; } pin(C) { direction: input; } pin(Y) { direction: output; function: "(A+B+C)'"; } }
+  cell(DFF)   { area: 22; ff(IQ, IQN) { clocked_on: "CLK"; next_state: "D"; }
+                pin(CLK) { direction: input; clock: true; } pin(D) { direction: input; }
+                pin(Q) { direction: output; function: "IQ"; } }
+}
