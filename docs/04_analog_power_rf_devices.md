@@ -10,7 +10,16 @@ $$R_{on,sp} = \frac{W}{q \mu N} = \frac{4\,BV^{2}}{\varepsilon \mu E_c^{3}}$$
 
 ![Specific on-resistance versus breakdown voltage](img/fig03_ron_vs_bv.png)
 
-At 2608 V, `adamas.power` gives an ideal hole-conduction diamond limit of 0.014 mΩ·cm² and a silicon limit of about 695 mΩ·cm². The measured diamond MOSFET sits at 19.74 mΩ·cm² [saha2021]: already about 35 times better than the silicon limit, and about 1000 times above its own limit. The gap is the research opportunity, and it comes mostly from incomplete ionization, contact resistance, and lateral (not vertical) geometry ([donato2020], [umezawa2018], [geis2018]).
+At 2608 V, `adamas.power` gives an ideal hole-conduction diamond limit of 0.014 mΩ·cm² and a silicon limit of about 695 mΩ·cm². Measured lateral diamond MOSFETs from one group, all on heteroepitaxial wafers:
+
+| Device | Breakdown | $R_{on,sp}$ | Baliga figure of merit $BV^2/R_{on,sp}$ | Versus silicon's limit | Versus diamond's limit | Source |
+|---|---|---|---|---|---|---|
+| NO₂-doped, Al₂O₃ passivated | 2608 V | 19.74 mΩ·cm² | 345 MW/cm² | 35× better | 1400× worse | [saha2021] |
+| Same, chemical-mechanically planarized surface | 2568 V | 7.54 mΩ·cm² | 875 MW/cm² | 89× better | 550× worse | [saha2022], numbers as given in [kasu2022talk] |
+| Same, misoriented substrate, bilayer passivation | 3659 V | 77 mΩ·cm² (derived from the reported 173 MW/cm²) | 173 MW/cm² | 18× better | 2800× worse | [saha2023] |
+| Modulation-doped | 3326 V | not tabulated here | | | | [saha2022mod] |
+
+The remaining gap is the research opportunity, and it comes mostly from incomplete ionization, contact resistance, and lateral (not vertical) geometry ([donato2020], [umezawa2018], [geis2018]). The jump from 345 to 875 MW/cm² came from **polishing the surface**, which ties device performance directly to the wafer-flatness problem of [E1](expert/E1_lithography_from_euv_to_electron_beam.md).
 
 ## 4.2 Device families demonstrated so far
 
@@ -20,7 +29,7 @@ At 2608 V, `adamas.power` gives an ideal hole-conduction diamond limit of 0.014 
 | Schottky-pn diode | High forward current density with fast switching | [makino2009] |
 | pn and p-i-n junctions | Ultraviolet emission at 235 nm from a diamond pn junction | [koizumi2001] |
 | Hydrogen-terminated Field-Effect Transistor (FET) | First enhancement-mode device, 1994; operation to 400 °C; normally-off variants | [kawarada1994], [kawarada2014], [kitabayashi2017], [kawarada2017] |
-| NO₂-doped MOSFET on heteroepitaxial wafer | 2608 V, 345 MW/cm² Baliga figure of merit | [saha2021], [saha2020] |
+| NO₂-doped MOSFET on heteroepitaxial wafer | 2608 V / 345 MW/cm²; 2568 V / 875 MW/cm²; 3659 V / 173 MW/cm²; 3326 V modulation-doped | [saha2021], [saha2022], [saha2023], [saha2022mod], [saha2020] |
 | Inversion-channel MOSFET | First on n-type diamond, 2016 | [matsumoto2016] |
 | n-channel MOSFET | Electron mobility about 150 cm²/(V·s) at 573 K, 2024 | [liao2024] |
 | p-channel MOSFET on n-type body | 2024 | [zhao2024] |

@@ -90,17 +90,20 @@ def fig_ron_bv(out: Path) -> Path:
         carrier = "p" if k == "Diamond" else "n"
         ax.loglog(bv, [power.ron_sp_mohm_cm2(m, v, carrier) for v in bv], color=COLORS[k], lw=2.4,
                   label=f"{SHORT[k].replace(chr(10), ' ')} limit")
-    pt = power.MEASURED_DIAMOND["saha2021"]
-    ax.plot(pt["bv_v"], pt["ron_mohm_cm2"], "*", ms=18, color=RED, mec=INK, label="Measured diamond MOSFET [saha2021]")
-    ax.annotate("Real device today:\n2608 V, 19.74 mΩ·cm²\n(about 1000× above its own limit,\nso large headroom remains)",
-                (pt["bv_v"], pt["ron_mohm_cm2"]), xytext=(150, 60), fontsize=9,
-                arrowprops=dict(arrowstyle="->", color=INK))
+    for key, (dx, dy) in {"saha2021": (-150, 40), "saha2022": (-150, -60), "saha2023": (25, 30)}.items():
+        pt = power.MEASURED_DIAMOND[key]
+        ax.plot(pt["bv_v"], pt["ron_mohm_cm2"], "*", ms=16, color=RED, mec=INK,
+                label="Measured diamond MOSFETs" if key == "saha2021" else None)
+        ax.annotate(f"[{key}]\n{pt['bv_v']:.0f} V, {pt['ron_mohm_cm2']:.3g} mΩ·cm²", (pt["bv_v"], pt["ron_mohm_cm2"]),
+                    xytext=(dx, dy), textcoords="offset points", fontsize=8.5, arrowprops=dict(arrowstyle="->", color=INK))
+    ax.text(0.03, 0.95, "Real lateral devices beat silicon's limit by 18 to 90×\nand sit 550 to 2800× above diamond's own limit: the headroom",
+            transform=ax.transAxes, fontsize=9, va="top")
     ax.set_xlabel("Breakdown voltage (V)")
     ax.set_ylabel("Specific on-resistance (mΩ·cm²)   lower is better")
     ax.set_title("Power switch limit lines: on-resistance versus blocking voltage")
     ax.legend(fontsize=8.5, loc="lower right")
     ax.grid(True, which="both", alpha=0.15)
-    return _finish(fig, out, "fig03_ron_vs_bv.png", "[baliga1982] [donato2020] [saha2021]")
+    return _finish(fig, out, "fig03_ron_vs_bv.png", "[baliga1982] [donato2020] [saha2021] [saha2022] [saha2023] [kasu2022talk]")
 
 
 def fig_ionization(out: Path) -> Path:

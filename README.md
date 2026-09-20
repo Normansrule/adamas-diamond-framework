@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
 <p align="center">
-<b>466 references</b> · <b>25 reproducible figures</b> · <b>22 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>470 references</b> · <b>26 reproducible figures</b> · <b>22 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -84,7 +84,7 @@ Silicon chips already use the "diamond cubic" lattice. Diamond is that lattice w
 
 ![Figures of merit](docs/img/fig02_figures_of_merit.png)
 
-A real diamond transistor on a wafer-scale substrate already blocks 2608 V [saha2021]. It beats silicon's theoretical limit by about 35 times and still sits about 1000 times above diamond's own limit, which marks the room left to improve ([Chapter 4](docs/04_analog_power_rf_devices.md)).
+Real diamond transistors on wafer-scale substrates already block 2608 V [saha2021] and 3659 V [saha2023], and the best on-resistance so far, 7.54 mΩ·cm² at 2568 V ([saha2022], [kasu2022talk]), beats silicon's theoretical limit by about 90 times. All of them still sit 550 to 2800 times above diamond's own limit, which marks the room left to improve ([Chapter 4](docs/04_analog_power_rf_devices.md)).
 
 <p align="center"><img src="docs/img/fig03_ron_vs_bv.png" width="70%" alt="On-resistance versus breakdown voltage"></p>
 
@@ -145,7 +145,7 @@ flowchart TB
 | ✅ Demonstrated (peer reviewed) | 🧪 Proposed here |
 |---|---|
 | 2- and 3-inch-class single-crystal wafers ([kim2021], [schreck2017]) | Detect-and-repair NV arrays with laser writing (C-5) |
-| 2608 V diamond MOSFET [saha2021]; operation at 400 °C [kawarada2014] | Hole-gas transistors and NV qubits on one patterned-termination chip (C-7) |
+| 2608 V and 3659 V diamond MOSFETs ([saha2021], [saha2023]); operation at 400 °C [kawarada2014] | Hole-gas transistors and NV qubits on one patterned-termination chip (C-7) |
 | Inverter, NOR, NAND logic [liu2017]; first n-channel MOSFET [liao2024] | On-chip photoelectric qubit readout through a diamond switch (C-6) |
 | Room-temperature gates above the fault-tolerance threshold [rong2015] | Nuclear-nuclear entanglement across two NV centers at 300 K (C-8) |
 | Room-temperature quantum error correction [waldherr2014] | 16-cell microscope-free chiplet on CMOS (F-1) |
@@ -174,7 +174,7 @@ flowchart LR
 | E2 | [Process integration and a process design kit (PDK)](docs/expert/E2_process_integration_and_pdk.md) | A six-mask "PDK-0" with monitor structures, a compact-model ladder, and an open-source flow |
 | E3 | [Digital and processor design](docs/expert/E3_digital_and_cpu_design.md) | **DIA-4**, a working 4-bit processor synthesized to 830 to 900 diamond transistors; static power caps single-polarity diamond logic near 10⁴ gates |
 | E4 | [Analog and mixed signal](docs/expert/E4_analog_and_mixed_signal_design.md) | Threshold-difference references replace bandgaps; the picoampere qubit-readout noise budget |
-| E5 | [NV qubit engineering](docs/expert/E5_nv_qubit_engineering.md) | Lindblad gate model tightens the spacing rule to about 12 nm; bath and decoupling models reproduce published $T_2^{*}$ and $T_2$ |
+| E5 | [NV qubit engineering](docs/expert/E5_nv_qubit_engineering.md) | With an echoed gate, 25 nm spacing is enough for coherence; charge-state preparation becomes the bottleneck. Bath and decoupling models reproduce published $T_2^{*}$ and $T_2$ |
 | E6 | [Error correction and architecture](docs/expert/E6_error_correction_and_system_architecture.md) | 145 NV cells per logical qubit at 10⁻³ error; link fidelity matters more than qubit count |
 | E7 | [Beyond](docs/expert/E7_beyond_the_framework.md) | Masers, hyperpolarization, gyroscopes, simulators, harsh-environment systems, rival hosts, six moonshots |
 | E8 | [Project ladder](docs/expert/E8_projects_and_thesis_topics.md) | Every experiment sized from a weekend to a multi-group program |
@@ -208,7 +208,7 @@ flowchart LR
 | 12 | [Silicon versus diamond scorecard](docs/12_silicon_vs_diamond_scorecard.md) | Row-by-row comparison |
 | 13 | [Economics and risk](docs/13_economics_and_risk.md) | Product sequence and risk register |
 | E1–E8 | [Expert track](docs/expert/) | Lithography → design kit → processors → analog → qubit engineering → error correction → beyond → projects |
-| — | [Glossary](docs/glossary.md) · [All 466 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
+| — | [Glossary](docs/glossary.md) · [All 470 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
 
 ## ⚙️ Quick start
 
@@ -218,7 +218,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 32 tests, including the citation check
+python -m pytest -q                     # 35 tests, including the citation check
 make spice rtl synth                    # ngspice ring oscillator; DIA-4 processor simulation and synthesis
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -242,6 +242,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.digital` | Delay, power, and gate budgets for single-polarity logic; reference processors | [rabaey2003], [faggin1996], [biggs2021] |
 | `adamas.analog` | gm/I_D, gain, mismatch, noise, references, photocurrent readout budget | [silveira1996], [pelgrom1989], [blauschild1978] |
 | `adamas.opensys` | Lindblad two-qubit gate, carbon-13 bath, dynamical decoupling | [lindblad1976], [maze2008prb], [delange2010] |
+| `adamas.gate_budget` | Non-Markovian error budget of the echoed NV–NV gate: dephasing, pulses, preparation | [delange2010], [aslam2013], [dolde2013] |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
 | `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |
@@ -252,7 +253,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 2. `tools/check_citations.py` runs in continuous integration and fails the build on any unknown key.
 3. Models that originate in this repository (the gate-fidelity bound, the placement Monte Carlo, the yield plot's defect densities) are labeled as such wherever they appear.
 
-**Honest status of the reference list.** 34 of the 466 entries (marked ✅) were checked against an online source while this repository was written. The remaining entries (marked 📚) were entered from knowledge of the literature and **may contain errors in volume, page, or year**. No Digital Object Identifiers (DOIs) were typed by hand. Before citing anything in a paper, run:
+**Honest status of the reference list.** About 440 of the 470 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
 
 ```bash
 python tools/verify_refs.py        # queries Crossref, writes references/verification_report.csv
