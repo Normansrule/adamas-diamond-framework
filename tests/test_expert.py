@@ -79,9 +79,10 @@ def test_decoupling_reproduces_delange():
 def test_dia4_simulates(tmp_path):
     d = ROOT / "circuits" / "digital"
     exe = tmp_path / "dia4"
-    subprocess.run(["iverilog", "-o", str(exe), str(d / "dia4.v"), str(d / "dia4_tb.v")], check=True)
-    out = subprocess.run(["vvp", str(exe)], capture_output=True, text=True, check=True).stdout
-    assert "PASS" in out
+    for tb in ("dia4_tb.v", "dia4_call_tb.v"):                  # countdown program, then nested CALL/RET
+        subprocess.run(["iverilog", "-o", str(exe), str(d / "dia4.v"), str(d / tb)], check=True)
+        out = subprocess.run(["vvp", str(exe)], capture_output=True, text=True, check=True).stdout
+        assert "PASS" in out, tb
 
 
 @pytest.mark.skipif(shutil.which("ngspice") is None, reason="ngspice not installed")
