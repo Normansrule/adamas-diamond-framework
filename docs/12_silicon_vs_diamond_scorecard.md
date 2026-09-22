@@ -44,7 +44,28 @@ Silicon also hosts excellent spin qubits, phosphorus donors and quantum dots, fi
 
 Both platforms face a similar nanometer-scale placement problem. Silicon pays for its maturity with a refrigerator; diamond pays for room temperature with immature manufacturing. Single-ion implantation technology is shared between them ([jamieson2005], [grootberning2019]).
 
-## 12.4 Bottom line
+## 12.4 The long comparison
+
+Deeper silicon references for each row: transport [jacoboni1977], [arora1982]; intrinsic carriers and effective masses [green1990]; thermal conductivity [glassbrenner1964]. Diamond counterparts: [pernot2010], [isberg2002], [wei1993].
+
+| Item | Silicon | Diamond | Source |
+|---|---|---|---|
+| Intrinsic carrier density at 300 K | about 10¹⁰ cm⁻³ | about 10⁻²⁷ cm⁻³ (no thermal carriers at any practical temperature) | [green1990], [sze2006] |
+| Maximum operating temperature set by intrinsic conduction | about 250 °C | above 1000 °C (limited by contacts and oxidation instead) | [neudeck2002] |
+| Dopant ionization energies | 0.045 eV | 0.37 eV (B), 0.57 eV (P) | [sze2006], [lagrange1998], [koizumi1997] |
+| Mobility temperature exponent | about −2.4 | about −2.8 (holes) | [jacoboni1977], [pernot2010] |
+| On-resistance trend with temperature | rises | falls (bulk-doped) | [E9](expert/E9_power_circuits_diamond_vs_gan_sic.md) |
+| Thermal conductivity at 300 K | 1.5 W/(cm·K) | 22 to 33 W/(cm·K) | [glassbrenner1964], [wei1993] |
+| Thermal expansion | 2.6 ppm/K | 1.0 ppm/K | [field2012] |
+| Young's modulus | 130 to 190 GPa | about 1100 GPa | [field2012] |
+| Nuclear-spin bath | 4.7% ²⁹Si (purifiable) | 1.1% ¹³C (purifiable) | [itoh2014] |
+| Native room-temperature optical spin qubit | none | NV center | [doherty2013] |
+| Radiation displacement energy | about 13 eV | about 43 eV | [tapper2000] |
+| Wafer cost per cm² (order of magnitude) | cents | tens to hundreds of dollars | [e6orbray2026]; no public price data, estimate |
+
+![Radar](img/fig32_material_radar.png)
+
+## 12.5 Bottom line
 
 ```mermaid
 flowchart LR

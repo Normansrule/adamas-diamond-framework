@@ -6,7 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF_FILES = [ROOT / "references" / "refs_a.psv", ROOT / "references" / "refs_b.psv",
              ROOT / "references" / "refs_c.psv",
-             ROOT / "references" / "refs_d.psv"]
+             ROOT / "references" / "refs_d.psv",
+             ROOT / "references" / "refs_e.psv"]
 
 TAG_NAMES = {
     "mat": "Materials physics and figures of merit",
@@ -23,6 +24,8 @@ TAG_NAMES = {
     "ind": "Industry and news (2025-2026)",
     "edu": "Teaching laboratories",
     "lit": "Lithography and nanofabrication",
+    "pwr": "Power electronics and applications",
+    "app": "Applications and requirements",
     "eda": "Digital design, processors, and design automation",
     "ana": "Analog design and compact models",
     "ctl": "Quantum control, open systems, and error correction",

@@ -3,6 +3,6 @@ nitrogen-vacancy (NV) quantum processors.
 
 Every formula in this package carries a ``[bibkey]`` that resolves in references/REFERENCES.md.
 """
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 from . import constants, materials, doping, thermal, wafer, power, logic, nv, coupling, register  # noqa: F401
-from . import litho, digital, analog, opensys, qec, gate_budget, surface_sim  # noqa: F401,E402
+from . import litho, digital, analog, opensys, qec, gate_budget, surface_sim, converter, scaling  # noqa: F401,E402
