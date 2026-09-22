@@ -1,0 +1,66 @@
+# ADAMAS reference database (part E, v0.5.0): power-electronics applications, silicon versus diamond in depth,
+# thermal management and packaging, harsh environments, and large-scale quantum computer sizing.
+# tags: pwr (power electronics and applications), si (silicon baseline), thm (thermal), app (applications), qc (quantum computing)
+#
+# ---- Power electronics: textbooks and reviews ----
+baliga2019 | Baliga, B. J. | 2019 | Fundamentals of Power Semiconductor Devices (2nd ed.) | Springer | book | pwr | K
+lutz2018 | Lutz, J.; Schlangenotto, H.; Scheuermann, U.; De Doncker, R. | 2018 | Semiconductor Power Devices: Physics, Characteristics, Reliability (2nd ed.) | Springer | book | pwr | K
+erickson2020 | Erickson, R. W.; Maksimovic, D. | 2020 | Fundamentals of Power Electronics (3rd ed.) | Springer | book | pwr | K
+kassakian2023 | Kassakian, J. G.; Perreault, D. J.; Verghese, G. C.; Schlecht, M. F. | 2023 | Principles of Power Electronics (2nd ed.) | Cambridge University Press | book | pwr | K
+huang2017 | Huang, A. Q. | 2017 | Power semiconductor devices for smart grid and renewable energy systems | Proceedings of the IEEE | 105, 2019 | pwr,app | V
+shenai2018 | Shenai, K. | 2018 | The figure of merit of a semiconductor power electronics switch | IEEE Transactions on Electron Devices | 65, 4216 | pwr | V
+roccaforte2018 | Roccaforte, F.; Fiorenza, P.; Greco, G.; et al. | 2018 | Emerging trends in wide band gap semiconductors (SiC and GaN) technology for power devices | Microelectronic Engineering | 187, 66 | pwr | V
+#
+# ---- Silicon carbide and gallium nitride: the incumbents diamond must displace ----
+she2017 | She, X.; Huang, A. Q.; Lucia, O.; Ozpineci, B. | 2017 | Review of silicon carbide power devices and their applications | IEEE Transactions on Industrial Electronics | 64, 8193 | pwr | V
+kimoto2015 | Kimoto, T. | 2015 | Material science and device physics in SiC technology for high-voltage power devices | Japanese Journal of Applied Physics | 54, 040103 | pwr,mat | V
+palmour2014 | Palmour, J. W. | 2014 | Silicon carbide power device development for industrial markets | IEEE International Electron Devices Meeting (IEDM) Technical Digest | 1.1.1 | pwr,ind | K
+jones2016 | Jones, E. A.; Wang, F. F.; Costinett, D. | 2016 | Review of commercial GaN power devices and GaN-based converter design challenges | IEEE Journal of Emerging and Selected Topics in Power Electronics | 4, 707 | pwr | V
+chen2017gan | Chen, K. J.; Haeberlen, O.; Lidow, A.; et al. | 2017 | GaN-on-Si power technology: devices and applications | IEEE Transactions on Electron Devices | 64, 779 | pwr | V
+amano2018 | Amano, H.; Baines, Y.; Beam, E.; et al. | 2018 | The 2018 GaN power electronics roadmap | Journal of Physics D: Applied Physics | 51, 163001 | pwr | V
+lidow2019 | Lidow, A.; de Rooij, M.; Strydom, J.; Reusch, D.; Glaser, J. | 2019 | GaN Transistors for Efficient Power Conversion (3rd ed.) | Wiley | book | pwr | K
+meneghini2021 | Meneghini, M.; De Santi, C.; Abid, I.; et al. | 2021 | GaN-based power devices: physics, reliability, and perspectives | Journal of Applied Physics | 130, 181101 | pwr | V
+meneghesso2008 | Meneghesso, G.; Verzellesi, G.; Danesin, F.; et al. | 2008 | Reliability of GaN high-electron-mobility transistors: state of the art and perspectives | IEEE Transactions on Device and Materials Reliability | 8, 332 | pwr | V
+flack2016 | Flack, T. J.; Pushpakaran, B. N.; Bayne, S. B. | 2016 | GaN technology for power electronic applications: a review | Journal of Electronic Materials | 45, 2673 | pwr | V
+uren2017 | Uren, M. J.; Karboyan, S.; Chatterjee, I.; et al. | 2017 | "Leaky dielectric" model for the suppression of dynamic RON in carbon-doped AlGaN/GaN HEMTs | IEEE Transactions on Electron Devices | 64, 2826 | pwr | V
+#
+# ---- Applications that set the requirements ----
+reimers2019 | Reimers, J.; Dorn-Gomba, L.; Mak, C.; Emadi, A. | 2019 | Automotive traction inverters: current status and future trends | IEEE Transactions on Vehicular Technology | 68, 3337 | app,pwr | V
+jung2017 | Jung, C. | 2017 | Power up with 800-V systems: the benefits of upgrading voltage power for battery-electric passenger vehicles | IEEE Electrification Magazine | 5(1), 53 | app,pwr | V
+masanet2020 | Masanet, E.; Shehabi, A.; Lei, N.; Smith, S.; Koomey, J. | 2020 | Recalibrating global data center energy-use estimates | Science | 367, 984 | app | V
+johnson2004 | Johnson, R. W.; Evans, J. L.; Jacobsen, P.; Thompson, J. R.; Christopher, M. | 2004 | The changing automotive environment: high-temperature electronics | IEEE Transactions on Electronics Packaging Manufacturing | 27, 164 | app | V
+watson2015 | Watson, J.; Castro, G. | 2015 | A review of high-temperature electronics technology and applications | Journal of Materials Science: Materials in Electronics | 26, 9226 | app | V
+tapper2000 | Tapper, R. J. | 2000 | Diamond detectors in particle physics | Reports on Progress in Physics | 63, 1273 | app,dev | V
+webb2019 | Webb, J. L.; Clement, J. D.; Troise, L.; et al. | 2019 | Nanotesla sensitivity magnetic field sensing using a compact diamond nitrogen-vacancy magnetometer | Applied Physics Letters | 114, 231103 | app,sens | V
+tao2014 | Tao, Y.; Boss, J. M.; Moores, B. A.; Degen, C. L. | 2014 | Single-crystal diamond nanomechanical resonators with quality factors exceeding one million | Nature Communications | 5, 3638 | app,bey | V
+umezawa2012 | Umezawa, H.; Nagase, M.; Kato, Y.; Shikata, S. | 2012 | High temperature application of diamond power device | Diamond and Related Materials | 24, 201 | pwr,dev | V
+ikeda2009 | Ikeda, K.; Umezawa, H.; Ramanujam, K.; Shikata, S. | 2009 | Thermally stable Schottky barrier diode by Ru/diamond | Applied Physics Express | 2, 011202 | pwr,dev | V
+#
+# ---- Thermal management and packaging ----
+moore2014 | Moore, A. L.; Shi, L. | 2014 | Emerging challenges and materials for thermal management of electronics | Materials Today | 17, 163 | thm | V
+barcohen2016 | Bar-Cohen, A.; Maurer, J. J.; Sivananthan, A. | 2016 | Near-junction microfluidic cooling for wide bandgap devices | MRS Advances | 1, 181 | thm | V
+yates2018 | Yates, L.; Anderson, J.; Gu, X.; et al. | 2018 | Low thermal boundary resistance interfaces for GaN-on-diamond devices | ACS Applied Materials and Interfaces | 10, 24302 | thm | V
+cho2014 | Cho, J.; Li, Y.; Hoke, W. E.; et al. | 2014 | Phonon scattering in strained transition layers for GaN heteroepitaxy | Physical Review B | 89, 115301 | thm | V
+glassbrenner1964 | Glassbrenner, C. J.; Slack, G. A. | 1964 | Thermal conductivity of silicon and germanium from 3 K to the melting point | Physical Review | 134, A1058 | thm,si | V
+#
+# ---- Silicon baseline, in depth ----
+jacoboni1977 | Jacoboni, C.; Canali, C.; Ottaviani, G.; Alberigi Quaranta, A. | 1977 | A review of some charge transport properties of silicon | Solid-State Electronics | 20, 77 | si | V
+green1990 | Green, M. A. | 1990 | Intrinsic concentration, effective densities of states, and effective mass in silicon | Journal of Applied Physics | 67, 2944 | si | V
+arora1982 | Arora, N. D.; Hauser, J. R.; Roulston, D. J. | 1982 | Electron and hole mobilities in silicon as a function of concentration and temperature | IEEE Transactions on Electron Devices | 29, 292 | si | V
+#
+# ---- Large-scale quantum computing: how big a machine must be ----
+gidney2021 | Gidney, C.; Ekera, M. | 2021 | How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits | Quantum | 5, 433 | qc | V
+gidney2025 | Gidney, C. | 2025 | How to factor 2048 bit RSA integers with less than a million noisy qubits | arXiv | 2505.15917 | qc | K
+litinski2019 | Litinski, D. | 2019 | A game of surface codes: large-scale quantum computing with lattice surgery | Quantum | 3, 128 | qc | V
+reiher2017 | Reiher, M.; Wiebe, N.; Svore, K. M.; Wecker, D.; Troyer, M. | 2017 | Elucidating reaction mechanisms on quantum computers | Proceedings of the National Academy of Sciences | 114, 7555 | qc | V
+babbush2018 | Babbush, R.; Gidney, C.; Berry, D. W.; et al. | 2018 | Encoding electronic spectra in quantum circuits with linear T complexity | Physical Review X | 8, 041015 | qc | V
+google2023 | Google Quantum AI | 2023 | Suppressing quantum errors by scaling a surface code logical qubit | Nature | 614, 676 | qc | V
+google2025 | Google Quantum AI and Collaborators | 2025 | Quantum error correction below the surface code threshold | Nature | 638, 920 | qc | V
+bluvstein2024 | Bluvstein, D.; Evered, S. J.; Geim, A. A.; et al. | 2024 | Logical quantum processor based on reconfigurable atom arrays | Nature | 626, 58 | qc | V
+monroe2013 | Monroe, C.; Kim, J. | 2013 | Scaling the ion trap quantum processor | Science | 339, 1164 | qc | V
+vandersypen2017 | Vandersypen, L. M. K.; Bluhm, H.; Clarke, J. S.; et al. | 2017 | Interfacing spin qubits in quantum dots and donors: hot, dense, and coherent | npj Quantum Information | 3, 34 | qc | V
+reilly2015 | Reilly, D. J. | 2015 | Engineering the quantum-classical interface of solid-state qubits | npj Quantum Information | 1, 15011 | qc | V
+krinner2019 | Krinner, S.; Storz, S.; Kurpiers, P.; et al. | 2019 | Engineering cryogenic setups for 100-qubit scale superconducting circuit systems | EPJ Quantum Technology | 6, 2 | qc | V
+vandijk2019 | van Dijk, J. P. G.; Kawakami, E.; Schouten, R. N.; et al. | 2019 | Impact of classical control electronics on qubit fidelity | Physical Review Applied | 12, 044054 | qc | V
+arute2019 | Arute, F.; Arya, K.; Babbush, R.; et al. | 2019 | Quantum supremacy using a programmable superconducting processor | Nature | 574, 505 | qc | V
+kjaergaard2020 | Kjaergaard, M.; Schwartz, M. E.; Braumueller, J.; et al. | 2020 | Superconducting qubits: current state of play | Annual Review of Condensed Matter Physics | 11, 369 | qc | V

@@ -7,7 +7,8 @@ sys.path.insert(0, str(ROOT))
 
 from adamas.figures import make_all  # noqa: E402
 from adamas.figures_expert import make_all as make_expert  # noqa: E402
+from adamas.figures_apps import make_all as make_apps  # noqa: E402
 
 if __name__ == "__main__":
-    for p in make_all(ROOT / "docs" / "img") + make_expert(ROOT / "docs" / "img"):
+    for p in make_all(ROOT / "docs" / "img") + make_expert(ROOT / "docs" / "img") + make_apps(ROOT / "docs" / "img"):
         print("wrote", p.relative_to(ROOT))

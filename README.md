@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
 <p align="center">
-<b>473 references</b> · <b>27 reproducible figures</b> · <b>22 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>34 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -161,7 +161,7 @@ flowchart LR
 
 ## 7 · Expert track: from the lithography tool to the logical qubit
 
-Eight research-level chapters follow the technology stack in order. Each adds tested models, new references, and numbered experiments.
+Eleven research-level chapters follow the technology stack in order, then turn to applications. Each adds tested models, new references, and numbered experiments.
 
 ```mermaid
 flowchart LR
@@ -178,10 +178,21 @@ flowchart LR
 | E6 | [Error correction and architecture](docs/expert/E6_error_correction_and_system_architecture.md) | Surface-code Monte Carlo with three error rates: break-even link error is about 1.3% per gate, while readout error up to a few percent is tolerated |
 | E7 | [Beyond](docs/expert/E7_beyond_the_framework.md) | Masers, hyperpolarization, gyroscopes, simulators, harsh-environment systems, rival hosts, six moonshots |
 | E8 | [Project ladder](docs/expert/E8_projects_and_thesis_topics.md) | Every experiment sized from a weekend to a multi-group program |
+| E9 | [Power circuits: diamond vs SiC and GaN](docs/expert/E9_power_circuits_diamond_vs_gan_sic.md) | Tested converter-loss model: ideal diamond cuts traction-inverter switch loss 8× below SiC; today's device beats ideal silicon and trails ideal SiC; only diamond's on-resistance falls with temperature |
+| E10 | [Sizing a room-temperature quantum computer](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) | RSA-2048 would take about a year at a 1 ms cycle; area and power are not the limits, readout speed and yield are |
+| E11 | [Application atlas](docs/expert/E11_application_atlas.md) | 16 product lines ranked by readiness, with the wafer requirements each imposes |
 
 | Lithography limits on diamond | Processors built with one transistor polarity |
 |---|---|
 | ![Lithography tools](docs/img/fig17_litho_tools.png) | ![Processor landscape](docs/img/fig19_processor_landscape.png) |
+
+| Diamond vs SiC vs GaN in a traction inverter | Where each semiconductor plays |
+|---|---|
+| ![Converter loss](docs/img/fig29_converter_loss.png) | ![Application map](docs/img/fig30_application_map.png) |
+
+| On-resistance vs temperature | Application readiness |
+|---|---|
+| ![Ron vs T](docs/img/fig28_ron_vs_temperature.png) | ![Readiness](docs/img/fig34_application_readiness.png) |
 
 | Open-system NV–NV gate | Surface-code overhead in NV cells |
 |---|---|
@@ -208,7 +219,7 @@ flowchart LR
 | 12 | [Silicon versus diamond scorecard](docs/12_silicon_vs_diamond_scorecard.md) | Row-by-row comparison |
 | 13 | [Economics and risk](docs/13_economics_and_risk.md) | Product sequence and risk register |
 | E1–E8 | [Expert track](docs/expert/) | Lithography → design kit → processors → analog → qubit engineering → error correction → beyond → projects |
-| — | [Glossary](docs/glossary.md) · [All 473 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
+| — | [Glossary](docs/glossary.md) · [All 524 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
 
 ## ⚙️ Quick start
 
@@ -218,7 +229,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 36 tests, including the citation check
+python -m pytest -q                     # 40 tests, including the citation check
 make spice rtl synth                    # ngspice ring oscillator; DIA-4 processor simulation and synthesis
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -244,6 +255,8 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.opensys` | Lindblad two-qubit gate, carbon-13 bath, dynamical decoupling | [lindblad1976], [maze2008prb], [delange2010] |
 | `adamas.gate_budget` | Non-Markovian error budget of the echoed NV–NV gate: dephasing, pulses, preparation | [delange2010], [aslam2013], [dolde2013] |
 | `adamas.surface_sim` | Monte Carlo surface-code memory with in-cell, link, and readout error rates (needs `pymatching`) | [dennis2002], [wang2003], [higgott2022] |
+| `adamas.converter` | Hard-switched converter loss, area optimum, on-resistance vs temperature, five applications | [erickson2020], [baliga1989], [pernot2010] |
+| `adamas.scaling` | Size, time, and power of a room-temperature NV machine for published workloads | [gidney2021], [litinski2019], [krinner2019] |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
 | `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |
@@ -254,7 +267,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 2. `tools/check_citations.py` runs in continuous integration and fails the build on any unknown key.
 3. Models that originate in this repository (the gate-fidelity bound, the placement Monte Carlo, the yield plot's defect densities) are labeled as such wherever they appear.
 
-**Honest status of the reference list.** About 440 of the 473 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
+**Honest status of the reference list.** About 440 of the 524 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
 
 ```bash
 python tools/verify_refs.py        # queries Crossref, writes references/verification_report.csv

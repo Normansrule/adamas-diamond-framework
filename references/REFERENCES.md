@@ -1,6 +1,6 @@
 # References
 
-**473 references.** 444 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 428 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**524 references.** 488 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 472 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -71,7 +71,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[kim2020]`** Kim, S.-W.; Kawamata, Y.; Takaya, R.; Koyama, K.; Kasu, M. (2020). Growth of high-quality one-inch free-standing heteroepitaxial (001) diamond on (11-20) sapphire substrate. *Applied Physics Letters*, 117, 202102. [doi:10.1063/5.0024070](https://doi.org/10.1063/5.0024070)
 - ✅ **`[kim2021]`** Kim, S.-W.; Takaya, R.; Hirano, S.; Kasu, M. (2021). Two-inch high-quality (001) diamond heteroepitaxial growth on sapphire (11-20) misoriented substrate by step-flow mode. *Applied Physics Express*, 14, 115501. [doi:10.35848/1882-0786/ac28e7](https://doi.org/10.35848/1882-0786/ac28e7)
 
-## Silicon baseline (9)
+## Silicon baseline (12)
 
 - ✅ **`[czochralski1918]`** Czochralski, J. (1918). Ein neues Verfahren zur Messung der Kristallisationsgeschwindigkeit der Metalle. *Zeitschrift fuer Physikalische Chemie*, 92, 219. [doi:10.1515/zpch-1918-9212](https://doi.org/10.1515/zpch-1918-9212)
 - 📚 **`[teal1950]`** Teal, G. K.; Little, J. B. (1950). Growth of germanium single crystals. *Physical Review*, 78, 647.
@@ -79,7 +79,10 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[dealgrove1965]`** Deal, B. E.; Grove, A. S. (1965). General relationship for the thermal oxidation of silicon. *Journal of Applied Physics*, 36, 3770. [doi:10.1063/1.1713945](https://doi.org/10.1063/1.1713945)
 - 📚 **`[moore1965]`** Moore, G. E. (1965). Cramming more components onto integrated circuits. *Electronics*, 38(8), 114.
 - ✅ **`[dennard1974]`** Dennard, R. H.; Gaensslen, F. H.; Yu, H.-N.; et al. (1974). Design of ion-implanted MOSFET's with very small physical dimensions. *IEEE Journal of Solid-State Circuits*, 9, 256. [doi:10.1109/jssc.1974.1050511](https://doi.org/10.1109/jssc.1974.1050511)
+- ✅ **`[jacoboni1977]`** Jacoboni, C.; Canali, C.; Ottaviani, G.; Alberigi Quaranta, A. (1977). A review of some charge transport properties of silicon. *Solid-State Electronics*, 20, 77. [doi:10.1016/0038-1101(77)90054-5](https://doi.org/10.1016/0038-1101(77)90054-5)
+- ✅ **`[arora1982]`** Arora, N. D.; Hauser, J. R.; Roulston, D. J. (1982). Electron and hole mobilities in silicon as a function of concentration and temperature. *IEEE Transactions on Electron Devices*, 29, 292. [doi:10.1109/t-ed.1982.20698](https://doi.org/10.1109/t-ed.1982.20698)
 - ✅ **`[stapper1983]`** Stapper, C. H.; Armstrong, F. M.; Saji, K. (1983). Integrated circuit yield statistics. *Proceedings of the IEEE*, 71, 453. [doi:10.1109/proc.1983.12619](https://doi.org/10.1109/proc.1983.12619)
+- ✅ **`[green1990]`** Green, M. A. (1990). Intrinsic concentration, effective densities of states, and effective mass in silicon. *Journal of Applied Physics*, 67, 2944. [doi:10.1063/1.345414](https://doi.org/10.1063/1.345414)
 - 📚 **`[plummer2000]`** Plummer, J. D.; Deal, M. D.; Griffin, P. B. (2000). Silicon VLSI Technology: Fundamentals, Practice, and Modeling. *Prentice Hall*.
 - 📚 **`[irds2023]`** IEEE (2023). International Roadmap for Devices and Systems (IRDS), 2023 edition. *IEEE*.
 
@@ -160,12 +163,17 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[chu2025]`** Chu, C.; Yang, S.; et al. (2025). GaN/diamond complementary power circuit (reported via Power Electronics Magazine; original: 71st IEEE International Electron Devices Meeting). *IEEE IEDM Technical Digest*, p. 26.8.1.
 - ✅ **`[kawai2025]`** Kawai, S.; Oi, N.; Isobe, T.; Ota, K.; Amazutsumi, K.; Fujishima, T.; Kawarada, H. (2025). Fast power switching with cascode diamond MOSFET-SiC MOSFET/GaN HEMT complementary half-bridge inverter. *APL Electronic Devices*, 1, 046103. [doi:10.1063/5.0290094](https://doi.org/10.1063/5.0290094)
 
-## Thermal management and diamond-on-chip integration (6)
+## Thermal management and diamond-on-chip integration (11)
 
 - 📚 **`[carslaw1959]`** Carslaw, H. S.; Jaeger, J. C. (1959). Conduction of Heat in Solids (2nd ed.). *Oxford University Press*.
+- ✅ **`[glassbrenner1964]`** Glassbrenner, C. J.; Slack, G. A. (1964). Thermal conductivity of silicon and germanium from 3 K to the melting point. *Physical Review*, 134, A1058. [doi:10.1103/physrev.134.a1058](https://doi.org/10.1103/physrev.134.a1058)
 - ✅ **`[francis2010]`** Francis, D.; Faili, F.; Babic, D.; et al. (2010). Formation and characterization of 4-inch GaN-on-diamond substrates. *Diamond and Related Materials*, 19, 229. [doi:10.1016/j.diamond.2009.08.017](https://doi.org/10.1016/j.diamond.2009.08.017)
+- ✅ **`[cho2014]`** Cho, J.; Li, Y.; Hoke, W. E.; et al. (2014). Phonon scattering in strained transition layers for GaN heteroepitaxy. *Physical Review B*, 89, 115301. [doi:10.1103/physrevb.89.115301](https://doi.org/10.1103/physrevb.89.115301)
+- ✅ **`[moore2014]`** Moore, A. L.; Shi, L. (2014). Emerging challenges and materials for thermal management of electronics. *Materials Today*, 17, 163. [doi:10.1016/j.mattod.2014.04.003](https://doi.org/10.1016/j.mattod.2014.04.003)
 - ✅ **`[pomeroy2014]`** Pomeroy, J. W.; Bernardoni, M.; Dumka, D. C.; Fanning, D. M.; Kuball, M. (2014). Low thermal resistance GaN-on-diamond transistors characterized by three-dimensional Raman thermography mapping. *Applied Physics Letters*, 104, 083513. [doi:10.1063/1.4865583](https://doi.org/10.1063/1.4865583)
 - ✅ **`[sun2015]`** Sun, H.; Simon, R. B.; Pomeroy, J. W.; et al. (2015). Reducing GaN-on-diamond interfacial thermal resistance for high power transistor applications. *Applied Physics Letters*, 106, 111906. [doi:10.1063/1.4913430](https://doi.org/10.1063/1.4913430)
+- ✅ **`[barcohen2016]`** Bar-Cohen, A.; Maurer, J. J.; Sivananthan, A. (2016). Near-junction microfluidic cooling for wide bandgap devices. *MRS Advances*, 1, 181. [doi:10.1557/adv.2016.120](https://doi.org/10.1557/adv.2016.120)
+- ✅ **`[yates2018]`** Yates, L.; Anderson, J.; Gu, X.; et al. (2018). Low thermal boundary resistance interfaces for GaN-on-diamond devices. *ACS Applied Materials and Interfaces*, 10, 24302. [doi:10.1021/acsami.8b07014](https://doi.org/10.1021/acsami.8b07014)
 - ✅ **`[liang2021]`** Liang, J.; Kobayashi, A.; Shimizu, Y.; et al. (2021). Fabrication of GaN/diamond heterointerface and interfacial chemical bonding state for highly efficient device design. *Advanced Materials*, 33, 2104564. [doi:10.1002/adma.202104564](https://doi.org/10.1002/adma.202104564)
 - ✅ **`[malakoutian2021]`** Malakoutian, M.; Field, D. E.; Hines, N. J.; et al. (2021). Record-low thermal boundary resistance between diamond and GaN-on-SiC for enabling radiofrequency device cooling. *ACS Applied Materials and Interfaces*, 13, 60553. [doi:10.1021/acsami.1c13833](https://doi.org/10.1021/acsami.1c13833)
 
@@ -274,7 +282,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
 
-## Quantum computing with diamond spins (56)
+## Quantum computing with diamond spins (71)
 
 - ✅ **`[kane1998]`** Kane, B. E. (1998). A silicon-based nuclear spin quantum computer. *Nature*, 393, 133. [doi:10.1038/30156](https://doi.org/10.1038/30156)
 - ✅ **`[divincenzo2000]`** DiVincenzo, D. P. (2000). The physical implementation of quantum computation. *Fortschritte der Physik*, 48, 771. [doi:10.1002/3527603182.ch1](https://doi.org/10.1002/3527603182.ch1)
@@ -300,6 +308,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[yao2012]`** Yao, N. Y.; Jiang, L.; Gorshkov, A. V.; et al. (2012). Scalable architecture for a room temperature solid-state quantum information processor. *Nature Communications*, 3, 800. [doi:10.1038/ncomms1788](https://doi.org/10.1038/ncomms1788)
 - ✅ **`[childress2013]`** Childress, L.; Hanson, R. (2013). Diamond NV centers for quantum computing and quantum networks. *MRS Bulletin*, 38, 134. [doi:10.1557/mrs.2013.20](https://doi.org/10.1557/mrs.2013.20)
 - ✅ **`[dolde2013]`** Dolde, F.; Jakobi, I.; Naydenov, B.; et al. (2013). Room-temperature entanglement between single defect spins in diamond. *Nature Physics*, 9, 139. [doi:10.1038/nphys2545](https://doi.org/10.1038/nphys2545)
+- ✅ **`[monroe2013]`** Monroe, C.; Kim, J. (2013). Scaling the ion trap quantum processor. *Science*, 339, 1164. [doi:10.1126/science.1231298](https://doi.org/10.1126/science.1231298)
 - ✅ **`[trifunovic2013]`** Trifunovic, L.; Pedrocchi, F. L.; Loss, D. (2013). Long-distance entanglement of spin qubits via ferromagnet. *Physical Review X*, 3, 041023. [doi:10.1103/physrevx.3.041023](https://doi.org/10.1103/physrevx.3.041023)
 - ✅ **`[arroyo2014]`** Arroyo-Camejo, S.; Lazariev, A.; Hell, S. W.; Balasubramanian, G. (2014). Room temperature high-fidelity holonomic single-qubit gate on a solid-state spin. *Nature Communications*, 5, 4870. [doi:10.1038/ncomms5870](https://doi.org/10.1038/ncomms5870)
 - ✅ **`[dolde2014]`** Dolde, F.; Bergholm, V.; Wang, Y.; et al. (2014). High-fidelity spin entanglement using optimal control. *Nature Communications*, 5, 3371. [doi:10.1038/ncomms4371](https://doi.org/10.1038/ncomms4371)
@@ -309,29 +318,43 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[waldherr2014]`** Waldherr, G.; Wang, Y.; Zaiser, S.; et al. (2014). Quantum error correction in a solid-state hybrid spin register. *Nature*, 506, 204. [doi:10.1038/nature12919](https://doi.org/10.1038/nature12919)
 - ✅ **`[zu2014]`** Zu, C.; Wang, W.-B.; He, L.; et al. (2014). Experimental realization of universal geometric quantum gates with solid-state spins. *Nature*, 514, 72. [doi:10.1038/nature13729](https://doi.org/10.1038/nature13729)
 - ✅ **`[bourgeois2015]`** Bourgeois, E.; Jarmola, A.; Siyushev, P.; et al. (2015). Photoelectric detection of electron spin resonance of nitrogen-vacancy centres in diamond. *Nature Communications*, 6, 8577. [doi:10.1038/ncomms9577](https://doi.org/10.1038/ncomms9577)
+- ✅ **`[reilly2015]`** Reilly, D. J. (2015). Engineering the quantum-classical interface of solid-state qubits. *npj Quantum Information*, 1, 15011. [doi:10.1038/npjqi.2015.11](https://doi.org/10.1038/npjqi.2015.11)
 - ✅ **`[rong2015]`** Rong, X.; Geng, J.; Shi, F.; et al. (2015). Experimental fault-tolerant universal quantum gates with solid-state spins under ambient conditions. *Nature Communications*, 6, 8748. [doi:10.1038/ncomms9748](https://doi.org/10.1038/ncomms9748)
 - ✅ **`[shields2015]`** Shields, B. J.; Unterreithmeier, Q. P.; de Leon, N. P.; Park, H.; Lukin, M. D. (2015). Efficient readout of a single spin state in diamond via spin-to-charge conversion. *Physical Review Letters*, 114, 136402. [doi:10.1103/physrevlett.114.136402](https://doi.org/10.1103/physrevlett.114.136402)
 - ✅ **`[cramer2016]`** Cramer, J.; Kalb, N.; Rol, M. A.; et al. (2016). Repeated quantum error correction on a continuously encoded qubit by real-time feedback. *Nature Communications*, 7, 11526. [doi:10.1038/ncomms11526](https://doi.org/10.1038/ncomms11526)
 - ✅ **`[hirose2016]`** Hirose, M.; Cappellaro, P. (2016). Coherent feedback control of a single qubit in diamond. *Nature*, 532, 77. [doi:10.1038/nature17404](https://doi.org/10.1038/nature17404)
 - ✅ **`[unden2016]`** Unden, T.; Balasubramanian, P.; Louzon, D.; et al. (2016). Quantum metrology enhanced by repetitive quantum error correction. *Physical Review Letters*, 116, 230502. [doi:10.1103/physrevlett.116.230502](https://doi.org/10.1103/physrevlett.116.230502)
 - ✅ **`[pfender2017]`** Pfender, M.; Aslam, N.; Sumiya, H.; et al. (2017). Nonvolatile nuclear spin memory enables sensor-unlimited nanoscale spectroscopy of small spin clusters. *Nature Communications*, 8, 834. [doi:10.1038/s41467-017-00964-z](https://doi.org/10.1038/s41467-017-00964-z)
+- ✅ **`[reiher2017]`** Reiher, M.; Wiebe, N.; Svore, K. M.; Wecker, D.; Troyer, M. (2017). Elucidating reaction mechanisms on quantum computers. *Proceedings of the National Academy of Sciences*, 114, 7555. [doi:10.1073/pnas.1619152114](https://doi.org/10.1073/pnas.1619152114)
+- ✅ **`[vandersypen2017]`** Vandersypen, L. M. K.; Bluhm, H.; Clarke, J. S.; et al. (2017). Interfacing spin qubits in quantum dots and donors: hot, dense, and coherent. *npj Quantum Information*, 3, 34. [doi:10.1038/s41534-017-0038-y](https://doi.org/10.1038/s41534-017-0038-y)
 - ✅ **`[atature2018]`** Atature, M.; Englund, D.; Vamivakas, N.; Lee, S.-Y.; Wrachtrup, J. (2018). Material platforms for spin-based photonic quantum technologies. *Nature Reviews Materials*, 3, 38. [doi:10.1038/s41578-018-0008-9](https://doi.org/10.1038/s41578-018-0008-9)
 - ✅ **`[awschalom2018]`** Awschalom, D. D.; Hanson, R.; Wrachtrup, J.; Zhou, B. B. (2018). Quantum technologies with optically interfaced solid-state spins. *Nature Photonics*, 12, 516. [doi:10.1038/s41566-018-0232-2](https://doi.org/10.1038/s41566-018-0232-2)
+- ✅ **`[babbush2018]`** Babbush, R.; Gidney, C.; Berry, D. W.; et al. (2018). Encoding electronic spectra in quantum circuits with linear T complexity. *Physical Review X*, 8, 041015. [doi:10.1103/physrevx.8.041015](https://doi.org/10.1103/physrevx.8.041015)
 - ✅ **`[hopper2018]`** Hopper, D. A.; Shulevitz, H. J.; Bassett, L. C. (2018). Spin readout techniques of the nitrogen-vacancy center in diamond. *Micromachines*, 9, 437. [doi:10.3390/mi9090437](https://doi.org/10.3390/mi9090437)
 - ✅ **`[preskill2018]`** Preskill, J. (2018). Quantum computing in the NISQ era and beyond. *Quantum*, 2, 79. [doi:10.22331/q-2018-08-06-79](https://doi.org/10.22331/q-2018-08-06-79)
 - ✅ **`[abobeih2019]`** Abobeih, M. H.; Randall, J.; Bradley, C. E.; et al. (2019). Atomic-scale imaging of a 27-nuclear-spin cluster using a quantum sensor. *Nature*, 576, 411. [doi:10.1038/s41586-019-1834-7](https://doi.org/10.1038/s41586-019-1834-7)
+- ✅ **`[arute2019]`** Arute, F.; Arya, K.; Babbush, R.; et al. (2019). Quantum supremacy using a programmable superconducting processor. *Nature*, 574, 505. [doi:10.1038/s41586-019-1666-5](https://doi.org/10.1038/s41586-019-1666-5)
 - ✅ **`[bradley2019]`** Bradley, C. E.; Randall, J.; Abobeih, M. H.; et al. (2019). A ten-qubit solid-state spin register with quantum memory up to one minute. *Physical Review X*, 9, 031045. [doi:10.1103/physrevx.9.031045](https://doi.org/10.1103/physrevx.9.031045)
 - ✅ **`[choi2019]`** Choi, H.; Pant, M.; Guha, S.; Englund, D. (2019). Percolation-based architecture for cluster state creation using photon-mediated entanglement between atomic memories. *npj Quantum Information*, 5, 104. [doi:10.1038/s41534-019-0215-2](https://doi.org/10.1038/s41534-019-0215-2)
+- ✅ **`[krinner2019]`** Krinner, S.; Storz, S.; Kurpiers, P.; et al. (2019). Engineering cryogenic setups for 100-qubit scale superconducting circuit systems. *EPJ Quantum Technology*, 6, 2. [doi:10.1140/epjqt/s40507-019-0072-0](https://doi.org/10.1140/epjqt/s40507-019-0072-0)
+- ✅ **`[litinski2019]`** Litinski, D. (2019). A game of surface codes: large-scale quantum computing with lattice surgery. *Quantum*, 3, 128. [doi:10.22331/q-2019-03-05-128](https://doi.org/10.22331/q-2019-03-05-128)
 - ✅ **`[siyushev2019]`** Siyushev, P.; Nesladek, M.; Bourgeois, E.; et al. (2019). Photoelectrical imaging and coherent spin-state readout of single nitrogen-vacancy centers in diamond. *Science*, 363, 728. [doi:10.1126/science.aav2789](https://doi.org/10.1126/science.aav2789)
+- ✅ **`[vandijk2019]`** van Dijk, J. P. G.; Kawakami, E.; Schouten, R. N.; et al. (2019). Impact of classical control electronics on qubit fidelity. *Physical Review Applied*, 12, 044054. [doi:10.1103/physrevapplied.12.044054](https://doi.org/10.1103/physrevapplied.12.044054)
 - ✅ **`[wu2019]`** Wu, Y.; Wang, Y.; Qin, X.; Rong, X.; Du, J. (2019). A programmable two-qubit solid-state quantum processor under ambient conditions. *npj Quantum Information*, 5, 9. [doi:10.1038/s41534-019-0129-z](https://doi.org/10.1038/s41534-019-0129-z)
+- ✅ **`[kjaergaard2020]`** Kjaergaard, M.; Schwartz, M. E.; Braumueller, J.; et al. (2020). Superconducting qubits: current state of play. *Annual Review of Condensed Matter Physics*, 11, 369. [doi:10.1146/annurev-conmatphys-031119-050605](https://doi.org/10.1146/annurev-conmatphys-031119-050605)
+- ✅ **`[gidney2021]`** Gidney, C.; Ekera, M. (2021). How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits. *Quantum*, 5, 433. [doi:10.22331/q-2021-04-15-433](https://doi.org/10.22331/q-2021-04-15-433)
 - ✅ **`[pezzagna2021]`** Pezzagna, S.; Meijer, J. (2021). Quantum computer based on color centers in diamond. *Applied Physics Reviews*, 8, 011308. [doi:10.1063/5.0007444](https://doi.org/10.1063/5.0007444)
 - ✅ **`[randall2021]`** Randall, J.; Bradley, C. E.; van der Gronden, F. V.; et al. (2021). Many-body-localized discrete time crystal with a programmable spin-based quantum simulator. *Science*, 374, 1474. [doi:10.1126/science.abk0603](https://doi.org/10.1126/science.abk0603)
 - ✅ **`[vorobyov2021]`** Vorobyov, V.; Zaiser, S.; Abt, N.; et al. (2021). Quantum Fourier transform for nanoscale quantum sensing. *npj Quantum Information*, 7, 124. [doi:10.1038/s41534-021-00463-6](https://doi.org/10.1038/s41534-021-00463-6)
 - ✅ **`[wolfowicz2021]`** Wolfowicz, G.; Heremans, F. J.; Anderson, C. P.; et al. (2021). Quantum guidelines for solid-state spin defects. *Nature Reviews Materials*, 6, 906. [doi:10.1038/s41578-021-00306-y](https://doi.org/10.1038/s41578-021-00306-y)
 - ✅ **`[abobeih2022]`** Abobeih, M. H.; Wang, Y.; Randall, J.; et al. (2022). Fault-tolerant operation of a logical qubit in a diamond quantum processor. *Nature*, 606, 884. [doi:10.1038/s41586-022-04819-6](https://doi.org/10.1038/s41586-022-04819-6)
+- ✅ **`[google2023]`** Google Quantum AI (2023). Suppressing quantum errors by scaling a surface code logical qubit. *Nature*, 614, 676. [doi:10.1038/s41586-022-05434-1](https://doi.org/10.1038/s41586-022-05434-1)
 - ✅ **`[qbpawsey2023]`** Quantum Brilliance and Pawsey Supercomputing Research Centre collaboration (2023). First quantum machine learning applications on an on-site room-temperature quantum computer. *arXiv preprint*, arXiv:2312.11673.
 - ✅ **`[xie2023]`** Xie, T.; Zhao, Z.; Xu, S.; et al. (2023). 99.92%-fidelity CNOT gates in solids by noise filtering. *Physical Review Letters*, 130, 030601. [doi:10.1103/physrevlett.130.030601](https://doi.org/10.1103/physrevlett.130.030601)
+- ✅ **`[bluvstein2024]`** Bluvstein, D.; Evered, S. J.; Geim, A. A.; et al. (2024). Logical quantum processor based on reconfigurable atom arrays. *Nature*, 626, 58. [doi:10.1038/s41586-023-06927-3](https://doi.org/10.1038/s41586-023-06927-3)
 - ✅ **`[bartling2025]`** Bartling, H. P.; Yun, J.; Schymik, K. N.; et al. (2025). Universal high-fidelity quantum gates for spin qubits in diamond. *Physical Review Applied*, TODO: verify volume and page. [doi:10.1103/physrevapplied.23.034052](https://doi.org/10.1103/physrevapplied.23.034052)
+- 📚 **`[gidney2025]`** Gidney, C. (2025). How to factor 2048 bit RSA integers with less than a million noisy qubits. *arXiv*, 2505.15917.
+- ✅ **`[google2025]`** Google Quantum AI and Collaborators (2025). Quantum error correction below the surface code threshold. *Nature*, 638, 920. [doi:10.1038/s41586-024-08449-y](https://doi.org/10.1038/s41586-024-08449-y)
 
 ## Photonics, other color centers, and quantum networks (37)
 
@@ -420,6 +443,40 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[asmleuv2026]`** ASML (2026). EUV lithography systems (product page: 0.33 and 0.55 numerical aperture platforms). *asml.com*, accessed September 2026.
 - ✅ **`[asmlhighna2026]`** ASML (2026). High NA EUV reaches new readiness milestone with first high-volume logic product (press release). *asml.com*, 15 July 2026.
 - ✅ **`[imec2026]`** imec (2026). Imec receives the world's most advanced High NA EUV system (press release). *imec-int.com*, 18 March 2026.
+
+## Power electronics and applications (20)
+
+- ✅ **`[meneghesso2008]`** Meneghesso, G.; Verzellesi, G.; Danesin, F.; et al. (2008). Reliability of GaN high-electron-mobility transistors: state of the art and perspectives. *IEEE Transactions on Device and Materials Reliability*, 8, 332. [doi:10.1109/tdmr.2008.923743](https://doi.org/10.1109/tdmr.2008.923743)
+- ✅ **`[ikeda2009]`** Ikeda, K.; Umezawa, H.; Ramanujam, K.; Shikata, S. (2009). Thermally stable Schottky barrier diode by Ru/diamond. *Applied Physics Express*, 2, 011202. [doi:10.1143/apex.2.011202](https://doi.org/10.1143/apex.2.011202)
+- ✅ **`[umezawa2012]`** Umezawa, H.; Nagase, M.; Kato, Y.; Shikata, S. (2012). High temperature application of diamond power device. *Diamond and Related Materials*, 24, 201. [doi:10.1016/j.diamond.2012.01.011](https://doi.org/10.1016/j.diamond.2012.01.011)
+- 📚 **`[palmour2014]`** Palmour, J. W. (2014). Silicon carbide power device development for industrial markets. *IEEE International Electron Devices Meeting (IEDM) Technical Digest*, 1.1.1.
+- ✅ **`[kimoto2015]`** Kimoto, T. (2015). Material science and device physics in SiC technology for high-voltage power devices. *Japanese Journal of Applied Physics*, 54, 040103. [doi:10.7567/jjap.54.040103](https://doi.org/10.7567/jjap.54.040103)
+- ✅ **`[flack2016]`** Flack, T. J.; Pushpakaran, B. N.; Bayne, S. B. (2016). GaN technology for power electronic applications: a review. *Journal of Electronic Materials*, 45, 2673. [doi:10.1007/s11664-016-4435-3](https://doi.org/10.1007/s11664-016-4435-3)
+- ✅ **`[jones2016]`** Jones, E. A.; Wang, F. F.; Costinett, D. (2016). Review of commercial GaN power devices and GaN-based converter design challenges. *IEEE Journal of Emerging and Selected Topics in Power Electronics*, 4, 707. [doi:10.1109/jestpe.2016.2582685](https://doi.org/10.1109/jestpe.2016.2582685)
+- ✅ **`[chen2017gan]`** Chen, K. J.; Haeberlen, O.; Lidow, A.; et al. (2017). GaN-on-Si power technology: devices and applications. *IEEE Transactions on Electron Devices*, 64, 779. [doi:10.1109/ted.2017.2657579](https://doi.org/10.1109/ted.2017.2657579)
+- ✅ **`[huang2017]`** Huang, A. Q. (2017). Power semiconductor devices for smart grid and renewable energy systems. *Proceedings of the IEEE*, 105, 2019. [doi:10.1109/jproc.2017.2687701](https://doi.org/10.1109/jproc.2017.2687701)
+- ✅ **`[she2017]`** She, X.; Huang, A. Q.; Lucia, O.; Ozpineci, B. (2017). Review of silicon carbide power devices and their applications. *IEEE Transactions on Industrial Electronics*, 64, 8193. [doi:10.1109/tie.2017.2652401](https://doi.org/10.1109/tie.2017.2652401)
+- ✅ **`[uren2017]`** Uren, M. J.; Karboyan, S.; Chatterjee, I.; et al. (2017). "Leaky dielectric" model for the suppression of dynamic RON in carbon-doped AlGaN/GaN HEMTs. *IEEE Transactions on Electron Devices*, 64, 2826. [doi:10.1109/ted.2017.2706090](https://doi.org/10.1109/ted.2017.2706090)
+- ✅ **`[amano2018]`** Amano, H.; Baines, Y.; Beam, E.; et al. (2018). The 2018 GaN power electronics roadmap. *Journal of Physics D: Applied Physics*, 51, 163001. [doi:10.1088/1361-6463/aaaf9d](https://doi.org/10.1088/1361-6463/aaaf9d)
+- 📚 **`[lutz2018]`** Lutz, J.; Schlangenotto, H.; Scheuermann, U.; De Doncker, R. (2018). Semiconductor Power Devices: Physics, Characteristics, Reliability (2nd ed.). *Springer*.
+- ✅ **`[roccaforte2018]`** Roccaforte, F.; Fiorenza, P.; Greco, G.; et al. (2018). Emerging trends in wide band gap semiconductors (SiC and GaN) technology for power devices. *Microelectronic Engineering*, 187, 66. [doi:10.1016/j.mee.2017.11.021](https://doi.org/10.1016/j.mee.2017.11.021)
+- ✅ **`[shenai2018]`** Shenai, K. (2018). The figure of merit of a semiconductor power electronics switch. *IEEE Transactions on Electron Devices*, 65, 4216. [doi:10.1109/ted.2018.2866360](https://doi.org/10.1109/ted.2018.2866360)
+- 📚 **`[baliga2019]`** Baliga, B. J. (2019). Fundamentals of Power Semiconductor Devices (2nd ed.). *Springer*.
+- 📚 **`[lidow2019]`** Lidow, A.; de Rooij, M.; Strydom, J.; Reusch, D.; Glaser, J. (2019). GaN Transistors for Efficient Power Conversion (3rd ed.). *Wiley*.
+- 📚 **`[erickson2020]`** Erickson, R. W.; Maksimovic, D. (2020). Fundamentals of Power Electronics (3rd ed.). *Springer*.
+- ✅ **`[meneghini2021]`** Meneghini, M.; De Santi, C.; Abid, I.; et al. (2021). GaN-based power devices: physics, reliability, and perspectives. *Journal of Applied Physics*, 130, 181101. [doi:10.1063/5.0061354](https://doi.org/10.1063/5.0061354)
+- 📚 **`[kassakian2023]`** Kassakian, J. G.; Perreault, D. J.; Verghese, G. C.; Schlecht, M. F. (2023). Principles of Power Electronics (2nd ed.). *Cambridge University Press*.
+
+## Applications and requirements (8)
+
+- ✅ **`[tapper2000]`** Tapper, R. J. (2000). Diamond detectors in particle physics. *Reports on Progress in Physics*, 63, 1273. [doi:10.1088/0034-4885/63/8/203](https://doi.org/10.1088/0034-4885/63/8/203)
+- ✅ **`[johnson2004]`** Johnson, R. W.; Evans, J. L.; Jacobsen, P.; Thompson, J. R.; Christopher, M. (2004). The changing automotive environment: high-temperature electronics. *IEEE Transactions on Electronics Packaging Manufacturing*, 27, 164. [doi:10.1109/tepm.2004.843109](https://doi.org/10.1109/tepm.2004.843109)
+- ✅ **`[tao2014]`** Tao, Y.; Boss, J. M.; Moores, B. A.; Degen, C. L. (2014). Single-crystal diamond nanomechanical resonators with quality factors exceeding one million. *Nature Communications*, 5, 3638. [doi:10.1038/ncomms4638](https://doi.org/10.1038/ncomms4638)
+- ✅ **`[watson2015]`** Watson, J.; Castro, G. (2015). A review of high-temperature electronics technology and applications. *Journal of Materials Science: Materials in Electronics*, 26, 9226. [doi:10.1007/s10854-015-3459-4](https://doi.org/10.1007/s10854-015-3459-4)
+- ✅ **`[jung2017]`** Jung, C. (2017). Power up with 800-V systems: the benefits of upgrading voltage power for battery-electric passenger vehicles. *IEEE Electrification Magazine*, 5(1), 53. [doi:10.1109/mele.2016.2644560](https://doi.org/10.1109/mele.2016.2644560)
+- ✅ **`[reimers2019]`** Reimers, J.; Dorn-Gomba, L.; Mak, C.; Emadi, A. (2019). Automotive traction inverters: current status and future trends. *IEEE Transactions on Vehicular Technology*, 68, 3337. [doi:10.1109/tvt.2019.2897899](https://doi.org/10.1109/tvt.2019.2897899)
+- ✅ **`[webb2019]`** Webb, J. L.; Clement, J. D.; Troise, L.; et al. (2019). Nanotesla sensitivity magnetic field sensing using a compact diamond nitrogen-vacancy magnetometer. *Applied Physics Letters*, 114, 231103. [doi:10.1063/1.5095241](https://doi.org/10.1063/1.5095241)
+- ✅ **`[masanet2020]`** Masanet, E.; Shehabi, A.; Lei, N.; Smith, S.; Koomey, J. (2020). Recalibrating global data center energy-use estimates. *Science*, 367, 984. [doi:10.1126/science.aba3758](https://doi.org/10.1126/science.aba3758)
 
 ## Digital design, processors, and design automation (21)
 
