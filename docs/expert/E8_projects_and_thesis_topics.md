@@ -11,13 +11,13 @@ flowchart LR
 
 | Stage | ID | Project | Scope | Needs | Where specified |
 |---|---|---|---|---|---|
-| Wafer | S-1 | Reproduce all 34 figures and the test suite | W | Laptop | README |
+| Wafer | S-1 | Reproduce all 36 figures and the test suite | W | Laptop | README |
 | Wafer | L-1 | Flatness and bow statistics of commercial diamond plates | C | Optical profiler | [E1](E1_lithography_from_euv_to_electron_beam.md) |
 | Wafer | F-3 | (111) ¹²C phosphorus-doped quantum epilayer on heteroepitaxial wafer | G | Growth partner | [Ch. 11](../11_proposed_experiments_and_roadmap.md) |
 | Lithography | L-2 | Electron-beam proximity function on diamond versus silicon | C/T | Electron-beam tool | E1 |
 | Lithography | L-4 | Termination-dependent resist sensitivity | T | Electron-beam tool; EUV user facility | E1 |
 | Lithography | L-6 | Nanoimprint NV aperture arrays | T/D | Imprint tool | E1 |
-| Process | P-1 | PDK-0 monitor die layout | C | KLayout | [E2](E2_process_integration_and_pdk.md) |
+| Process | P-1 | PDK-0 monitor die layout | **done** | `make layout` | [E2](E2_process_integration_and_pdk.md) |
 | Process | P-3 | Compact-model fitting to published curves | C | ngspice, Python | E2 |
 | Process | P-4 / C-1 | Fabricate the 4-mask monitor die | T | Cleanroom, diamond plates | E2, Ch. 11 |
 | Digital | D-1 | Extend and re-synthesize DIA-4 | W/C | Yosys, Icarus Verilog | [E3](E3_digital_and_cpu_design.md) |

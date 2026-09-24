@@ -55,6 +55,22 @@ $$F = q^2 (1-\epsilon)^n F_{coh} + \frac{1-q^2}{4}$$
 3. This is a consistency map, not an explanation of those experiments: their actual sample parameters and post-selection procedures must be read from the papers before drawing conclusions (follow-up Q-1b).
 4. Engineering priority therefore shifts toward **charge-state initialization and verification** ([hopper2018], [shields2015], [doi2014]) and robust pulses ([khaneja2005], [rong2015]).
 
+### E5.1c Check against the published pair (project Q-1b, done)
+
+The entanglement experiment of [dolde2013] reports what the budget needs: two NV centers 25 ± 2 nm apart with different orientations, a single-quantum dipolar coupling of 4.93 ± 0.05 kHz (the isotropic 52/r³ rule gives 3.3 kHz; the angular factor supplies the rest), double-quantum echo times of 150 ± 18 µs and 514 ± 50 µs, a spin echo on both spins during the gate, and a Bell fidelity of 0.67 ± 0.04, raised to 0.82 on the same pair with optimal-control pulses [dolde2014]. `adamas.gate_budget.DOLDE2013` stores these numbers; `published_check()` evaluates the model with them.
+
+![Published-pair check](../img/fig36_published_gate_check.png)
+
+| Quantity | Model with published parameters |
+|---|---|
+| Gate time (double quantum, 19.7 kHz) | 25 µs |
+| Coherence-limited fidelity $F_{coh}$ | **0.998** |
+| Preparation probability $q$ that alone gives 0.67 | 0.75 |
+| $q$ that alone gives 0.82 | 0.87 |
+| Breakdown at $q$ = 0.85, 1% pulse error | dephasing 0.002, pulses 0.077, preparation 0.186 |
+
+**Reading.** With the actual sample coherence, dephasing accounts for 0.2 percent of the missing fidelity. The measured 0.67 sits exactly where a 0.70 to 0.75 NV⁻ charge-state fraction under green light ([aslam2013]) would put it, and 0.82 needs $q \approx 0.87$ or a combination of preparation and pulse error; optimal control removed the pulse part [dolde2014]. The model is consistent with both numbers with no free parameter beyond $q$, which the papers do not report directly. The claim of E5.1b stands, and the experimental priority is charge-state initialization and verification. Caveats: the tomography pulse count (taken as 8) is an estimate, and the model treats a failed preparation as a fully mixed state.
+
 ## E5.2 The carbon-13 bath
 
 Quasi-static, secular treatment ([maze2008prb], [dobrovitski2008], [zhao2012]): each ¹³C nucleus at position $\mathbf r_k$ shifts the electron by $\pm A_{zz,k}/2$ with
@@ -98,7 +114,7 @@ where $y = \pm1$ flips at each pulse [cywinski2008]. With the bath parameters me
 | ID | Item | Success metric |
 |---|---|---|
 | Q-1 | Non-Markovian error budget for the echoed gate | **Done in v0.3.0** (`adamas.gate_budget`, Section E5.1b) |
-| Q-1b | Extract sample parameters ($T_2^*$, $T_2$, spacing, post-selection, pulse counts) from [dolde2013] and [dolde2014] and test whether the budget reproduces 0.67 and 0.82 with no free parameters | Agreement within 0.05, or identification of the missing mechanism |
+| Q-1b | Test the budget with the published pair's parameters | **Done in v0.6.0** (Section E5.1c): consistent with 0.67 and 0.82 for $q$ = 0.75 and 0.87 |
 | Q-2 | Cluster-correlation-expansion $T_2$ (pairs, then triples) | 0.6 ms natural, 1.8 ms at 0.3% within a factor of two ([mizuochi2009], [balasubramanian2009]) |
 | Q-3 | Pulse optimization for the ¹⁴N-selective π pulse of `adamas.register` under 1 percent amplitude noise | Fidelity above 0.999 with amplitude robustness |
 | Q-4 | Randomized benchmarking on a benchtop ensemble ([Chapter 11](../11_proposed_experiments_and_roadmap.md), B-5) | Error per Clifford gate with uncertainty |

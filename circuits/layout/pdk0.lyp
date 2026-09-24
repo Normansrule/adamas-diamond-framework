@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-properties>
+ <properties><name>OHMIC</name><source>1/0@1</source><fill-color>#d4a017</fill-color><frame-color>#d4a017</frame-color><dither-pattern>I5</dither-pattern></properties>
+ <properties><name>ISO</name><source>2/0@1</source><fill-color>#7a8793</fill-color><frame-color>#7a8793</frame-color><dither-pattern>I9</dither-pattern></properties>
+ <properties><name>ENH</name><source>3/0@1</source><fill-color>#e63946</fill-color><frame-color>#e63946</frame-color><dither-pattern>I2</dither-pattern></properties>
+ <properties><name>GATE</name><source>4/0@1</source><fill-color>#0fa3b1</fill-color><frame-color>#0fa3b1</frame-color><dither-pattern>I1</dither-pattern></properties>
+ <properties><name>VIA</name><source>5/0@1</source><fill-color>#000000</fill-color><frame-color>#000000</frame-color><dither-pattern>I0</dither-pattern></properties>
+ <properties><name>METAL2</name><source>6/0@1</source><fill-color>#8a62d6</fill-color><frame-color>#8a62d6</frame-color><dither-pattern>I3</dither-pattern></properties>
+ <properties><name>QIMPLANT</name><source>7/0@1</source><fill-color>#2a9d4b</fill-color><frame-color>#2a9d4b</frame-color><dither-pattern>I0</dither-pattern></properties>
+ <properties><name>QELEC</name><source>8/0@1</source><fill-color>#f4a261</fill-color><frame-color>#f4a261</frame-color><dither-pattern>I4</dither-pattern></properties>
+ <properties><name>TEXT</name><source>63/0@1</source><fill-color>#ffffff</fill-color><frame-color>#ffffff</frame-color></properties>
+</layer-properties>

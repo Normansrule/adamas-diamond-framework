@@ -9,3 +9,4 @@ moore1965 | NOT-INDEXED | Original is Electronics 38(8), 114 (19 April 1965), a 
 saha2020 | CONFIRMED | IEEE Electron Device Letters 41, 1066 (2020) confirmed from reference lists of later papers; Crossref search returns the group's 2024 J. Vac. Sci. Technol. B 42 paper instead
 gorini1976 | CONFIRMED | J. Math. Phys. 17, 821 (1976) confirmed against the publisher record and multiple reference lists; Crossref search returns a different paper
 shalan2020 | CONFIRMED | Crossref returns the right record (same first author, year, venue, DOI 10.1145/3400302.3415735) but deposits only the two-word main title "Building OpenLANE", below the three-word floor of the automatic subtitle rule
+gidney2025 | NOT-INDEXED | arXiv preprint 2505.15917 (May 2025), not yet in a Crossref-indexed venue; Crossref search returns the same author's 2021 Quantum paper instead

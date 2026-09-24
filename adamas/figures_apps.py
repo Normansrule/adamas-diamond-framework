@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
-from . import converter, materials, scaling, thermal
+from . import converter, gate_budget, materials, pdk0, scaling, thermal
 from .figures import COLORS, GOLD, GREEN, INK, RED, _finish
 
 NAMES = ["Si", "4H-SiC", "GaN", "Diamond"]
@@ -173,7 +173,54 @@ def fig_readiness(out: Path) -> Path:
                    "[francis2010] [tapper2000] [webb2019] [imanishi2019] [saha2023] [reimers2019] [jones2016] [watson2015] [liu2017] [olcf2025] [google2025]")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness]
+LAYER_COLORS = {"OHMIC": "#d4a017", "ISO": "#7a8793", "ENH": "#e63946", "GATE": "#0fa3b1", "VIA": "#111111", "METAL2": "#8a62d6",
+                "QIMPLANT": "#2a9d4b", "QELEC": "#f4a261"}
+
+
+def fig_pdk0_die(out: Path) -> Path:
+    """Figure 35: the PDK-0 monitor die, flattened one level, drawn from the same generator that writes the GDS."""
+    from matplotlib.patches import Rectangle
+    cells = pdk0.monitor_die(); top, subs = cells[0], {c.name: c for c in cells[1:]}
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 6.4))
+    ax = axes[0]
+    def draw(ax, cell, ox, oy, alpha=0.8):
+        for layer, x0, y0, x1, y1 in cell.boxes:
+            ax.add_patch(Rectangle((x0 + ox, y0 + oy), x1 - x0, y1 - y0, color=LAYER_COLORS.get(layer, "k"), alpha=alpha, lw=0))
+        for name, x, y in cell.refs:
+            draw(ax, subs[name], ox + x, oy + y, alpha)
+    draw(ax, top, 0, 0)
+    ax.set_xlim(0, 3000); ax.set_ylim(0, 3000); ax.set_aspect("equal")
+    ax.set_xlabel("µm"); ax.set_title("PDK-0 monitor die, 3 × 3 mm (6 masks + 2 quantum masks)", fontsize=11)
+    for k, (n, c) in enumerate(LAYER_COLORS.items()):
+        ax.add_patch(Rectangle((2100, 300 + 110 * k), 80, 80, color=c)); ax.text(2200, 330 + 110 * k, n, fontsize=8)
+    ax = axes[1]
+    f = subs["PFET_W16_L2_E"]
+    draw(ax, f, 0, 0, alpha=0.7)
+    ax.set_xlim(-20, 20); ax.set_ylim(-16, 16); ax.set_aspect("equal")
+    ax.set_xlabel("µm"); ax.set_title("Enhancement p-FET, W/L = 16/2 µm: gold ohmics, gate on Al₂O₃, C-O isolation frame", fontsize=10)
+    ax.annotate("C-H channel\n(untouched surface)", (0, 4), xytext=(6, 11), fontsize=8.5, arrowprops=dict(arrowstyle="->"))
+    return _finish(fig, out, "fig35_pdk0_monitor_die.png", "[meadconway1980] [kawarada2014] [kitabayashi2017] [liu2017] [pelgrom1989] [stapper1983] [hauf2011]; adamas.pdk0 generator")
+
+
+def fig_published_gate_check(out: Path) -> Path:
+    """Figure 36: project Q-1b, the gate budget evaluated with the published parameters of [dolde2013]."""
+    fig, ax = plt.subplots(figsize=(8.6, 4.8))
+    q = np.linspace(0.5, 1.0, 120)
+    case = gate_budget.DOLDE2013
+    for eps, c in [(0.0, COLORS["Diamond"]), (0.01, GOLD), (0.02, RED), (0.03, COLORS["Si"])]:
+        ax.plot(q, [gate_budget.GateBudget(nu_khz=case["nu_dq_khz"], t2_us=case["t2a_us"], t2b_us=case["t2b_us"], echo=True,
+                                           q_prep=x, pulse_error=eps, n_pulses=case["n_pulses"]).fidelity for x in q],
+                color=c, lw=2.3, label=f"pulse error {eps:.0%}")
+    ax.axhspan(0.63, 0.71, color=INK, alpha=0.12); ax.text(0.51, 0.715, "measured 0.67 ± 0.04 [dolde2013]", fontsize=8.5)
+    ax.axhline(0.82, color=INK, ls=":"); ax.text(0.51, 0.83, "0.82 after optimal control [dolde2014]", fontsize=8.5)
+    ax.axvspan(0.70, 0.75, color=RED, alpha=0.15); ax.text(0.725, 0.36, "NV⁻ fraction\n[aslam2013]", ha="center", fontsize=8)
+    ax.set_xlabel("Per-NV preparation probability q"); ax.set_ylabel("Predicted Bell-state fidelity")
+    ax.set_title("Q-1b: published pair (4.93 kHz, T₂ᴰᵠ 150 and 514 µs, 25 nm) puts coherence at 0.998", fontsize=10.5)
+    ax.legend(fontsize=8.5, loc="lower right"); ax.grid(True, alpha=0.15); ax.set_ylim(0.3, 1.0)
+    return _finish(fig, out, "fig36_published_gate_check.png", "[dolde2013] [dolde2014] [aslam2013]; adamas.gate_budget model")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

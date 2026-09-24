@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
 <p align="center">
-<b>524 references</b> · <b>34 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>36 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -171,7 +171,7 @@ flowchart LR
 | # | Chapter | Headline result |
 |---|---|---|
 | E1 | [Patterning diamond: extreme ultraviolet (EUV) to electron beam](docs/expert/E1_lithography_from_euv_to_electron_beam.md) | EUV scanners are 300 mm-only and leave 45 to 124 nm of focus depth, so diamond needs co-planar carriers; the one layer that truly needs EUV-class resolution is the qubit implant mask |
-| E2 | [Process integration and a process design kit (PDK)](docs/expert/E2_process_integration_and_pdk.md) | A six-mask "PDK-0" with monitor structures, a compact-model ladder, and an open-source flow |
+| E2 | [Process integration and a process design kit (PDK)](docs/expert/E2_process_integration_and_pdk.md) | A six-mask "PDK-0" with layer map, design rules, a KLayout DRC deck, and a generated GDS monitor die |
 | E3 | [Digital and processor design](docs/expert/E3_digital_and_cpu_design.md) | **DIA-4**, a working 4-bit processor synthesized to 830 to 900 diamond transistors; static power caps single-polarity diamond logic near 10⁴ gates |
 | E4 | [Analog and mixed signal](docs/expert/E4_analog_and_mixed_signal_design.md) | Threshold-difference references replace bandgaps; the picoampere qubit-readout noise budget |
 | E5 | [NV qubit engineering](docs/expert/E5_nv_qubit_engineering.md) | With an echoed gate, 25 nm spacing is enough for coherence; charge-state preparation becomes the bottleneck. Bath and decoupling models reproduce published $T_2^{*}$ and $T_2$ |
@@ -229,8 +229,8 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 40 tests, including the citation check
-make spice rtl synth                    # ngspice ring oscillator; DIA-4 processor simulation and synthesis
+python -m pytest -q                     # 44 tests, including the citation check
+make spice rtl synth layout             # ngspice; DIA-4 simulation and synthesis; PDK-0 monitor die GDS
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
 python examples/make_all_figures.py     # regenerate every figure in docs/img/
@@ -257,6 +257,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.surface_sim` | Monte Carlo surface-code memory with in-cell, link, and readout error rates (needs `pymatching`) | [dennis2002], [wang2003], [higgott2022] |
 | `adamas.converter` | Hard-switched converter loss, area optimum, on-resistance vs temperature, five applications | [erickson2020], [baliga1989], [pernot2010] |
 | `adamas.scaling` | Size, time, and power of a room-temperature NV machine for published workloads | [gidney2021], [litinski2019], [krinner2019] |
+| `adamas.pdk0` | PDK-0 layer map, lambda rules, GDSII writer, monitor-die generator | [meadconway1980], [kawarada2014], [pelgrom1989] |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
 | `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |

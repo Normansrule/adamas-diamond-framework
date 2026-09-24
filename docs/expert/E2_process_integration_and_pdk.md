@@ -62,11 +62,23 @@ flowchart LR
 
 The synthesis step already runs in this repository (`circuits/digital/`). Place and route needs a technology file (layer map, LEF abstract views of the cells), which is project P-2 below. The open 130 nm silicon flow of [shalan2020] is the template.
 
+## E2.4b The monitor die exists (project P-1, done)
+
+`adamas.pdk0` holds the layer map, the lambda rules, and a generator that writes the monitor die as GDSII with a self-contained writer (no layout library needed). `python circuits/layout/make_pdk0_monitor.py` produces `circuits/layout/pdk0_monitor.gds` (16 cells, about 340 rectangles), which KLayout reads back with the correct 3 × 3 mm extent; `pdk0.lyp` colors the layers and `pdk0_drc.lydrc` is a first design-rule deck (width, space, gate-to-ohmic, via enclosure, and "every NV aperture must sit in an oxygen-terminated window").
+
+![PDK-0 monitor die](../img/fig35_pdk0_monitor_die.png)
+
+Contents: transfer-length ladder (2 to 32 µm), van der Pauw cross, 200 µm MOS capacitor, serpentine-plus-comb defect monitor, ten transistor geometries × 4 copies for mismatch statistics ([pelgrom1989]), an NV witness window with a 10 × 10 array of 50 nm implant apertures on a 0.5 µm pitch with photocurrent electrodes ([siyushev2019]), and an 8-pad frame. The die is deliberately sparse: at this maturity every square millimeter of diamond should carry monitors, not product.
+
+```bash
+python circuits/layout/make_pdk0_monitor.py && klayout circuits/layout/pdk0_monitor.gds -l circuits/layout/pdk0.lyp
+```
+
 ## E2.5 Projects
 
 | ID | Project | Deliverable |
 |---|---|---|
-| P-1 | Draw the PDK-0 monitor die in KLayout with the rules above | GDS file + rule deck |
+| P-1 | Draw the PDK-0 monitor die with the rules above | **Done in v0.6.0**: `circuits/layout/pdk0_monitor.gds`, `.lyp`, `.lydrc` |
 | P-2 | Create LEF/technology files for the five-cell library and run OpenROAD on DIA-4 ([E3](E3_digital_and_cpu_design.md)) | Routed layout, die area estimate |
 | P-3 | Fit level-0 and EKV parameters to digitized curves of [liu2017] and [kawarada2014] | Model cards with fit error |
 | P-4 | Fabricate the monitor die (4 masks) on a 3 to 5 mm plate | Measured parameter table that replaces every placeholder in this repository |
