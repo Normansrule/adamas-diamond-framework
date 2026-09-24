@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "adamas-diamond-framework"
-version = "0.5.0"
+version = "0.6.0"
 description = "ADAMAS: a referenced scientific framework for diamond-wafer electronics, from wafer growth to room-temperature nitrogen-vacancy quantum processors"
 readme = "README.md"
 requires-python = ">=3.10"

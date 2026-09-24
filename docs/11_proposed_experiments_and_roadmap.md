@@ -15,7 +15,7 @@ flowchart LR
 
 | ID | Experiment | Success metric | Builds on |
 |---|---|---|---|
-| S-1 | Reproduce every figure with `python examples/make_all_figures.py` | All 34 figures regenerate; tests pass | whole repository |
+| S-1 | Reproduce every figure with `python examples/make_all_figures.py` | All 36 figures regenerate; tests pass | whole repository |
 | S-2 | Extend `adamas.coupling.pair_yield` to chains of $N$ sites and to multiple ions per site with post-selection | Yield-versus-$N$ curves; identify the conversion yield at which a 3×3 cluster reaches 10 percent yield | [yao2012], [luhmann2019] |
 | S-3 | Add a carbon-13 bath (cluster-correlation expansion) to predict $T_2$ versus enrichment | Match 0.6 ms (natural) and 1.8 ms (99.7 percent ¹²C) within a factor of two | [zhao2012], [mizuochi2009], [balasubramanian2009] |
 | S-4 | Lindblad model of NV-NV controlled-phase gate including $T_1$, $T_2$, and charge-state blinking | Replace the simple bound of Chapter 7 with a simulated fidelity; compare with 0.67 and 0.82 | [dolde2013], [dolde2014], [aslam2013] |
