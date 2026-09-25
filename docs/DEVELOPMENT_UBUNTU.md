@@ -45,13 +45,13 @@ python -c "import adamas, sys; print('adamas', adamas.__version__, 'on python', 
 ```bash
 python -m pytest -q            # always "python -m pytest": a stray ~/.local/bin/pytest can shadow the environment's
 make refs                      # rebuild the bibliography and check every [bibkey]
-make figures                   # regenerate all 36 figures
+make figures                   # regenerate all 37 figures
 make spice                     # ngspice: inverter + ring oscillator (prints the oscillation period)
 make rtl                       # DIA-4 behavioral simulation  -> PASS
 make synth                     # Yosys synthesis + gate-level simulation -> cell counts, PASS
 ```
 
-Expected: 44 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
+Expected: 47 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
 
 ## 4 · Publish to GitHub
 
