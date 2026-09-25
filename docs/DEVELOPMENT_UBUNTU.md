@@ -51,7 +51,7 @@ make rtl                       # DIA-4 behavioral simulation  -> PASS
 make synth                     # Yosys synthesis + gate-level simulation -> cell counts, PASS
 ```
 
-Expected: 47 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
+Expected: 50 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
 
 ## 4 · Publish to GitHub
 
@@ -68,6 +68,16 @@ git tag -a v0.2.0 -m "ADAMAS v0.2.0: expert track" && git push origin v0.2.0
 ```
 
 Pushing over SSH avoids the token-scope problem that blocks `.github/workflows/` files over HTTPS.
+
+## 4b · Publish the interactive Explorer on GitHub Pages (one time)
+
+```bash
+gh api -X POST repos/Normansrule/adamas-diamond-framework/pages -f build_type=workflow 2>/dev/null || true
+gh workflow run pages --repo Normansrule/adamas-diamond-framework
+gh run watch --repo Normansrule/adamas-diamond-framework $(gh run list --repo Normansrule/adamas-diamond-framework --workflow pages --limit 1 --json databaseId -q '.[0].databaseId')
+```
+
+Then open https://normansrule.github.io/adamas-diamond-framework/ . The `pages` workflow rebuilds `docs/index.html` from `adamas.explorer` on every push to `main`.
 
 ## 5 · Daily development loop
 
