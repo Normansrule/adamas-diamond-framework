@@ -1,7 +1,9 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
+<p align="center"><b>🎛️ <a href="https://normansrule.github.io/adamas-diamond-framework/">Open the interactive Explorer</a></b> · move the sliders, pick your reading level, watch the equations respond</p>
+
 <p align="center">
-<b>524 references</b> · <b>37 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>37 figures + 2 animations + interactive explorer</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -65,6 +67,10 @@ flowchart LR
     J --> K[12 · Silicon scorecard<br/>13 · Economics and risk]
 ```
 
+## The whole framework on one page
+
+![ADAMAS poster](docs/img/poster.svg)
+
 ## 1 · Same crystal pattern, tighter bonds
 
 Silicon chips already use the "diamond cubic" lattice. Diamond is that lattice with a 34 percent smaller spacing and far stronger bonds ([sze2006], [wort2008]). The NV center is one nitrogen (N) beside one vacancy (V) ([doherty2013]).
@@ -115,6 +121,10 @@ flowchart LR
 | ![NV levels](docs/img/fig07_nv_levels.png) | ![ODMR](docs/img/fig08_odmr.png) |
 
 ![Rabi, Ramsey, echo](docs/img/fig09_coherent_control.png)
+
+| Watch the qubit rotate | Watch the field split the line |
+|---|---|
+| ![Rabi on the Bloch sphere](docs/img/anim_rabi_bloch.gif) | ![ODMR sweep](docs/img/anim_odmr_sweep.gif) |
 
 How long does quantum information survive with no refrigerator? Long enough for tens of thousands of gate operations ([balasubramanian2009], [herbschleb2019], [maurer2012], [fuchs2009]):
 
@@ -229,7 +239,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 47 tests, including the citation check
+python -m pytest -q                     # 50 tests, including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -259,6 +269,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.scaling` | Size, time, and power of a room-temperature NV machine for published workloads | [gidney2021], [litinski2019], [krinner2019] |
 | `adamas.pdk0` | PDK-0 layer map, lambda rules, GDSII writer, monitor-die generator | [meadconway1980], [kawarada2014], [pelgrom1989] |
 | `adamas.stdcells` | PDK-0 standard cells: layouts, LEF, timed Liberty; `circuits/digital/place.py` places DIA-4 | [weste2011], [rabaey2003], [ajayi2019] |
+| `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
 | `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |

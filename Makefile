@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations explorer refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
@@ -34,6 +34,12 @@ layout:          ## write the PDK-0 monitor die GDS
 
 place:           ## LEF, timed Liberty, and a placed DIA-4 (GDS + DEF) on PDK-0
 	$(PY) circuits/digital/place.py
+
+animations:      ## the two GIFs (about 15 s)
+	$(PY) -c "from adamas.animations import make_all; make_all('docs/img')"
+
+explorer:        ## rebuild docs/index.html (interactive explorer) and the poster
+	$(PY) -c "from adamas.explorer import write; write('docs/index.html')" && $(PY) -c "from adamas.poster import write; write()"
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log
