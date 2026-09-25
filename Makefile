@@ -1,13 +1,13 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures refs verify apply-verify spice rtl synth layout clean
+.PHONY: all test figures refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 36 figures into docs/img/
+figures:         ## regenerate all 37 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -31,6 +31,9 @@ synth:           ## synthesize DIA-4 onto the diamond cell library, then gate-le
 
 layout:          ## write the PDK-0 monitor die GDS
 	$(PY) circuits/layout/make_pdk0_monitor.py
+
+place:           ## LEF, timed Liberty, and a placed DIA-4 (GDS + DEF) on PDK-0
+	$(PY) circuits/digital/place.py
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

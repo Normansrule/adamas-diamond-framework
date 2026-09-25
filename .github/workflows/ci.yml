@@ -14,6 +14,6 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y ngspice iverilog yosys
       - run: pip install -e ".[dev]"
       - run: python -m pytest -q
-      - run: make spice rtl synth layout
+      - run: make spice rtl synth layout place
       - run: cd tools && python build_refs.py && python check_citations.py
       - run: python examples/make_all_figures.py

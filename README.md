@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
 <p align="center">
-<b>524 references</b> · <b>36 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>37 reproducible figures</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -229,8 +229,8 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 44 tests, including the citation check
-make spice rtl synth layout             # ngspice; DIA-4 simulation and synthesis; PDK-0 monitor die GDS
+python -m pytest -q                     # 47 tests, including the citation check
+make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
 python examples/make_all_figures.py     # regenerate every figure in docs/img/
@@ -258,6 +258,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.converter` | Hard-switched converter loss, area optimum, on-resistance vs temperature, five applications | [erickson2020], [baliga1989], [pernot2010] |
 | `adamas.scaling` | Size, time, and power of a room-temperature NV machine for published workloads | [gidney2021], [litinski2019], [krinner2019] |
 | `adamas.pdk0` | PDK-0 layer map, lambda rules, GDSII writer, monitor-die generator | [meadconway1980], [kawarada2014], [pelgrom1989] |
+| `adamas.stdcells` | PDK-0 standard cells: layouts, LEF, timed Liberty; `circuits/digital/place.py` places DIA-4 | [weste2011], [rabaey2003], [ajayi2019] |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |
 | `circuits/spice`, `circuits/digital` | ngspice decks; DIA-4 Verilog, cell library, Yosys flow | [nagel1973], [wolf2013], [liu2017] |

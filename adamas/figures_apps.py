@@ -220,7 +220,32 @@ def fig_published_gate_check(out: Path) -> Path:
     return _finish(fig, out, "fig36_published_gate_check.png", "[dolde2013] [dolde2014] [aslam2013]; adamas.gate_budget model")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check]
+def fig_placed_dia4(out: Path) -> Path:
+    """Figure 37: DIA-4 placed on PDK-0 rows (no routing), colored by cell type."""
+    import sys
+    from matplotlib.patches import Rectangle
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "circuits" / "digital"))
+    import place as pl
+    from . import stdcells
+    net = Path(__file__).resolve().parents[1] / "circuits" / "digital" / "dia4_netlist.v"
+    if not net.exists():
+        return net
+    placed, st = pl.place(pl.parse(net))
+    colors = {"INV": COLORS["Si"], "NAND2": COLORS["Diamond"], "NOR2": COLORS["4H-SiC"], "NOR3": COLORS["GaN"], "DFF": RED, "BUF": GREEN}
+    fig, ax = plt.subplots(figsize=(8.5, 8))
+    for t, name, pins, x, y in placed:
+        ax.add_patch(Rectangle((x, y), stdcells.CELLS[t][3] * stdcells.PITCH_UM, stdcells.ROW_HEIGHT_UM, facecolor=colors[t], edgecolor="white", lw=0.4))
+    ax.set_xlim(0, st["core_w_um"]); ax.set_ylim(0, st["core_h_um"]); ax.set_aspect("equal")
+    for t, c in colors.items():
+        ax.add_patch(Rectangle((0, 0), 0, 0, color=c, label=t))
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.06), ncol=6, fontsize=8.5)
+    ax.set_xlabel("µm")
+    ax.set_title(f"DIA-4 on PDK-0: {st['cells']} cells, {st['rows']} rows, {st['core_w_um']:.0f} × {st['core_h_um']:.0f} µm, "
+                 f"{st['utilization']:.0%} utilization, wirelength {st['hpwl_um'] / 1e3:.0f} mm", fontsize=10)
+    return _finish(fig, out, "fig37_dia4_placed.png", "[weste2011] [meadconway1980] [liu2017] [faggin1996] [ajayi2019]; circuits/digital/place.py")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

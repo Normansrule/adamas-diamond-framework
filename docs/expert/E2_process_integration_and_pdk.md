@@ -74,11 +74,28 @@ Contents: transfer-length ladder (2 to 32 µm), van der Pauw cross, 200 µm MOS 
 python circuits/layout/make_pdk0_monitor.py && klayout circuits/layout/pdk0_monitor.gds -l circuits/layout/pdk0.lyp
 ```
 
+## E2.4c Standard cells, LEF, timing, and a placed processor (project P-2, done)
+
+`adamas.stdcells` turns the six logic cells into placeable layouts on a 30 µm row, writes the Library Exchange Format (LEF) abstracts that place-and-route tools read [weste2011], and writes a **timed** Liberty file whose 3 × 3 delay tables come from the first-order model of `adamas.digital` [rabaey2003], calibrated by the ngspice ring oscillator of [E3](E3_digital_and_cpu_design.md). Yosys reads the timed library and re-synthesizes DIA-4 against it.
+
+`circuits/digital/place.py` then places the synthesized DIA-4: a connectivity-ordered row placer (no routing) that writes a placed GDS, a Design Exchange Format (DEF) file OpenROAD can route, and the statistics below. KLayout reads both files back.
+
+![Placed DIA-4](../img/fig37_dia4_placed.png)
+
+| Quantity | Value (Yosys 0.33 netlist, 374 cells) |
+|---|---|
+| Cell area | 0.28 mm² |
+| Core at 60% utilization | 672 × 690 µm, 23 rows |
+| Half-perimeter wirelength | about 140 mm |
+| Die with pads | about 1 mm² |
+
+A 4004-class processor therefore occupies about one square millimeter in PDK-0 at 2 µm gates, which is the chiplet size that [Chapter 13](../13_economics_and_risk.md) argued yields well on today's wafers. `circuits/digital/openroad/` carries the OpenROAD-flow-scripts configuration for a real route and a timing report ([ajayi2019], [shalan2020]); the two-layer stack of PDK-0 is thin, and routing the whole block may need a third metal, which is a PDK-1 item.
+
 ## E2.5 Projects
 
 | ID | Project | Deliverable |
 |---|---|---|
 | P-1 | Draw the PDK-0 monitor die with the rules above | **Done in v0.6.0**: `circuits/layout/pdk0_monitor.gds`, `.lyp`, `.lydrc` |
-| P-2 | Create LEF/technology files for the five-cell library and run OpenROAD on DIA-4 ([E3](E3_digital_and_cpu_design.md)) | Routed layout, die area estimate |
+| P-2 | LEF, timed Liberty, placement of DIA-4; OpenROAD configuration | **Done in v0.7.0** (Section E2.4c); a routed result with OpenROAD is the remaining step |
 | P-3 | Fit level-0 and EKV parameters to digitized curves of [liu2017] and [kawarada2014] | Model cards with fit error |
 | P-4 | Fabricate the monitor die (4 masks) on a 3 to 5 mm plate | Measured parameter table that replaces every placeholder in this repository |

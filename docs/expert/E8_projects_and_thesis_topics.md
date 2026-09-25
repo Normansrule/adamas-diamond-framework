@@ -11,7 +11,7 @@ flowchart LR
 
 | Stage | ID | Project | Scope | Needs | Where specified |
 |---|---|---|---|---|---|
-| Wafer | S-1 | Reproduce all 36 figures and the test suite | W | Laptop | README |
+| Wafer | S-1 | Reproduce all 37 figures and the test suite | W | Laptop | README |
 | Wafer | L-1 | Flatness and bow statistics of commercial diamond plates | C | Optical profiler | [E1](E1_lithography_from_euv_to_electron_beam.md) |
 | Wafer | F-3 | (111) ¹²C phosphorus-doped quantum epilayer on heteroepitaxial wafer | G | Growth partner | [Ch. 11](../11_proposed_experiments_and_roadmap.md) |
 | Lithography | L-2 | Electron-beam proximity function on diamond versus silicon | C/T | Electron-beam tool | E1 |
@@ -21,7 +21,7 @@ flowchart LR
 | Process | P-3 | Compact-model fitting to published curves | C | ngspice, Python | E2 |
 | Process | P-4 / C-1 | Fabricate the 4-mask monitor die | T | Cleanroom, diamond plates | E2, Ch. 11 |
 | Digital | D-1 | Extend and re-synthesize DIA-4 | W/C | Yosys, Icarus Verilog | [E3](E3_digital_and_cpu_design.md) |
-| Digital | P-2 | OpenROAD place-and-route of DIA-4 on PDK-0 | C/T | OpenROAD | E2 |
+| Digital | P-2 | Placement of DIA-4 on PDK-0 (done); OpenROAD route | **done** / C | `make place`; OpenROAD | E2 |
 | Digital | D-2, D-3 | Ring oscillators and logic to 400 °C | T | P-4 wafers, hot probe station | E3 |
 | Digital | D-4 | Dynamic diamond logic | T/D | P-4 wafers | E3 |
 | Digital | D-6 | First all-diamond stored-program processor | D | Mature PDK-0 | E3 |

@@ -9,3 +9,5 @@ references/verification_report.csv
 .DS_Store
 circuits/digital/synth.log
 circuits/layout/pdk0_monitor.gds
+circuits/digital/dia4_placed.gds
+circuits/digital/dia4_placed.def
