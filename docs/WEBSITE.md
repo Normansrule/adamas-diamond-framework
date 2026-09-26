@@ -48,6 +48,8 @@ three.js 0.160 (3-D crystal, Bloch sphere, bloom post-processing), GSAP 3.12 wit
 | Lattice Lab | three.js crystal, magnet, live spectrum | `sim/physics.js` |
 | Diamond CPU | registers, program memory, placed-layout viewer | `sim/dia4.js`, `data/site.json` |
 | Break the Code | interactive SVG surface code, Monte Carlo plot | `sim/surface.js` |
+| Transistor Lab | I–V, transfer curve, ring-oscillator canvases | `sim/fet.js` (vs `adamas.logic` and ngspice) |
+| Power Lab | animated half-bridge SVG, loss bars | `sim/converter.js` + `data/site.json` power block (vs `adamas.converter`) |
 | Fab Walkthrough | animated SVG cross-section | (step data inline) |
 | The Chip Stack | scroll-driven exploded three.js stack | `sim/stack.js` |
 | Who is building it | three.js dot-matrix globe (Natural Earth land mask) | `sim/world.js`, `sim/landmask.js` |

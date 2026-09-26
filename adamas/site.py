@@ -38,6 +38,7 @@ def site_data() -> dict:
         "references": chips,
         "dia4_layout": None,
     }
+    data["power"] = power_data()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -47,6 +48,28 @@ def site_data() -> dict:
                                "cells": [{"n": n, "t": t, "x": round(x, 2), "y": round(y, 2), "w": stdcells.CELLS[t][3] * stdcells.PITCH_UM}
                                          for t, n, _, x, y in placed]}
     return data
+
+
+def power_data(bv_table: float = 1200.0) -> dict:
+    """Per-material inputs for the Power Lab, computed by adamas.converter so the browser uses the Python physics.
+    R_on(T) tables are evaluated at a 1200 V class (the diamond ionization factor depends weakly on the drift doping)."""
+    import numpy as np
+    from . import converter, materials, power
+    T = [float(t) for t in np.arange(300, 660, 10)]
+    out = {}
+    for key, name, measured in [("Si", "Silicon (ideal)", None), ("4H-SiC", "Silicon carbide (ideal)", None), ("GaN", "Gallium nitride (ideal)", None),
+                                ("Diamond", "Diamond (ideal, holes)", None), ("Diamond", "Diamond (measured 2022 device)", "saha2022")]:
+        m = materials.MATERIALS[key]
+        if measured:
+            pt = power.MEASURED_DIAMOND[measured]
+            rsp = pt["ron_mohm_cm2"] * (1000.0 / pt["bv_v"]) ** 2
+            F = [converter.ron_temperature_factor(key, t, bv_table, bulk_doped=False) for t in T]
+        else:
+            rsp = power.ron_sp_mohm_cm2(m, 1000.0, "p" if key == "Diamond" else "n")
+            F = [converter.ron_temperature_factor(key, t, bv_table) for t in T]
+        out[name] = {"key": key, "measured": measured, "rsp_1kv": rsp, "coss_1kv": converter.coss_sp_f_cm2(m, 1000.0),
+                     "t_table": {"T": T, "F": F}, "tjmax_c": converter.TJ_MAX_C[key]}
+    return out
 
 
 def build(out: str | Path = "site") -> Path:

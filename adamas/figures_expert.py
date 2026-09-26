@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from . import analog, coupling, digital, gate_budget, litho, opensys, qec, surface_sim
+from . import analog, circuit_qec, coupling, digital, gate_budget, litho, opensys, qec, surface_sim
 from .figures import COLORS, GOLD, GREEN, INK, RED, _finish
 
 
@@ -294,10 +294,37 @@ ALL = [fig_litho_tools, fig_litho_stochastics, fig_processor_landscape, fig_logi
        fig_bath_and_dd, fig_qec, fig_stack_map, fig_gate_budget]
 
 
+def fig_circuit_qec(out: Path) -> Path:
+    """Figure 38: circuit-level surface code (Stim) and the readout-time budget for NV cells (project X-1b)."""
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 4.8))
+    ax = axes[0]
+    ps = np.array([0.002, 0.004, 0.006, 0.008, 0.010, 0.012, 0.014])
+    for d, c in [(3, COLORS["Si"]), (5, COLORS["4H-SiC"]), (7, COLORS["Diamond"])]:
+        ax.semilogy(ps * 100, [circuit_qec.logical_error(d, p, p, p, p, shots=20000, seed=d)[0] for p in ps], "o-", color=c, lw=2.2, label=f"d = {d}")
+    ax.set_xlabel("Uniform circuit error rate (%)"); ax.set_ylabel("Logical error per round")
+    ax.set_title("Validation: circuit-level threshold near 1%", fontsize=11); ax.legend(fontsize=8.5); ax.grid(True, which="both", alpha=0.15)
+    ax = axes[1]
+    tr = np.logspace(1, 5, 11)
+    for t2, ls in [(1000.0, "-"), (100.0, "--")]:
+        for d, c in [(3, COLORS["Si"]), (5, COLORS["4H-SiC"]), (7, COLORS["Diamond"])]:
+            ax.loglog(tr / 1e3, [circuit_qec.nv_logical_error(d, t, t2_mem_ms=t2, shots=20000, seed=d) for t in tr], ls, color=c, lw=2,
+                      label=f"d = {d}, T₂ memory {t2 / 1e3:g} s")
+    for x, lab in [(0.1, "electrical readout\n(proposed)"), (1.0, "optical repetitive\nreadout [hopper2018]")]:
+        ax.axvline(x, color=INK, ls=":", lw=1); ax.text(x * 1.1, 2e-4, lab, fontsize=8)
+    ax.set_xlabel("Ancilla readout time per round (ms)"); ax.set_ylabel("Logical error per round")
+    ax.set_title("NV cells: data qubits idle while the ancilla is read", fontsize=11); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=0.15)
+    return _finish(fig, out, "fig38_circuit_level_qec.png",
+                   "[gidney2021stim] [higgott2022] [fowler2012] [maurer2012] [hopper2018] [neumann2010science]; adamas.circuit_qec model: p_link 0.3%, p_meas 1%, p_init 0.2%")
+
+
 def make_all(out: str | Path = "docs/img") -> list[Path]:
     paths = [f(Path(out)) for f in ALL]
     if surface_sim.pymatching is None:
         print("skipped fig27 (optional dependency missing):  pip install pymatching")
     else:
         paths.append(fig_surface_sim(Path(out)))
+    if circuit_qec.stim is None:
+        print("skipped fig38 (optional dependency missing):  pip install stim")
+    else:
+        paths.append(fig_circuit_qec(Path(out)))
     return paths

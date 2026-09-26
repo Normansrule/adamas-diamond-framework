@@ -21,6 +21,10 @@ const DRAW = {
     cols.forEach((c, i) => { const y = h - 20 - i * (8 + 10 * e); g.fillStyle = c; g.globalAlpha = .85; g.beginPath(); g.moveTo(w / 2 - 70, y); g.lineTo(w / 2, y + 10); g.lineTo(w / 2 + 70, y); g.lineTo(w / 2, y - 10); g.closePath(); g.fill(); }); g.globalAlpha = 1; },
   globe(g, w, h, t) { const cx = w / 2, cy = h / 2, R = h * .42; g.strokeStyle = 'rgba(111,243,255,.35)'; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.stroke();
     for (let k = 0; k < 7; k++) { const lo = t * .5 + k * .9, x = cx + R * Math.sin(lo) * Math.cos(.4 * k - 1), y = cy - R * Math.sin(.4 * k - 1) * .9; if (Math.cos(lo) > 0) { g.fillStyle = ['#ffc46b', '#ff5d8f', '#2de2e6', '#9d7bff'][k % 4]; g.beginPath(); g.arc(x, y, 3.5, 0, 7); g.fill(); } } },
+  ring(g, w, h, t) { ['#2de2e6', '#9d7bff', '#ff5d8f', '#ffc46b', '#48e5a3'].forEach((c, k) => { g.strokeStyle = c; g.lineWidth = 1.6; g.beginPath();
+      for (let x = 0; x < w; x++) { const ph = (x / w) * 6 + t * 2 - k * 1.25, y = h / 2 + (h * .32) * Math.tanh(4 * Math.sin(ph)) * (k % 2 ? -1 : 1); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }); },
+  power(g, w, h, t) { const bars = [['Si', 1, '#8b98a5'], ['SiC', .38, '#e0a030'], ['GaN', .3, '#9d7bff'], ['C', .07, '#2de2e6']];
+    bars.forEach(([n, v, c], k) => { const bw = (w - 60) * v * (0.85 + .15 * Math.sin(t * 2 + k)); g.fillStyle = c; g.fillRect(40, 12 + k * 24, bw, 16); g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(n, 8, 24 + k * 24); }); },
   explorer(g, w, h, t) { g.strokeStyle = '#48e5a3'; g.lineWidth = 2; g.beginPath();
     for (let x = 0; x < w; x++) { const y = h - 10 - (h - 20) / (1 + Math.exp(-((x / w) * 10 - 5 - Math.sin(t) * 1.5))); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); },
 };
