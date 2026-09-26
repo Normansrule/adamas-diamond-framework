@@ -1,12 +1,12 @@
 """ADAMAS Explorer: one self-contained interactive web page (Plotly from a CDN, everything else inline) that lets anyone
-move a slider and watch the framework's core equations respond. Every panel names its sources; the JavaScript
+move a slider and watch the framework's core equations respond. Panel 8 uses precomputed Monte Carlo data (docs/data/surface_map.json). Every panel names its sources; the JavaScript
 re-implements the same formulas as the Python package, and the test suite checks the two agree at spot values.
 
 Panels: 1 material figures of merit [baliga1982] [baliga1989] [johnson1965] [keyes1972]; 2 on-resistance limit versus
 breakdown voltage with measured diamond devices [baliga1982] [saha2021] [saha2022] [saha2023]; 3 dopant ionization
 versus temperature [sze2006] [lagrange1998] [koizumi1997]; 4 NV magnetic-resonance spectrum [doherty2013]; 5 NV-NV
 coupling and echoed-gate fidelity versus distance [dolde2013] [neumann2010natphys] [delange2010]; 6 converter loss
-versus frequency [erickson2020] [baliga1989]; 7 size of a room-temperature quantum computer [gidney2021] [fowler2012].
+versus frequency [erickson2020] [baliga1989]; 7 surface-code map [dennis2002] [higgott2022]; 8 size of a room-temperature quantum computer [gidney2021] [fowler2012].
 """
 from __future__ import annotations
 import json
@@ -26,7 +26,10 @@ section h2{margin:0 0 4px;font-size:24px}.why{color:#4a5a6a;margin:0 0 12px;font
 .controls{display:flex;flex-wrap:wrap;gap:16px;margin:8px 0 12px}
 .controls label{font-size:14px;display:flex;flex-direction:column;gap:4px;min-width:200px}
 input[type=range]{width:220px}select{padding:4px}
-.plot{width:100%;height:420px}.src{font-size:12px;color:#5b6775;margin-top:8px}
+.plot{width:100%;height:420px}section.focus{outline:3px solid var(--teal);outline-offset:4px}
+#tour{background:#e8f7f9;border:1px solid #bfe6ea;border-radius:12px;padding:14px 18px;margin:18px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#tour button{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:15px;cursor:pointer}
+#tourMsg{flex:1;min-width:260px;font-size:15px}.src{font-size:12px;color:#5b6775;margin-top:8px}
 .level{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.level button{border:1px solid #cfd8de;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
 .level button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
 .expl{display:none;padding:10px 12px;border-left:4px solid var(--teal);background:#f3fbfc;border-radius:6px;font-size:15px}.expl.on{display:block}
@@ -39,6 +42,25 @@ def _materials_json() -> str:
     for k, m in materials.MATERIALS.items():
         out[k] = {"eg": m.eg_ev, "ec": m.ec_mv_cm, "mun": m.mu_n, "mup": m.mu_p, "eps": m.eps_r, "vsat": m.vsat_cm_s, "kappa": m.kappa_w_cmk}
     return json.dumps(out)
+
+
+DATA = Path(__file__).resolve().parents[1] / "docs" / "data" / "surface_map.json"
+
+
+def surface_map(shots: int = 2000) -> dict:
+    """Precomputed surface-code memory results for panel 8 (adamas.surface_sim, [dennis2002] [fowler2012]).
+    Cached in docs/data/surface_map.json because the Monte Carlo takes seconds, not milliseconds."""
+    if DATA.exists():
+        return json.loads(DATA.read_text())
+    import numpy as np
+    from . import surface_sim
+    links, meas = np.logspace(-3, np.log10(2e-2), 9), np.logspace(-3, -1, 9)
+    out = {"p_intra": 1e-3, "links": links.tolist(), "meas": meas.tolist(), "d": [3, 5, 7], "shots": shots, "pL": {}}
+    for d in out["d"]:
+        out["pL"][str(d)] = [[surface_sim.nv_logical_error(d, 1e-3, a, b, shots=shots, seed=d)[0] for a in links] for b in meas]
+    DATA.parent.mkdir(parents=True, exist_ok=True)
+    DATA.write_text(json.dumps(out))
+    return out
 
 
 def _measured_json() -> str:
@@ -57,6 +79,27 @@ document.querySelectorAll('.level').forEach(g=>{g.querySelectorAll('button').for
  g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
  const sec=g.parentElement;sec.querySelectorAll('.expl').forEach(e=>e.classList.toggle('on',e.dataset.level===b.dataset.level));});});
 document.querySelectorAll('.level button[data-level="kid"]').forEach(b=>b.click());
+// --- guided tour ---
+const TOUR=[['fom','Start here. Diamond wins almost every scorecard engineers use for semiconductors. Toggle holes and electrons.'],
+ ['ion','The catch: its dopants are deep, so at room temperature most of them are inactive. Slide the doping and watch.'],
+ ['ron','Even so, real diamond switches already beat silicon\'s theoretical limit. The stars are measured devices.'],
+ ['conv','Put those switches in a real inverter and compare with silicon carbide and gallium nitride.'],
+ ['odmr','Now the quantum side: one defect, the NV center, is a qubit you can read with light at room temperature.'],
+ ['gate','Two qubits couple magnetically. Slide coherence and preparation: which one really limits the gate?'],
+ ['qec','Many qubits correct each other\'s errors, but only if the links between cells are good enough.'],
+ ['qsize','Finally, how big and how slow would a whole room-temperature quantum computer be?']];
+let tourI=-1;function tour(step){tourI=Math.max(0,Math.min(TOUR.length-1,tourI+step));const [id,msg]=TOUR[tourI];
+ $('tourMsg').innerHTML=`<b>Step ${tourI+1} of ${TOUR.length}.</b> ${msg}`;document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+ document.querySelectorAll('section').forEach(x=>x.classList.toggle('focus',x.id===id));}
+$('tourNext').onclick=()=>tour(1);$('tourBack').onclick=()=>tour(-1);
+// --- 8 surface code ---
+function drawQEC(){const d=$('qecD').value;const z=QEC.pL[d];const z3=QEC.pL['3'];const sh=QEC.shots;
+ const mode=$('qecMode').value;let Z,title,cs,zmin,zmax;
+ if(mode==='ratio'){Z=z.map((r,i)=>r.map((v,j)=>Math.log10((v+0.5/sh)/(z3[i][j]+0.5/sh))));title=`log₁₀ p_L(d=${d}) / p_L(d=3): green means a bigger code helps`;cs='RdYlGn';zmin=-2;zmax=1;}
+ else{Z=z.map(r=>r.map(v=>Math.log10(v+0.5/sh)));title=`log₁₀ logical error after ${d} rounds, distance ${d}`;cs='Viridis';zmin=-3.5;zmax=-0.3;}
+ Plotly.react('qecPlot',[{type:'heatmap',x:QEC.links.map(v=>v*100),y:QEC.meas.map(v=>v*100),z:Z,colorscale:cs,reversescale:mode==='ratio',zmin:zmin,zmax:zmax,colorbar:{title:'log₁₀'}}],
+  {...L,xaxis:{type:'log',title:'Inter-cell link error per gate (%)'},yaxis:{type:'log',title:'Readout error (%)'},title:title,
+   shapes:[{type:'line',x0:1.3,x1:1.3,y0:0.1,y1:10,line:{color:'#1d2733',dash:'dash'}}],annotations:[{x:Math.log10(1.3),y:Math.log10(8),xref:'x',yref:'y',text:'≈1.3% break-even',showarrow:false,xanchor:'left',font:{size:11}}]});}
 // --- 1 figures of merit ---
 function fom(m,carrier){const mu=carrier==='p'?m.mup:m.mun,eps=m.eps*EPS0,ec=m.ec*1e6;
  return {BFOM:eps*mu*ec**3,BHFFOM:mu*ec*ec,JFOM:(ec*m.vsat/(2*Math.PI))**2,KFOM:m.kappa*Math.sqrt(3e10*m.vsat/(4*Math.PI*eps))}}
@@ -104,8 +147,8 @@ function drawQ(){const cyc=10**v('qCycle');const y=v('qYield')/100;const pitch=v
  $('qTable').innerHTML=`<tr><th>Workload</th><th>Physical qubits</th><th>Wall-clock time</th><th>Die side at ${pitch} µm pitch, ${(y*100).toFixed(0)}% yield</th></tr>`+rows.join('');}
 ['fomCarrier'].forEach(i=>$(i).onchange=drawFOM);['ronT'].forEach(i=>$(i).oninput=drawRon);$('ionN').oninput=drawIon;
 ['odmrB','odmrTh','odmrLw'].forEach(i=>$(i).oninput=drawODMR);['gT2','gQ'].forEach(i=>$(i).oninput=drawGate);$('gDQ').onchange=drawGate;
-$('convApp').onchange=drawConv;['qCycle','qYield','qPitch'].forEach(i=>$(i).oninput=drawQ);
-drawFOM();drawRon();drawIon();drawODMR();drawGate();drawConv();drawQ();
+$('convApp').onchange=drawConv;['qecD','qecMode'].forEach(i=>$(i).onchange=drawQEC);['qCycle','qYield','qPitch'].forEach(i=>$(i).oninput=drawQ);
+drawFOM();drawRon();drawIon();drawODMR();drawGate();drawConv();drawQEC();drawQ();
 """
 
 
@@ -162,7 +205,14 @@ def build_html() -> str:
         "P<sub>min</sub> = 2IV√(fR<sub>on,sp</sub>C<sub>oss,sp</sub>/2) with C<sub>oss,sp</sub> ≈ εE<sub>c</sub>/(2BV). Gate charge, reverse recovery, and GaN dynamic R<sub>on</sub> are not modeled.",
         "Hard-switched half-bridge, duty 0.5, area-optimized per switch. The measured diamond curve scales the 2022 device's R<sub>on,sp</sub> as BV² to the chosen voltage class. Ideal diamond is a ceiling; today's device beats ideal silicon and trails ideal SiC. Chapter E9.",
         "[erickson2020] [kassakian2023] [baliga1989] [huang2004] [shenai2018] [reimers2019] [saha2022]"))
-    s.append(_section("qsize", "7 · How big is a room-temperature quantum computer?", "Slide the error-correction cycle time (set by readout) and the cell yield.",
+    s.append(_section("qec", "8 · Error correction: which error rates let a bigger code help?", "Precomputed Monte Carlo of the surface code with a matching decoder (in-cell error fixed at 0.1%). Pick the code distance.",
+        '<label>Code distance <select id="qecD"><option value="5">5</option><option value="7" selected>7</option><option value="3">3</option></select></label><label>Show <select id="qecMode"><option value="ratio">improvement over distance 3</option><option value="abs">logical error</option></select></label>',
+        "qecPlot",
+        "Quantum computers fix their own mistakes by spreading one answer over many qubits, like voting. That only works if each qubit and each connection is already pretty good. Green squares are where adding more qubits makes things better.",
+        "Planar surface code, phenomenological noise, minimum-weight perfect matching. Data error per round = in-cell error + 4·(8/15)·link error; measurement error = readout error + the same link term. Break-even (black dashed line): link error of about 1.3% per gate.",
+        "2000 shots per point, so entries below about 5×10⁻⁴ are upper limits and the green corner is noisy. The mapping from hardware rates to the two phenomenological rates is first order; hook errors and slow-readout idling need the circuit-level model X-1b. Validation: equal data and readout error crosses at 3.1% versus the published 2.93% (chapter E6).",
+        "[dennis2002] [wang2003] [fowler2012] [edmonds1965] [higgott2022] [rong2015]"))
+    s.append(_section("qsize", "9 · How big is a room-temperature quantum computer?", "Slide the error-correction cycle time (set by readout) and the cell yield.",
         '<label>Cycle time, 10<sup>x</sup> s <input type="range" id="qCycle" min="-7" max="-1" step="0.25" value="-3"></label><label>Working-cell yield (%) <input type="range" id="qYield" min="1" max="100" step="1" value="50"></label><label>Cell pitch (µm) <input type="range" id="qPitch" min="0.5" max="5" step="0.1" value="1"></label>',
         None,
         "Even a giant quantum computer would fit on a fingernail of diamond. The problem is speed: reading a diamond qubit takes about a thousand times longer than a superconducting one, so big jobs take years instead of hours.",
@@ -170,14 +220,14 @@ def build_html() -> str:
         "Wall-clock times assume the published qubit counts at 10⁻³ physical error and a 1 µs reference cycle. Electrical readout (proposed, 100 µs) would bring a year down to a month. Chapter E10.",
         "[gidney2021] [gidney2025] [babbush2018] [fowler2012] [google2025] [neumann2010science] [hopper2018]",
         extra='<table id="qTable" style="width:100%;border-collapse:collapse;font-size:14px"></table><style>#qTable td,#qTable th{border-bottom:1px solid #e3e8ec;padding:6px;text-align:left}</style>'))
-    nav = "".join(f'<a href="#{i}">{t}</a>' for i, t in [("fom", "Scorecards"), ("ron", "Power switches"), ("ion", "Doping"), ("odmr", "NV fingerprint"), ("gate", "Two qubits"), ("conv", "Converter"), ("qsize", "Machine size")])
+    nav = "".join(f'<a href="#{i}">{t}</a>' for i, t in [("fom", "Scorecards"), ("ron", "Power switches"), ("ion", "Doping"), ("odmr", "NV fingerprint"), ("gate", "Two qubits"), ("conv", "Converter"), ("qec", "Error correction"), ("qsize", "Machine size")])
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ADAMAS Explorer</title><style>{CSS}</style><script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script></head><body>
 <header><h1>ADAMAS</h1><p>Explorer: the diamond-wafer framework's equations, live. Pick your reading level in each panel.</p></header>
 <nav>{nav}<a href="https://github.com/Normansrule/adamas-diamond-framework">Repository</a><a href="../README.md">Chapters</a></nav>
-<main>{''.join(s)}</main>
+<main><div id="tour"><button id="tourBack">◀ Back</button><div id="tourMsg"><b>New here?</b> Take the guided tour: eight steps from why diamond, through power circuits, to a room-temperature quantum computer.</div><button id="tourNext">Start the tour ▶</button></div>{''.join(s)}</main>
 <footer>Every formula here is the same one in the Python package (tests check them at spot values). Bibliography keys resolve in references/REFERENCES.md.</footer>
-<script>const MAT={_materials_json()};const MEAS={_measured_json()};{JS}</script></body></html>"""
+<script>const MAT={_materials_json()};const MEAS={_measured_json()};const QEC={json.dumps(surface_map())};{JS}</script></body></html>"""
 
 
 def write(path: str | Path) -> Path:

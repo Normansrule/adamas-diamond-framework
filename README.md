@@ -1,6 +1,33 @@
 <p align="center"><img src="docs/img/hero.svg" alt="ADAMAS: a scientific framework for diamond-wafer electronics, from crystal growth to room-temperature quantum processors" width="100%"></p>
 
-<p align="center"><b>🎛️ <a href="https://normansrule.github.io/adamas-diamond-framework/">Open the interactive Explorer</a></b> · move the sliders, pick your reading level, watch the equations respond</p>
+<p align="center">
+  <a href="https://normansrule.github.io/adamas-diamond-framework/"><b>🌐 Open the website</b></a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html">Qubit Lab</a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/labs/heat.html">Heat Race</a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/labs/cpu.html">Diamond CPU</a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/labs/qec.html">Break the Code</a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/explorer.html">Explorer</a>
+</p>
+<p align="center">
+  <a href="https://codespaces.new/Normansrule/adamas-diamond-framework"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="32"></a>
+</p>
+
+## 🧪 Interactive labs
+
+Eight hands-on labs run in the browser on the [project website](https://normansrule.github.io/adamas-diamond-framework/). Each explains itself at three reading levels and lists its sources; each simulation is a tested JavaScript module that runs the same physics as the Python package.
+
+| Lab | What you do | What it shows |
+|---|---|---|
+| [Qubit Lab](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) | Fire microwave pulses at an ensemble of NV spins on a 3-D Bloch sphere; build your own sequences | Rabi, Ramsey, and spin echo; why the echo rescues a dephased ensemble |
+| [Heat Race](https://normansrule.github.io/adamas-diamond-framework/labs/heat.html) | Burn the same power in silicon, SiC, GaN, and diamond | Live heat equation; diamond's hot spot is κ-ratio (about 15×) cooler |
+| [Lattice Lab](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html) | Fly through silicon and diamond at true scale; plant an NV center; aim a magnet | The four NV axes and their eight magnetic-resonance lines |
+| [Diamond CPU](https://normansrule.github.io/adamas-diamond-framework/labs/cpu.html) | Write and step assembly for DIA-4; pan the placed layout | The emulator matches the Verilog cycle for cycle on random programs |
+| [Break the Code](https://normansrule.github.io/adamas-diamond-framework/labs/qec.html) | Click qubits to inject errors into a surface code, decode, run a threshold experiment | Syndromes, matching, logical failure, and the threshold |
+| [Fab Walkthrough](https://normansrule.github.io/adamas-diamond-framework/labs/fab.html) | Step through a hydrogen-terminated diamond transistor's process flow | Each step beside what silicon does instead |
+| [The Chip Stack](https://normansrule.github.io/adamas-diamond-framework/labs/stack.html) | Scroll to explode the five-layer quantum processor in 3-D | Silicon controller, bond, diamond transistors, qubit layer, optics |
+| [Who is building it](https://normansrule.github.io/adamas-diamond-framework/labs/globe.html) | Spin a globe of the labs and companies behind each result; replay history | Every point cited and labeled peer-reviewed, news, or vendor claim |
+
+Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
 <b>524 references</b> · <b>37 figures + 2 animations + interactive explorer</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
@@ -239,7 +266,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 50 tests, including the citation check
+python -m pytest -q                     # 56 tests (Python, Verilog, SPICE, JavaScript, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -269,6 +296,8 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.scaling` | Size, time, and power of a room-temperature NV machine for published workloads | [gidney2021], [litinski2019], [krinner2019] |
 | `adamas.pdk0` | PDK-0 layer map, lambda rules, GDSII writer, monitor-die generator | [meadconway1980], [kawarada2014], [pelgrom1989] |
 | `adamas.stdcells` | PDK-0 standard cells: layouts, LEF, timed Liberty; `circuits/digital/place.py` places DIA-4 | [weste2011], [rabaey2003], [ajayi2019] |
+| `adamas.orfs_platform` | Complete OpenROAD-flow-scripts platform for PDK-0; `make orfs` routes DIA-4 in Docker | [ajayi2019], [meadconway1980] |
+| `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
 | `adamas.qec` | Surface-code overhead mapped to NV cells | [fowler2012], [waldherr2014] |
 | `adamas.figures`, `adamas.figures_expert` | Every figure in this repository | all of the above |

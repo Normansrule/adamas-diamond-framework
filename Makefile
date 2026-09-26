@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations explorer refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
@@ -40,6 +40,18 @@ animations:      ## the two GIFs (about 15 s)
 
 explorer:        ## rebuild docs/index.html (interactive explorer) and the poster
 	$(PY) -c "from adamas.explorer import write; write('docs/index.html')" && $(PY) -c "from adamas.poster import write; write()"
+
+orfs:            ## install the PDK-0 platform + DIA-4 into ~/orfs and run OpenROAD in Docker (host shell, not inside a container)
+	bash circuits/digital/openroad/run_orfs.sh
+
+site:            ## build the website (landing page, six labs, explorer) into site/
+	$(PY) -m adamas.site site
+
+serve: site      ## build and serve the website at http://localhost:8000
+	$(PY) -m http.server -d site 8000
+
+web-test: site   ## JavaScript unit tests and headless smoke test of every page (needs: cd web && npm install)
+	cd web && npm test && npm run smoke
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

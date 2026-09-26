@@ -91,6 +91,17 @@ python circuits/layout/make_pdk0_monitor.py && klayout circuits/layout/pdk0_moni
 
 A 4004-class processor therefore occupies about one square millimeter in PDK-0 at 2 µm gates, which is the chiplet size that [Chapter 13](../13_economics_and_risk.md) argued yields well on today's wafers. `circuits/digital/openroad/` carries the OpenROAD-flow-scripts configuration for a real route and a timing report ([ajayi2019], [shalan2020]); the two-layer stack of PDK-0 is thin, and routing the whole block may need a third metal, which is a PDK-1 item.
 
+## E2.4d A full OpenROAD platform (v0.9.0)
+
+`adamas.orfs_platform` writes everything OpenROAD-flow-scripts needs to treat PDK-0 like any other process: a technology LEF (one site, two routing layers, one cut layer, one via), the cell LEF (with tie-high, tie-low, and filler cells, and obstructions only over transistor gates), the timed Liberty, a cell GDS, wire parasitic estimates, a power grid, routing tracks, and a KLayout technology file. `make orfs` (or `bash circuits/digital/openroad/run_orfs.sh`) installs it into `~/orfs` and runs the flow in the `openroad/orfs` Docker image.
+
+Two design decisions follow directly from diamond's process, and both are worth stating because silicon kits never face them:
+
+1. **No tap or well cells.** The substrate is an insulator ([kawarada2014]); there are no wells to bias and no latch-up path, so the tap-cell step is intentionally empty.
+2. **Power without over-the-cell stripes.** With only two routing layers, a vertical power stripe on the gate metal would short to transistor gates underneath. Power therefore enters through a core ring and horizontal follow-pin rails. This is the same constraint early two-metal silicon processes lived with [meadconway1980], and it is the first concrete argument for a third metal in PDK-1.
+
+The first run in v0.8.0 stopped at LEF parsing (a cut layer declared without its `TYPE` keyword); the test suite now checks the generated LEF for that and for pin-to-rail spacing.
+
 ## E2.5 Projects
 
 | ID | Project | Deliverable |

@@ -35,7 +35,7 @@ Evidence labels used below: **P** = peer-reviewed paper, **N** = news or trade p
 | University of Stuttgart | Room-temperature quantum error correction in a hybrid register | Room | P | [waldherr2014] |
 | University of Science and Technology of China | Fault-tolerant-threshold gate fidelities; 99.92 percent CNOT | Room | P | [rong2015], [xie2023] |
 | Harvard University | Nuclear-spin memory beyond one second | Room | P | [maurer2012] |
-| University of Tsukuba and partners | 2.4 ms electron coherence in n-type diamond | Room | P | [herbschleb2019] |
+| Kyoto University and AIST | 2.4 ms electron coherence in n-type diamond | Room | P | [herbschleb2019] |
 | Hasselt University and partners | Photoelectric readout down to single NV centers | Room | P | [bourgeois2015], [siyushev2019] |
 | Massachusetts Institute of Technology (MIT) | Diamond chiplets on CMOS; CMOS-integrated NV sensors | Room and cryogenic | P | [li2024], [wan2020], [kim2019cmos], [ibrahim2021] |
 | Delft University of Technology (QuTech) | 10-qubit register, logical qubit, three-node network, metropolitan link | 4 K | P | [bradley2019], [abobeih2022], [pompili2021], [hermans2022], [stolk2024] |

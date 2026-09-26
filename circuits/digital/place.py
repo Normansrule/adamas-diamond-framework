@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from adamas import pdk0, stdcells  # noqa: E402
 
-INST = re.compile(r"^\s*(BUF|INV|NAND2|NOR2|NOR3|DFF)\s+(\S+)\s*\((.*?)\);", re.S | re.M)
+INST = re.compile(r"^\s*(" + "|".join(stdcells.CELLS) + r")\s+(\S+)\s*\((.*?)\);", re.S | re.M)
 PIN = re.compile(r"\.(\w+)\(([^)]*)\)")
 
 
@@ -92,6 +92,7 @@ if __name__ == "__main__":
     insts = parse(net)
     placed, stats = place(insts)
     stdcells.write_lef(str(here / "adamas_ed.lef"))
+    stdcells.write_tech_lef(str(here / "adamas_pdk0.tech.lef"))
     stdcells.write_liberty(str(here / "adamas_ed_timed.lib"))
     write_outputs(placed, stats, here)
     print({k: (round(v, 1) if isinstance(v, float) else v) for k, v in stats.items()})

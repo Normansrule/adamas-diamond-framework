@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Interactive labs
+    url: https://normansrule.github.io/adamas-diamond-framework/
+    about: Try the simulations before proposing changes to them
