@@ -1,6 +1,6 @@
 # References
 
-**524 references.** 488 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 472 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**525 references.** 489 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 473 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -518,7 +518,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[tsividis2011]`** Tsividis, Y.; McAndrew, C. (2011). Operation and Modeling of the MOS Transistor (3rd ed.). *Oxford University Press*.
 - 📚 **`[razavi2017]`** Razavi, B. (2017). Design of Analog CMOS Integrated Circuits (2nd ed.). *McGraw-Hill*.
 
-## Quantum control, open systems, and error correction (33)
+## Quantum control, open systems, and error correction (34)
 
 - ✅ **`[rabi1937]`** Rabi, I. I. (1937). Space quantization in a gyrating magnetic field. *Physical Review*, 51, 652. [doi:10.1103/physrev.51.652](https://doi.org/10.1103/physrev.51.652)
 - ✅ **`[hahn1950]`** Hahn, E. L. (1950). Spin echoes. *Physical Review*, 80, 580. [doi:10.1103/physrev.80.580](https://doi.org/10.1103/physrev.80.580)
@@ -550,6 +550,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[johansson2012]`** Johansson, J. R.; Nation, P. D.; Nori, F. (2012). QuTiP: an open-source Python framework for the dynamics of open quantum systems. *Computer Physics Communications*, 183, 1760. [doi:10.1016/j.cpc.2012.02.021](https://doi.org/10.1016/j.cpc.2012.02.021)
 - ✅ **`[peruzzo2014]`** Peruzzo, A.; McClean, J.; Shadbolt, P.; et al. (2014). A variational eigenvalue solver on a photonic quantum processor. *Nature Communications*, 5, 4213. [doi:10.1038/ncomms5213](https://doi.org/10.1038/ncomms5213)
 - ✅ **`[cross2019]`** Cross, A. W.; Bishop, L. S.; Sheldon, S.; Nation, P. D.; Gambetta, J. M. (2019). Validating quantum computers using randomized model circuits. *Physical Review A*, 100, 032328. [doi:10.1103/physreva.100.032328](https://doi.org/10.1103/physreva.100.032328)
+- ✅ **`[gidney2021stim]`** Gidney, C. (2021). Stim: a fast stabilizer circuit simulator. *Quantum*, 5, 497. [doi:10.22331/q-2021-07-06-497](https://doi.org/10.22331/q-2021-07-06-497)
 - ✅ **`[gulka2021]`** Gulka, M.; Wirtitsch, D.; Ivady, V.; et al. (2021). Room-temperature control and electrical readout of individual nitrogen-vacancy nuclear spins. *Nature Communications*, 12, 4421. [doi:10.1038/s41467-021-24494-x](https://doi.org/10.1038/s41467-021-24494-x)
 - ✅ **`[higgott2022]`** Higgott, O. (2022). PyMatching: a Python package for decoding quantum codes with minimum-weight perfect matching. *ACM Transactions on Quantum Computing*, 3, 16. [doi:10.1145/3505637](https://doi.org/10.1145/3505637)
 - ✅ **`[bravyi2024]`** Bravyi, S.; Cross, A. W.; Gambetta, J. M.; et al. (2024). High-threshold and low-overhead fault-tolerant quantum memory. *Nature*, 627, 778. [doi:10.1038/s41586-024-07107-7](https://doi.org/10.1038/s41586-024-07107-7)

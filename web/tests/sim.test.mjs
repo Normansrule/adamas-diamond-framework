@@ -70,3 +70,18 @@ test('land mask: known land and ocean points', () => {
   for (const [la, lo] of [[48.8, 2.3], [35.7, 139.7], [-25, 134], [40, -100], [0, 20]]) assert.equal(isLand(la, lo), 1, `${la},${lo}`);
   for (const [la, lo] of [[0, -30], [-40, -120], [30, 160], [-30, 75]]) assert.equal(isLand(la, lo), 0, `${la},${lo}`);
 });
+import * as F from '../assets/sim/fet.js';
+import * as CV from '../assets/sim/converter.js';
+test('FET: square law and E/D inverter behave', () => {
+  const d = F.fet({ w: 200, vth: 1.5 }), l = F.fet({ w: 25, vth: -2 });
+  assert.ok(Math.abs(d.current(5, 20) - d.k * 3.5 ** 2 / 2) < 1e-12);
+  const { vin, vout } = F.vtc(d, l, 10); assert.ok(vout[0] > 9.9 && vout[vout.length - 1] < 0.6);
+  const nm = F.noiseMargins(vin, vout); assert.ok(nm.nml > 0.5 && nm.nmh > 0.5, JSON.stringify(nm));
+});
+test('ring oscillator period is within 40% of the ngspice deck (22.4 ns, circuits/spice/ring_oscillator.cir)', () => {
+  const r = F.ring(F.fet({ w: 16, l: 2, vth: 1.5 }), F.fet({ w: 2, l: 2, vth: -2 }), { tEnd: 300e-9 });
+  assert.ok(Math.abs(r.period / 22.4e-9 - 1) < 0.4, `period ${r.period}`);
+});
+test('converter closed form equals the area optimum', () => {
+  const o = CV.optimum(20, 1e-9, 800, 300, 2e4); assert.ok(Math.abs(o.pCond - o.pSw) / o.pSw < 1e-9 && Math.abs(o.pCond + o.pSw - o.pTotal) / o.pTotal < 1e-9);
+});

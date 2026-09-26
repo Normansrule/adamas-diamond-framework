@@ -57,6 +57,25 @@ Logical error is per $d$-round memory experiment, 4000 shots each, so entries be
 2. Combining with [E5](E5_nv_qubit_engineering.md): an echoed gate at 25 nm can reach coherence-limited fidelity of 0.98 to 0.999, that is, link errors of 0.1 to 2 percent. **The placement and charge-state problems, not coherence, decide which side of the break-even line a processor lands on.**
 3. Packing several data qubits into one cell (nuclear spins around one electron, $f_{link} < 1$) moves the operating point left on the map in proportion, at the cost of slower, serialized syndrome extraction.
 
+### E6.1c Circuit level, and the readout-time budget (project X-1b, done)
+
+The phenomenological model above hides two things. One gate fault in a syndrome-extraction circuit can spread to two qubits, and, specific to NV hardware, the data qubits sit idle while the ancilla electron is read out. Room-temperature single-shot readout takes about a millisecond by repeated nuclear-assisted measurement ([neumann2010science], [hopper2018]), a thousand times longer than a superconducting cycle, while the data live in nuclear spins whose memory under decoupling reaches about a second ([maurer2012]).
+
+`adamas.circuit_qec` builds the full rotated surface-code memory circuit with Stim ([gidney2021stim]) and decodes it with PyMatching ([higgott2022]). The NV-specific term is an idle depolarization on every data qubit each round, $p_{idle} = \tfrac34(1 - e^{-t_{read}/T_{2,mem}})$, on top of two-qubit link error (0.3%), readout error (1%), and ancilla preparation error (0.2%).
+
+![Circuit-level surface code](../img/fig38_circuit_level_qec.png)
+
+| Result | Value |
+|---|---|
+| Circuit-level threshold, uniform noise (validation) | about 1.2% (curves cross between 1.0 and 1.2%) |
+| Readout time at which distance 7 stops beating distance 3, $T_{2,mem}$ = 1 s | about 100 ms |
+| Same, $T_{2,mem}$ = 0.1 s | about 10 ms |
+| Readout time that adds less than a factor of 2 to the distance-7 logical error | about 1% of $T_{2,mem}$ |
+
+**Design rule.** Keep the ancilla readout below about one percent of the nuclear-memory coherence time under illumination. With a 1 s memory, today's millisecond optical readout already meets it; with 0.1 s it does not, and electrical readout (about 0.1 ms, proposed in [E4](E4_analog_and_mixed_signal_design.md)) becomes necessary. This ties the readout electronics of E4, the nuclear memory of [E5](E5_nv_qubit_engineering.md), and the machine sizing of [E10](E10_scaling_a_room_temperature_quantum_computer.md), whose wall-clock times assumed a 1 ms cycle.
+
+Caveats: the idle channel is modeled as depolarizing; real nuclear dephasing under illumination is biased and depends on the hyperfine coupling, which favors bias-tailored codes. Leakage out of the NV⁻ charge state enters only through the preparation error.
+
 ## E6.2 Mapping codes onto NV hardware
 
 ```mermaid
@@ -98,7 +117,7 @@ Near-term machines skip the error-correction layer and run shallow circuits [pre
 | ID | Project | Deliverable |
 |---|---|---|
 | X-1 | Monte Carlo surface-code simulator with separate intra-cell, inter-cell, and readout error rates | **Done in v0.4.0** (`adamas.surface_sim`, Section E6.1b) |
-| X-1b | Circuit-level version: explicit syndrome-extraction circuits with hook errors, serialized gates through one electron per cell, and idle errors during millisecond readout | Thresholds in ($p_{link}$, $p_{meas}$, readout time / $T_2$) |
+| X-1b | Circuit-level version with idle errors during readout | **Done in v0.12.0** (Section E6.1c): readout must stay below about 1% of the nuclear memory time |
 | X-2 | Compiler from a gate list to `adamas.register` pulse sequences for a 1-electron + 2-nuclei cell | Verified Deutsch–Jozsa [shi2010] and Grover [grover1997] on the simulator |
 | X-3 | Architecture trade study: direct dipolar lattice versus dark-spin bus versus modular cells, using yields from `adamas.coupling.pair_yield` | Cells per logical qubit versus nitrogen-to-NV conversion yield |
 | X-4 | Decoder latency budget on the silicon die | Decoder that keeps pace with a 1 kHz syndrome cycle (easy) and headroom analysis |

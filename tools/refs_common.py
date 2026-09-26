@@ -7,7 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REF_FILES = [ROOT / "references" / "refs_a.psv", ROOT / "references" / "refs_b.psv",
              ROOT / "references" / "refs_c.psv",
              ROOT / "references" / "refs_d.psv",
-             ROOT / "references" / "refs_e.psv"]
+             ROOT / "references" / "refs_e.psv",
+             ROOT / "references" / "refs_f.psv"]
 
 TAG_NAMES = {
     "mat": "Materials physics and figures of merit",

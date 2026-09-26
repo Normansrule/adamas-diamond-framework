@@ -1,25 +1,31 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ADAMAS Explorer</title><style>
-:root{--ink:#1d2733;--teal:#0fa3b1;--red:#e63946;--gold:#f4a261;--bg:#0b1320;--card:#ffffff}
-*{box-sizing:border-box}body{margin:0;font-family:Helvetica,Arial,sans-serif;color:var(--ink);background:#f4f7f9}
-header{background:linear-gradient(135deg,#0b1320,#12344a);color:#fff;padding:36px 24px}
-header h1{margin:0;font-size:42px;letter-spacing:4px}header p{margin:8px 0 0;color:#9fe8f2;font-size:18px}
-nav{display:flex;flex-wrap:wrap;gap:8px;padding:12px 24px;background:#fff;border-bottom:1px solid #dde3e8;position:sticky;top:0;z-index:2}
-nav a{text-decoration:none;color:var(--ink);background:#eef3f6;padding:6px 12px;border-radius:14px;font-size:14px}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap");
+:root{--ink:#e8f1f8;--mute:#8ea3b5;--teal:#2de2e6;--violet:#9d7bff;--line:rgba(148,190,220,.14);--card:rgba(16,26,44,.6)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Helvetica,Arial,sans-serif;color:var(--ink);background:#05070d;
+ background-image:radial-gradient(40% 35% at 15% 10%,rgba(45,226,230,.12),transparent 70%),radial-gradient(35% 30% at 85% 5%,rgba(157,123,255,.14),transparent 70%)}
+a{color:#6ff3ff}
+header{padding:40px 24px 18px;max-width:1180px;margin:0 auto}
+header h1{margin:0;font-size:46px;letter-spacing:6px;font-weight:800;background:linear-gradient(120deg,#2de2e6,#9d7bff 55%,#ff5d8f);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin:8px 0 0;color:var(--mute);font-size:18px}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 24px;background:rgba(5,7,13,.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+nav a{text-decoration:none;color:var(--mute);padding:6px 11px;border-radius:10px;font-size:14px}nav a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
 main{max-width:1180px;margin:0 auto;padding:16px 24px 60px}
-section{background:var(--card);border-radius:14px;padding:20px 22px;margin:22px 0;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-section h2{margin:0 0 4px;font-size:24px}.why{color:#4a5a6a;margin:0 0 12px;font-size:15px}
+section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin:22px 0;backdrop-filter:blur(10px)}
+section h2{margin:0 0 4px;font-size:24px}.why{color:var(--mute);margin:0 0 12px;font-size:15px}
 .controls{display:flex;flex-wrap:wrap;gap:16px;margin:8px 0 12px}
-.controls label{font-size:14px;display:flex;flex-direction:column;gap:4px;min-width:200px}
-input[type=range]{width:220px}select{padding:4px}
-.plot{width:100%;height:420px}section.focus{outline:3px solid var(--teal);outline-offset:4px}
-#tour{background:#e8f7f9;border:1px solid #bfe6ea;border-radius:12px;padding:14px 18px;margin:18px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-#tour button{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:15px;cursor:pointer}
-#tourMsg{flex:1;min-width:260px;font-size:15px}.src{font-size:12px;color:#5b6775;margin-top:8px}
-.level{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.level button{border:1px solid #cfd8de;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
-.level button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
-.expl{display:none;padding:10px 12px;border-left:4px solid var(--teal);background:#f3fbfc;border-radius:6px;font-size:15px}.expl.on{display:block}
-footer{text-align:center;color:#5b6775;font-size:13px;padding:24px}
+.controls label{font-size:14px;display:flex;flex-direction:column;gap:4px;min-width:200px;color:var(--mute)}
+input[type=range]{width:220px;accent-color:var(--teal)}select{padding:6px;background:#0a1322;color:var(--ink);border:1px solid var(--line);border-radius:8px}
+.plot{width:100%;height:420px}.src{font-size:12px;color:var(--mute);margin-top:8px}
+.level{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.level button{border:1px solid var(--line);background:transparent;color:var(--mute);border-radius:9px;padding:6px 10px;cursor:pointer}
+.level button.on{background:var(--teal);color:#051018;border-color:var(--teal)}
+.expl{display:none;padding:10px 12px;border-left:3px solid var(--teal);background:rgba(45,226,230,.06);border-radius:6px;font-size:15px;color:#c7d6e3}.expl.on{display:block}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:24px}
+section.focus{outline:2px solid var(--teal);outline-offset:4px}
+#tour{background:rgba(45,226,230,.08);border:1px solid rgba(45,226,230,.3);border-radius:14px;padding:14px 18px;margin:18px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#tour button{background:linear-gradient(120deg,#2de2e6,#9d7bff);color:#051018;border:0;border-radius:9px;padding:8px 14px;font-weight:600;cursor:pointer}
+#tourMsg{flex:1;min-width:260px}
+#qTable td,#qTable th{border-bottom:1px solid var(--line)!important}
 </style><script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script></head><body>
 <header><h1>ADAMAS</h1><p>Explorer: the diamond-wafer framework's equations, live. Pick your reading level in each panel.</p></header>
 <nav><a href="#fom">Scorecards</a><a href="#ron">Power switches</a><a href="#ion">Doping</a><a href="#odmr">NV fingerprint</a><a href="#gate">Two qubits</a><a href="#conv">Converter</a><a href="#qec">Error correction</a><a href="#qsize">Machine size</a><a href="https://github.com/Normansrule/adamas-diamond-framework">Repository</a><a href="../README.md">Chapters</a></nav>
@@ -62,14 +68,15 @@ footer{text-align:center;color:#5b6775;font-size:13px;padding:24px}
 <section id="qsize"><h2>9 · How big is a room-temperature quantum computer?</h2><p class="why">Slide the error-correction cycle time (set by readout) and the cell yield.</p>
 <div class="level"><button data-level="kid">I am 10</button><button data-level="student">Student</button><button data-level="expert">Researcher</button></div>
 <div class="expl" data-level="kid">Even a giant quantum computer would fit on a fingernail of diamond. The problem is speed: reading a diamond qubit takes about a thousand times longer than a superconducting one, so big jobs take years instead of hours.</div><div class="expl" data-level="student">Physical qubits from published surface-code estimates; 4 qubits per NV cell; time scales linearly with the cycle. Area is never the constraint; readout time and yield are.</div><div class="expl" data-level="expert">Wall-clock times assume the published qubit counts at 10⁻³ physical error and a 1 µs reference cycle. Electrical readout (proposed, 100 µs) would bring a year down to a month. Chapter E10.</div>
-<div class="controls"><label>Cycle time, 10<sup>x</sup> s <input type="range" id="qCycle" min="-7" max="-1" step="0.25" value="-3"></label><label>Working-cell yield (%) <input type="range" id="qYield" min="1" max="100" step="1" value="50"></label><label>Cell pitch (µm) <input type="range" id="qPitch" min="0.5" max="5" step="0.1" value="1"></label></div><table id="qTable" style="width:100%;border-collapse:collapse;font-size:14px"></table><style>#qTable td,#qTable th{border-bottom:1px solid #e3e8ec;padding:6px;text-align:left}</style>
+<div class="controls"><label>Cycle time, 10<sup>x</sup> s <input type="range" id="qCycle" min="-7" max="-1" step="0.25" value="-3"></label><label>Working-cell yield (%) <input type="range" id="qYield" min="1" max="100" step="1" value="50"></label><label>Cell pitch (µm) <input type="range" id="qPitch" min="0.5" max="5" step="0.1" value="1"></label></div><table id="qTable" style="width:100%;border-collapse:collapse;font-size:14px"></table><style>#qTable td,#qTable th{padding:6px;text-align:left}</style>
 <p class="src">Sources: [gidney2021] [gidney2025] [babbush2018] [fowler2012] [google2025] [neumann2010science] [hopper2018]</p></section></main>
 <footer>Every formula here is the same one in the Python package (tests check them at spot values). Bibliography keys resolve in references/REFERENCES.md.</footer>
 <script>const MAT={"Si": {"eg": 1.12, "ec": 0.3, "mun": 1400, "mup": 450, "eps": 11.7, "vsat": 10000000.0, "kappa": 1.5}, "4H-SiC": {"eg": 3.26, "ec": 2.5, "mun": 1000, "mup": 120, "eps": 9.7, "vsat": 20000000.0, "kappa": 4.9}, "GaN": {"eg": 3.4, "ec": 3.3, "mun": 1200, "mup": 30, "eps": 9.0, "vsat": 25000000.0, "kappa": 2.3}, "Ga2O3": {"eg": 4.85, "ec": 8.0, "mun": 250, "mup": 0.0, "eps": 10.0, "vsat": 15000000.0, "kappa": 0.2}, "Diamond": {"eg": 5.47, "ec": 10.0, "mun": 4500, "mup": 3800, "eps": 5.7, "vsat": 15000000.0, "kappa": 22.0}};const MEAS={"saha2021": {"bv": 2608.0, "ron": 19.74}, "saha2022": {"bv": 2568.0, "ron": 7.54}, "saha2023": {"bv": 3659.0, "ron": 77.38890751445086}};const QEC={"p_intra": 0.001, "links": [0.001, 0.0014542154334489536, 0.0021147425268811283, 0.003075291220361376, 0.00447213595499958, 0.006503449126242364, 0.00945741609003176, 0.013753120438672644, 0.020000000000000004], "meas": [0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.01778279410038923, 0.03162277660168379, 0.056234132519034905, 0.1], "d": [3, 5, 7], "shots": 2000, "pL": {"3": [[0.0015, 0.004, 0.0055, 0.0095, 0.0185, 0.034, 0.0685, 0.1085, 0.1925], [0.0015, 0.004, 0.0055, 0.0075, 0.0145, 0.0315, 0.0595, 0.0995, 0.1885], [0.0015, 0.004, 0.0055, 0.008, 0.0145, 0.0315, 0.06, 0.1005, 0.1885], [0.0015, 0.004, 0.006, 0.008, 0.015, 0.031, 0.06, 0.101, 0.1905], [0.002, 0.0045, 0.0065, 0.0085, 0.015, 0.0325, 0.061, 0.1005, 0.1915], [0.0025, 0.005, 0.0065, 0.0085, 0.0165, 0.0335, 0.062, 0.1025, 0.193], [0.0025, 0.005, 0.007, 0.009, 0.0185, 0.0335, 0.0655, 0.106, 0.199], [0.0025, 0.0055, 0.007, 0.01, 0.0185, 0.039, 0.0705, 0.114, 0.2055], [0.0025, 0.004, 0.005, 0.0095, 0.0205, 0.0415, 0.0825, 0.129, 0.214]], "5": [[0.0, 0.0, 0.001, 0.0025, 0.003, 0.0145, 0.036, 0.1055, 0.238], [0.0, 0.0, 0.0005, 0.0015, 0.0025, 0.0165, 0.038, 0.104, 0.236], [0.0, 0.0, 0.0005, 0.0015, 0.0025, 0.0155, 0.039, 0.1055, 0.2375], [0.0, 0.0, 0.0005, 0.0015, 0.0035, 0.0155, 0.04, 0.1075, 0.238], [0.0, 0.0, 0.0005, 0.0015, 0.0035, 0.016, 0.042, 0.1125, 0.244], [0.0, 0.0, 0.0005, 0.0015, 0.0045, 0.017, 0.0465, 0.119, 0.257], [0.0, 0.0, 0.001, 0.002, 0.006, 0.0205, 0.058, 0.1425, 0.285], [0.0, 0.0015, 0.0025, 0.004, 0.0085, 0.0295, 0.0765, 0.1745, 0.311], [0.0, 0.0005, 0.002, 0.0075, 0.0155, 0.039, 0.103, 0.2185, 0.3615]], "7": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.003, 0.0165, 0.102, 0.3135], [0.0, 0.0, 0.0, 0.0, 0.0005, 0.0045, 0.0175, 0.095, 0.2755], [0.0, 0.0, 0.0, 0.0, 0.0005, 0.0045, 0.0185, 0.101, 0.2815], [0.0, 0.0, 0.0, 0.0005, 0.0005, 0.005, 0.02, 0.107, 0.286], [0.0, 0.0, 0.0, 0.0005, 0.0005, 0.0055, 0.0245, 0.1165, 0.306], [0.0, 0.0, 0.0, 0.001, 0.002, 0.0075, 0.032, 0.1405, 0.3335], [0.0, 0.0, 0.0, 0.001, 0.0025, 0.0115, 0.0475, 0.1645, 0.3675], [0.0, 0.0005, 0.001, 0.0025, 0.004, 0.0195, 0.0805, 0.221, 0.396], [0.0, 0.0005, 0.002, 0.003, 0.0135, 0.045, 0.1305, 0.292, 0.4615]]}};
 const EPS0=8.8541878128e-14, Q=1.602176634e-19, KB=8.617333262e-5, H=4.135667696e-15, C_MHZ_NM3=52.07;
 const COL={Si:'#7a8793','4H-SiC':'#e0a030',GaN:'#8a62d6',Ga2O3:'#d65f5f',Diamond:'#0fa3b1'};
 const NAME={Si:'Silicon','4H-SiC':'Silicon carbide',GaN:'Gallium nitride',Ga2O3:'Gallium oxide',Diamond:'Diamond'};
-const L={margin:{t:30,r:20,b:50,l:60},paper_bgcolor:'#fff',plot_bgcolor:'#fff',font:{family:'Helvetica,Arial',size:13}};
+const GRID={gridcolor:'rgba(148,190,220,.14)',zerolinecolor:'rgba(148,190,220,.25)',linecolor:'rgba(148,190,220,.3)'};
+const L={margin:{t:40,r:20,b:50,l:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{family:'Inter,Helvetica,Arial',size:13,color:'#c7d6e3'},legend:{bgcolor:'rgba(0,0,0,0)'},xaxis:GRID,yaxis:GRID};
 function $(id){return document.getElementById(id)}
 function v(id){return parseFloat($(id).value)}
 // --- level toggles (explanations at three reading levels) ---
@@ -96,28 +103,28 @@ function drawQEC(){const d=$('qecD').value;const z=QEC.pL[d];const z3=QEC.pL['3'
  if(mode==='ratio'){Z=z.map((r,i)=>r.map((v,j)=>Math.log10((v+0.5/sh)/(z3[i][j]+0.5/sh))));title=`log₁₀ p_L(d=${d}) / p_L(d=3): green means a bigger code helps`;cs='RdYlGn';zmin=-2;zmax=1;}
  else{Z=z.map(r=>r.map(v=>Math.log10(v+0.5/sh)));title=`log₁₀ logical error after ${d} rounds, distance ${d}`;cs='Viridis';zmin=-3.5;zmax=-0.3;}
  Plotly.react('qecPlot',[{type:'heatmap',x:QEC.links.map(v=>v*100),y:QEC.meas.map(v=>v*100),z:Z,colorscale:cs,reversescale:mode==='ratio',zmin:zmin,zmax:zmax,colorbar:{title:'log₁₀'}}],
-  {...L,xaxis:{type:'log',title:'Inter-cell link error per gate (%)'},yaxis:{type:'log',title:'Readout error (%)'},title:title,
+  {...L,xaxis:{...GRID,type:'log',title:'Inter-cell link error per gate (%)'},yaxis:{...GRID,type:'log',title:'Readout error (%)'},title:title,
    shapes:[{type:'line',x0:1.3,x1:1.3,y0:0.1,y1:10,line:{color:'#1d2733',dash:'dash'}}],annotations:[{x:Math.log10(1.3),y:Math.log10(8),xref:'x',yref:'y',text:'≈1.3% break-even',showarrow:false,xanchor:'left',font:{size:11}}]});}
 // --- 1 figures of merit ---
 function fom(m,carrier){const mu=carrier==='p'?m.mup:m.mun,eps=m.eps*EPS0,ec=m.ec*1e6;
  return {BFOM:eps*mu*ec**3,BHFFOM:mu*ec*ec,JFOM:(ec*m.vsat/(2*Math.PI))**2,KFOM:m.kappa*Math.sqrt(3e10*m.vsat/(4*Math.PI*eps))}}
 function drawFOM(){const carrier=$('fomCarrier').value;const si=fom(MAT.Si,'n');const names=['BFOM','BHFFOM','JFOM','KFOM'];
  const tr=Object.keys(MAT).map(k=>{const f=fom(MAT[k],k==='Diamond'?carrier:'n');return {type:'bar',name:NAME[k],x:names,y:names.map(n=>Math.max(f[n]/si[n],1e-2)),marker:{color:COL[k]}}});
- Plotly.react('fomPlot',tr,{...L,barmode:'group',yaxis:{type:'log',title:'Relative to silicon (log)'},title:'Figures of merit'});}
+ Plotly.react('fomPlot',tr,{...L,barmode:'group',yaxis:{...GRID,type:'log',title:'Relative to silicon (log)'},title:'Figures of merit'});}
 // --- 2 Ron vs BV ---
 function ron(m,bv,carrier){const mu=carrier==='p'?m.mup:m.mun;return 4*bv*bv/(m.eps*EPS0*mu*(m.ec*1e6)**3)*1e3}
 function drawRon(){const bv=[];for(let e=2;e<=4.7;e+=0.05)bv.push(10**e);
  const tr=Object.keys(MAT).map(k=>({x:bv,y:bv.map(b=>ron(MAT[k],b,k==='Diamond'?'p':'n')),name:NAME[k]+' limit',line:{color:COL[k],width:3}}));
- tr.push({x:Object.values(MEAS).map(d=>d.bv),y:Object.values(MEAS).map(d=>d.ron),mode:'markers+text',text:Object.keys(MEAS),textposition:'top right',marker:{symbol:'star',size:16,color:'#e63946',line:{color:'#1d2733',width:1}},name:'measured diamond MOSFETs'});
+ tr.push({x:Object.values(MEAS).map(d=>d.bv),y:Object.values(MEAS).map(d=>d.ron),mode:'markers+text',text:Object.keys(MEAS),textposition:'top right',marker:{symbol:'star',size:16,color:'#ff5d6c',line:{color:'#ffffff',width:1}},name:'measured diamond MOSFETs'});
  const t=v('ronT');const k=(t/300)**2.4;tr.push({x:bv,y:bv.map(b=>ron(MAT['4H-SiC'],b,'n')*k),name:`SiC at ${t} K`,line:{color:COL['4H-SiC'],dash:'dot'}});
- Plotly.react('ronPlot',tr,{...L,xaxis:{type:'log',title:'Breakdown voltage (V)'},yaxis:{type:'log',title:'Specific on-resistance (mΩ·cm²)'},title:'On-resistance limit lines'});}
+ Plotly.react('ronPlot',tr,{...L,xaxis:{...GRID,type:'log',title:'Breakdown voltage (V)'},yaxis:{...GRID,type:'log',title:'Specific on-resistance (mΩ·cm²)'},title:'On-resistance limit lines'});}
 // --- 3 ionization ---
 function nv(T,mstar){return 2*(2*Math.PI*mstar*9.109e-31*1.380649e-23*T/(6.626e-34)**2)**1.5*1e-6}
 function ionized(ea,na,T,g=4,mstar=0.8){const rhs=nv(T,mstar)/g*Math.exp(-(ea/(KB*T)));let lo=0,hi=na;for(let i=0;i<80;i++){const p=(lo+hi)/2;(p*p/(na-p)>rhs)?hi=p:lo=p;}return (lo+hi)/2/na}
 function drawIon(){const na=10**v('ionN');const T=[];for(let t=250;t<=900;t+=5)T.push(t);
  const dop=[['Si:B',0.045,'#7a8793','solid'],['C:B',0.37,'#0fa3b1','solid'],['C:P',0.57,'#0fa3b1','dash'],['C:N',1.7,'#e63946','dot']];
  const tr=dop.map(([n,ea,c,d])=>({x:T,y:T.map(t=>Math.max(ionized(ea,na,t),1e-14)),name:`${n} (${ea} eV)`,line:{color:c,dash:d,width:3}}));
- Plotly.react('ionPlot',tr,{...L,yaxis:{type:'log',title:'Ionized fraction',range:[-13,0.3]},xaxis:{title:'Temperature (K)'},title:`Dopant ionization at ${na.toExponential(0)} cm⁻³`});
+ Plotly.react('ionPlot',tr,{...L,yaxis:{...GRID,type:'log',title:'Ionized fraction',range:[-13,0.3]},xaxis:{...GRID,title:'Temperature (K)'},title:`Dopant ionization at ${na.toExponential(0)} cm⁻³`});
  $('ionText').textContent=`At 300 K and this doping, silicon:boron is ${(100*ionized(0.045,na,300)).toFixed(0)}% active; diamond:boron is ${(100*ionized(0.37,na,300)).toFixed(2)}%.`;}
 // --- 4 ODMR ---
 function drawODMR(){const B=v('odmrB'),th=v('odmrTh')*Math.PI/180,lw=v('odmrLw');const D=2870,g=28.03;const f=[];for(let x=2600;x<=3140;x+=0.5)f.push(x);
@@ -125,20 +132,20 @@ function drawODMR(){const B=v('odmrB'),th=v('odmrTh')*Math.PI/180,lw=v('odmrLw')
  let y=f.map(()=>1);axes.forEach(a=>{const bp=b[0]*a[0]+b[1]*a[1]+b[2]*a[2];const bt2=B*B-bp*bp;
   // second-order perpendicular shift (D - term) keeps the lines honest at large angles [doherty2013]
   [-1,1].forEach(s=>{const f0=D+s*g*bp+ (3*g*g*bt2)/(2*D);f.forEach((x,i)=>{y[i]-=0.075/4*lw*lw/((x-f0)**2+lw*lw)/0.075*0.075});});});
- Plotly.react('odmrPlot',[{x:f,y:y,line:{color:'#0fa3b1',width:2}}],{...L,xaxis:{title:'Microwave frequency (MHz)'},yaxis:{title:'Red fluorescence (normalized)'},title:`Four NV orientations in a ${B.toFixed(1)} mT field at ${v('odmrTh')}° from [111]`});}
+ Plotly.react('odmrPlot',[{x:f,y:y,line:{color:'#0fa3b1',width:2}}],{...L,xaxis:{...GRID,title:'Microwave frequency (MHz)'},yaxis:{...GRID,title:'Red fluorescence (normalized)'},title:`Four NV orientations in a ${B.toFixed(1)} mT field at ${v('odmrTh')}° from [111]`});}
 // --- 5 coupling & gate ---
 function drawGate(){const t2=v('gT2'),dq=$('gDQ').checked?4:1,q=v('gQ');const r=[];for(let x=6;x<=50;x+=0.5)r.push(x);
  const nu=r.map(x=>C_MHZ_NM3/x**3*1e3*dq);const tg=nu.map(n=>1e3/(2*n));const F=tg.map(t=>{const w=Math.exp(-((t/t2)**3));return q*q*(1+w)**2/4+(1-q*q)/4});
  Plotly.react('gatePlot',[{x:r,y:nu,name:'coupling (kHz)',yaxis:'y',line:{color:'#0fa3b1',width:3}},{x:r,y:F,name:'echoed-gate fidelity',yaxis:'y2',line:{color:'#e63946',width:3}},
   {x:[25],y:[0.67],yaxis:'y2',mode:'markers+text',text:['dolde2013: 0.67'],textposition:'bottom right',marker:{symbol:'star',size:16,color:'#f4a261',line:{color:'#1d2733',width:1}},name:'measured'}],
-  {...L,xaxis:{title:'NV–NV distance (nm)'},yaxis:{type:'log',title:'Coupling (kHz)'},yaxis2:{title:'Fidelity',overlaying:'y',side:'right',range:[0.2,1.02]},legend:{x:0.55,y:0.15},title:'Two qubits: how close, how good?'});}
+  {...L,xaxis:{...GRID,title:'NV–NV distance (nm)'},yaxis:{...GRID,type:'log',title:'Coupling (kHz)'},yaxis2:{...GRID,title:'Fidelity',overlaying:'y',side:'right',range:[0.2,1.02]},legend:{x:0.55,y:0.15},title:'Two qubits: how close, how good?'});}
 // --- 6 converter ---
 function coss(m,bv){return m.eps*EPS0*m.ec*1e6/(2*bv)}
 function drawConv(){const app={ev:[1200,800,300],dc:[650,400,20],grid:[10000,6500,100]}[$('convApp').value];const [bv,vop,I]=app;const f=[];for(let e=3;e<=6.5;e+=0.05)f.push(10**e);
  const loss=(rsp,c)=>f.map(fr=>2*I*vop*Math.sqrt(fr*rsp*1e-3*c/2));
  const tr=['Si','4H-SiC','GaN','Diamond'].map(k=>({x:f,y:loss(ron(MAT[k],bv,k==='Diamond'?'p':'n'),coss(MAT[k],bv)),name:NAME[k]+' (ideal)',line:{color:COL[k],width:3}}));
  const m=MEAS.saha2022;tr.push({x:f,y:loss(m.ron*(bv/m.bv)**2,coss(MAT.Diamond,bv)),name:'diamond, measured 2022 device',line:{color:'#e63946',dash:'dash',width:3}});
- Plotly.react('convPlot',tr,{...L,xaxis:{type:'log',title:'Switching frequency (Hz)'},yaxis:{type:'log',title:'Loss per switch (W)'},title:`${bv} V devices, ${vop} V bus, ${I} A: area-optimized switch loss`});}
+ Plotly.react('convPlot',tr,{...L,xaxis:{...GRID,type:'log',title:'Switching frequency (Hz)'},yaxis:{...GRID,type:'log',title:'Loss per switch (W)'},title:`${bv} V devices, ${vop} V bus, ${I} A: area-optimized switch loss`});}
 // --- 7 quantum sizing ---
 function drawQ(){const cyc=10**v('qCycle');const y=v('qYield')/100;const pitch=v('qPitch');const W={'RSA-2048 (2021)':[20e6,8],'RSA-2048 (2025)':[1e6,168],'FeMoco chemistry':[1e6,96],'100 logical qubits':[57700,1]};
  const rows=Object.entries(W).map(([n,[qb,h]])=>{const cells=Math.ceil(qb/4);const side=Math.sqrt(cells*pitch*pitch/0.6/y)*1e-3;return `<tr><td>${n}</td><td>${qb.toExponential(1)}</td><td>${(h*cyc/1e-6).toExponential(2)} h (${(h*cyc/1e-6/8760).toFixed(2)} years)</td><td>${side.toFixed(1)} mm</td></tr>`});

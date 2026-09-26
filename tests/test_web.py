@@ -67,3 +67,20 @@ def test_every_page_runs_headless_without_errors(tmp_path):
     out = site.build(tmp_path / "site")
     r = subprocess.run([NODE, "tests/smoke_all.mjs", str(out)], cwd=WEB, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout[-1500:] + r.stderr[-1500:]
+
+
+@pytest.mark.skipif(NODE is None, reason="node not installed")
+def test_power_lab_javascript_matches_python(tmp_path):
+    from adamas import converter, site
+    data = site.power_data()
+    (tmp_path / "p.json").write_text(json.dumps(data))
+    js = tmp_path / "run.mjs"
+    js.write_text(f"import * as C from '{(WEB / 'assets/sim/converter.js').as_uri()}'; import fs from 'node:fs';\n"
+                  f"const D = JSON.parse(fs.readFileSync('{tmp_path / 'p.json'}','utf8')); const out = {{}};\n"
+                  "for (const [n, m] of Object.entries(D)) out[n] = [300, 450].map(t => C.switchLoss(m, { bv: 1200, v: 800, i: 300, f: 2e4, tK: t }).pTotal);\n"
+                  "console.log(JSON.stringify(out));")
+    got = json.loads(subprocess.run([NODE, str(js)], capture_output=True, text=True, check=True).stdout)
+    for name, m in data.items():
+        for k, t in enumerate((300.0, 450.0)):
+            ref = converter.material_switch(m["key"], 1200, 800, 300, 2e4, t_k=t, measured=m["measured"]).p_total_w
+            assert abs(got[name][k] / ref - 1) < 0.01, (name, t, got[name][k], ref)

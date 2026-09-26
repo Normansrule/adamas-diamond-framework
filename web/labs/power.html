@@ -1,0 +1,67 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Power Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Power · Lab 10</span><h1>Power Lab</h1>
+  <p>A three-phase inverter, like the one between an electric car's battery and its motor. Pick the application, the switch material, and how hot it runs. The die size is chosen for minimum loss.</p>
+  <div class="ctl"><label>Application</label><select id="app"><option value="ev">EV traction inverter · 800 V bus, 300 A</option><option value="dc">Data-center supply · 400 V bus, 20 A</option><option value="solar">Solar inverter · 1000 V, 50 A</option><option value="grid">Grid converter · 6.5 kV, 100 A</option></select></div>
+  <div class="ctl"><label>Switching frequency <b id="fV"></b></label><input type="range" id="f" min="30" max="65" value="43"></div>
+  <div class="ctl"><label>Junction temperature <b id="tV"></b></label><input type="range" id="t" min="300" max="650" value="400" step="10"></div>
+  <div class="ctl"><label>Ambient / coolant <b id="aV"></b></label><input type="range" id="amb" min="25" max="200" value="65" step="5"></div>
+  <div class="kpis" id="kpis"></div>
+</aside>
+<div>
+  <div class="stage" style="min-height:0"><svg id="bridge" viewBox="0 0 900 240" style="width:100%;display:block"></svg><div class="hud">One phase leg switching (slowed down about a million times)</div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="bars" style="height:300px"></canvas><div class="hud" id="barHud"></div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Electric cars flip their power switches on and off thousands of times a second. Every flip wastes a little energy as heat, and so does the switch's resistance while it is on. A better material wastes less, so the car goes farther and needs a smaller radiator. Diamond is also the only one that gets <i>better</i> when it is hot.</div>
+    <div class="lvl" data-l="s">Per switch, P = I²R<sub>on,sp</sub>/A + ½C<sub>oss,sp</sub>AV²f. Choosing the die area A to minimize P gives P = 2IV√(fR<sub>on,sp</sub>C<sub>oss,sp</sub>/2): conduction and switching losses come out equal, and the material's merit is √(R·C). The required heat-sink thermal resistance is (T<sub>j,max</sub> − T<sub>ambient</sub>)/P.</div>
+    <div class="lvl" data-l="r">Inputs come from <code>adamas.converter</code> via data/site.json and are tested to agree with the Python within 1%. R<sub>on</sub>(T) includes lattice-mobility exponents and, for bulk-doped diamond, the rise of boron ionization with temperature; the measured diamond device (a lateral hole-gas MOSFET) has no ionization gain. Gate charge, reverse recovery, and GaN dynamic R<sub>on</sub> are not modeled; ceilings are package and reliability limits (chapter E9).</div>
+    <p class="src">Sources: [erickson2020] [kassakian2023] [baliga1989] [huang2004] [shenai2018] [reimers2019] [masanet2020] [huang2017] [saha2022] [pernot2010] [lutz2018]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas, data } from '../assets/site.js';
+import * as C from '../assets/sim/converter.js';
+boot('Power');
+const $ = id => document.getElementById(id), D = (await data()).power, NAMES = Object.keys(D);
+const COL = { 'Silicon (ideal)': '#8b98a5', 'Silicon carbide (ideal)': '#e0a030', 'Gallium nitride (ideal)': '#9d7bff', 'Diamond (ideal, holes)': '#2de2e6', 'Diamond (measured 2022 device)': '#ff5d6c' };
+const APPS = { ev: { bv: 1200, v: 800, i: 300 }, dc: { bv: 650, v: 400, i: 20 }, solar: { bv: 1700, v: 1000, i: 50 }, grid: { bv: 10000, v: 6500, i: 100 } };
+function cfg() { return { ...APPS[$('app').value], f: 10 ** (+$('f').value / 10), tK: +$('t').value }; }
+function update() {
+  const c = cfg(), amb = +$('amb').value; $('fV').textContent = c.f >= 1e6 ? `${(c.f / 1e6).toFixed(2)} MHz` : `${(c.f / 1e3).toFixed(1)} kHz`;
+  $('tV').textContent = `${(c.tK - 273.15).toFixed(0)} °C`; $('aV').textContent = `${amb} °C`;
+  const rows = NAMES.map(n => { const m = D[n], s = C.switchLoss(m, c), over = c.tK - 273.15 > m.tjmax_c; return { n, s, eff: C.efficiency(m, c), over, rth: (m.tjmax_c - amb) / s.pTotal }; });
+  const { g, w, h } = fitCanvas($('bars'), 300); g.clearRect(0, 0, w, h);
+  const mx = Math.max(...rows.map(r => r.s.pTotal)), X = v => 250 + (w - 290) * Math.log10(1 + 9 * v / mx);
+  rows.forEach((r, k) => { const y = 24 + k * 52;
+    g.fillStyle = '#c7d6e3'; g.font = '13px Inter'; g.fillText(r.n, 10, y + 16);
+    g.fillStyle = COL[r.n]; g.globalAlpha = r.over ? .3 : .9; const xc = X(r.s.pCond); g.fillRect(250, y, xc - 250, 22); g.globalAlpha = r.over ? .2 : .55; g.fillRect(xc, y, X(r.s.pTotal) - xc, 22); g.globalAlpha = 1;
+    g.fillStyle = '#e8f1f8'; g.font = '600 12px JetBrains Mono'; g.fillText(`${r.s.pTotal.toFixed(r.s.pTotal < 10 ? 2 : 0)} W · ${(100 * r.eff).toFixed(3)}%${r.over ? ' · above its T_j limit' : ''}`, Math.min(X(r.s.pTotal) + 8, w - 250), y + 16);
+    g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(`die ${(r.s.area * 100).toFixed(2)} mm² · heat sink ≤ ${r.rth > 0 ? r.rth.toFixed(2) + ' K/W' : 'impossible'}`, 250, y + 36); });
+  $('barHud').textContent = 'Loss per switch at the optimum die area (solid: conduction, light: switching, log scale)';
+  const best = rows.filter(r => !r.over).sort((a, b) => a.s.pTotal - b.s.pTotal)[0];
+  $('kpis').innerHTML = `<div class="kpi"><b>${best ? best.n.split(' (')[0] : '–'}</b><span>Lowest loss within its temperature limit</span></div><div class="kpi"><b>${(rows[0].s.pTotal / rows[3].s.pTotal).toFixed(0)}×</b><span>Silicon loss ÷ ideal diamond loss</span></div>`;
+}
+['app', 'f', 't', 'amb'].forEach(i => $(i).oninput = update); addEventListener('resize', update); update();
+// animated half bridge
+const svg = $('bridge'), NS = 'http://www.w3.org/2000/svg';
+svg.innerHTML = `<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2de2e6"/></marker></defs>
+<line x1="80" y1="30" x2="80" y2="210" stroke="#3a5a78" stroke-width="3"/><text x="40" y="26" fill="#8ea3b5" font-size="13">+ bus</text><text x="40" y="228" fill="#8ea3b5" font-size="13">− bus</text>
+<line x1="80" y1="30" x2="300" y2="30" stroke="#3a5a78" stroke-width="3"/><line x1="80" y1="210" x2="300" y2="210" stroke="#3a5a78" stroke-width="3"/>
+<rect id="hi" x="270" y="45" width="60" height="50" rx="8" fill="#12304a" stroke="#2de2e6" stroke-width="2"/><text x="300" y="75" text-anchor="middle" fill="#e8f1f8" font-size="13">high</text>
+<rect id="lo" x="270" y="145" width="60" height="50" rx="8" fill="#12304a" stroke="#2de2e6" stroke-width="2"/><text x="300" y="175" text-anchor="middle" fill="#e8f1f8" font-size="13">low</text>
+<line x1="300" y1="30" x2="300" y2="45" stroke="#3a5a78" stroke-width="3"/><line x1="300" y1="95" x2="300" y2="145" stroke="#3a5a78" stroke-width="3"/><line x1="300" y1="195" x2="300" y2="210" stroke="#3a5a78" stroke-width="3"/>
+<line x1="300" y1="120" x2="520" y2="120" stroke="#3a5a78" stroke-width="3"/><circle cx="560" cy="120" r="34" fill="none" stroke="#9d7bff" stroke-width="3"/><text x="560" y="125" text-anchor="middle" fill="#9d7bff" font-size="14">motor</text>
+<polyline id="wave" fill="none" stroke="#ffc46b" stroke-width="2.5"/><text x="640" y="40" fill="#8ea3b5" font-size="12">phase voltage</text><g id="dots"></g>`;
+let t = 0;
+(function anim() {
+  t += 0.012; const duty = 0.5 + 0.42 * Math.sin(t * 0.8), on = (t * 3 % 1) < duty;
+  $('hi').setAttribute('fill', on ? '#1b6b75' : '#12304a'); $('lo').setAttribute('fill', on ? '#12304a' : '#1b6b75');
+  const pts = []; for (let k = 0; k < 120; k++) { const tt = t - (120 - k) * 0.012, d = 0.5 + 0.42 * Math.sin(tt * 0.8), o = (tt * 3 % 1) < d; pts.push(`${640 + k * 2},${o ? 60 : 200}`); }
+  $('wave').setAttribute('points', pts.join(' '));
+  $('dots').innerHTML = [...Array(6)].map((_, k) => { const p = ((t * 2 + k / 6) % 1); const x = on ? 300 : 300, y = on ? 30 + p * 90 : 210 - p * 90;
+    const xx = p > 0.5 ? 300 + (p - 0.5) * 2 * 220 : x, yy = p > 0.5 ? 120 : y; return `<circle cx="${xx}" cy="${yy}" r="4" fill="#2de2e6"/>`; }).join('');
+  requestAnimationFrame(anim);
+})();
+</script></body></html>
