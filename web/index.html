@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en" data-base=".">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADAMAS · Diamond chips, from wafer to qubit</title>
+<meta name="description" content="An open, fully referenced framework for electronics and room-temperature quantum processors on diamond wafers. Interactive labs, simulations, and 500+ references.">
+<meta property="og:title" content="ADAMAS · Diamond chips, from wafer to qubit">
+<meta property="og:image" content="https://normansrule.github.io/adamas-diamond-framework/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:description" content="Interactive labs: 3-D crystal, room-temperature qubit, heat race against silicon, a diamond CPU you can program, and quantum error correction you can break.">
+<link rel="stylesheet" href="assets/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body>
+<main>
+<section class="wrap hero">
+  <div>
+    <span class="eyebrow">Open research framework · v0.11</span>
+    <h1>Silicon's cousin,<br><span class="grad">built for extremes.</span></h1>
+    <p class="lead">ADAMAS asks what it takes to build chips on <b>diamond wafers</b> instead of silicon: kilovolt power switches, logic that runs at 400 °C, and qubits that work at room temperature. Every number here comes from a cited equation or measurement, and every lab runs the same physics as the Python package.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
+      <a class="btn primary" href="#labs">Open the labs →</a>
+      <a class="btn" href="explorer.html">Guided explorer</a>
+      <a class="btn" href="https://github.com/Normansrule/adamas-diamond-framework#-chapters">Read the framework</a>
+    </div>
+    <p style="margin-top:22px;color:var(--mute);font-size:13px">Drag the crystal. The red atom is nitrogen; the dashed sphere beside it is a missing carbon. Together they are the qubit.</p>
+  </div>
+  <canvas id="crystal" aria-label="Rotating diamond crystal lattice with a nitrogen-vacancy center"></canvas>
+  <div class="scrollhint">SCROLL</div>
+</section>
+
+<section class="wrap block" style="padding-top:20px">
+  <span class="eyebrow reveal">In numbers</span>
+  <h2 class="reveal">Why anyone would try this</h2>
+  <div class="stats reveal" id="stats"></div>
+</section>
+
+<section class="wrap block">
+  <span class="eyebrow reveal">Head to head</span>
+  <h2 class="reveal">Same crystal pattern. <span class="grad">Very different numbers.</span></h2>
+  <p class="lead reveal">Silicon and diamond share the "diamond cubic" lattice. Diamond's atoms are smaller and bonded far more tightly, which changes almost everything. Pick a property.</p>
+  <div class="seg reveal" id="raceTabs"></div>
+  <div class="race reveal" id="race"></div>
+  <p class="src" id="raceSrc"></p>
+</section>
+
+<section class="wrap block" id="paint">
+  <span class="eyebrow reveal">Try it</span>
+  <h2 class="reveal">Paint with heat. <span class="grad">Watch it escape.</span></h2>
+  <p class="lead reveal">Move your cursor across the slab. The left half is silicon, the right half diamond: same grid, same time step, same heat. Diamond's heat spreads about 13 times faster, which is why a diamond chip runs cool.</p>
+  <div class="stage reveal" style="margin-top:22px;min-height:0;position:relative">
+    <canvas id="paintCv" style="width:100%;aspect-ratio:2/1;display:block;cursor:crosshair;image-rendering:auto"></canvas>
+    <div class="hud" style="left:14px">Silicon · α = 0.91 cm²/s</div><div class="hud" style="left:auto;right:14px">Diamond · α = 12.3 cm²/s</div>
+    <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35)"></div>
+  </div>
+  <p class="src">Thermal diffusivity α = κ/(ρc). Sources: [glassbrenner1964] [wei1993]. The full four-material simulation is in the <a href="labs/heat.html">Heat Race</a>.</p>
+</section>
+
+<section class="wrap block" id="path">
+  <span class="eyebrow reveal">The path</span>
+  <h2 class="reveal">From a gas to a quantum computer, in eight steps</h2>
+  <div class="path reveal">
+    <svg viewBox="0 0 1000 60" preserveAspectRatio="none"><path id="pathLine" d="M10 30 C 250 -10, 450 70, 700 30 S 950 10, 990 30" stroke="url(#pg)" stroke-width="3" fill="none"/>
+      <defs><linearGradient id="pg"><stop offset="0" stop-color="#2de2e6"/><stop offset="1" stop-color="#9d7bff"/></linearGradient></defs></svg>
+    <div class="steps" style="padding-top:70px">
+      <div class="st"><i>01</i>Grow the wafer from methane plasma</div><div class="st"><i>02</i>Pattern it: EUV to electron beam</div>
+      <div class="st"><i>03</i>Process: hydrogen surface, gold, Al₂O₃</div><div class="st"><i>04</i>Power switches that beat silicon</div>
+      <div class="st"><i>05</i>Logic and a 4-bit processor</div><div class="st"><i>06</i>NV qubits at room temperature</div>
+      <div class="st"><i>07</i>Error correction across cells</div><div class="st"><i>08</i>Applications and a roadmap</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap block" id="labs">
+  <span class="eyebrow reveal">Interactive labs</span>
+  <h2 class="reveal">Don't read it. <span class="grad">Run it.</span></h2>
+  <p class="lead reveal">Eight hands-on simulations and explorations. Each explains itself at three reading levels, from "I am 10" to "researcher", and lists its sources.</p>
+  <div class="bento">
+    <a class="card span3 reveal shine-border" href="labs/qubit.html"><span class="tag violet">Quantum</span><h3>Qubit Lab</h3><canvas class="mini" data-mini="rabi"></canvas><p>Fire microwave pulses at a room-temperature spin on a 3-D Bloch sphere. Watch Rabi, Ramsey, and spin-echo happen, and see why an echo rescues a dephased ensemble.</p><span class="go">Enter →</span></a>
+    <a class="card span3 reveal" href="labs/heat.html"><span class="tag gold">Power</span><h3>Heat Race</h3><canvas class="mini" data-mini="heat"></canvas><p>The same hot transistor on silicon, silicon carbide, gallium nitride, and diamond, solved live with the heat equation. Diamond runs about 15× cooler.</p><span class="go">Enter →</span></a>
+    <a class="card span2 reveal" href="labs/lattice.html"><span class="tag">Materials</span><h3>Lattice Lab</h3><canvas class="mini" data-mini="lattice"></canvas><p>Fly through silicon and diamond at the same scale, drop in an NV center, and point a magnet to split its resonance lines.</p><span class="go">Enter →</span></a>
+    <a class="card span2 reveal" href="labs/cpu.html"><span class="tag">Logic</span><h3>Diamond CPU</h3><canvas class="mini" data-mini="cpu"></canvas><p>Program DIA-4, the 4-bit processor synthesized onto diamond transistors in this repo. The emulator matches the Verilog cycle for cycle.</p><span class="go">Enter →</span></a>
+    <a class="card span2 reveal" href="labs/qec.html"><span class="tag red">Error correction</span><h3>Break the Code</h3><canvas class="mini" data-mini="qec"></canvas><p>Click qubits to inject errors into a surface code. Watch the syndrome light up and the decoder fight back, until it can't.</p><span class="go">Enter →</span></a>
+    <a class="card span4 reveal" href="labs/fab.html"><span class="tag gold">Process</span><h3>Fab Walkthrough</h3><canvas class="mini" data-mini="fab"></canvas><p>Build a hydrogen-terminated diamond transistor layer by layer, the way a cleanroom would, and see exactly where silicon's recipe breaks.</p><span class="go">Enter →</span></a>
+    <a class="card span3 reveal" href="labs/stack.html"><span class="tag violet">Architecture</span><h3>The Chip Stack</h3><canvas class="mini" data-mini="stack"></canvas><p>Scroll to explode the five-layer quantum processor this framework proposes, from silicon controller to diamond qubits to the light that resets them.</p><span class="go">Enter →</span></a>
+    <a class="card span3 reveal" href="labs/globe.html"><span class="tag">Landscape</span><h3>Who is building it</h3><canvas class="mini" data-mini="globe"></canvas><p>A 3-D globe of the labs and companies behind every result here, each point cited and labeled peer-reviewed, news, or vendor claim.</p><span class="go">Enter →</span></a>
+    <a class="card span2 reveal" href="explorer.html"><span class="tag violet">All equations</span><h3>Explorer</h3><canvas class="mini" data-mini="explorer"></canvas><p>Nine live panels and a guided tour through the whole framework.</p><span class="go">Enter →</span></a>
+  </div>
+</section>
+
+<section class="wrap block">
+  <span class="eyebrow reveal">Honest obstacles</span>
+  <h2 class="reveal">What is still hard</h2>
+  <div class="bento" style="grid-template-columns:repeat(4,1fr)">
+    <div class="card reveal"><span class="tag red">Doping</span><h3>Deep dopants</h3><p>Under 1% of boron atoms are active at room temperature, against 90% in silicon.</p></div>
+    <div class="card reveal"><span class="tag red">Wafers</span><h3>76 mm, not 300</h3><p>Reproducible 3-inch single-crystal wafers arrived in 2026. Silicon has used 300 mm for decades.</p></div>
+    <div class="card reveal"><span class="tag red">Logic</span><h3>No easy CMOS</h3><p>The first n-channel diamond MOSFET is from 2024, so logic is still p-channel only and burns static power.</p></div>
+    <div class="card reveal"><span class="tag red">Qubits</span><h3>Placement and charge</h3><p>Two qubits must sit within about 25 nm, and each is in the right charge state only about 75% of the time.</p></div>
+  </div>
+</section>
+
+<section class="wrap block">
+  <span class="eyebrow reveal">Run it yourself</span>
+  <h2 class="reveal">Every figure regenerates from code</h2>
+  <div class="seg reveal" id="termTabs"><button class="on" data-t="cs">GitHub Codespaces</button><button data-t="ub">Ubuntu / WSL</button></div>
+  <div class="term reveal" style="margin-top:14px"><div class="bar"><i></i><i></i><i></i><button class="btn small copy" data-copy="termText">Copy</button></div><pre id="termText"></pre></div>
+</section>
+
+<section class="block" style="padding:60px 0">
+  <div class="wrap"><span class="eyebrow reveal">Evidence base</span><h2 class="reveal" id="refHead">Built on the literature</h2></div>
+  <div class="marquee"><div class="track" id="refs"></div></div>
+  <div class="marquee"><div class="track" id="refs2" style="animation-direction:reverse;animation-duration:95s"></div></div>
+</section>
+
+<footer class="site"><div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <span>ADAMAS · MIT License · Every equation carries a citation key that resolves in <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/references/REFERENCES.md">REFERENCES.md</a>.</span>
+  <span>Room-temperature diamond qubits are slow and memory-rich: built for sensing, networks, and embedded jobs, not factoring.</span>
+</div></footer>
+</main>
+
+<script type="module">
+import { boot, data, ticker, onVisible } from './assets/site.js';
+import { diamondLattice } from './assets/sim/physics.js';
+import { minis } from './assets/minis.js';
+boot('Home');
+const D = await data();
+
+// ---- stats with tickers ----
+const S = [[D.numbers.bfom, '×', 'better power-switch score than silicon (Baliga figure of merit)'], [D.numbers.kappa_ratio, '×', 'faster heat removal than silicon'],
+  [D.numbers.best_bv, ' V', 'blocked by a real diamond transistor'], [D.numbers.t2_ms, ' ms', 'qubit coherence at room temperature'],
+  [D.numbers.references, '', 'references, most checked against Crossref'], [D.numbers.figures, '', 'figures, all regenerated from code']];
+const st = document.getElementById('stats');
+st.innerHTML = S.map((s, i) => `<div class="stat"><b id="n${i}">0</b><span>${s[2]}</span></div>`).join('');
+onVisible(st, () => S.forEach((s, i) => ticker(document.getElementById(`n${i}`), s[0], { fmt: x => (s[0] < 10 ? x.toFixed(1) : Math.round(x).toLocaleString()) + s[1] })));
+
+// ---- property race ----
+const PROPS = [['eg', 'Bandgap (eV)'], ['ec', 'Breakdown field (MV/cm)'], ['kappa', 'Thermal conductivity (W/cm·K)'], ['mup', 'Hole mobility (cm²/V·s)'], ['bfom', 'Power figure of merit (× Si, log)']];
+const COL = { Si: '#8b98a5', '4H-SiC': '#e0a030', GaN: '#9d7bff', Ga2O3: '#ff5d8f', Diamond: '#2de2e6' };
+const tabs = document.getElementById('raceTabs');
+tabs.innerHTML = PROPS.map(([k, t], i) => `<button data-k="${k}" class="${i ? '' : 'on'}">${t}</button>`).join('');
+function race(k) {
+  const vals = Object.entries(D.materials).map(([n, m]) => [n, m[k]]), log = k === 'bfom';
+  const f = v => log ? Math.log10(Math.max(v, 1)) : v, mx = Math.max(...vals.map(v => f(v[1])));
+  document.getElementById('race').innerHTML = vals.map(([n, v]) => `<div class="row"><span>${D.materials[n].name}</span><div class="bar"><i style="background:${COL[n]}" data-w="${100 * f(v) / mx}"></i></div><b style="font-family:var(--mono)">${v.toLocaleString(undefined, { maximumFractionDigits: 2 })}</b></div>`).join('');
+  requestAnimationFrame(() => document.querySelectorAll('#race i').forEach(i => i.style.width = i.dataset.w + '%'));
+  document.getElementById('raceSrc').textContent = 'Sources: ' + D.material_sources;
+}
+tabs.onclick = e => { const b = e.target.closest('button'); if (!b) return; tabs.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); race(b.dataset.k); };
+onVisible(document.getElementById('race'), () => race('eg'));
+
+// ---- path line drawing on scroll ----
+const pl = document.getElementById('pathLine'), len = pl.getTotalLength(); pl.style.strokeDasharray = len; pl.style.strokeDashoffset = len;
+if (window.gsap) gsap.to(pl, { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '#path', start: 'top 80%', end: 'bottom 40%', scrub: true } });
+else pl.style.strokeDashoffset = 0;
+
+// ---- terminal ----
+const TERM = {
+  cs: `<span class="c"># 1. On GitHub: Code ▸ Codespaces ▸ Create codespace on main (everything below is preinstalled)</span>
+<span class="p">$</span> python -m pytest -q          <span class="c"># Python, Verilog, SPICE, and JavaScript tests</span>
+<span class="p">$</span> make figures animations     <span class="c"># every figure, the poster, and the GIFs</span>
+<span class="p">$</span> make site && python -m http.server -d site 8000   <span class="c"># this website, locally</span>`,
+  ub: `<span class="p">$</span> sudo apt install -y git make ngspice iverilog yosys nodejs
+<span class="p">$</span> git clone git@github.com:Normansrule/adamas-diamond-framework.git && cd adamas-diamond-framework
+<span class="p">$</span> conda env create -f environment.yml && conda activate adamas
+<span class="p">$</span> python -m pytest -q && make figures site
+<span class="p">$</span> python -m http.server -d site 8000`};
+const tt = document.getElementById('termTabs'), tx = document.getElementById('termText'); tx.innerHTML = TERM.cs;
+tt.onclick = e => { const b = e.target.closest('button'); if (!b) return; tt.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); tx.innerHTML = TERM[b.dataset.t]; };
+
+// ---- reference marquee ----
+document.getElementById('refHead').textContent = `Built on ${D.numbers.references} references`;
+const chip = r => `<span class="ref"><b>${r.key}</b>${r.short}</span>`, half = Math.ceil(D.references.length / 2);
+const a = D.references.slice(0, half).map(chip).join(''), b = D.references.slice(half).map(chip).join('');
+document.getElementById('refs').innerHTML = a + a; document.getElementById('refs2').innerHTML = b + b;
+
+minis();
+
+// ---- paint with heat ----
+import('./assets/sim/paint.js').then(P => {
+  const cv = document.getElementById('paintCv'), NX = 160, NY = 80, g = P.create(NX, NY), off = document.createElement('canvas');
+  off.width = NX; off.height = NY; const oc = off.getContext('2d'), img = oc.createImageData(NX, NY), ctx = cv.getContext('2d');
+  let last = 0, vis = true; new IntersectionObserver(e => vis = e[0].isIntersecting).observe(cv);
+  const at = e => { const r = cv.getBoundingClientRect(); return [Math.round((e.clientX - r.left) / r.width * NX), Math.round((e.clientY - r.top) / r.height * NY)]; };
+  cv.addEventListener('pointermove', e => { const [x, y] = at(e); P.deposit(g, x, y, 0.9, 3); last = performance.now(); });
+  cv.addEventListener('pointerdown', e => { const [x, y] = at(e); P.deposit(g, x, y, 6, 5); });
+  const col = t => { const s = [[5, 7, 13], [40, 11, 84], [120, 28, 109], [212, 72, 66], [250, 160, 30], [252, 255, 164]]; const x = Math.min(.999, Math.max(0, t)) * (s.length - 1), i = Math.floor(x), f = x - i;
+    return s[i].map((v, k) => v + (s[i + 1][k] - v) * f); };
+  (function frame(t) {
+    if (vis) {
+      if (t - last > 1600 && Math.random() < .08) { P.deposit(g, 20 + Math.floor(Math.random() * 40), 20 + Math.floor(Math.random() * 40), 3, 3); P.deposit(g, 100 + Math.floor(Math.random() * 40), 20 + Math.floor(Math.random() * 40), 3, 3); }
+      P.step(g, 3); for (let k = 0; k < NX * NY; k++) { const c = col(g.T[k] / 1.6); img.data[k * 4] = c[0]; img.data[k * 4 + 1] = c[1]; img.data[k * 4 + 2] = c[2]; img.data[k * 4 + 3] = 255; }
+      oc.putImageData(img, 0, 0); cv.width = cv.clientWidth; cv.height = cv.clientHeight; ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, cv.width, cv.height);
+    }
+    requestAnimationFrame(frame);
+  })(0);
+});
+
+// ---- hero crystal (three.js, bloom) ----
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+const cv = document.getElementById('crystal');
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(40, 1, 0.1, 200);
+cam.position.set(13, 9, 15);
+const ctl = new OrbitControls(cam, cv); ctl.enableDamping = true; ctl.enableZoom = false; ctl.autoRotate = true; ctl.autoRotateSpeed = 0.9;
+const L = diamondLattice(2), c = L.a;                           // two conventional cells of diamond
+const center = new THREE.Vector3(c, c, c); ctl.target.copy(center);
+const nIdx = L.atoms.findIndex(p => Math.abs(p[0] - c * 1.25) < 1e-6 && Math.abs(p[1] - c * 1.25) < 1e-6 && Math.abs(p[2] - c * 1.25) < 1e-6);
+const nb = L.bonds.filter(([i, j]) => i === nIdx || j === nIdx).map(([i, j]) => i === nIdx ? j : i);
+const vIdx = nb[0];
+const sph = new THREE.SphereGeometry(0.34, 32, 16), mat = new THREE.MeshStandardMaterial({ color: 0x6ff3ff, emissive: 0x0b5f6a, roughness: .25, metalness: .1 });
+const inst = new THREE.InstancedMesh(sph, mat, L.atoms.length), m4 = new THREE.Matrix4();
+L.atoms.forEach((p, i) => { m4.makeScale(i === vIdx ? 0.0001 : 1, i === vIdx ? 0.0001 : 1, i === vIdx ? 0.0001 : 1); m4.setPosition(...p); inst.setMatrixAt(i, m4); });
+scene.add(inst);
+const bondMat = new THREE.MeshStandardMaterial({ color: 0x3aa7bd, emissive: 0x0a2a36, transparent: true, opacity: .75 });
+for (const [i, j] of L.bonds) {
+  if (i === vIdx || j === vIdx) continue;
+  const a = new THREE.Vector3(...L.atoms[i]), b = new THREE.Vector3(...L.atoms[j]), len = a.distanceTo(b);
+  const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, len, 8), bondMat);
+  cyl.position.copy(a).add(b).multiplyScalar(.5); cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); scene.add(cyl);
+}
+const nitrogen = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 16), new THREE.MeshStandardMaterial({ color: 0xff5d6c, emissive: 0xff2040, emissiveIntensity: 1.6 }));
+nitrogen.position.set(...L.atoms[nIdx]); scene.add(nitrogen);
+const vac = new THREE.Mesh(new THREE.SphereGeometry(0.46, 24, 12), new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: .5 }));
+vac.position.set(...L.atoms[vIdx]); scene.add(vac);
+const glow = new THREE.PointLight(0xff4060, 40, 12); glow.position.copy(nitrogen.position); scene.add(glow);
+scene.add(new THREE.AmbientLight(0x88aacc, 0.7)); const dl = new THREE.DirectionalLight(0xffffff, 1.6); dl.position.set(8, 12, 6); scene.add(dl);
+// drifting photons: red fluorescence leaving the NV
+const pN = 160, pg = new THREE.BufferGeometry(), pos = new Float32Array(pN * 3), vel = [];
+for (let i = 0; i < pN; i++) { pos.set(nitrogen.position.toArray(), i * 3); const d = new THREE.Vector3().randomDirection(); vel.push(d.multiplyScalar(0.02 + Math.random() * 0.05)); }
+pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+const pts = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xff6b7d, size: 0.12, transparent: true, opacity: .9 })); scene.add(pts);
+const comp = new EffectComposer(renderer); comp.addPass(new RenderPass(scene, cam));
+const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), 0.9, 0.5, 0.15); comp.addPass(bloom);
+function size() { const w = cv.clientWidth, h = cv.clientHeight; renderer.setSize(w, h, false); comp.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+addEventListener('resize', size); size();
+let t = 0;
+renderer.setAnimationLoop(() => {
+  t += 0.016; ctl.update();
+  const pulse = 1.2 + 0.6 * Math.sin(t * 3); nitrogen.material.emissiveIntensity = pulse; glow.intensity = 25 + 20 * Math.sin(t * 3);
+  for (let i = 0; i < pN; i++) { for (let k = 0; k < 3; k++) pos[i * 3 + k] += vel[i].getComponent(k);
+    if (new THREE.Vector3(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]).distanceTo(nitrogen.position) > 9) pos.set(nitrogen.position.toArray(), i * 3); }
+  pg.attributes.position.needsUpdate = true; vac.rotation.y += 0.01;
+  comp.render();
+});
+</script>
+</body></html>

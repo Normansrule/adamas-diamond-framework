@@ -1,22 +1,19 @@
 # Routing DIA-4 with OpenROAD (project P-2)
 
-`python circuits/digital/place.py` writes the standard-cell LEF (`adamas_ed.lef`), a timed Liberty (`adamas_ed_timed.lib`),
-a placed DEF, and a placed GDS. The placement is a simple row placer with no routing; for a real route and timing
-report use OpenROAD-flow-scripts [ajayi2019] through Docker:
+`adamas.orfs_platform` writes a complete OpenROAD-flow-scripts (ORFS) platform for ADAMAS-PDK-0 [ajayi2019]:
+technology and cell LEF, timed Liberty (with tie and filler cells), cell GDS, parasitic estimates (`setRC.tcl`), power grid
+(`pdn.tcl`: a core ring plus follow-pin rails, because vertical power stripes on the two-layer stack would short to
+transistor gates), routing tracks, and a KLayout technology file. One command installs it and runs the flow in Docker:
 
 ```bash
-git clone --depth 1 https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts ~/orfs
-make place                                                   # writes the LEF and timed Liberty
-mkdir -p ~/orfs/flow/designs/adamas/dia4 ~/orfs/flow/platforms/adamas_pdk0
-cp circuits/digital/dia4.v circuits/digital/openroad/{config.mk,constraint.sdc} ~/orfs/flow/designs/adamas/dia4/
-cp circuits/digital/{adamas_ed.lef,adamas_ed_timed.lib} circuits/digital/openroad/platform/config.mk ~/orfs/flow/platforms/adamas_pdk0/
-docker pull openroad/orfs
-docker run -it --rm -v ~/orfs/flow:/OpenROAD-flow-scripts/flow openroad/orfs \
-  bash -c "cd /OpenROAD-flow-scripts/flow && make DESIGN_CONFIG=designs/adamas/dia4/config.mk 2>&1 | tail -60"
+bash circuits/digital/openroad/run_orfs.sh            # uses ~/orfs; clones it if missing; log in last_run.log
 ```
 
-The host directory `~/orfs/flow` is mounted into the container, so create files on the host, never inside the container.
+Run it from WSL, not from inside the container. The script mounts `~/orfs/flow` into the `openroad/orfs` image, so every
+file is created on the host.
 
-The two-layer stack (GATE vertical, METAL2 horizontal) is thin; expect the router to need a low utilization or a third
-metal. That is itself a result: PDK-0 as drawn routes only small blocks, which is consistent with the 10⁴-gate ceiling
-of chapter E3. Timing in the Liberty is the calibrated first-order model of `adamas.digital`, not measured data (D-2).
+**What to expect.** PDK-0 has two routing layers (gate metal vertical, gold METAL2 horizontal) at a 4 um pitch. Routing
+congestion is the likely limit; the design configuration uses 30% core utilization for that reason. If global or detailed
+routing fails, that is a PDK result, not a bug: it quantifies the case for a third metal in PDK-1 (chapter E2). Timing
+in the Liberty is the calibrated first-order model of `adamas.digital`, and wire parasitics are order-of-magnitude
+placeholders until the monitor die is measured.

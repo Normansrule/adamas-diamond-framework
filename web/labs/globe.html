@@ -1,0 +1,78 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>World Map · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Landscape · Lab 7</span><h1>Who is building it</h1>
+  <p>The laboratories and companies behind the results this framework builds on. Every point cites its paper or announcement, labeled as peer-reviewed, news, or vendor claim.</p>
+  <div class="ctl"><label>Show</label><div class="seg" id="kinds"></div></div>
+  <div class="ctl"><label>Results up to year <b id="yrV"></b></label><input type="range" id="yr" min="2010" max="2026" value="2026"></div>
+  <div style="display:flex;gap:8px"><button class="btn small" id="play">▶ Play history</button><button class="btn small" id="spin">Pause spin</button></div>
+  <div id="list" style="margin-top:14px;display:grid;gap:6px;max-height:340px;overflow:auto"></div>
+</aside>
+<div>
+  <div class="stage"><canvas id="globe" style="height:560px;cursor:grab"></canvas><div class="hud" id="hud">Drag to rotate · hover or click a point</div></div>
+  <div class="card" id="detail" style="margin-top:14px"><h3>Pick a point</h3><p>Hover the globe or click an entry in the list.</p></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">These are the places where people are learning to turn diamond into computer chips. Yellow dots grow the diamond, pink ones make power switches, purple ones build logic, and blue ones build quantum bits.</div>
+    <div class="lvl" data-l="s">Japan dominates wafers and power devices (Saga, AIST, NIMS, Waseda, Ookuma); Europe and the United States lead NV quantum physics (Stuttgart, Delft, Harvard, MIT). Commercial room-temperature NV computing is early and mostly vendor-reported.</div>
+    <div class="lvl" data-l="r">Selection follows the evidence table of chapter 10, not a market survey; institutions appear once per headline result. Evidence labels: P peer-reviewed, N news, V vendor statement. Land mask from Natural Earth (public domain). Additions go through the "Propose an experiment" issue template with a citation.</div>
+    <p class="src">Sources: [e6orbray2026] [saha2023] [schreck2017] [liao2024] [dolde2013] [rong2015] [li2024] [pompili2021] [qbpawsey2023] [saxonq2026]</p></div>
+</div></div></main>
+<script type="module">
+import { boot } from '../assets/site.js';
+import { SITES, KINDS, toXYZ, filter } from '../assets/sim/world.js';
+import { isLand } from '../assets/sim/landmask.js';
+boot('Globe');
+const $ = id => document.getElementById(id);
+const LABEL = { wafer: 'Wafers', power: 'Power', logic: 'Logic', quantum: 'Quantum', industry: 'Industry' }, EV = { P: 'peer-reviewed', N: 'news', V: 'vendor claim' };
+let active = Object.keys(KINDS);
+$('kinds').innerHTML = Object.entries(KINDS).map(([k, c]) => `<button class="on" data-k="${k}"><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:6px"></i>${LABEL[k]}</button>`).join('');
+$('kinds').onclick = e => { const b = e.target.closest('button'); if (!b) return; b.classList.toggle('on'); active = [...$('kinds').querySelectorAll('button.on')].map(x => x.dataset.k); refresh(); };
+function detail(s) {
+  $('detail').innerHTML = `<span class="tag" style="background:${KINDS[s.kind]}22;color:${KINDS[s.kind]}">${LABEL[s.kind]} · ${s.year} · ${EV[s.ev]}</span><h3>${s.name}</h3><p>${s.place}</p><p style="color:var(--ink)">${s.what}</p><p class="src">Sources: ${s.refs.map(r => `[${r}]`).join(' ')}</p>`;
+}
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+const cv = $('globe'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1, .1, 100); cam.position.set(0, 1.2, 3.6);
+const ctl = new OrbitControls(cam, cv); ctl.enableDamping = true; ctl.enablePan = false; ctl.minDistance = 1.8; ctl.maxDistance = 6; ctl.autoRotate = true; ctl.autoRotateSpeed = .6;
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(0.985, 64, 32), new THREE.MeshBasicMaterial({ color: 0x07101d })));
+const atm = new THREE.Mesh(new THREE.SphereGeometry(1.08, 64, 32), new THREE.ShaderMaterial({ transparent: true, side: THREE.BackSide, depthWrite: false,
+  vertexShader: 'varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: 'varying vec3 vN; void main(){ float k = pow(0.72 - dot(vN, vec3(0.0,0.0,1.0)), 3.0); gl_FragColor = vec4(0.18,0.85,0.9,1.0) * k; }' }));
+scene.add(atm);
+// dot-matrix land (Fibonacci sphere, keep points on land)
+const pts = []; const n = 26000, ga = Math.PI * (3 - Math.sqrt(5));
+for (let i = 0; i < n; i++) { const y = 1 - 2 * (i + .5) / n, r = Math.sqrt(1 - y * y), th = ga * i, x = Math.cos(th) * r, z = Math.sin(th) * r;
+  const lat = Math.asin(y) * 180 / Math.PI, lon = Math.atan2(x, z) * 180 / Math.PI; if (isLand(lat, lon)) pts.push(x, y, z); }
+const land = new THREE.BufferGeometry(); land.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+scene.add(new THREE.Points(land, new THREE.PointsMaterial({ color: 0x3aa7bd, size: .012, transparent: true, opacity: .85 })));
+const markers = new THREE.Group(); scene.add(markers);
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(); let shown = [];
+function refresh() {
+  $('yrV').textContent = $('yr').value; markers.clear();
+  shown = filter(SITES, { kinds: active, upTo: +$('yr').value });
+  for (const s of shown) {
+    const p = new THREE.Vector3(...toXYZ(s.lat, s.lon, 1.0)), c = new THREE.Color(KINDS[s.kind]);
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(.022, 16, 8), new THREE.MeshBasicMaterial({ color: c })); dot.position.copy(p); dot.userData = s; markers.add(dot);
+    const spike = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, .18, 6), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .7 }));
+    spike.position.copy(p.clone().multiplyScalar(1.09)); spike.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p.clone().normalize()); markers.add(spike);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(.03, .036, 32), new THREE.MeshBasicMaterial({ color: c, transparent: true, side: THREE.DoubleSide }));
+    ring.position.copy(p.clone().multiplyScalar(1.002)); ring.lookAt(p.clone().multiplyScalar(2)); ring.userData.pulse = Math.random() * 6; markers.add(ring);
+  }
+  $('list').innerHTML = shown.sort((a, b) => a.year - b.year).map((s, i) => `<button class="btn small" data-i="${SITES.indexOf(s)}" style="justify-content:flex-start;text-align:left"><i style="width:8px;height:8px;border-radius:50%;background:${KINDS[s.kind]};flex:none"></i>${s.year} · ${s.name}</button>`).join('');
+  $('list').querySelectorAll('button').forEach(b => b.onclick = () => { const s = SITES[+b.dataset.i]; detail(s); fly(s); });
+}
+function fly(s) { ctl.autoRotate = false; $('spin').textContent = 'Resume spin'; const target = new THREE.Vector3(...toXYZ(s.lat, s.lon, 3.2)); const from = cam.position.clone(); let t = 0;
+  const f = () => { t = Math.min(1, t + .04); cam.position.copy(from.clone().lerp(target, 1 - Math.pow(1 - t, 3))); if (t < 1) requestAnimationFrame(f); }; f(); }
+cv.onpointermove = e => { const r = cv.getBoundingClientRect(); mouse.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(mouse, cam);
+  const hit = ray.intersectObjects(markers.children.filter(m => m.userData.name))[0]; $('hud').textContent = hit ? `${hit.object.userData.name} · ${hit.object.userData.year}` : 'Drag to rotate · hover or click a point';
+  cv.style.cursor = hit ? 'pointer' : 'grab'; if (hit) detail(hit.object.userData); };
+$('yr').oninput = refresh;
+$('spin').onclick = () => { ctl.autoRotate = !ctl.autoRotate; $('spin').textContent = ctl.autoRotate ? 'Pause spin' : 'Resume spin'; };
+$('play').onclick = () => { let y = 2010; $('yr').value = y; refresh(); const id = setInterval(() => { y++; $('yr').value = y; refresh(); if (y >= 2026) clearInterval(id); }, 450); };
+function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); } addEventListener('resize', size); size();
+refresh();
+let t = 0; R.setAnimationLoop(() => { t += .016; ctl.update(); markers.children.forEach(m => { if (m.userData.pulse !== undefined) { const k = (t + m.userData.pulse) % 2 / 2; m.scale.setScalar(1 + 2.5 * k); m.material.opacity = 1 - k; } }); R.render(scene, cam); });
+</script></body></html>

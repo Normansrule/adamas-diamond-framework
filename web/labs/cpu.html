@@ -1,0 +1,73 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Diamond CPU · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Logic · Lab 4</span><h1>Diamond CPU</h1>
+  <p>DIA-4 is a 4-bit processor that this repository synthesizes onto p-channel diamond transistors. Write a program, step it, and watch the registers. The emulator matches the Verilog cycle by cycle.</p>
+  <div class="ctl"><label>Example</label><select id="ex"></select></div>
+  <div class="ctl"><label>Program (assembly)</label><textarea id="src" rows="12" spellcheck="false"></textarea></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary small" id="load">Assemble</button><button class="btn small" id="stepB">Step</button><button class="btn small" id="runB">▶ Run</button><button class="btn small" id="resetB">Reset</button></div>
+  <div class="ctl"><label>Clock (visual) <b id="hzV"></b></label><input type="range" id="hz" min="1" max="30" value="4"></div>
+  <p id="err" style="color:var(--red);font-size:13px"></p>
+  <p style="font-size:12.5px">Instructions: LDI n · ADD n · SUB n · AND n · OR n · XOR n · JNZ addr · JMP addr · OUT · CALL addr · RET · NOP. Operands 0–15; labels allowed.</p>
+</aside>
+<div>
+  <div class="stage" style="padding:18px;min-height:0">
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px">
+      <div id="regs"></div>
+      <div><div class="eyebrow" style="margin-bottom:8px">Program memory</div><div id="rom" style="font:13px/1.55 var(--mono)"></div></div>
+    </div>
+    <canvas id="outc" style="height:130px;margin-top:12px"></canvas>
+  </div>
+  <div class="stage" style="margin-top:14px"><canvas id="chip" style="height:420px;cursor:grab"></canvas><div class="hud" id="chipHud">Placed layout on ADAMAS-PDK-0. Scroll to zoom, drag to pan, hover a cell.</div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">A processor is a machine that follows a list of simple instructions very fast. This one only counts to 15, like the very first microprocessor from 1971, but it is designed to be built from diamond instead of silicon, so it could work in places far too hot for normal chips.</div>
+    <div class="lvl" data-l="s">An accumulator machine: every instruction reads or writes one 4-bit register (ACC). JNZ branches when ACC ≠ 0; CALL pushes the return address on a four-entry hardware stack, as the Intel 4004 did with three. Synthesized to p-channel enhancement/depletion cells, it needs about 1,600 to 1,700 transistors and roughly 1 mm² of diamond at 2 µm gates, running near 2.4 MHz (chapter E3).</div>
+    <div class="lvl" data-l="r">The JavaScript model is checked against Icarus Verilog on 25 random 16-byte programs every test run (web/assets/sim/dia4.js vs circuits/digital/dia4.v). The layout below is the output of circuits/digital/place.py on the Yosys netlist, a row placement without routing; the OpenROAD flow is in circuits/digital/openroad.</div>
+    <p class="src">Sources: [faggin1996] [liu2017] [meadconway1980] [rabaey2003] [wolf2013] [weste2011]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas, data } from '../assets/site.js';
+import * as C from '../assets/sim/dia4.js';
+boot('Chip');
+const $ = id => document.getElementById(id);
+let rom = new Array(16).fill(0), s = C.reset(), outs = [], running = false, last = 0;
+$('ex').innerHTML = Object.keys(C.PROGRAMS).map(k => `<option>${k}</option>`).join('');
+$('ex').onchange = () => { $('src').value = C.PROGRAMS[$('ex').value]; load(); };
+function bits(v, n = 4, color = '#2de2e6') { return [...Array(n)].map((_, i) => `<i style="display:inline-block;width:22px;height:22px;margin-right:5px;border-radius:6px;background:${(v >> (n - 1 - i)) & 1 ? color : 'rgba(255,255,255,.07)'};box-shadow:${(v >> (n - 1 - i)) & 1 ? `0 0 14px ${color}` : 'none'};transition:all .2s"></i>`).join(''); }
+function render() {
+  const R = [['PC', s.pc, '#9d7bff'], ['ACC', s.acc, '#2de2e6'], ['OUT', s.out, '#ffc46b'], ['SP', s.sp, '#48e5a3']];
+  $('regs').innerHTML = R.map(([n, v, c]) => `<div style="display:flex;align-items:center;gap:12px;margin:8px 0"><span style="width:44px;color:var(--mute);font:600 13px var(--mono)">${n}</span>${bits(v, n === 'SP' ? 2 : 4, c)}<b style="font:700 18px var(--mono);margin-left:6px">${v}</b></div>`).join('') +
+    `<div style="color:var(--mute);font:13px var(--mono);margin-top:6px">carry ${s.carry} · cycle ${s.cycle} · stack [${s.stack.join(', ')}]</div>`;
+  $('rom').innerHTML = rom.map((b, i) => `<div style="padding:1px 8px;border-radius:6px;${i === s.pc ? 'background:rgba(157,123,255,.25);color:#fff' : 'color:var(--mute)'}">${i.toString(16).toUpperCase()}: ${b.toString(16).padStart(2, '0')}  ${C.NAMES[b >> 4] || '???'} ${[1, 2, 3, 4, 5, 6, 7, 8, 10].includes(b >> 4) ? b & 15 : ''}</div>`).join('');
+  const { g, w, h } = fitCanvas($('outc'), 130); g.clearRect(0, 0, w, h); g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText('output port over time', 6, 14);
+  const n = Math.max(outs.length, 1), bw = Math.min(18, (w - 20) / 40); outs.slice(-40).forEach((v, i) => { g.fillStyle = '#ffc46b'; g.fillRect(10 + i * bw, h - 10 - v * 6.5, bw - 3, v * 6.5 + 1); });
+}
+function load() { try { rom = C.assemble($('src').value); $('err').textContent = ''; } catch (e) { $('err').textContent = e.message; } s = C.reset(); outs = []; render(); }
+function step() { s = C.step(s, rom); outs.push(s.out); render(); }
+$('load').onclick = load; $('stepB').onclick = step; $('resetB').onclick = () => { s = C.reset(); outs = []; render(); };
+$('runB').onclick = () => { running = !running; $('runB').textContent = running ? '❚❚ Pause' : '▶ Run'; };
+$('hz').oninput = () => $('hzV').textContent = `${$('hz').value} Hz on screen · 2.4 MHz on diamond`; $('hz').oninput();
+(function loop(t) { if (running && t - last > 1000 / +$('hz').value) { step(); last = t; } requestAnimationFrame(loop); })(0);
+$('ex').value = 'countdown'; $('src').value = C.PROGRAMS.countdown; load();
+
+// ---- placed layout viewer ----
+const D = await data(); const lay = D.dia4_layout;
+const col = { INV: '#8b98a5', NAND2: '#2de2e6', NOR2: '#e0a030', NOR3: '#9d7bff', DFF: '#ff5d6c', BUF: '#48e5a3', TIEHI: '#ffffff', TIELO: '#ffffff' };
+const cv = $('chip'); let zoom = 1, ox = 0, oy = 0, drag = null, hover = null;
+function draw() {
+  const { g, w, h } = fitCanvas(cv, 420); g.clearRect(0, 0, w, h); if (!lay) { g.fillStyle = '#8ea3b5'; g.fillText('Run make synth place to generate the layout.', 20, 30); return; }
+  const k = Math.min(w / lay.w, h / lay.h) * .92 * zoom, x0 = (w - lay.w * k) / 2 + ox, y0 = (h + lay.h * k) / 2 + oy;
+  g.strokeStyle = 'rgba(148,190,220,.25)'; g.strokeRect(x0, y0 - lay.h * k, lay.w * k, lay.h * k);
+  for (const c of lay.cells) { g.fillStyle = col[c.t] || '#ccc'; g.globalAlpha = hover === c ? 1 : .8; g.fillRect(x0 + c.x * k, y0 - (c.y + lay.row) * k, c.w * k - .6, lay.row * k - .6); }
+  g.globalAlpha = 1; $('chipHud').textContent = hover ? `${hover.n} · ${hover.t} · (${hover.x.toFixed(0)}, ${hover.y.toFixed(0)}) µm` : `${lay.cells.length} cells · ${lay.w.toFixed(0)} × ${lay.h.toFixed(0)} µm core · scroll to zoom, drag to pan`;
+  cv._t = { k, x0, y0 };
+}
+cv.onwheel = e => { e.preventDefault(); zoom = Math.max(.5, Math.min(12, zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); draw(); };
+cv.onpointerdown = e => drag = [e.clientX - ox, e.clientY - oy]; addEventListener('pointerup', () => drag = null);
+cv.onpointermove = e => { if (drag) { ox = e.clientX - drag[0]; oy = e.clientY - drag[1]; draw(); return; } if (!lay) return;
+  const r = cv.getBoundingClientRect(), { k, x0, y0 } = cv._t, x = (e.clientX - r.left - x0) / k, y = (y0 - (e.clientY - r.top)) / k - lay.row;
+  const hit = lay.cells.find(c => x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + lay.row); if (hit !== hover) { hover = hit; draw(); } };
+addEventListener('resize', draw); draw();
+</script></body></html>

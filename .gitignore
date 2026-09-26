@@ -11,3 +11,6 @@ circuits/digital/synth.log
 circuits/layout/pdk0_monitor.gds
 circuits/digital/dia4_placed.gds
 circuits/digital/dia4_placed.def
+circuits/digital/openroad/last_run.log
+site/
+web/node_modules/

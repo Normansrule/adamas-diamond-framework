@@ -1,0 +1,51 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Heat Race · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Power · Lab 2</span><h1>Heat Race</h1>
+  <p>A 2 mm slice of chip with a switching transistor burning power near its top surface. The bottom sits on a heat sink. Same geometry, same power, four materials, solved live with the heat equation.</p>
+  <div class="ctl"><label>Power density <b id="qV"></b></label><input type="range" id="q" min="1" max="40" value="12"></div>
+  <div class="ctl"><label>Simulation speed <b id="spV"></b></label><input type="range" id="sp" min="1" max="20" value="8"></div>
+  <div class="ctl"><label>Color scale</label><div class="seg" id="scale"><button class="on" data-s="shared">Shared (honest)</button><button data-s="own">Each its own</button></div></div>
+  <div style="display:flex;gap:8px"><button class="btn primary" id="play">❚❚ Pause</button><button class="btn" id="reset">Reset</button></div>
+  <div class="kpis" id="kpis"></div>
+</aside>
+<div>
+  <div class="stage" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:2px;min-height:0" id="grid"></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Every chip gets hot where it works hardest. Heat has to escape through the material to the cold plate at the bottom. Diamond lets heat through about 15 times more easily than silicon, so the same chip stays much cooler.</div>
+    <div class="lvl" data-l="s">∂T/∂t = α∇²T + q/(ρc) with α = κ/(ρc). At steady state κ∇²T = −q, so for identical geometry and power the peak temperature rise scales exactly as 1/κ: silicon 1.5, gallium nitride 2.3, silicon carbide 4.9, diamond 22 W/(cm·K). Diamond also reaches steady state fastest because its diffusivity is highest.</div>
+    <div class="lvl" data-l="r">Explicit finite differences on a 48 × 48 cross-section, insulated sides and top, isothermal sink at the bottom, stability-limited sub-stepping per material. The steady-state peak ratio Si/diamond equals κ_diamond/κ_Si to 1% (unit test). Temperature-dependent κ and the thermal boundary resistance of real interfaces [cho2014] [yates2018] are not modeled; chapter E9 adds the junction-temperature ceilings.</div>
+    <p class="src">Sources: [carslaw1959] [wei1993] [glassbrenner1964] [kimoto2014] [mishra2008] [moore2014] [barcohen2016]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, colormap } from '../assets/site.js';
+import * as H from '../assets/sim/heat.js';
+boot('Heat');
+const $ = id => document.getElementById(id), N = 48, keys = ['Si', 'GaN', 'SiC', 'Diamond'];
+let sims, playing = true, scale = 'shared';
+$('grid').innerHTML = keys.map(k => `<div style="position:relative"><canvas id="c${k}" width="${N}" height="${N}" style="width:100%;image-rendering:auto;aspect-ratio:1"></canvas>
+  <div class="hud" style="left:10px;top:10px"><b style="color:${H.MATERIALS[k].color}">${H.MATERIALS[k].name}</b> · κ = ${H.MATERIALS[k].kappa} W/cm·K<br><span id="t${k}">ΔT 0 K</span></div></div>`).join('');
+$('kpis').innerHTML = `<div class="kpi"><b id="kRatio">–</b><span>Silicon peak ÷ diamond peak</span></div><div class="kpi"><b id="kTime">0</b><span>Simulated time (ms)</span></div>`;
+function reset() { sims = keys.map(k => H.create(k, N, 0.2)); }
+$('reset').onclick = reset; $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? '❚❚ Pause' : '▶ Play'; };
+$('scale').onclick = e => { const b = e.target.closest('button'); if (!b) return; scale = b.dataset.s; $('scale').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+const q = () => +$('q').value * 25000, sp = () => +$('sp').value * 2e-5;
+const lab = () => { $('qV').textContent = `${(+$('q').value * 25).toFixed(0)} kW/cm³`; $('spV').textContent = `${(sp() * 1e3 * 60).toFixed(1)} ms per second`; };
+['q', 'sp'].forEach(i => $(i).oninput = lab); lab(); reset();
+const mask = H.sourceMask(N), imgs = keys.map(k => $('c' + k).getContext('2d').createImageData(N, N));
+function frame() {
+  if (playing) sims.forEach(s => H.step(s, q(), sp(), mask));
+  const peaks = sims.map(H.maxT), shared = Math.max(...peaks, 1e-9);
+  sims.forEach((s, j) => {
+    const top = scale === 'shared' ? shared : Math.max(peaks[j], 1e-9), im = imgs[j].data;
+    for (let k = 0; k < N * N; k++) { const [r, g, b] = colormap(s.T[k] / top); im[k * 4] = r; im[k * 4 + 1] = g; im[k * 4 + 2] = b; im[k * 4 + 3] = 255; }
+    $('c' + keys[j]).getContext('2d').putImageData(imgs[j], 0, 0);
+    $('t' + keys[j]).textContent = `peak ΔT ${peaks[j].toFixed(1)} K`;
+  });
+  $('kRatio').textContent = (peaks[0] / Math.max(peaks[3], 1e-9)).toFixed(1) + '×'; $('kTime').textContent = (sims[0].time * 1e3).toFixed(2);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

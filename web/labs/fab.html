@@ -1,0 +1,77 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<title>Fab Walkthrough · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Process · Lab 6</span><h1>Fab Walkthrough</h1>
+  <p>Build a hydrogen-terminated diamond transistor, the device behind every diamond logic gate and power switch in this repository, one cleanroom step at a time.</p>
+  <div id="stepList" style="display:grid;gap:6px;margin:12px 0"></div>
+  <div style="display:flex;gap:8px"><button class="btn small" id="prev">◀ Back</button><button class="btn primary small" id="next">Next ▶</button><button class="btn small" id="auto">Autoplay</button></div>
+</aside>
+<div>
+  <div class="stage"><svg id="xs" viewBox="0 0 900 420" style="width:100%;height:auto;display:block"></svg><div class="hud" id="stepHud"></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+    <div class="card"><span class="tag">Diamond</span><h3 id="dTitle"></h3><p id="dText"></p></div>
+    <div class="card"><span class="tag gold">Silicon would</span><h3 id="sTitle"></h3><p id="sText"></p></div>
+  </div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Making a chip is like painting in layers through stencils. Diamond has a special trick: if you cover its surface with hydrogen, a thin sheet just under the surface starts to conduct electricity by itself. That sheet is the transistor's channel.</div>
+    <div class="lvl" data-l="s">Four to six masks: gold ohmic contacts (which also protect the hydrogen termination), oxygen-plasma isolation outside the device, a wet etch that opens the gate gap, optional NO₂ exposure to raise the hole density, atomic-layer-deposited Al₂O₃, and the gate metal. The two-dimensional hole gas forms by surface transfer doping, with no dopant atoms at all.</div>
+    <div class="lvl" data-l="r">Flow after chapter 3 and PDK-0 (chapter E2). Surface transfer doping requires a negative-electron-affinity C–H surface and an acceptor layer; ALD Al₂O₃ stabilizes the hole gas to 400 °C. Oxygen termination isolates devices and keeps NV centers in the negative charge state, which is why qubit windows in PDK-0 are drawn on the ISO layer.</div>
+    <p class="src">Sources: [kawarada1994] [maier2000] [strobel2004] [kawarada2014] [kubovic2010] [saha2021] [crawford2021] [hauf2011]</p></div>
+</div></div></main>
+<script type="module">
+import { boot } from '../assets/site.js';
+boot('Fab');
+const $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
+const STEPS = [
+  { t: 'Start: polished single-crystal diamond', d: 'A 3 to 5 mm plate or a heteroepitaxial wafer, acid-cleaned. Undoped diamond is an insulator, so the substrate isolates devices for free.', st: 'Doped silicon wafer', s: 'Start from a boron- or phosphorus-doped 300 mm wafer and build wells to isolate transistors from each other and from the substrate.' },
+  { t: 'Hydrogen plasma: C–H surface', d: 'Hydrogen termination gives the surface negative electron affinity. Air-borne acceptors pull electrons out, leaving a 2-D hole gas a few nanometers deep.', st: 'Grow thermal oxide', s: 'Heat the wafer in oxygen to grow SiO₂, silicon\'s near-perfect native insulator. Diamond has no native oxide: carbon burns to gas.' },
+  { t: 'Gold ohmic contacts', d: 'Evaporate gold everywhere the source and drain will be. Gold makes a low-resistance contact to the hole gas and protects the C–H surface during later steps.', st: 'Implant source and drain', s: 'Ion-implant dopants and anneal. In diamond, implant damage turns to graphite on annealing, so this route is closed.' },
+  { t: 'Mesa isolation: oxygen plasma', d: 'Outside each device, an oxygen plasma replaces C–H with C–O. The hole gas vanishes there, isolating transistors with a single masked step.', st: 'Shallow-trench isolation', s: 'Etch trenches, fill them with oxide, and polish flat: several steps and a chemical-mechanical polish.' },
+  { t: 'Open the gate gap', d: 'Wet-etch a 2 µm gap in the gold. The exposed C–H channel between source and drain is the transistor.', st: 'Define the gate', s: 'Deposit and pattern a polysilicon or metal gate on high-κ oxide.' },
+  { t: 'NO₂ exposure (optional)', d: 'Nitrogen dioxide is a strong surface acceptor: the hole density rises toward 10¹⁴ cm⁻². This is how the 2608 V and 3659 V devices were made.', st: '(no equivalent)', s: 'Silicon has no way to dope by surface chemistry. This step is unique to diamond.' },
+  { t: 'Atomic-layer Al₂O₃', d: 'Grow aluminum oxide one atomic layer at a time. It is both the gate insulator and the passivation that keeps the hole gas stable up to 400 °C.', st: 'High-κ gate stack', s: 'Silicon also uses ALD high-κ oxides at advanced nodes, on top of a thin SiO₂ interface layer.' },
+  { t: 'Gate metal', d: 'Pattern the gate over the gap. Applying a positive gate voltage depletes the hole gas and turns the transistor off.', st: 'Metal gate and silicide', s: 'Metal gate, then self-aligned silicide contacts.' },
+  { t: 'Vias and pads', d: 'Open vias through the Al₂O₃ and add interconnect. Four to six masks in all, against 40 or more for an advanced CMOS node.', st: 'Back-end stack', s: 'Ten or more copper layers with low-κ dielectrics.' },
+];
+const W = 900, base = 300;
+const LAYERS = [ // [enter step, draw function]
+  [0, () => rect(40, base, 820, 90, 'url(#dia)', 'diamond substrate')],
+  [1, () => rect(40, base - 4, 820, 4, '#6ff3ff', 'C–H surface', 'ch')],
+  [1, () => holes(1)],
+  [2, () => [rect(140, base - 44, 220, 40, 'url(#au)', 'Au source'), rect(540, base - 44, 220, 40, 'url(#au)', 'Au drain')]],
+  [3, () => [rect(40, base - 4, 90, 4, '#ffc46b', 'C–O'), rect(770, base - 4, 90, 4, '#ffc46b', 'C–O')]],
+  [4, () => rect(360, base - 44, 180, 40, '#0b1320', '', 'gap')],
+  [5, () => no2()],
+  [6, () => rect(120, base - 64, 660, 20, 'rgba(157,123,255,.55)', 'Al₂O₃ (ALD)')],
+  [6, () => rect(355, base - 44, 190, 40, 'rgba(157,123,255,.55)', '')],
+  [7, () => rect(380, base - 124, 140, 60, 'url(#gate)', 'gate')],
+  [8, () => [rect(200, base - 124, 60, 60, '#48e5a3', 'via'), rect(640, base - 124, 60, 60, '#48e5a3', 'via'), rect(160, base - 150, 140, 26, '#48e5a3', 'pad'), rect(600, base - 150, 140, 26, '#48e5a3', 'pad')]],
+];
+function el(tag, attrs) { const e = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); return e; }
+function rect(x, y, w, h, fill, label) { const g = el('g', {}); g.appendChild(el('rect', { x, y, width: w, height: h, fill, rx: 3 }));
+  if (label && h >= 14) { const t = el('text', { x: x + w / 2, y: y + h / 2 + 5, 'text-anchor': 'middle', fill: '#e8f1f8', 'font-size': 14, 'font-family': 'Inter' }); t.textContent = label; g.appendChild(t); } return g; }
+function holes(k) { const g = el('g', {}); for (let i = 0; i < 60; i++) { const x = 60 + i * 13.3, y = base + 10 + (i % 3) * 3; g.appendChild(el('circle', { cx: x, cy: y, r: 3, fill: '#2de2e6', opacity: .8 })); }
+  const t = el('text', { x: 450, y: base + 40, 'text-anchor': 'middle', fill: '#6ff3ff', 'font-size': 13, 'font-family': 'Inter' }); t.textContent = '2-D hole gas (surface transfer doping)'; g.appendChild(t); return g; }
+function no2() { const g = el('g', {}); for (let i = 0; i < 14; i++) g.appendChild(el('circle', { cx: 370 + (i % 7) * 25, cy: base - 20 - Math.floor(i / 7) * 14, r: 5, fill: '#ff5d8f', opacity: .9 })); return g; }
+let cur = -1;
+function show(k) {
+  k = Math.max(0, Math.min(STEPS.length - 1, k)); const svg = $('xs');
+  svg.innerHTML = `<defs><linearGradient id="dia" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3b55"/><stop offset="1" stop-color="#0a1626"/></linearGradient>
+    <linearGradient id="au" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#c7922b"/></linearGradient>
+    <linearGradient id="gate" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9c4d0"/><stop offset="1" stop-color="#6b7a8c"/></linearGradient></defs>`;
+  LAYERS.forEach(([s, f]) => { if (s > k) return; const out = [].concat(f()); out.forEach(node => { svg.appendChild(node);
+    if (s === k && s > cur && window.gsap) gsap.from(node, { opacity: 0, y: -40, duration: .8, ease: 'power3.out' }); }); });
+  cur = k; const S = STEPS[k];
+  $('dTitle').textContent = S.t; $('dText').textContent = S.d; $('sTitle').textContent = S.st; $('sText').textContent = S.s; $('stepHud').textContent = `Step ${k + 1} of ${STEPS.length} · cross-section, not to scale`;
+  $('stepList').innerHTML = STEPS.map((s, i) => `<button class="btn small" data-k="${i}" style="justify-content:flex-start;${i === k ? 'border-color:var(--teal);background:rgba(45,226,230,.12)' : ''}${i > k ? ';opacity:.55' : ''}">${i + 1}. ${s.t}</button>`).join('');
+  $('stepList').querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.k));
+}
+let timer = null;
+$('next').onclick = () => show(cur + 1); $('prev').onclick = () => { cur = -1; show(Math.max(0, +document.querySelector('#stepHud').textContent.match(/Step (\d+)/)[1] - 2)); };
+$('auto').onclick = () => { if (timer) { clearInterval(timer); timer = null; $('auto').textContent = 'Autoplay'; return; }
+  $('auto').textContent = 'Stop'; cur = -1; show(0); let k = 0; timer = setInterval(() => { k++; if (k >= STEPS.length) { clearInterval(timer); timer = null; $('auto').textContent = 'Autoplay'; return; } show(k); }, 2600); };
+show(0);
+</script></body></html>

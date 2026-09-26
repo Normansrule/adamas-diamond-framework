@@ -1,0 +1,10 @@
+{
+  "name": "ADAMAS",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": { "ghcr.io/devcontainers/features/node:1": { "version": "22" } },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y ngspice iverilog yosys && pip install -e '.[dev]' && pip install klayout && cd web && npm ci",
+  "forwardPorts": [8000],
+  "portsAttributes": { "8000": { "label": "ADAMAS website", "onAutoForward": "openPreview" } },
+  "customizations": { "vscode": { "extensions": ["ms-python.python", "mshr-h.veriloghdl"] },
+    "codespaces": { "openFiles": ["README.md"] } }
+}

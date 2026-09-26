@@ -1,0 +1,17 @@
+name: Propose an experiment or lab
+description: Suggest a new measurement, simulation, or interactive lab for the framework
+labels: [experiment]
+body:
+  - type: input
+    id: title
+    attributes: { label: One-line hypothesis, placeholder: "Dynamic diamond logic holds a node for more than 1 s at 300 °C" }
+    validations: { required: true }
+  - type: dropdown
+    id: tier
+    attributes: { label: Scope, options: [Weekend (laptop), Course project, Master's thesis, Doctoral, Multi-group program] }
+  - type: textarea
+    id: method
+    attributes: { label: Method and success metric, description: What you would measure or simulate, and the number that decides success }
+  - type: textarea
+    id: refs
+    attributes: { label: References, description: "Citation keys from references/REFERENCES.md, or full references for new ones" }

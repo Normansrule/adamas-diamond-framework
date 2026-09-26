@@ -1,0 +1,95 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Qubit Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Quantum · Lab 1</span><h1>Qubit Lab</h1>
+  <p>One NV center's spin, or an ensemble of them, on the Bloch sphere. Microwave pulses rotate it; free time lets it wander; an echo pulls it back.</p>
+  <div class="ctl"><label>Sequence</label><div class="seg" id="seq"><button data-s="rabi" class="on">Rabi</button><button data-s="ramsey">Ramsey</button><button data-s="echo">Echo</button><button data-s="custom">Build</button></div></div>
+  <div class="ctl" id="tauCtl"><label>Pulse angle / free time <b id="tauV"></b></label><input type="range" id="tau" min="0" max="100" value="50"></div>
+  <div class="ctl" id="customCtl" style="display:none"><label>Your sequence</label>
+    <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" data-add="x90">π/2ₓ</button><button class="btn small" data-add="x180">πₓ</button><button class="btn small" data-add="y90">π/2ᵧ</button><button class="btn small" data-add="w1">wait 1 µs</button><button class="btn small" data-add="clr">clear</button></div>
+    <div id="custList" style="font:12px var(--mono);color:var(--mute);margin-top:8px"></div></div>
+  <div class="ctl"><label>Rabi frequency Ω <b id="omV"></b></label><input type="range" id="om" min="1" max="20" value="5"></div>
+  <div class="ctl"><label>Detuning δ <b id="deV"></b></label><input type="range" id="de" min="-40" max="40" value="0"></div>
+  <div class="ctl"><label>Dephasing T₂* <b id="t2V"></b></label><input type="range" id="t2" min="0" max="60" value="20"></div>
+  <div class="ctl"><label>Ensemble size <b id="nV"></b></label><input type="range" id="n" min="1" max="80" value="40"></div>
+  <div style="display:flex;gap:8px"><button class="btn primary" id="run">▶ Run sequence</button><button class="btn" id="reset">Reset</button></div>
+  <div class="kpis"><div class="kpi"><b id="kP">0.00</b><span>P(mₛ = −1)</span></div><div class="kpi"><b id="kF">1.00</b><span>Red glow (relative)</span></div><div class="kpi"><b id="kT">0.00</b><span>Elapsed (µs)</span></div></div>
+</aside>
+<div>
+  <div class="stage"><canvas id="bloch" style="height:460px"></canvas><div class="hud" id="hud">|0⟩ bright · top&nbsp;&nbsp;|−1⟩ dim · bottom</div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="curve" style="height:220px"></canvas><div class="hud" id="curveHud"></div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">The arrow is a tiny magnet inside the diamond. A microwave "pushes" it around the ball. Pointing up means it glows brighter red; pointing down means a bit dimmer. With many arrows at once, each spins at a slightly different speed, so they spread out, unless you flip them all halfway through (that's the echo) and they line back up.</div>
+    <div class="lvl" data-l="s">In the rotating frame a resonant drive rotates the spin about x at the Rabi frequency Ω; a detuning δ tilts the rotation axis to (Ω, 0, δ). During free time each spin precesses about z at its own δ. A Gaussian spread of static detunings gives the Ramsey decay exp(−(τ/T₂*)²); a π pulse in the middle of the free time reverses every spin's accumulated phase, which is the Hahn echo.</div>
+    <div class="lvl" data-l="r">Ensemble of N two-level Bloch vectors (mₛ = 0, −1 subspace) with quasi-static detunings δᵢ ~ N(δ, σ), σ = √2/(2πT₂*). Pulses are exact rotations about (Ω cos φ, Ω sin φ, δᵢ); readout maps ⟨z⟩ to fluorescence with 30% contrast. The x–x–x echo returns the spin to mₛ = 0; experiments use a final −x or y pulse to map onto contrast. Same model as <code>adamas.nv</code> and the JavaScript is unit-tested (web/tests).</div>
+    <p class="src">Sources: [rabi1937] [ramsey1950] [hahn1950] [jelezko2004a] [childress2006] [gruber1997] [doherty2013]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import * as B from '../assets/sim/bloch.js';
+boot('Qubit');
+const $ = id => document.getElementById(id);
+let kind = 'rabi', custom = [];
+const P = () => ({ rabiMHz: +$('om').value, detuningMHz: +$('de').value / 10, t2starUs: +$('t2').value / 10, t1Us: 0, n: +$('n').value });
+const tau = () => kind === 'rabi' ? (+$('tau').value / 100) * 4 * Math.PI : (+$('tau').value / 100) * 6;
+function labels() {
+  $('omV').textContent = `${$('om').value} MHz`; $('deV').textContent = `${(+$('de').value / 10).toFixed(1)} MHz`;
+  $('t2V').textContent = +$('t2').value ? `${(+$('t2').value / 10).toFixed(1)} µs` : 'off'; $('nV').textContent = $('n').value;
+  $('tauV').textContent = kind === 'rabi' ? `${(tau() / Math.PI).toFixed(2)} π` : `${tau().toFixed(2)} µs`;
+}
+$('seq').onclick = e => { const b = e.target.closest('button'); if (!b) return; kind = b.dataset.s;
+  $('seq').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  $('customCtl').style.display = kind === 'custom' ? '' : 'none'; $('tauCtl').style.display = kind === 'custom' ? 'none' : ''; labels(); curve(); };
+document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+  const a = b.dataset.add; if (a === 'clr') custom = []; else custom.push(a === 'w1' ? { op: 'wait', t: 1 } : { op: a[0], angle: (a.endsWith('90') ? 0.5 : 1) * Math.PI });
+  $('custList').textContent = custom.map(s => s.op === 'wait' ? `wait ${s.t}µs` : `${s.angle === Math.PI ? 'π' : 'π/2'}${s.op}`).join(' → ') || 'empty'; });
+['om', 'de', 't2', 'n', 'tau'].forEach(id => $(id).oninput = () => { labels(); curve(); });
+
+// ---- sweep curve (2-D canvas) ----
+function curve() {
+  if (kind === 'custom') { const { g, w, h } = fitCanvas($('curve'), 220); g.clearRect(0, 0, w, h); $('curveHud').textContent = 'Custom sequences show only the live sphere.'; return; }
+  const max = kind === 'rabi' ? 4 * Math.PI : 6, xs = [...Array(160)].map((_, i) => max * i / 159), ys = B.sweep({ ...P(), n: 120 }, kind, xs);
+  const { g, w, h } = fitCanvas($('curve'), 220); g.clearRect(0, 0, w, h);
+  const X = x => 40 + (w - 60) * x / max, Y = y => h - 28 - (h - 50) * y;
+  g.strokeStyle = 'rgba(148,190,220,.2)'; for (let k = 0; k <= 4; k++) { g.beginPath(); g.moveTo(40, Y(k / 4)); g.lineTo(w - 20, Y(k / 4)); g.stroke(); }
+  const grad = g.createLinearGradient(0, 0, w, 0); grad.addColorStop(0, '#2de2e6'); grad.addColorStop(1, '#9d7bff');
+  g.strokeStyle = grad; g.lineWidth = 2.5; g.beginPath(); xs.forEach((x, i) => i ? g.lineTo(X(x), Y(ys[i])) : g.moveTo(X(x), Y(ys[i]))); g.stroke();
+  g.fillStyle = '#ff5d6c'; g.beginPath(); g.arc(X(tau()), Y(B.sweep({ ...P(), n: 120 }, kind, [tau()])[0]), 6, 0, 7); g.fill();
+  g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText(kind === 'rabi' ? 'pulse angle (units of π)' : 'free evolution τ (µs)', w / 2 - 60, h - 6); g.fillText('P(−1)', 4, 20);
+  $('curveHud').textContent = { rabi: 'Rabi oscillation: final P(−1) versus pulse angle', ramsey: 'Ramsey: π/2 – τ – π/2, decays with T₂*', echo: 'Echo: π/2 – τ/2 – π – τ/2 – π/2 stays refocused' }[kind];
+}
+
+// ---- 3-D Bloch sphere ----
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+const cv = $('bloch'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(38, 1, .1, 50); cam.position.set(3.2, 2.2, 3.4);
+const ctl = new OrbitControls(cam, cv); ctl.enableDamping = true;
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(1, 48, 24), new THREE.MeshBasicMaterial({ color: 0x2de2e6, transparent: true, opacity: .06 })));
+scene.add(new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(1, 24, 12)), new THREE.LineBasicMaterial({ color: 0x2a5a70, transparent: true, opacity: .35 })));
+const axis = (d, c) => scene.add(new THREE.ArrowHelper(new THREE.Vector3(...d), new THREE.Vector3(0, 0, 0), 1.25, c, .06, .04));
+axis([1, 0, 0], 0x55657a); axis([0, 0, 1], 0x55657a); axis([0, 1, 0], 0x55657a);
+// physics z -> scene y (up)
+const toV = v => new THREE.Vector3(v[0], v[2], -v[1]);
+const small = [], meanArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), 1, 0xff5d6c, .14, .08); scene.add(meanArrow);
+function setSpins(vs) {
+  while (small.length < vs.length) { const a = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), 1, 0x9d7bff, .05, .03); a.line.material.transparent = true; a.line.material.opacity = .35; scene.add(a); small.push(a); }
+  small.forEach((a, i) => { a.visible = i < vs.length; if (i < vs.length) { const v = toV(vs[i]); a.setDirection(v.clone().normalize()); a.setLength(Math.max(v.length(), .05), .05, .03); } });
+}
+function setMean(m) { const v = toV(m), L = v.length(); meanArrow.setDirection(L > 1e-6 ? v.clone().normalize() : new THREE.Vector3(0, 1, 0)); meanArrow.setLength(Math.max(L, .02), .14, .08); }
+const tip = [], trail = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xff8a9a })); scene.add(trail);
+function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); } addEventListener('resize', size); size();
+let frames = null, fi = 0;
+function kpis(m, t) { const p = (1 - m[2]) / 2; $('kP').textContent = p.toFixed(2); $('kF').textContent = (1 - .3 * p).toFixed(2); $('kT').textContent = t.toFixed(2); }
+function reset() { frames = null; tip.length = 0; trail.geometry.setFromPoints([]); const s = B.makeEnsemble(P()); setSpins(s.map(x => x.v)); setMean(B.mean(s)); kpis([0, 0, 1], 0); }
+$('reset').onclick = reset;
+$('run').onclick = () => { const seq = kind === 'custom' ? custom : B.SEQUENCES[kind](tau()); if (!seq.length) return; frames = B.run(P(), seq, 40); fi = 0; tip.length = 0; };
+R.setAnimationLoop(() => {
+  ctl.update();
+  if (frames && fi < frames.length) { const f = frames[fi++]; setSpins(f.spins); setMean(f.m); kpis(f.m, f.time); tip.push(toV(f.m)); trail.geometry.setFromPoints(tip); }
+  R.render(scene, cam);
+});
+labels(); curve(); reset();
+</script></body></html>

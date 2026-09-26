@@ -1,0 +1,70 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Lattice Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Materials · Lab 3</span><h1>Lattice Lab</h1>
+  <p>Silicon and diamond share one crystal pattern. Compare them at true scale, then plant a nitrogen-vacancy center and aim a magnet at it.</p>
+  <div class="ctl"><label>Crystal</label><div class="seg" id="mat"><button data-m="C" class="on">Diamond · a = 3.567 Å</button><button data-m="Si">Silicon · a = 5.431 Å</button></div></div>
+  <div class="ctl"><label>Unit cells per side <b id="cellsV"></b></label><input type="range" id="cells" min="1" max="3" value="2"></div>
+  <div class="ctl"><label><span>Show NV center and its four possible axes</span><input type="checkbox" id="nv" checked></label></div>
+  <div class="ctl"><label>Magnet strength |B| <b id="bV"></b></label><input type="range" id="b" min="0" max="80" value="30"></div>
+  <div class="ctl"><label>Polar angle θ <b id="thV"></b></label><input type="range" id="th" min="0" max="180" value="40"></div>
+  <div class="ctl"><label>Azimuth φ <b id="phV"></b></label><input type="range" id="ph" min="0" max="360" value="30"></div>
+  <p style="font-size:13px">Each colored axis is one of the four directions an NV can point in the crystal. Its two resonance lines in the spectrum below carry the same color.</p>
+</aside>
+<div>
+  <div class="stage"><canvas id="c3" style="height:470px"></canvas><div class="hud" id="hud"></div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="spec" style="height:210px"></canvas><div class="hud">Optically detected magnetic resonance: red glow versus microwave frequency</div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Both crystals are built from the same pattern of atoms holding four hands each. Diamond's atoms are smaller and hold on tighter, which is why it is so hard and carries heat so well. Swap one carbon for nitrogen and leave its neighbor empty, and you get a tiny compass that glows. Point a magnet at it and its "notes" split apart.</div>
+    <div class="lvl" data-l="s">Diamond cubic: an FCC lattice with a two-atom basis at (0,0,0) and (¼,¼,¼)a, bond length a√3/4 (1.545 Å in diamond, 2.352 Å in silicon). The NV axis lies along one of four ⟨111⟩ directions. Each orientation sees its own field projection B∥, giving resonance lines at D ± γB∥ with D = 2.870 GHz and γ = 28.0 MHz/mT.</div>
+    <div class="lvl" data-l="r">Lines include the second-order shift 3γ²B⊥²/(2D) from the transverse field, valid for γB ≪ D; the full spin Hamiltonian is solved in <code>adamas.nv</code>. Ensemble line width 1.5 MHz, hyperfine omitted. Recovering B from the eight lines is vector magnetometry [rondin2014] [barry2020].</div>
+    <p class="src">Sources: [sze2006] [wort2008] [doherty2013] [gruber1997] [rondin2014] [barry2020]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import { diamondLattice, lines, spectrum, NV_AXES } from '../assets/sim/physics.js';
+boot('Lattice');
+const $ = id => document.getElementById(id), AX = [0xff5d6c, 0x48e5a3, 0xffc46b, 0x9d7bff], AXC = ['#ff5d6c', '#48e5a3', '#ffc46b', '#9d7bff'];
+let mat = 'C';
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+const cv = $('c3'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(40, 1, .1, 400); const ctl = new OrbitControls(cam, cv); ctl.enableDamping = true;
+scene.add(new THREE.AmbientLight(0x9ab, .8)); const dl = new THREE.DirectionalLight(0xffffff, 1.5); dl.position.set(10, 20, 10); scene.add(dl);
+let group = new THREE.Group(); scene.add(group);
+const magnet = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), 4, 0x6ff3ff, .8, .45); scene.add(magnet);
+function build() {
+  scene.remove(group); group = new THREE.Group(); scene.add(group);
+  const a = mat === 'C' ? 3.567 : 5.431, n = +$('cells').value, L = diamondLattice(n, a), col = mat === 'C' ? 0x6ff3ff : 0x9aa8b6;
+  const geo = new THREE.SphereGeometry(mat === 'C' ? .32 : .42, 20, 12), m = new THREE.MeshStandardMaterial({ color: col, roughness: .35 });
+  const mid = L.atoms.reduce((s, p) => s.map((v, k) => v + p[k] / L.atoms.length), [0, 0, 0]);
+  let nIdx = -1; if ($('nv').checked) { let best = 1e9; L.atoms.forEach((p, i) => { const d = Math.hypot(p[0] - mid[0], p[1] - mid[1], p[2] - mid[2]); if (d < best) { best = d; nIdx = i; } }); }
+  const vIdx = nIdx >= 0 ? L.bonds.find(([i, j]) => i === nIdx || j === nIdx).find(k => k !== nIdx) : -1;
+  L.atoms.forEach((p, i) => { if (i === vIdx) { const v = new THREE.Mesh(new THREE.SphereGeometry(.45, 16, 8), new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })); v.position.set(...p); group.add(v); return; }
+    const s = new THREE.Mesh(i === nIdx ? new THREE.SphereGeometry(.5, 24, 12) : geo, i === nIdx ? new THREE.MeshStandardMaterial({ color: 0xff5d6c, emissive: 0xff2040, emissiveIntensity: .8 }) : m); s.position.set(...p); group.add(s); });
+  const bm = new THREE.MeshStandardMaterial({ color: mat === 'C' ? 0x3aa7bd : 0x6c7a88, transparent: true, opacity: .8 });
+  for (const [i, j] of L.bonds) { if (i === vIdx || j === vIdx) continue; const A = new THREE.Vector3(...L.atoms[i]), Bv = new THREE.Vector3(...L.atoms[j]);
+    const c = new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, A.distanceTo(Bv), 8), bm); c.position.copy(A).add(Bv).multiplyScalar(.5); c.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), Bv.clone().sub(A).normalize()); group.add(c); }
+  if (nIdx >= 0) NV_AXES.forEach((ax, k) => { const o = new THREE.Vector3(...L.atoms[nIdx]); group.add(new THREE.ArrowHelper(new THREE.Vector3(...ax), o, 2.4, AX[k], .35, .2)); });
+  const c = new THREE.Vector3(...mid); ctl.target.copy(c); magnet.position.copy(c).add(new THREE.Vector3(0, 0, 0));
+  if (!build.done) { cam.position.copy(c).add(new THREE.Vector3(a * n * 1.6, a * n * 1.1, a * n * 1.8)); build.done = true; }
+  $('hud').textContent = `${mat === 'C' ? 'Diamond' : 'Silicon'} · ${L.atoms.length} atoms · bond ${L.bond.toFixed(3)} Å`; $('cellsV').textContent = n;
+}
+function field() { const b = +$('b').value / 10, th = +$('th').value * Math.PI / 180, ph = +$('ph').value * Math.PI / 180;
+  return [b * Math.sin(th) * Math.cos(ph), b * Math.sin(th) * Math.sin(ph), b * Math.cos(th)]; }
+function spec() {
+  const B = field(); $('bV').textContent = `${(+$('b').value / 10).toFixed(1)} mT`; $('thV').textContent = `${$('th').value}°`; $('phV').textContent = `${$('ph').value}°`;
+  const len = Math.hypot(...B); magnet.visible = len > 0; if (len) { magnet.setDirection(new THREE.Vector3(...B).normalize()); magnet.setLength(1.5 + len * .6, .6, .35); }
+  const { g, w, h } = fitCanvas($('spec'), 210); g.clearRect(0, 0, w, h);
+  const f0 = 2600, f1 = 3140, fs = [...Array(900)].map((_, i) => f0 + (f1 - f0) * i / 899), ys = spectrum(B, fs), X = f => 40 + (w - 60) * (f - f0) / (f1 - f0), Y = y => 20 + (h - 50) * (1 - y) / 0.05;
+  lines(B).forEach(l => { g.strokeStyle = AXC[l.axis]; g.globalAlpha = .45; g.beginPath(); g.moveTo(X(l.f), 18); g.lineTo(X(l.f), h - 28); g.stroke(); }); g.globalAlpha = 1;
+  g.strokeStyle = '#e8f1f8'; g.lineWidth = 2; g.beginPath(); fs.forEach((f, i) => i ? g.lineTo(X(f), Y(ys[i])) : g.moveTo(X(f), Y(ys[i]))); g.stroke();
+  g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; for (let f = 2650; f <= 3100; f += 150) g.fillText(`${f} MHz`, X(f) - 24, h - 8);
+}
+['cells', 'nv'].forEach(i => $(i).oninput = build); ['b', 'th', 'ph'].forEach(i => $(i).oninput = spec);
+$('mat').onclick = e => { const b = e.target.closest('button'); if (!b) return; mat = b.dataset.m; $('mat').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); build(); };
+function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); spec(); } addEventListener('resize', size);
+build(); size(); R.setAnimationLoop(() => { ctl.update(); R.render(scene, cam); });
+</script></body></html>

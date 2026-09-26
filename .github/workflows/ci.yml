@@ -12,6 +12,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: sudo apt-get update && sudo apt-get install -y ngspice iverilog yosys
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: cd web && npm ci --silent
       - run: pip install -e ".[dev]"
       - run: python -m pytest -q
       - run: make spice rtl synth layout place

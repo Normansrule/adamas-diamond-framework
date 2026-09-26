@@ -1,0 +1,71 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Break the Code · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Error correction · Lab 5</span><h1>Break the Code</h1>
+  <p>Data qubits sit on the lines, parity checks on the dots. Click lines to flip qubits. Lit checks are the only thing the computer can see. Then let the decoder guess the fix.</p>
+  <div class="ctl"><label>Code distance <b id="dV"></b></label><input type="range" id="d" min="3" max="9" step="2" value="5"></div>
+  <div class="ctl"><label>Random noise per qubit <b id="pV"></b></label><input type="range" id="p" min="1" max="20" value="6"></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small" id="noise">Add random errors</button><button class="btn primary small" id="dec">Decode</button><button class="btn small" id="clr">Clear</button></div>
+  <div id="verdict" class="card" style="margin-top:14px;padding:12px 14px;font-size:14px">Flip a few qubits, then press Decode.</div>
+  <div class="ctl" style="margin-top:18px"><label>Threshold experiment</label><button class="btn small" id="mc">Run 600 trials per point</button></div>
+</aside>
+<div>
+  <div class="stage"><svg id="board" style="width:100%;height:480px;display:block"></svg><div class="hud">Each line is a data qubit. A chain from the left edge to the right edge is a logical error the checks cannot see.</div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="mcPlot" style="height:240px"></canvas><div class="hud" id="mcHud">Logical failure rate versus physical error rate for three code sizes. Below the crossing, bigger codes win.</div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Imagine a message copied many times so a few smudges don't matter. Each dot checks its neighbors and lights up if something looks off. The decoder connects lit dots with the shortest lines it can find. If the smudges form a path all the way across, the decoder is fooled and the message is lost.</div>
+    <div class="lvl" data-l="s">Planar surface code, bit-flip sector: each check measures the parity of its adjacent data qubits. Errors are only visible at the ends of error chains. Correction pairs defects (or a defect and a boundary); success means correction plus error forms no left–right chain. Below a threshold error rate, increasing the distance d suppresses logical errors exponentially.</div>
+    <div class="lvl" data-l="r">Code-capacity noise (perfect measurements) with a greedy nearest-pair decoder, chosen because it animates in real time. Greedy matching has a lower threshold than minimum-weight perfect matching (about 10.3% for this noise). The Python package uses exact matching via PyMatching with measurement errors and NV-specific link and readout rates (chapter E6, Figure 27).</div>
+    <p class="src">Sources: [kitaev2003] [dennis2002] [fowler2012] [edmonds1965] [higgott2022] [google2025]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import * as S from '../assets/sim/surface.js';
+import { mulberry32 } from '../assets/sim/bloch.js';
+boot('Error correction');
+const $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
+let L, flips, corr = null, pairs = [];
+const lab = () => { $('dV').textContent = `d = ${$('d').value}`; $('pV').textContent = `${$('p').value}%`; };
+function reset() { L = S.layout(+$('d').value); flips = new Uint8Array(L.edges.length); corr = null; pairs = []; lab(); draw(); $('verdict').textContent = 'Flip a few qubits, then press Decode.'; }
+function draw() {
+  const svg = $('board'), W = svg.clientWidth || 800, H = 480, cs = Math.min((W - 80) / (L.cols + 1), (H - 60) / L.rows);
+  const X = c => 40 + (c + 1) * cs, Y = r => 30 + r * cs + cs / 2, syn = S.syndrome(L, flips);
+  svg.innerHTML = `<rect x="${X(-1) - 4}" y="10" width="6" height="${H - 20}" fill="rgba(45,226,230,.35)"/><rect x="${X(L.cols) - 2}" y="10" width="6" height="${H - 20}" fill="rgba(45,226,230,.35)"/>`;
+  L.edges.forEach((e, i) => {
+    const [x1, y1, x2, y2] = e.kind === 'h' ? [X(e.c - 1), Y(e.r), X(e.c), Y(e.r)] : [X(e.c), Y(e.r), X(e.c), Y(e.r + 1)];
+    const on = flips[i], fix = corr && corr[i];
+    const l = document.createElementNS(NS, 'line'); Object.entries({ x1, y1, x2, y2, stroke: on && fix ? '#48e5a3' : on ? '#ff5d6c' : fix ? '#ffc46b' : 'rgba(148,190,220,.35)', 'stroke-width': on || fix ? 7 : 5, 'stroke-linecap': 'round' }).forEach(([k, v]) => l.setAttribute(k, v));
+    if (fix && !on) l.setAttribute('stroke-dasharray', '8 6');
+    l.style.cursor = 'pointer'; l.onclick = () => { flips[i] ^= 1; corr = null; draw(); }; svg.appendChild(l);
+  });
+  for (let r = 0; r < L.rows; r++) for (let c = 0; c < L.cols; c++) {
+    const lit = syn[r * L.cols + c], g = document.createElementNS(NS, 'circle');
+    Object.entries({ cx: X(c), cy: Y(r), r: lit ? 11 : 7, fill: lit ? '#ff5d6c' : '#16263d', stroke: lit ? '#ffb3bd' : '#3a5a78', 'stroke-width': 2 }).forEach(([k, v]) => g.setAttribute(k, v));
+    if (lit) g.style.filter = 'drop-shadow(0 0 8px #ff5d6c)'; svg.appendChild(g);
+  }
+}
+$('d').oninput = reset; $('p').oninput = lab; $('clr').onclick = reset;
+$('noise').onclick = () => { const p = +$('p').value / 100; for (let i = 0; i < flips.length; i++) if (Math.random() < p) flips[i] ^= 1; corr = null; draw(); };
+$('dec').onclick = () => { const r = S.decode(L, S.syndrome(L, flips)); corr = r.corr; pairs = r.pairs; draw();
+  const fail = S.logicalFlip(L, flips, corr), n = flips.reduce((a, b) => a + b, 0);
+  $('verdict').innerHTML = fail ? `<b style="color:var(--red)">Logical error.</b> ${n} flipped qubits; the correction (yellow dashes) plus the errors (red) crossed the code from edge to edge.` :
+    `<b style="color:var(--green)">Corrected.</b> ${n} flipped qubits, ${pairs.length} matched pairs. Green lines were both an error and its fix.`; };
+addEventListener('resize', draw); reset();
+
+$('mc').onclick = () => {
+  const ps = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.12], ds = [3, 5, 7], rng = mulberry32(3), res = {};
+  $('mcHud').textContent = 'running…';
+  setTimeout(() => {
+    for (const d of ds) { const L2 = S.layout(d); res[d] = ps.map(p => { let f = 0; for (let t = 0; t < 600; t++) { const fl = new Uint8Array(L2.edges.length); for (let i = 0; i < fl.length; i++) if (rng() < p) fl[i] = 1;
+      f += S.logicalFlip(L2, fl, S.decode(L2, S.syndrome(L2, fl)).corr); } return f / 600; }); }
+    const { g, w, h } = fitCanvas($('mcPlot'), 240); g.clearRect(0, 0, w, h);
+    const X = p => 50 + (w - 70) * p / 0.12, Y = v => h - 30 - (h - 50) * Math.min(v, .6) / .6, cc = { 3: '#8b98a5', 5: '#ffc46b', 7: '#2de2e6' };
+    g.strokeStyle = 'rgba(148,190,220,.2)'; for (let k = 0; k <= 6; k++) { g.beginPath(); g.moveTo(50, Y(k / 10)); g.lineTo(w - 20, Y(k / 10)); g.stroke(); }
+    for (const d of ds) { g.strokeStyle = cc[d]; g.lineWidth = 2.5; g.beginPath(); ps.forEach((p, i) => i ? g.lineTo(X(p), Y(res[d][i])) : g.moveTo(X(p), Y(res[d][i]))); g.stroke(); g.fillStyle = cc[d]; g.fillText(`d = ${d}`, w - 60, 20 + ds.indexOf(d) * 16); }
+    g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText('physical error per qubit →', w / 2 - 60, h - 8); g.fillText('logical failure', 4, 16);
+    $('mcHud').textContent = 'Greedy decoder, code-capacity noise, 600 trials per point. Where the curves cross is this decoder\'s threshold.';
+  }, 30);
+};
+</script></body></html>
