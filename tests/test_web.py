@@ -84,3 +84,19 @@ def test_power_lab_javascript_matches_python(tmp_path):
         for k, t in enumerate((300.0, 450.0)):
             ref = converter.material_switch(m["key"], 1200, 800, 300, 2e4, t_k=t, measured=m["measured"]).p_total_w
             assert abs(got[name][k] / ref - 1) < 0.01, (name, t, got[name][k], ref)
+
+
+@pytest.mark.skipif(NODE is None, reason="node not installed")
+def test_machine_builder_javascript_matches_python(tmp_path):
+    from adamas import resource
+    t = resource.table()
+    (tmp_path / "t.json").write_text(json.dumps(t))
+    cases = [(100, 1e6, 100.0, 1000.0), (1000, 1e9, 1000.0, 1000.0), (6000, 3e9, 3000.0, 100.0), (6000, 3e9, 450.0, 1000.0)]
+    js = tmp_path / "run.mjs"
+    js.write_text(f"import * as R from '{(WEB / 'assets/sim/resource.js').as_uri()}'; import fs from 'node:fs';\n"
+                  f"const T = JSON.parse(fs.readFileSync('{tmp_path / 't.json'}','utf8'));\n"
+                  f"console.log(JSON.stringify({json.dumps(cases)}.map(([n,s,tr,t2]) => R.estimate(T, {{nLogical:n, steps:s, tReadUs:tr, t2MemMs:t2}}))));")
+    got = json.loads(subprocess.run([NODE, str(js)], capture_output=True, text=True, check=True).stdout)
+    for (n, s, tr, t2), g in zip(cases, got):
+        e = resource.estimate(n, s, tr, t2, t=t)
+        assert g["distance"] == e.distance and abs(g["runtimeHours"] / e.runtime_hours - 1) < 1e-9 and abs(g["lam"] - e.lam) < 1e-9

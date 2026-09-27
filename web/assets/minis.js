@@ -25,6 +25,8 @@ const DRAW = {
       for (let x = 0; x < w; x++) { const ph = (x / w) * 6 + t * 2 - k * 1.25, y = h / 2 + (h * .32) * Math.tanh(4 * Math.sin(ph)) * (k % 2 ? -1 : 1); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }); },
   power(g, w, h, t) { const bars = [['Si', 1, '#8b98a5'], ['SiC', .38, '#e0a030'], ['GaN', .3, '#9d7bff'], ['C', .07, '#2de2e6']];
     bars.forEach(([n, v, c], k) => { const bw = (w - 60) * v * (0.85 + .15 * Math.sin(t * 2 + k)); g.fillStyle = c; g.fillRect(40, 12 + k * 24, bw, 16); g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(n, 8, 24 + k * 24); }); },
+  machine(g, w, h, t) { const n = 36, c = 18, ph = (t * .6) % 1; for (let k = 0; k < n; k++) { const i = k % c, j = Math.floor(k / c) + (k % 3 ? 0 : 0), lit = Math.abs(i / c - ph) < .08;
+      for (let r = 0; r < 4; r++) { g.fillStyle = lit ? '#ff5d6c' : 'rgba(45,226,230,.55)'; g.fillRect(14 + i * ((w - 28) / c), 10 + r * 24, (w - 28) / c - 4, 20); } } },
   explorer(g, w, h, t) { g.strokeStyle = '#48e5a3'; g.lineWidth = 2; g.beginPath();
     for (let x = 0; x < w; x++) { const y = h - 10 - (h - 20) / (1 + Math.exp(-((x / w) * 10 - 5 - Math.sin(t) * 1.5))); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); },
 };

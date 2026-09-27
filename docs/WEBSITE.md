@@ -50,6 +50,7 @@ three.js 0.160 (3-D crystal, Bloch sphere, bloom post-processing), GSAP 3.12 wit
 | Break the Code | interactive SVG surface code, Monte Carlo plot | `sim/surface.js` |
 | Transistor Lab | I–V, transfer curve, ring-oscillator canvases | `sim/fet.js` (vs `adamas.logic` and ngspice) |
 | Power Lab | animated half-bridge SVG, loss bars | `sim/converter.js` + `data/site.json` power block (vs `adamas.converter`) |
+| Machine Builder | wafer and patch-array canvas, runtime bars | `sim/resource.js` + `data/site.json` resource block (vs `adamas.resource`) |
 | Fab Walkthrough | animated SVG cross-section | (step data inline) |
 | The Chip Stack | scroll-driven exploded three.js stack | `sim/stack.js` |
 | Who is building it | three.js dot-matrix globe (Natural Earth land mask) | `sim/world.js`, `sim/landmask.js` |

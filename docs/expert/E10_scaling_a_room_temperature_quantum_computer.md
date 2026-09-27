@@ -62,10 +62,36 @@ flowchart TB
 
 Requirements this machine imposes, in order of difficulty: link error below 1.3 percent ([E6](E6_error_correction_and_system_architecture.md)); cluster yield above 10 percent with detect-and-repair ([Chapter 11](../11_proposed_experiments_and_roadmap.md), C-5); ancilla readout below about 1% of the nuclear-memory coherence time ([E6](E6_error_correction_and_system_architecture.md), Section E6.1c; electrical readout at about 100 µs meets it even for a 0.1 s memory); and 1 µm-pitch qubit lithography ([E1](E1_lithography_from_euv_to_electron_beam.md)).
 
+## E10.5b From circuit-level error rates to a machine (project X-2, done)
+
+Sections E10.2 to E10.5 scaled published physical-qubit counts. `adamas.resource` instead derives the machine from the bottom up. It fits the circuit-level logical error of [E6](E6_error_correction_and_system_architecture.md) (Section E6.1c) to the standard form $p_L(d) = A\,\Lambda^{-(d+1)/2}$ for every readout time and memory lifetime; picks the smallest odd distance with $n_L \cdot D \cdot d \cdot p_L(d) \le 1\%$ for $n_L$ logical qubits and $D$ logical steps of $d$ rounds each ([litinski2019]); and prices one round as ancilla preparation (5 µs) plus four dipolar gates (25 µs each at 25 nm, [dolde2013]) plus readout. Routing and magic-state factories double the patch count.
+
+![Resource estimate](../img/fig39_resource_estimate.png)
+
+| Job (illustrative scale) | Readout | Memory T₂ | Distance | Physical qubits | Die side | Round | Runtime | Superconducting, measured Λ |
+|---|---|---|---|---|---|---|---|---|
+| Chemistry demo | 0.1 ms | 1 s | 33 | 0.4 M | 0.4 mm | 205 µs | 2 h | 1 min |
+| Chemistry demo | 1 ms | 1 s | 37 | 0.5 M | 0.5 mm | 1105 µs | 11 h | 1 min |
+| Chemistry demo | 1 ms | 0.1 s | 49 | 1.0 M | 0.6 mm | 1105 µs | 15 h | 1 min |
+| Materials simulation | 0.1 ms | 1 s | 47 | 8.8 M | 1.9 mm | 205 µs | 112 days | 27 h |
+| Materials simulation | 1 ms | 1 s | 51 | 10.4 M | 2.1 mm | 1105 µs | 652 days | 27 h |
+| Materials simulation | 1 ms | 0.1 s | 69 | 19.0 M | 2.8 mm | 1105 µs | 2.4 years | 27 h |
+| RSA-2048 scale | 0.1 ms | 1 s | 51 | 62.4 M | 5.1 mm | 205 µs | 363 days | 4 days |
+| RSA-2048 scale | 1 ms | 1 s | 57 | 78.0 M | 5.7 mm | 1105 µs | 6.0 years | 4 days |
+| RSA-2048 scale | 1 ms | 0.1 s | 75 | 135.0 M | 7.5 mm | 1105 µs | 7.9 years | 4 days |
+
+Three findings follow.
+
+1. **Area stays small, time does not.** Even the RSA-2048-scale job fits on a diamond die under 8 mm on a side, but it runs for years at millisecond readout, against about 4 days on a superconducting machine with today's measured error suppression.
+2. **Slow readout costs twice.** It lengthens every round, and through the idle errors of Section E6.1c it lowers Λ, which raises the distance, which multiplies both qubit count and runtime. With a 0.1 s memory and 1 ms readout, the RSA-scale distance rises from 57 to 75.
+3. **Fast readout moves the bottleneck to the gates.** At 0.1 ms readout, four 25 µs dipolar gates are half of every round. Halving the spacing speeds the coupling eightfold ($1/r^3$), so the next lever is placement precision ([E1](E1_lithography_from_euv_to_electron_beam.md)), not readout.
+
+The asymmetry must be stated: the NV numbers assume a 0.3% link error, far better than the best demonstrated room-temperature NV–NV entangling fidelity (0.82, [dolde2014]), while the superconducting column uses a measured Λ = 2.14 ([google2025]). The comparison therefore shows what NV hardware would need, not what it has. The interactive version is the [Machine Builder](https://normansrule.github.io/adamas-diamond-framework/labs/machine.html).
+
 ## E10.6 Projects
 
 | ID | Item | Deliverable |
 |---|---|---|
-| X-2 | Full resource estimate: map a lattice-surgery layout [litinski2019] onto the cluster architecture with the three-rate error model | Cells, time, and power for the four workloads with uncertainty bands |
+| X-2 | Full resource estimate from circuit-level error rates | **Done in v0.13.0** (Section E10.5b, `adamas.resource`, Machine Builder lab) |
 | X-3 | Multiplexing study: crosstalk versus number of clusters per synthesizer | Maximum multiplexing ratio at 10⁻³ gate error |
 | X-4 | Compare with a cryogenic silicon-spin or superconducting machine of equal logical capacity on cost, power, and footprint | Decision matrix for which workloads justify room temperature |

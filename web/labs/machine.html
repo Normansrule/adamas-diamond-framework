@@ -1,0 +1,72 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Machine Builder · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Architecture · Lab 11</span><h1>Machine Builder</h1>
+  <p>Size a room-temperature diamond quantum computer for a real job. Error rates come from circuit-level simulations of NV hardware; every slider is a hardware choice.</p>
+  <div class="ctl"><label>Job</label><select id="job"></select></div>
+  <div class="ctl"><label>Ancilla readout time <b id="rdV"></b></label><input type="range" id="rd" min="148" max="400" value="300"></div>
+  <div class="ctl"><label>Nuclear memory T₂ under light</label><div class="seg" id="mem"><button class="on" data-m="1000">1 s</button><button data-m="100">0.1 s</button></div></div>
+  <div class="ctl"><label>Two-qubit gate time <b id="gV"></b></label><input type="range" id="g" min="1" max="60" value="25"></div>
+  <div class="ctl"><label>Cell pitch <b id="pV"></b></label><input type="range" id="p" min="5" max="30" value="10"></div>
+  <p style="font-size:12.5px">Gate time follows the dipolar coupling: about 25 µs at 25 nm spacing, 8× faster at half the distance (chapter E5).</p>
+</aside>
+<div>
+  <div class="kpis" id="kpis" style="margin:0 0 14px"></div>
+  <div class="stage" style="min-height:0"><canvas id="chip" style="height:430px"></canvas><div class="hud" id="chipHud"></div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="time" style="height:150px"></canvas><div class="hud">Runtime, log scale: this machine versus a superconducting machine at today's measured error suppression</div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">A big quantum job needs millions of qubits working together and checking each other's mistakes over and over. Diamond qubits don't need a freezer and fit on a chip smaller than a stamp, but each check is slow, so big jobs can take years. Make the reading faster and watch the time drop.</div>
+    <div class="lvl" data-l="s">Each logical qubit is a d × d surface-code patch. The code distance d is the smallest odd number that keeps the total failure below 1%: n_L · steps · d · p_L(d) ≤ 0.01, with p_L(d) = A·Λ^(−(d+1)/2). One syndrome round takes preparation + four gates + readout, and each logical step takes d rounds.</div>
+    <div class="lvl" data-l="r">A and Λ are fitted to Stim + PyMatching circuit-level simulations (d = 3, 5, 7; 200,000 shots) with NV noise: 0.3% link, 1% readout, 0.2% preparation, and idle depolarization during readout; Λ is forced non-increasing in readout time. The NV Λ assumes a 0.3% link error that has not been demonstrated, while the superconducting reference uses the measured Λ = 2.14. Workloads are illustrative scales, not published algorithm counts. Chapter E10, Section E10.5.</div>
+    <p class="src">Sources: [gidney2021stim] [higgott2022] [fowler2012] [litinski2019] [google2025] [dolde2013] [maurer2012] [gidney2021]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas, data } from '../assets/site.js';
+import * as R from '../assets/sim/resource.js';
+boot('Machine');
+const $ = id => document.getElementById(id), D = await data(), T = D.resource, W = D.workloads;
+let mem = 1000, t0 = performance.now();
+$('job').innerHTML = Object.keys(W).map(k => `<option>${k}</option>`).join(''); $('job').selectedIndex = 1;
+$('mem').onclick = e => { const b = e.target.closest('button'); if (!b) return; mem = +b.dataset.m; $('mem').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
+const tread = () => 10 ** (+$('rd').value / 100);
+function fmt(x) { return x >= 1e9 ? (x / 1e9).toFixed(1) + ' B' : x >= 1e6 ? (x / 1e6).toFixed(1) + ' M' : x >= 1e3 ? (x / 1e3).toFixed(0) + ' k' : x.toFixed(0); }
+let est = null, sc = null;
+function update() {
+  const [n, st] = W[$('job').value], cfg = { nLogical: n, steps: st, tReadUs: tread(), t2MemMs: mem, gateUs: +$('g').value, pitchUm: +$('p').value / 10 };
+  $('rdV').textContent = tread() >= 1000 ? `${(tread() / 1000).toFixed(2)} ms` : `${tread().toFixed(0)} µs`; $('gV').textContent = `${$('g').value} µs`; $('pV').textContent = `${(+$('p').value / 10).toFixed(1)} µm`;
+  est = R.estimate(T, cfg); sc = R.superconducting(n, st);
+  $('kpis').innerHTML = est ? [[`d = ${est.distance}`, 'code distance'], [fmt(est.physical), 'physical qubits'], [`${est.dieSideMm.toFixed(1)} mm`, 'diamond die side'],
+    [`${est.cycleUs.toFixed(0)} µs`, 'one error-correction round'], [R.human(est.runtimeHours), 'runtime'], [`Λ = ${est.lam.toFixed(2)}`, 'error suppression per +2 distance']]
+    .map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('') :
+    `<div class="kpi" style="grid-column:1/-1"><b style="color:var(--red)">Above threshold</b><span>Readout is so slow compared with the memory that a larger code makes things worse. Speed up readout or pick the 1 s memory.</span></div>`;
+  drawTime();
+}
+['job', 'rd', 'g', 'p'].forEach(i => $(i).oninput = update);
+function drawTime() {
+  const { g, w, h } = fitCanvas($('time'), 150); g.clearRect(0, 0, w, h);
+  const rows = [['Diamond NV (this design)', est ? est.runtimeHours : NaN, '#2de2e6'], ['Superconducting (measured Λ)', sc.runtimeHours, '#9d7bff']];
+  const lo = Math.log10(1 / 3600), hi = Math.log10(24 * 365 * 1000), X = v => 190 + (w - 230) * (Math.log10(v) - lo) / (hi - lo);
+  [['1 s', 1 / 3600], ['1 min', 1 / 60], ['1 h', 1], ['1 day', 24], ['1 year', 8766], ['1000 years', 8.766e6]].forEach(([l, v]) => { g.strokeStyle = 'rgba(148,190,220,.15)'; g.beginPath(); g.moveTo(X(v), 20); g.lineTo(X(v), h - 22); g.stroke(); g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(l, X(v) - 10, h - 6); });
+  rows.forEach(([n, v, c], k) => { const y = 34 + k * 44; g.fillStyle = '#c7d6e3'; g.font = '13px Inter'; g.fillText(n, 8, y + 14);
+    if (Number.isFinite(v)) { g.fillStyle = c; g.fillRect(190, y, Math.max(2, X(v) - 190), 20); g.fillStyle = '#e8f1f8'; g.font = '600 12px JetBrains Mono'; g.fillText(R.human(v), X(v) + 8, y + 15); } });
+}
+function drawChip(t) {
+  const { g, w, h } = fitCanvas($('chip'), 430); g.clearRect(0, 0, w, h);
+  const cx = w * 0.28, cy = h / 2, rW = Math.min(w * .24, h * .44);
+  g.fillStyle = 'rgba(111,243,255,.05)'; g.strokeStyle = 'rgba(111,243,255,.35)'; g.beginPath(); g.arc(cx, cy, rW, 0, 7); g.fill(); g.stroke();
+  g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText('76 mm diamond wafer', cx - 60, cy + rW + 18);
+  if (!est) { g.fillStyle = '#ff5d6c'; g.fillText('no working code distance', cx - 70, cy); requestAnimationFrame(drawChip); return; }
+  const side = Math.max(2, rW * 2 * est.dieSideMm / 76); g.fillStyle = '#2de2e6'; g.globalAlpha = .85; g.fillRect(cx - side / 2, cy - side / 2, side, side); g.globalAlpha = 1;
+  g.strokeStyle = '#2de2e6'; g.beginPath(); g.moveTo(cx + side / 2, cy - side / 2); g.lineTo(w * .56, 40); g.moveTo(cx + side / 2, cy + side / 2); g.lineTo(w * .56, h - 40); g.stroke();
+  // zoom: logical patches with a sweeping syndrome wave
+  const n = W[$('job').value][0], shown = Math.min(n, 144), cols = Math.ceil(Math.sqrt(shown)), box = Math.min((w * .42) / cols, (h - 80) / cols), x0 = w * .56, y0 = 40, phase = ((t - t0) / 1000 * 1.5) % 1;
+  for (let k = 0; k < shown; k++) { const i = k % cols, j = Math.floor(k / cols), x = x0 + i * box, y = y0 + j * box, lit = Math.abs((i + j) / (2 * cols) - phase) < .08;
+    g.fillStyle = lit ? 'rgba(255,93,108,.9)' : 'rgba(45,226,230,.55)'; g.fillRect(x + 1, y + 1, box - 3, box - 3);
+    if (box > 22) { const m = Math.min(est.distance, 9); g.fillStyle = 'rgba(5,7,13,.55)'; for (let a = 0; a < m; a++) for (let b = 0; b < m; b++) g.fillRect(x + 3 + a * (box - 6) / m, y + 3 + b * (box - 6) / m, 1.5, 1.5); } }
+  $('chipHud').textContent = `${fmt(n)} logical qubits${n > shown ? ` (showing ${shown})` : ''}, each a ${est.distance} × ${est.distance} patch · red wave: one syndrome round · die ${est.dieSideMm.toFixed(1)} mm on a 76 mm wafer`;
+  requestAnimationFrame(drawChip);
+}
+update(); requestAnimationFrame(drawChip); addEventListener('resize', update);
+</script></body></html>

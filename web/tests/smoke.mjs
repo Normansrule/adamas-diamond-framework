@@ -34,5 +34,5 @@ const $ = id => W.document.getElementById(id);
 for (const a of (actions || '').split(',').filter(Boolean)) { const [id, n] = a.split('*'); for (let i = 0; i < (+n || 1); i++) $(id).click(); await new Promise(r => setTimeout(r, 60)); }
 await new Promise(r => setTimeout(r, 300));
 if (errors.length) { console.error(JSON.stringify({ page, errors })); process.exit(1); }
-console.log(JSON.stringify({ page, errors, probe: Object.fromEntries(['kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])) }));
+console.log(JSON.stringify({ page, errors, probe: Object.fromEntries(['chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])) }));
 process.exit(0);
