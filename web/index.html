@@ -17,7 +17,7 @@
 <main>
 <section class="wrap hero">
   <div>
-    <span class="eyebrow">Open research framework · v0.12</span>
+    <span class="eyebrow">Open research framework · v0.13</span>
     <h1>Silicon's cousin,<br><span class="grad">built for extremes.</span></h1>
     <p class="lead">ADAMAS asks what it takes to build chips on <b>diamond wafers</b> instead of silicon: kilovolt power switches, logic that runs at 400 °C, and qubits that work at room temperature. Every number here comes from a cited equation or measurement, and every lab runs the same physics as the Python package.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
@@ -29,6 +29,13 @@
   </div>
   <canvas id="crystal" aria-label="Rotating diamond crystal lattice with a nitrogen-vacancy center"></canvas>
   <div class="scrollhint">SCROLL</div>
+</section>
+
+<section class="wrap block" style="padding-top:10px">
+  <div class="stage reveal shine-border" style="min-height:0;border-radius:var(--radius)">
+    <video src="img/trailer.mp4" poster="og.png" autoplay muted loop playsinline style="width:100%;display:block;aspect-ratio:16/9;background:#05070d"></video>
+    <div class="hud">20-second trailer, rendered from the repository's own models (python -m adamas.trailer)</div>
+  </div>
 </section>
 
 <section class="wrap block" style="padding-top:20px">
@@ -76,7 +83,7 @@
 <section class="wrap block" id="labs">
   <span class="eyebrow reveal">Interactive labs</span>
   <h2 class="reveal">Don't read it. <span class="grad">Run it.</span></h2>
-  <p class="lead reveal">Ten hands-on simulations and explorations. Each explains itself at three reading levels, from "I am 10" to "researcher", and lists its sources.</p>
+  <p class="lead reveal">Eleven hands-on simulations and explorations. Each explains itself at three reading levels, from "I am 10" to "researcher", and lists its sources.</p>
   <div class="bento">
     <a class="card span3 reveal shine-border" href="labs/qubit.html"><span class="tag violet">Quantum</span><h3>Qubit Lab</h3><canvas class="mini" data-mini="rabi"></canvas><p>Fire microwave pulses at a room-temperature spin on a 3-D Bloch sphere. Watch Rabi, Ramsey, and spin-echo happen, and see why an echo rescues a dephased ensemble.</p><span class="go">Enter →</span></a>
     <a class="card span3 reveal" href="labs/heat.html"><span class="tag gold">Power</span><h3>Heat Race</h3><canvas class="mini" data-mini="heat"></canvas><p>The same hot transistor on silicon, silicon carbide, gallium nitride, and diamond, solved live with the heat equation. Diamond runs about 15× cooler.</p><span class="go">Enter →</span></a>
@@ -86,6 +93,7 @@
     <a class="card span4 reveal" href="labs/fab.html"><span class="tag gold">Process</span><h3>Fab Walkthrough</h3><canvas class="mini" data-mini="fab"></canvas><p>Build a hydrogen-terminated diamond transistor layer by layer, the way a cleanroom would, and see exactly where silicon's recipe breaks.</p><span class="go">Enter →</span></a>
     <a class="card span3 reveal" href="labs/transistor.html"><span class="tag">Devices</span><h3>Transistor Lab</h3><canvas class="mini" data-mini="ring"></canvas><p>Tune a diamond transistor and watch its I–V curves, a logic gate's transfer curve, and a five-gate ring oscillator respond. Checked against SPICE.</p><span class="go">Enter →</span></a>
     <a class="card span3 reveal" href="labs/power.html"><span class="tag gold">Power</span><h3>Power Lab</h3><canvas class="mini" data-mini="power"></canvas><p>An electric-car inverter on silicon, SiC, GaN, and diamond: switch loss, die size, heat-sink size, and what happens at 300 °C.</p><span class="go">Enter →</span></a>
+    <a class="card span6 reveal shine-border" href="labs/machine.html" style="grid-column:span 6"><span class="tag violet">Architecture</span><h3>Machine Builder</h3><canvas class="mini" data-mini="machine"></canvas><p>Size a room-temperature diamond quantum computer for a real job, from circuit-level error-correction simulations: code distance, millions of qubits, die size, and a runtime you can shrink by speeding up readout.</p><span class="go">Enter →</span></a>
     <a class="card span3 reveal" href="labs/stack.html"><span class="tag violet">Architecture</span><h3>The Chip Stack</h3><canvas class="mini" data-mini="stack"></canvas><p>Scroll to explode the five-layer quantum processor this framework proposes, from silicon controller to diamond qubits to the light that resets them.</p><span class="go">Enter →</span></a>
     <a class="card span3 reveal" href="labs/globe.html"><span class="tag">Landscape</span><h3>Who is building it</h3><canvas class="mini" data-mini="globe"></canvas><p>A 3-D globe of the labs and companies behind every result here, each point cited and labeled peer-reviewed, news, or vendor claim.</p><span class="go">Enter →</span></a>
     <a class="card span2 reveal" href="explorer.html"><span class="tag violet">All equations</span><h3>Explorer</h3><canvas class="mini" data-mini="explorer"></canvas><p>Nine live panels and a guided tour through the whole framework.</p><span class="go">Enter →</span></a>

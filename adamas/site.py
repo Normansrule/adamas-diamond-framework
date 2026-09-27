@@ -39,6 +39,9 @@ def site_data() -> dict:
         "dia4_layout": None,
     }
     data["power"] = power_data()
+    from . import resource
+    data["resource"] = resource.table()
+    data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))

@@ -11,7 +11,7 @@ flowchart LR
 
 | Stage | ID | Project | Scope | Needs | Where specified |
 |---|---|---|---|---|---|
-| Wafer | S-1 | Reproduce all 38 figures and the test suite | W | Laptop | README |
+| Wafer | S-1 | Reproduce all 39 figures and the test suite | W | Laptop | README |
 | Wafer | L-1 | Flatness and bow statistics of commercial diamond plates | C | Optical profiler | [E1](E1_lithography_from_euv_to_electron_beam.md) |
 | Wafer | F-3 | (111) ¹²C phosphorus-doped quantum epilayer on heteroepitaxial wafer | G | Growth partner | [Ch. 11](../11_proposed_experiments_and_roadmap.md) |
 | Lithography | L-2 | Electron-beam proximity function on diamond versus silicon | C/T | Electron-beam tool | E1 |
@@ -38,7 +38,7 @@ flowchart LR
 | Power | W-1, W-2 | $R_{on}(T)$ and double-pulse switching of diamond vs SiC devices | T | Probe station, double-pulse rig | [E9](E9_power_circuits_diamond_vs_gan_sic.md) |
 | Power | W-3, W-4 | Hybrid half-bridge; uncooled 300 °C inverter | T/D | Power lab | E9 |
 | Power | W-5 | Vertical 3 kV diamond MOSFET at 1% of ideal | G | Thick-drift growth partner | E9 |
-| Systems | X-2 to X-4 | Full resource estimate, multiplexing study, platform comparison | T | Laptop | [E10](E10_scaling_a_room_temperature_quantum_computer.md) |
+| Systems | X-2 (done), X-3, X-4 | Resource estimate (done in v0.13.0); multiplexing study; platform comparison | T | Laptop | [E10](E10_scaling_a_room_temperature_quantum_computer.md) |
 | Beyond | M-3 | Chip-scale maser readout | D | Microwave laboratory | [E7](E7_beyond_the_framework.md) |
 | Beyond | M-4 | Self-diagnosing power transistor | T/D | Power device + NV layer | E7 |
 | Beyond | M-6 | All-diamond computer | G | Everything above | E7 |

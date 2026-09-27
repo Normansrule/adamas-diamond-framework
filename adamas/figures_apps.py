@@ -245,7 +245,48 @@ def fig_placed_dia4(out: Path) -> Path:
     return _finish(fig, out, "fig37_dia4_placed.png", "[weste2011] [meadconway1980] [liu2017] [faggin1996] [ajayi2019]; circuits/digital/place.py")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4]
+def fig_resource_estimate(out: Path) -> Path:
+    """Figure 39: space-time cost of NV machines from circuit-level error rates (project X-2)."""
+    from . import resource as R
+    t = R.table()
+    fig, axes = plt.subplots(1, 3, figsize=(16, 4.9))
+    tr = np.logspace(np.log10(30), 4, 40)
+    cols = [COLORS["Diamond"], COLORS["4H-SiC"], RED]
+    ax = axes[0]
+    for (name, (n, st)), c in zip(R.WORKLOADS.items(), cols):
+        for t2, ls in [(1000.0, "-"), (100.0, "--")]:
+            y = [(e.runtime_hours if (e := R.estimate(n, st, x, t2, t=t)) else np.nan) for x in tr]
+            ax.loglog(tr / 1e3, y, ls, color=c, lw=2.2, label=name.split(" (")[0] if t2 == 1000.0 else None)
+        ax.axhline(R.superconducting_reference(n, st).runtime_hours, color=c, lw=1, ls=":")
+    for yv, lab in [(24, "1 day"), (24 * 365, "1 year")]:
+        ax.axhline(yv, color=INK, lw=.6, alpha=.4); ax.text(0.032, yv * 1.15, lab, fontsize=8, color=INK)
+    ax.set_xlabel("Ancilla readout time (ms)"); ax.set_ylabel("Runtime (hours)")
+    ax.set_title("Runtime (solid 1 s memory, dashed 0.1 s;\ndotted: superconducting at measured Λ = 2.14)", fontsize=10); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.12)
+    ax = axes[1]
+    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    for t2, ls in [(1000.0, "-"), (100.0, "--")]:
+        es = [R.estimate(n, st, x, t2, t=t) for x in tr]
+        ax.semilogx(tr / 1e3, [e.distance if e else np.nan for e in es], ls, color=COLORS["Diamond"], lw=2.2, label=f"distance, T₂ mem {t2 / 1e3:g} s")
+    ax2 = ax.twinx()
+    for t2, ls in [(1000.0, "-"), (100.0, "--")]:
+        es = [R.estimate(n, st, x, t2, t=t) for x in tr]
+        ax2.semilogx(tr / 1e3, [e.physical_qubits / 1e6 if e else np.nan for e in es], ls, color=GOLD, lw=2)
+    ax.set_xlabel("Ancilla readout time (ms)"); ax.set_ylabel("Code distance", color=COLORS["Diamond"]); ax2.set_ylabel("Physical qubits (millions)", color=GOLD)
+    ax.set_title("RSA-2048-scale job: slow readout raises the distance", fontsize=10); ax.legend(fontsize=8, loc="upper left"); ax.grid(True, alpha=.12)
+    ax = axes[2]
+    reads = [30, 100, 1000, 10000]; x = np.arange(len(reads))
+    prep, gates = 5.0, 4 * 25.0
+    ax.bar(x, [prep] * 4, color=COLORS["Si"], label="prepare ancilla")
+    ax.bar(x, [gates] * 4, bottom=[prep] * 4, color=COLORS["GaN"], label="4 dipolar gates (25 µs each)")
+    ax.bar(x, reads, bottom=[prep + gates] * 4, color=COLORS["Diamond"], label="read ancilla")
+    ax.set_yscale("log"); ax.set_ylim(1, 3e4); ax.set_xticks(x); ax.set_xticklabels([f"{r / 1e3:g} ms" for r in reads]); ax.set_xlabel("Readout time")
+    ax.set_ylabel("One syndrome round (µs)"); ax.set_title("Once readout is fast, the gates set the clock", fontsize=10); ax.legend(fontsize=8, loc="upper left")
+    fig.subplots_adjust(wspace=0.55)
+    return _finish(fig, out, "fig39_resource_estimate.png",
+                   "[fowler2012] [litinski2019] [google2025] [dolde2013] [maurer2012] [gidney2021stim]; adamas.resource model (illustrative workloads, NV noise p_link 0.3%)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
