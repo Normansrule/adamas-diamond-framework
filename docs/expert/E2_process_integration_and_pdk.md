@@ -102,6 +102,10 @@ Two design decisions follow directly from diamond's process, and both are worth 
 
 The first run in v0.8.0 stopped at LEF parsing (a cut layer declared without its `TYPE` keyword); the test suite now checks the generated LEF for that and for pin-to-rail spacing.
 
+## E2.4e The full run sheet
+
+The mask sequence above is expanded into a 19-step cleanroom traveler with parameters, checks, safety, and failure modes in [docs/process](../process/README.md), with an [interactive version](https://normansrule.github.io/adamas-diamond-framework/process.html).
+
 ## E2.5 Projects
 
 | ID | Project | Deliverable |

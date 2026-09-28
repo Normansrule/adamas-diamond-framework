@@ -1,6 +1,6 @@
 # References
 
-**527 references.** 491 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 475 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**534 references.** 497 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 481 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -38,7 +38,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[tsao2018]`** Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. (2018). Ultrawide-bandgap semiconductors: research opportunities and challenges. *Advanced Electronic Materials*, 4, 1600501. [doi:10.1002/aelm.201600501](https://doi.org/10.1002/aelm.201600501)
 - ✅ **`[donato2020]`** Donato, N.; Rouger, N.; Pernot, J.; Longobardi, G.; Udrea, F. (2020). Diamond power devices: state of the art, modelling, figures of merit and future perspective. *Journal of Physics D: Applied Physics*, 53, 093001. [doi:10.1088/1361-6463/ab4eab](https://doi.org/10.1088/1361-6463/ab4eab)
 
-## Diamond growth and wafers (30)
+## Diamond growth and wafers (32)
 
 - ✅ **`[bundy1955]`** Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. (1955). Man-made diamonds. *Nature*, 176, 51. [doi:10.1038/176051a0](https://doi.org/10.1038/176051a0)
 - ✅ **`[angus1968]`** Angus, J. C.; Will, H. A.; Stanko, W. S. (1968). Growth of diamond seed crystals by vapor deposition. *Journal of Applied Physics*, 39, 2915. [doi:10.1063/1.1656693](https://doi.org/10.1063/1.1656693)
@@ -58,6 +58,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[mokuno2009]`** Mokuno, Y.; Chayahara, A.; Yamada, H.; Tsubouchi, N. (2009). Improving purity and size of single-crystal diamond plates produced by high-rate CVD growth and lift-off process using ion implantation. *Diamond and Related Materials*, 18, 1258. [doi:10.1016/j.diamond.2009.04.005](https://doi.org/10.1016/j.diamond.2009.04.005)
 - ✅ **`[markham2011]`** Markham, M. L.; Dodson, J. M.; Scarsbrook, G. A.; et al. (2011). CVD diamond for spintronics. *Diamond and Related Materials*, 20, 134. [doi:10.1016/j.diamond.2010.11.016](https://doi.org/10.1016/j.diamond.2010.11.016)
 - ✅ **`[sumiya2012]`** Sumiya, H.; Tamasaku, K. (2012). Large defect-free synthetic type IIa diamond crystals synthesized via high pressure and high temperature. *Japanese Journal of Applied Physics*, 51, 090102. [doi:10.1143/jjap.51.090102](https://doi.org/10.1143/jjap.51.090102)
+- 📚 **`[lu2013]`** Lu, J.; Gu, Y.; Grotjohn, T. A.; Schuelke, T.; Asmussen, J. (2013). Experimentally defining the safe and efficient, high pressure microwave plasma assisted CVD operating regime for single crystal diamond synthesis. *Diamond and Related Materials*, 37, 17-28.
 - ✅ **`[schuelke2013]`** Schuelke, T.; Grotjohn, T. A. (2013). Diamond polishing. *Diamond and Related Materials*, 32, 17. [doi:10.1016/j.diamond.2012.11.007](https://doi.org/10.1016/j.diamond.2012.11.007)
 - ✅ **`[tallaire2013]`** Tallaire, A.; Achard, J.; Silva, F.; Brinza, O.; Gicquel, A. (2013). Growth of large size diamond single crystals by plasma assisted chemical vapour deposition: recent achievements and remaining challenges. *Comptes Rendus Physique*, 14, 169. [doi:10.1016/j.crhy.2012.10.008](https://doi.org/10.1016/j.crhy.2012.10.008)
 - ✅ **`[schreck2014]`** Schreck, M.; Asmussen, J.; Shikata, S.; Arnault, J.-C.; Fujimori, N. (2014). Large-area high-quality single crystal diamond. *MRS Bulletin*, 39, 504. [doi:10.1557/mrs.2014.96](https://doi.org/10.1557/mrs.2014.96)
@@ -68,6 +69,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[schreck2017]`** Schreck, M.; Gsell, S.; Brescia, R.; Fischer, M. (2017). Ion bombardment induced buried lateral growth: the key mechanism for the synthesis of single crystal diamond wafers. *Scientific Reports*, 7, 44462. [doi:10.1038/srep44462](https://doi.org/10.1038/srep44462)
 - ✅ **`[koizumi2018book]`** Koizumi, S.; Umezawa, H.; Pernot, J.; Suzuki, M. (eds.) (2018). Power Electronics Device Applications of Diamond Semiconductors. *Woodhead Publishing*.
 - ✅ **`[achard2020]`** Achard, J.; Jacques, V.; Tallaire, A. (2020). Chemical vapour deposition diamond single crystals with nitrogen-vacancy centres: a review of material synthesis and technology for quantum sensing applications. *Journal of Physics D: Applied Physics*, 53, 313001. [doi:10.1088/1361-6463/ab81d1](https://doi.org/10.1088/1361-6463/ab81d1)
+- ✅ **`[bolshakov2020]`** Bolshakov, A. P.; Ralchenko, V. G.; Shu, G.; et al. (2020). Single crystal diamond growth by MPCVD at subatmospheric pressures. *Materials Today Communications*, 25, 101635. [doi:10.1016/j.mtcomm.2020.101635](https://doi.org/10.1016/j.mtcomm.2020.101635)
 - ✅ **`[kim2020]`** Kim, S.-W.; Kawamata, Y.; Takaya, R.; Koyama, K.; Kasu, M. (2020). Growth of high-quality one-inch free-standing heteroepitaxial (001) diamond on (11-20) sapphire substrate. *Applied Physics Letters*, 117, 202102. [doi:10.1063/5.0024070](https://doi.org/10.1063/5.0024070)
 - ✅ **`[kim2021]`** Kim, S.-W.; Takaya, R.; Hirano, S.; Kasu, M. (2021). Two-inch high-quality (001) diamond heteroepitaxial growth on sapphire (11-20) misoriented substrate by step-flow mode. *Applied Physics Express*, 14, 115501. [doi:10.35848/1882-0786/ac28e7](https://doi.org/10.35848/1882-0786/ac28e7)
 
@@ -86,7 +88,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[plummer2000]`** Plummer, J. D.; Deal, M. D.; Griffin, P. B. (2000). Silicon VLSI Technology: Fundamentals, Practice, and Modeling. *Prentice Hall*.
 - 📚 **`[irds2023]`** IEEE (2023). International Roadmap for Devices and Systems (IRDS), 2023 edition. *IEEE*.
 
-## Doping, surfaces, and processing (29)
+## Doping, surfaces, and processing (31)
 
 - ✅ **`[farrer1969]`** Farrer, R. G. (1969). On the substitutional nitrogen donor in diamond. *Solid State Communications*, 7, 685. [doi:10.1016/0038-1098(69)90593-6](https://doi.org/10.1016/0038-1098(69)90593-6)
 - ✅ **`[collins1971]`** Collins, A. T.; Williams, A. W. S. (1971). The nature of the acceptor centre in semiconducting diamond. *Journal of Physics C: Solid State Physics*, 4, 1789. [doi:10.1088/0022-3719/4/13/030](https://doi.org/10.1088/0022-3719/4/13/030)
@@ -110,15 +112,17 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[strobel2004]`** Strobel, P.; Riedel, M.; Ristein, J.; Ley, L. (2004). Surface transfer doping of diamond. *Nature*, 430, 439. [doi:10.1038/nature02751](https://doi.org/10.1038/nature02751)
 - ✅ **`[kato2005]`** Kato, H.; Yamasaki, S.; Okushi, H. (2005). n-type doping of (001)-oriented single-crystalline diamond by phosphorus. *Applied Physics Letters*, 86, 222111. [doi:10.1063/1.1944228](https://doi.org/10.1063/1.1944228)
 - ✅ **`[lee2008]`** Lee, C. L.; Gu, E.; Dawson, M. D.; Friel, I.; Scarsbrook, G. A. (2008). Etching and micro-optics fabrication in diamond using chlorine-based inductively-coupled plasma. *Diamond and Related Materials*, 17, 1292. [doi:10.1016/j.diamond.2008.01.011](https://doi.org/10.1016/j.diamond.2008.01.011)
+- ✅ **`[kubovic2009]`** Kubovic, M.; Kasu, M. (2009). Improvement of hydrogen-terminated diamond field effect transistors in nitrogen dioxide atmosphere. *Applied Physics Express*, 2, 086502. [doi:10.1143/apex.2.086502](https://doi.org/10.1143/apex.2.086502)
 - ✅ **`[hausmann2010]`** Hausmann, B. J. M.; Khan, M.; Zhang, Y.; et al. (2010). Fabrication of diamond nanowires for quantum information processing applications. *Diamond and Related Materials*, 19, 621. [doi:10.1016/j.diamond.2010.01.011](https://doi.org/10.1016/j.diamond.2010.01.011)
 - ✅ **`[kubovic2010]`** Kubovic, M.; Kasu, M. (2010). Sorption properties of NO2 gas and its strong influence on hole concentration of H-terminated diamond surfaces. *Applied Physics Letters*, 96, 052101. [doi:10.1063/1.3291616](https://doi.org/10.1063/1.3291616)
 - ✅ **`[russell2013]`** Russell, S. A. O.; Cao, L.; Qi, D.; et al. (2013). Surface transfer doping of diamond by MoO3: a combined spectroscopic and Hall measurement study. *Applied Physics Letters*, 103, 202112. [doi:10.1063/1.4832455](https://doi.org/10.1063/1.4832455)
+- ✅ **`[sato2013]`** Sato, H.; Kasu, M. (2013). Maximum hole concentration for hydrogen-terminated diamond surfaces with various surface orientations obtained by exposure to highly concentrated NO2. *Diamond and Related Materials*, 31, 47-49. [doi:10.1016/j.diamond.2012.10.007](https://doi.org/10.1016/j.diamond.2012.10.007)
 - ✅ **`[tordjman2014]`** Tordjman, M.; Saguy, C.; Bolker, A.; Kalish, R. (2014). Superior surface transfer doping of diamond with MoO3. *Advanced Materials Interfaces*, 1, 1300155. [doi:10.1002/admi.201300155](https://doi.org/10.1002/admi.201300155)
 - ✅ **`[crawford2016]`** Crawford, K. G.; Cao, L.; Qi, D.; et al. (2016). Enhanced surface transfer doping of diamond by V2O5 with improved thermal stability. *Applied Physics Letters*, 108, 042103. [doi:10.1063/1.4940749](https://doi.org/10.1063/1.4940749)
 - ✅ **`[verona2016]`** Verona, C.; Ciccognani, W.; Colangeli, S.; et al. (2016). Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators. *Journal of Applied Physics*, 120, 025104. [doi:10.1063/1.4955469](https://doi.org/10.1063/1.4955469)
 - ✅ **`[crawford2021]`** Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. (2021). Surface transfer doping of diamond: a review. *Progress in Surface Science*, 96, 100613. [doi:10.1016/j.progsurf.2021.100613](https://doi.org/10.1016/j.progsurf.2021.100613)
 
-## Devices and circuits (42)
+## Devices and circuits (44)
 
 - ✅ **`[kawarada1994]`** Kawarada, H.; Aoki, M.; Ito, M. (1994). Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds. *Applied Physics Letters*, 65, 1563. [doi:10.1063/1.112915](https://doi.org/10.1063/1.112915)
 - ✅ **`[aleksov2003]`** Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. (2003). Diamond field effect transistors - concepts and challenges. *Diamond and Related Materials*, 12, 391. [doi:10.1016/s0925-9635(02)00401-6](https://doi.org/10.1016/s0925-9635(02)00401-6)
@@ -128,6 +132,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[pernegger2005]`** Pernegger, H.; Roe, S.; Weilhammer, P.; et al. (2005). Charge-carrier properties in synthetic single-crystal diamond measured with the transient-current technique. *Journal of Applied Physics*, 97, 073704. [doi:10.1063/1.1863417](https://doi.org/10.1063/1.1863417)
 - ✅ **`[ueda2006]`** Ueda, K.; Kasu, M.; Yamauchi, Y.; et al. (2006). Diamond FET using high-quality polycrystalline diamond with fT of 45 GHz and fmax of 120 GHz. *IEEE Electron Device Letters*, 27, 570. [doi:10.1109/led.2006.876325](https://doi.org/10.1109/led.2006.876325)
 - ✅ **`[makino2009]`** Makino, T.; Tanimoto, S.; Hayashi, Y.; et al. (2009). Diamond Schottky-pn diode with high forward current density and fast switching operation. *Applied Physics Letters*, 94, 262101. [doi:10.1063/1.3159837](https://doi.org/10.1063/1.3159837)
+- ✅ **`[hirama2012]`** Hirama, K.; Sato, H.; Harada, Y.; Yamamoto, H.; Kasu, M. (2012). Diamond field-effect transistors with 1.3 A/mm drain current density by Al2O3 passivation layer. *Japanese Journal of Applied Physics*, 51, 090112. [doi:10.7567/jjap.51.090112](https://doi.org/10.7567/jjap.51.090112)
 - ✅ **`[kato2012bjt]`** Kato, H.; Oyama, K.; Makino, T.; et al. (2012). Diamond bipolar junction transistor device with phosphorus-doped diamond base layer. *Diamond and Related Materials*, 27-28, 19. [doi:10.1016/j.diamond.2012.05.004](https://doi.org/10.1016/j.diamond.2012.05.004)
 - ✅ **`[russell2012]`** Russell, S. A. O.; Sharabi, S.; Tallaire, A.; Moran, D. A. J. (2012). Hydrogen-terminated diamond field-effect transistors with cutoff frequency of 53 GHz. *IEEE Electron Device Letters*, 33, 1471. [doi:10.1109/led.2012.2210020](https://doi.org/10.1109/led.2012.2210020)
 - ✅ **`[isberg2013]`** Isberg, J.; Gabrysch, M.; Hammersberg, J.; et al. (2013). Generation, transport and detection of valley-polarized electrons in diamond. *Nature Materials*, 12, 760. [doi:10.1038/nmat3694](https://doi.org/10.1038/nmat3694)
@@ -157,6 +162,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[saha2022]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. (2022). 875-MW/cm2 low-resistance NO2 p-type doped chemical mechanical planarized diamond MOSFETs. *IEEE Electron Device Letters*, 43, 777. [doi:10.1109/led.2022.3164603](https://doi.org/10.1109/led.2022.3164603)
 - ✅ **`[saha2022mod]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kasu, M. (2022). 3326-V modulation-doped diamond MOSFETs. *IEEE Electron Device Letters*, 43, 1303. [doi:10.1109/led.2022.3181444](https://doi.org/10.1109/led.2022.3181444)
 - ✅ **`[sasama2022]`** Sasama, Y.; Kageura, T.; Imura, M.; et al. (2022). High-mobility p-channel wide-bandgap transistors based on hydrogen-terminated diamond/hexagonal boron nitride heterostructures. *Nature Electronics*, 5, 37. [doi:10.1038/s41928-021-00689-4](https://doi.org/10.1038/s41928-021-00689-4)
+- ✅ **`[kawarada2023]`** Kawarada, H. (2023). Diamond p-FETs using two-dimensional hole gas for high frequency and high voltage complementary circuits. *Journal of Physics D: Applied Physics*, 56, 053001. [doi:10.1088/1361-6463/aca61c](https://doi.org/10.1088/1361-6463/aca61c)
 - ✅ **`[saha2023]`** Saha, N. C.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. (2023). 3659-V NO2 p-type doped diamond MOSFETs on misoriented heteroepitaxial diamond substrates. *IEEE Electron Device Letters*, 44, 112. [doi:10.1109/led.2022.3226426](https://doi.org/10.1109/led.2022.3226426)
 - ✅ **`[liao2024]`** Liao, M.; Sun, H.; Koizumi, S. (2024). High-temperature and high-electron mobility metal-oxide-semiconductor field-effect transistors based on n-type diamond. *Advanced Science*, 11(13), 2306013. [doi:10.1002/advs.202306013](https://doi.org/10.1002/advs.202306013)
 - ✅ **`[zhao2024]`** Zhao, W.; Koizumi, S.; Liao, M. (2024). P-channel MOSFETs on phosphorous-doped n-type diamond. *IEEE Electron Device Letters*, 45(12), 2268. [doi:10.1109/led.2024.3485683](https://doi.org/10.1109/led.2024.3485683)
@@ -244,7 +250,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (35)
+## NV center fabrication and placement (36)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -257,6 +263,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[spinicelli2011]`** Spinicelli, P.; Dreau, A.; Rondin, L.; et al. (2011). Engineered arrays of nitrogen-vacancy color centers in diamond based on implantation of CN- molecules through nanoapertures. *New Journal of Physics*, 13, 025014. [doi:10.1088/1367-2630/13/2/025014](https://doi.org/10.1088/1367-2630/13/2/025014)
 - ✅ **`[edmonds2012]`** Edmonds, A. M.; D'Haenens-Johansson, U. F. S.; Cruddace, R. J.; et al. (2012). Production of oriented nitrogen-vacancy color centers in synthetic diamond. *Physical Review B*, 86, 035201. [doi:10.1103/physrevb.86.035201](https://doi.org/10.1103/physrevb.86.035201)
 - ✅ **`[ishikawa2012]`** Ishikawa, T.; Fu, K.-M. C.; Santori, C.; et al. (2012). Optical and spin coherence properties of nitrogen-vacancy centers placed in a 100 nm thick isotopically purified diamond layer. *Nano Letters*, 12, 2083. [doi:10.1021/nl300350r](https://doi.org/10.1021/nl300350r)
+- ✅ **`[kasu2012]`** Kasu, M.; Sato, H.; Hirama, K. (2012). Thermal stabilization of hole channel on H-terminated diamond surface by using atomic-layer-deposited Al2O3 overlayer and its electric properties. *Applied Physics Express*, 5, 025701. [doi:10.1143/apex.5.025701](https://doi.org/10.1143/apex.5.025701)
 - ✅ **`[ohno2012]`** Ohno, K.; Heremans, F. J.; Bassett, L. C.; et al. (2012). Engineering shallow spins in diamond with nitrogen delta-doping. *Applied Physics Letters*, 101, 082413. [doi:10.1063/1.4748280](https://doi.org/10.1063/1.4748280)
 - ✅ **`[yamamoto2013]`** Yamamoto, T.; Umeda, T.; Watanabe, K.; et al. (2013). Extending spin coherence times of diamond qubits by high-temperature annealing. *Physical Review B*, 88, 075206. [doi:10.1103/physrevb.88.075206](https://doi.org/10.1103/physrevb.88.075206)
 - ✅ **`[chu2014]`** Chu, Y.; de Leon, N. P.; Shields, B. J.; et al. (2014). Coherent optical transitions in implanted nitrogen vacancy centers. *Nano Letters*, 14, 1982. [doi:10.1021/nl404836p](https://doi.org/10.1021/nl404836p)

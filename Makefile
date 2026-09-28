@@ -1,13 +1,13 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations trailer notebooks traveler explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 40 figures into docs/img/
+figures:         ## regenerate all 43 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -58,6 +58,9 @@ trailer:         ## render the 20-second trailer video docs/img/trailer.mp4 (nee
 
 notebooks:       ## regenerate the six course notebooks from adamas/course.py
 	$(PY) -c "from adamas.course import write_notebooks; write_notebooks()"
+
+traveler:        ## regenerate docs/process/TRAVELER.md from adamas/traveler.py
+	$(PY) -c "from adamas.traveler import write; write()"
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

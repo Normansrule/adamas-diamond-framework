@@ -1,0 +1,123 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<title>Process Traveler · ADAMAS</title>
+<style>
+.ptop{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:18px 0}
+.pgrid{display:grid;grid-template-columns:260px 1fr;gap:18px;padding-bottom:60px}
+@media(max-width:1000px){.pgrid{grid-template-columns:1fr}}
+.slist{display:grid;gap:6px;align-self:start;position:sticky;top:76px;max-height:calc(100vh - 100px);overflow:auto;padding-right:4px}
+.slist button{display:flex;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--ink);border-radius:10px;padding:7px 10px;cursor:pointer;font:500 13px Inter}
+.slist button i{width:10px;height:10px;border-radius:50%;flex:none}.slist button.on{border-color:var(--teal);background:rgba(45,226,230,.1)}
+.slist button.skip{opacity:.35;text-decoration:line-through}.slist .mh{font:600 11px var(--mono);letter-spacing:.14em;color:var(--mute);margin:8px 0 2px;text-transform:uppercase}
+.slist .done{margin-left:auto;font-size:12px}
+table.pt{width:100%;border-collapse:collapse;font-size:14px}table.pt td,table.pt th{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}table.pt th{color:var(--mute);font-weight:600}
+.safety{border-left:4px solid var(--red);background:rgba(255,93,108,.08);padding:10px 12px;border-radius:8px;margin:10px 0}
+.chk input{width:120px}.badge{display:inline-block;padding:3px 8px;border-radius:7px;font:600 12px var(--mono)}.ok{background:rgba(72,229,163,.18);color:var(--green)}.bad{background:rgba(255,93,108,.18);color:var(--red)}.na{background:rgba(255,255,255,.06);color:var(--mute)}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;background:rgba(255,255,255,.02)}summary{cursor:pointer;font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--mute);margin-top:8px}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+@media print{nav.top,.aurora,.gridbg,.scrollbar,.ptop,.slist,#xsWrap,.noprint{display:none!important}body{background:#fff;color:#000}main{animation:none!important}.card{background:#fff!important;color:#000;border:1px solid #999;box-shadow:none;break-inside:avoid}#printAll{display:block!important}}
+#printAll{display:none}
+</style></head><body>
+<main class="wrap">
+<section class="block" style="padding:50px 0 0"><span class="eyebrow">Process engineering</span>
+<h1 style="font-size:clamp(32px,4.6vw,58px)">From a diamond plate <span class="grad">to a working chip</span></h1>
+<p class="lead">Traveler T1, step by step: hydrogen-terminated diamond transistors with optional NV-qubit windows. Each step shows the cross-section, starting-point parameters with sources, the checks to run and their pass windows, safety, and what to do when it fails. Log your measurements as you go; the run log stays in this browser and exports to CSV.</p>
+<p class="src">Parameters are starting points from the literature, not a qualified recipe. Safety notes summarize hazards and never replace your facility's training. Markdown version: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/process/TRAVELER.md">docs/process/TRAVELER.md</a>.</p></section>
+<div class="ptop"><div class="seg" id="variants"></div>
+  <button class="btn small" id="exportB">⬇ Export run log (CSV)</button><button class="btn small" id="printB">🖨 Print traveler</button><button class="btn small" id="resetB">Reset log</button></div>
+<div id="vnote" class="card" style="margin-bottom:14px;padding:12px 16px"></div>
+<div id="prog" style="margin-bottom:16px"></div>
+<div class="pgrid">
+  <aside class="slist" id="slist"></aside>
+  <div>
+    <div class="stage" id="xsWrap" style="min-height:0"><svg id="xs" viewBox="0 0 900 360" style="width:100%;display:block;background:linear-gradient(#0b1320,#07101a)"></svg><div class="hud" id="xsHud"></div></div>
+    <div class="legend" id="legend"></div>
+    <div class="card" id="stepCard" style="margin-top:14px"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px" class="noprint"><button class="btn" id="prevB">◀ Previous step</button><button class="btn primary" id="nextB">Next step ▶</button></div>
+  </div>
+</div>
+<div id="printAll"></div>
+</main>
+<script type="module">
+import { boot, data } from './assets/site.js';
+boot('Process');
+const $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
+const T = (await data()).traveler, MOD = Object.fromEntries(T.modules.map(m => [m[0], m])), KEY = 'adamas-traveler-v1';
+let variant = 'qubit', cur = 0, drawnIds = new Set();
+const log = (() => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } })();
+const saveLog = () => { try { localStorage.setItem(KEY, JSON.stringify(log)); } catch { /* private mode */ } };
+const skipped = sid => T.variants[variant].skip.includes(sid);
+const crit = c => { const [n, u, lo, hi] = c; return lo === null && hi === null ? 'pass / fail' : hi === null ? `≥ ${lo} ${u}` : lo === null ? `≤ ${hi} ${u}` : `${lo} to ${hi} ${u}`; };
+function judge(c, v) { const [n, u, lo, hi] = c; if (v === undefined || v === '') return 'na'; if (lo === null && hi === null) return v === true || v === 'true' ? 'ok' : 'bad';
+  const x = parseFloat(v); if (!Number.isFinite(x)) return 'bad'; return (lo === null || x >= lo) && (hi === null || x <= hi) ? 'ok' : 'bad'; }
+const entry = (sid, i) => ((log[variant] || {})[sid] || {})[i];
+function setEntry(sid, i, v) { log[variant] = log[variant] || {}; log[variant][sid] = log[variant][sid] || {}; log[variant][sid][i] = v; saveLog(); list(); progress(); }
+function stepStatus(s) { if (skipped(s.id)) return ''; const r = s.checks.map((c, i) => judge(c, entry(s.id, i))); return r.every(x => x === 'ok') ? '✓' : r.some(x => x === 'bad') ? '✗' : ''; }
+$('variants').innerHTML = Object.entries(T.variants).map(([k, v]) => `<button data-v="${k}" class="${k === variant ? 'on' : ''}">${v.name.split(' (')[0]}</button>`).join('');
+$('variants').onclick = e => { const b = e.target.closest('button'); if (!b) return; variant = b.dataset.v; $('variants').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); drawnIds = new Set(); render(); };
+function list() {
+  let html = '', last = '';
+  T.steps.forEach((s, k) => { if (s.module !== last) { html += `<div class="mh">${MOD[s.module][1]}</div>`; last = s.module; }
+    html += `<button data-k="${k}" class="${k === cur ? 'on' : ''} ${skipped(s.id) ? 'skip' : ''}"><i style="background:${MOD[s.module][2]}"></i>${s.id} ${s.short}<span class="done" style="color:${stepStatus(s) === '✓' ? 'var(--green)' : 'var(--red)'}">${stepStatus(s)}</span></button>`; });
+  $('slist').innerHTML = html; $('slist').querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.k));
+}
+function progress() {
+  const act = T.steps.filter(s => !skipped(s.id)), done = act.filter(s => stepStatus(s) === '✓').length;
+  $('prog').innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mute)"><span>Run log for this variant (saved in this browser)</span><span>${done} of ${act.length} steps fully passed</span></div>
+    <div style="height:8px;border-radius:6px;background:rgba(255,255,255,.06);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${100 * done / act.length}%;background:var(--grad)"></i></div>`;
+}
+function xs(k) {
+  const svg = $('xs'); svg.innerHTML = '';
+  const vis = T.xs.filter(sh => { const a = T.order.indexOf(sh[6]), b = sh[7] ? T.order.indexOf(sh[7]) : T.order.length; return a <= k && k < b; });
+  const now = new Set(vis.map(sh => sh[0]));
+  for (const sh of vis) {
+    const [id, x0, x1, y, h, col, , , label] = sh, g = document.createElementNS(NS, 'g');
+    if (col === 'holes' || col === 'no2') { for (let x = x0 + 8; x < x1; x += col === 'holes' ? 16 : 14) { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x); c.setAttribute('cy', y + 2); c.setAttribute('r', col === 'holes' ? 2.5 : 4); c.setAttribute('fill', col === 'holes' ? '#6ff3ff' : '#ff5d8f'); g.appendChild(c); } }
+    else { const r = document.createElementNS(NS, 'rect'); Object.entries({ x: x0, y, width: x1 - x0, height: h, rx: 2, fill: col === 'gold' ? 'url(#au)' : col, opacity: id === 'laser' ? .35 : 1 }).forEach(([a, b]) => r.setAttribute(a, b)); g.appendChild(r); }
+    if (label && h >= 14 && !['probe1', 'probe2', 'cut1', 'cut2', 'laser'].includes(id)) { const t = document.createElementNS(NS, 'text'); Object.entries({ x: (x0 + x1) / 2, y: y + h / 2 + 5, 'text-anchor': 'middle', fill: '#e8f1f8', 'font-size': 13, 'font-family': 'Inter' }).forEach(([a, b]) => t.setAttribute(a, b)); t.textContent = label; g.appendChild(t); }
+    svg.appendChild(g);
+    if (!drawnIds.has(id) && window.gsap) gsap.from(g, { opacity: 0, y: -30, duration: .7, ease: 'power3.out' });
+  }
+  const defs = document.createElementNS(NS, 'defs'); defs.innerHTML = '<linearGradient id="au" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#c7922b"/></linearGradient>'; svg.prepend(defs);
+  drawnIds = now;
+  const s = T.steps[k]; $('xsHud').textContent = `${s.id} · after "${s.short}" · peak ${s.t_max_c} °C · not to scale`;
+}
+function card(k) {
+  const s = T.steps[k], sk = skipped(s.id);
+  const rows = s.params.map(([a, b, c]) => `<tr><td>${a}</td><td>${b}</td><td class="src">${c || 'ADAMAS'}</td></tr>`).join('');
+  const checks = s.checks.map((c, i) => { const v = entry(s.id, i), j = judge(c, v), bool = c[2] === null && c[3] === null;
+    return `<tr class="chk"><td>${c[0]}</td><td>${crit(c)}</td><td>${bool ? `<label><input type="checkbox" data-i="${i}" ${v === true ? 'checked' : ''} style="width:auto"> passed</label>` : `<input type="text" data-i="${i}" value="${v ?? ''}" placeholder="${c[1] || 'value'}">`}</td><td><span class="badge ${j}">${j === 'ok' ? 'PASS' : j === 'bad' ? 'FAIL' : '—'}</span></td><td class="src">${c[4]}</td></tr>`; }).join('');
+  $('stepCard').innerHTML = `<span class="tag" style="background:${MOD[s.module][2]}22;color:${MOD[s.module][2]}">${MOD[s.module][1]} · ${s.id}${sk ? ' · skipped in this variant' : ''}</span>
+    <h2 style="font-size:28px;margin:.4em 0 .2em">${s.title}</h2><p style="color:var(--ink)">${s.why}</p>
+    <p><b>Equipment.</b> ${s.equipment.join(' · ')}</p>
+    <h3>Parameters (starting points)</h3><table class="pt"><tr><th>Parameter</th><th>Value</th><th>Source</th></tr>${rows}</table>
+    <h3 style="margin-top:18px">Checks and run log</h3><table class="pt"><tr><th>Check</th><th>Pass window</th><th>Your value</th><th></th><th>Source</th></tr>${checks}</table>
+    <div class="safety"><b>Safety.</b> ${s.safety.join(' ')}</div>
+    ${s.failures.map(([a, b, c]) => `<details><summary>If you see: ${a}</summary><p><b>Likely cause:</b> ${b}</p><p><b>Action:</b> ${c}</p></details>`).join('')}
+    <p style="margin-top:12px"><span class="tag gold">Silicon does</span> ${s.silicon}</p>`;
+  $('stepCard').querySelectorAll('input').forEach(inp => inp.onchange = () => { setEntry(s.id, +inp.dataset.i, inp.type === 'checkbox' ? inp.checked : inp.value); card(k); });
+}
+function go(k) { cur = Math.max(0, Math.min(T.steps.length - 1, k)); list(); xs(cur); card(cur); }
+function render() { $('vnote').innerHTML = `<b>${T.variants[variant].name}.</b> ${T.variants[variant].note} Skipped steps: ${T.variants[variant].skip.join(', ') || 'none'}.`; progress(); go(cur); }
+$('prevB').onclick = () => go(cur - 1); $('nextB').onclick = () => go(cur + 1);
+$('resetB').onclick = () => { delete log[variant]; saveLog(); render(); };
+$('exportB').onclick = () => {
+  const lines = [['variant', 'step', 'title', 'check', 'pass_window', 'value', 'result']];
+  T.steps.forEach(s => s.checks.forEach((c, i) => lines.push([variant, s.id, s.title, c[0], crit(c), entry(s.id, i) ?? '', skipped(s.id) ? 'skipped' : judge(c, entry(s.id, i))])));
+  const csv = lines.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `adamas_traveler_${variant}.csv`; a.click();
+};
+$('printB').onclick = () => {
+  $('printAll').innerHTML = `<h1>ADAMAS traveler T1 · ${T.variants[variant].name}</h1><p>Lot: ________ Wafer: ________ Operator: ________ Date: ________</p>` + T.steps.filter(s => !skipped(s.id)).map(s => `<div class="card" style="margin:10px 0"><h3>${s.id} ${s.title} (peak ${s.t_max_c} °C)</h3>
+    <table class="pt">${s.params.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table>
+    <table class="pt">${s.checks.map((c, i) => `<tr><td>${c[0]}</td><td>${crit(c)}</td><td>measured: ${entry(s.id, i) ?? '________'}</td></tr>`).join('')}</table>
+    <p>Safety: ${s.safety.join(' ')}</p><p>Sign-off: ________ Date: ________</p></div>`).join('');
+  window.print();
+};
+$('legend').innerHTML = [['#1a3b55', 'diamond'], ['#24607a', 'epilayer'], ['#6ff3ff', 'C–H surface'], ['#ffc46b', 'C–O surface'], ['#e0b030', 'gold'], ['#9d7bff', 'Al₂O₃'], ['#b9c4d0', 'gate'], ['#48e5a3', 'Ti/Au pads'], ['#ff5d6c', 'NV centers'], ['#ff5d8f', 'NO₂']]
+  .map(([c, l]) => `<span><i style="background:${c}"></i>${l}</span>`).join('');
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); });
+render();
+</script></body></html>

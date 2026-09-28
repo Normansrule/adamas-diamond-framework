@@ -8,7 +8,8 @@ REF_FILES = [ROOT / "references" / "refs_a.psv", ROOT / "references" / "refs_b.p
              ROOT / "references" / "refs_c.psv",
              ROOT / "references" / "refs_d.psv",
              ROOT / "references" / "refs_e.psv",
-             ROOT / "references" / "refs_f.psv"]
+             ROOT / "references" / "refs_f.psv",
+             ROOT / "references" / "refs_g.psv"]
 
 TAG_NAMES = {
     "mat": "Materials physics and figures of merit",
