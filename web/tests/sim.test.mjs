@@ -85,3 +85,16 @@ test('ring oscillator period is within 40% of the ngspice deck (22.4 ns, circuit
 test('converter closed form equals the area optimum', () => {
   const o = CV.optimum(20, 1e-9, 800, 300, 2e4); assert.ok(Math.abs(o.pCond - o.pSw) / o.pSw < 1e-9 && Math.abs(o.pCond + o.pSw - o.pTotal) / o.pTotal < 1e-9);
 });
+import * as PH from '../assets/sim/photophys.js';
+import * as Y from '../assets/sim/yield.js';
+test('photophysics: ms=0 brighter; contrast near the Python value 0.445; populations conserved', () => {
+  const c = PH.contrast(1, 0.3); assert.ok(Math.abs(c - 0.445) < 0.01, `contrast ${c}`);
+  const e = PH.evolve(1, '1', 2); assert.ok(Math.abs(e.pops.at(-1).reduce((a, b) => a + b) - 1) < 1e-9);
+  const tr = PH.trajectory(1, '0', 5, (() => { let s = 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; })()); assert.ok(tr.length > 20);
+});
+test('wafer: Monte Carlo yield matches Poisson within sampling error', () => {
+  let good = 0, total = 0; const rng = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+  for (let k = 0; k < 40; k++) { const L = Y.layout(76, 5); const area = Math.PI * L.r ** 2 / 100; Y.drop(L, Math.round(area * 2), rng); good += L.dies.filter(d => !d.bad).length; total += L.dies.length; }
+  assert.ok(Math.abs(good / total - Y.poisson(25, 2)) < 0.04, `${good / total} vs ${Y.poisson(25, 2)}`);
+  assert.equal(Y.diesPerWafer(300, 100), 640);
+});

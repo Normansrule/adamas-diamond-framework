@@ -55,7 +55,7 @@ def test_site_builds(tmp_path):
     from adamas import site
     out = site.build(tmp_path / "site")
     for need in ("index.html", "explorer.html", "labs/qubit.html", "labs/heat.html", "labs/cpu.html", "labs/qec.html",
-                 "labs/lattice.html", "labs/fab.html", "labs/globe.html", "labs/stack.html", "og.png", "data/site.json", "assets/style.css"):
+                 "labs/lattice.html", "labs/fab.html", "labs/globe.html", "labs/stack.html", "labs/photon.html", "labs/wafer.html", "gallery.html", "course/lesson-6.html", "og.png", "data/site.json", "assets/style.css"):
         assert (out / need).exists(), need
     data = json.loads((out / "data" / "site.json").read_text())
     assert data["numbers"]["references"] >= 500 and len(data["references"]) >= 30

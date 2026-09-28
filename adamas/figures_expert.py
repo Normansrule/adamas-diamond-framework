@@ -317,6 +317,29 @@ def fig_circuit_qec(out: Path) -> Path:
                    "[gidney2021stim] [higgott2022] [fowler2012] [maurer2012] [hopper2018] [neumann2010science]; adamas.circuit_qec model: p_link 0.3%, p_meas 1%, p_init 0.2%")
 
 
+def fig_biased_noise(out: Path) -> Path:
+    """Figure 40: nuclear-memory dephasing is biased; the standard code wastes the bias, the XZZX code uses it."""
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, 4.8))
+    tr = np.array([1, 3, 10, 30, 100, 300]) * 1e3
+    ax = axes[0]
+    for b, ls in [("z", "--"), ("x", "-")]:
+        for d, col in [(3, COLORS["Si"]), (7, COLORS["Diamond"])]:
+            ax.loglog(tr / 1e3, [circuit_qec.biased_idle_error(d, t, b, "dephase", shots=40000, seed=d) for t in tr], ls, color=col, lw=2,
+                      label=f"d = {d}, {b.upper()} memory")
+    ax.set_xlabel("Ancilla readout time (ms)"); ax.set_ylabel("Logical error per round")
+    ax.set_title("Standard code, dephasing idle: Z memory is untouched, X memory fails", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.15)
+    ax = axes[1]
+    for idle, ls, name in [("dephase", "-", "standard (CSS)"), ("xzzx_dephase", ":", "XZZX")]:
+        for d, col in [(3, COLORS["Si"]), (5, COLORS["4H-SiC"]), (7, COLORS["Diamond"])]:
+            ax.loglog(tr / 1e3, [max(circuit_qec.biased_idle_error(d, t, b, idle, shots=40000, seed=d) for b in ("z", "x")) for t in tr],
+                      ls, color=col, lw=2.3 if idle == "xzzx_dephase" else 1.8, label=f"{name}, d = {d}")
+    ax.axvspan(80, 120, color=RED, alpha=.12); ax.text(85, 2e-4, "standard\nbreak-even", fontsize=8, color=RED)
+    ax.set_xlabel("Ancilla readout time (ms)"); ax.set_ylabel("Worse of the two memory bases, per round")
+    ax.set_title("XZZX code: about 10× more readout time before scaling stops", fontsize=10.5); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
+    return _finish(fig, out, "fig40_biased_noise_xzzx.png",
+                   "[tuckett2018] [bonillaataides2021] [gidney2021stim] [higgott2022] [maurer2012]; adamas.circuit_qec (XZZX emulated by Hadamard conjugation of a checkerboard sublattice)")
+
+
 def make_all(out: str | Path = "docs/img") -> list[Path]:
     paths = [f(Path(out)) for f in ALL]
     if surface_sim.pymatching is None:
@@ -327,4 +350,5 @@ def make_all(out: str | Path = "docs/img") -> list[Path]:
         print("skipped fig38 (optional dependency missing):  pip install stim")
     else:
         paths.append(fig_circuit_qec(Path(out)))
+        paths.append(fig_biased_noise(Path(out)))
     return paths

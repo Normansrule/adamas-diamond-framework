@@ -10,4 +10,7 @@ dependencies:
   - pip:
       - pymatching>=2.1
       - stim>=1.12
+      - nbformat>=5
+      - nbclient>=0.8
+      - ipykernel>=6
       - -e .

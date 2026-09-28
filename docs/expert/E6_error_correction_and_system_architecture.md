@@ -76,6 +76,23 @@ The phenomenological model above hides two things. One gate fault in a syndrome-
 
 Caveats: the idle channel is modeled as depolarizing; real nuclear dephasing under illumination is biased and depends on the hyperfine coupling, which favors bias-tailored codes. Leakage out of the NV⁻ charge state enters only through the preparation error.
 
+### E6.1d The noise is biased: use it (project X-5, first result)
+
+Section E6.1c modeled the idle error as depolarizing. A nuclear spin waiting under green light mostly *dephases*: its phase wanders, it rarely flips ([maurer2012]). That is a biased channel, dominated by Z errors, and standard surface codes waste the bias while bias-tailored codes exploit it ([tuckett2018], [bonillaataides2021]).
+
+`adamas.circuit_qec` now supports a pure-dephasing idle channel and both memory bases, and emulates the XZZX code at circuit level: an XZZX code is the standard (CSS) code with a Hadamard on one checkerboard sublattice of data qubits, so a Z error on those qubits acts as an X error in the standard frame. The emulation keeps the standard gate sequence, so it captures the idle-noise effect, not XZZX-specific hook errors.
+
+![Biased noise and the XZZX code](../img/fig40_biased_noise_xzzx.png)
+
+| Result (1 s nuclear memory, other noise as in E6.1c) | Standard code | XZZX code |
+|---|---|---|
+| Z-memory error vs readout time | flat: dephasing is invisible to it | rises slowly |
+| X-memory error vs readout time | rises as with depolarizing noise | rises slowly |
+| Worse basis, d = 7, 30 ms readout | 5.2 × 10⁻³ per round | 1.1 × 10⁻³ per round |
+| Readout time at which d = 7 stops beating d = 3 (worse basis) | about 100 ms | about 1 s |
+
+**Reading.** A computation needs both bases, so the standard code is limited by its X memory and gains nothing from the bias. Spreading the dephasing across both logical sectors, as XZZX does, buys about ten times more readout time before scaling stops (break-even moves from about 10% to about 100% of the memory coherence time). The stricter budget of E6.1c, readout that at most doubles the distance-7 error, relaxes less: from about 5 ms to about 12 ms for a 1 s memory, or roughly 0.5% to 1.2% of the coherence time. The remaining project (X-5): a native XZZX syndrome circuit with its own hook errors, bias-aware decoding, and the effect on the resource estimate of [E10](E10_scaling_a_room_temperature_quantum_computer.md).
+
 ## E6.2 Mapping codes onto NV hardware
 
 ```mermaid
@@ -117,6 +134,7 @@ Near-term machines skip the error-correction layer and run shallow circuits [pre
 | ID | Project | Deliverable |
 |---|---|---|
 | X-1 | Monte Carlo surface-code simulator with separate intra-cell, inter-cell, and readout error rates | **Done in v0.4.0** (`adamas.surface_sim`, Section E6.1b) |
+| X-5 | Bias-tailored codes for dephasing-dominated nuclear memory: native XZZX circuits, bias-aware decoding, resource impact | First result in v0.14.0 (Section E6.1d): about 10× longer tolerable readout |
 | X-1b | Circuit-level version with idle errors during readout | **Done in v0.12.0** (Section E6.1c): readout must stay below about 1% of the nuclear memory time |
 | X-2 | Compiler from a gate list to `adamas.register` pulse sequences for a 1-electron + 2-nuclei cell | Verified Deutsch–Jozsa [shi2010] and Grover [grover1997] on the simulator |
 | X-3 | Architecture trade study: direct dipolar lattice versus dark-spin bus versus modular cells, using yields from `adamas.coupling.pair_yield` | Cells per logical qubit versus nitrogen-to-NV conversion yield |

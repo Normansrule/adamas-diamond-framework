@@ -1,2 +1,4 @@
 # ADAMAS reference database (part F, v0.12.0). Same format as parts A to E.
 gidney2021stim | Gidney, C. | 2021 | Stim: a fast stabilizer circuit simulator | Quantum | 5, 497 | ctl | V
+tuckett2018 | Tuckett, D. K.; Bartlett, S. D.; Flammia, S. T. | 2018 | Ultrahigh error threshold for surface codes with biased noise | Physical Review Letters | 120, 050505 | q | V
+bonillaataides2021 | Bonilla Ataides, J. P.; Tuckett, D. K.; Bartlett, S. D.; Flammia, S. T.; Brown, B. J. | 2021 | The XZZX surface code | Nature Communications | 12, 2172 | q | V
