@@ -1,0 +1,70 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Photon Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Quantum · Lab 12</span><h1>Photon Lab</h1>
+  <p>Why can light read a spin? Watch one NV center cycle between its energy levels under green light, photon by photon, and see the dark detour that makes mₛ = ±1 dimmer.</p>
+  <div class="ctl"><label>Prepare the spin in</label><div class="seg" id="st"><button class="on" data-s="0">mₛ = 0 (bright)</button><button data-s="1">mₛ = ±1 (dim)</button></div></div>
+  <div class="ctl"><label>Green laser power (× saturation) <b id="bV"></b></label><input type="range" id="b" min="5" max="300" value="100"></div>
+  <div class="ctl"><label>Animation speed <b id="spV"></b></label><input type="range" id="sp" min="1" max="30" value="6"></div>
+  <div style="display:flex;gap:8px"><button class="btn primary" id="go">▶ Fire the laser</button><button class="btn" id="many">Repeat 500 times</button></div>
+  <div class="kpis"><div class="kpi"><b id="kC">–</b><span>Readout contrast, first 300 ns</span></div><div class="kpi"><b id="kN">0</b><span>Red photons in this shot</span></div><div class="kpi"><b id="kP">–</b><span>Spin polarization after 3 µs</span></div></div>
+</aside>
+<div>
+  <div class="stage" style="min-height:0"><canvas id="lev" style="height:420px"></canvas><div class="hud" id="hud">Energy levels of the NV center (not to scale)</div></div>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-top:14px">
+    <div class="stage" style="min-height:0"><canvas id="curve" style="height:230px"></canvas><div class="hud">Fluorescence after the laser turns on</div></div>
+    <div class="stage" style="min-height:0"><canvas id="hist" style="height:230px"></canvas><div class="hud">Photons per 300 ns shot (500 shots)</div></div>
+  </div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Green light lifts the NV center up; it falls back and gives off a red flash. If the spin is in the "1" state, it often takes a dark side path instead and waits there without glowing. So "1" looks a bit darker than "0", and that's how a camera can read a qubit.</div>
+    <div class="lvl" data-l="s">Optical transitions conserve spin, but the excited-state intersystem crossing to the singlet is about eight times faster from mₛ = ±1 (91.8 /µs) than from mₛ = 0 (11 /µs). Time spent in the long-lived singlet is dark, so mₛ = ±1 emits fewer photons during the first few hundred nanoseconds. The singlet decays preferentially to mₛ = 0, which is why the same light also polarizes the spin.</div>
+    <div class="lvl" data-l="r">Five-level rate model (mₛ = ±1 lumped at zero field) with rates from [tetienne2012]; deterministic curves by integrating the rate equations, the animation by a Gillespie quantum-jump trajectory, and the histogram by 500 trajectories with 10% photon collection. Agrees with <code>adamas.photophysics</code> (contrast 0.445 in a 300 ns window at saturation). Real single-shot readout needs many repetitions because of the few collected photons; that is why chapter E4 proposes photocurrent readout.</div>
+    <p class="src">Sources: [tetienne2012] [manson2006] [robledo2011njp] [gruber1997] [doherty2013] [siyushev2019]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import * as PH from '../assets/sim/photophys.js';
+boot('Photon');
+const $ = id => document.getElementById(id);
+let start = '0', jumps = [], t0 = 0, photons = [], counts = [];
+const beta = () => +$('b').value / 100, speed = () => +$('sp').value;       // animation: 1 us of NV time per (speed) seconds
+$('st').onclick = e => { const b = e.target.closest('button'); if (!b) return; start = b.dataset.s; $('st').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); counts = []; curve(); hist(); };
+['b'].forEach(i => $(i).oninput = () => { labels(); curve(); counts = []; hist(); }); $('sp').oninput = labels;
+function labels() { $('bV').textContent = `${beta().toFixed(2)}×`; $('spV').textContent = `1 µs per ${speed()} s`; }
+const LV = { 0: [0.18, 0.86, 'g, mₛ=0'], 1: [0.38, 0.8, 'g, mₛ=±1'], 2: [0.18, 0.2, 'e, mₛ=0'], 3: [0.38, 0.14, 'e, mₛ=±1'], 4: [0.7, 0.5, 'singlet (dark)'] };
+function curve() {
+  const a = PH.evolve(beta(), '0', 2), b = PH.evolve(beta(), '1', 2), { g, w, h } = fitCanvas($('curve'), 230); g.clearRect(0, 0, w, h);
+  const mx = Math.max(...a.photonRate, ...b.photonRate), X = t => 40 + (w - 56) * t / 2, Y = v => h - 26 - (h - 46) * v / mx;
+  g.fillStyle = 'rgba(255,196,107,.12)'; g.fillRect(X(0), 16, X(0.3) - X(0), h - 42);
+  [[a, '#ff5d6c', 'mₛ = 0'], [b, '#9d7bff', 'mₛ = ±1']].forEach(([s, c, l], k) => { g.strokeStyle = c; g.lineWidth = 2.5; g.beginPath(); s.t.forEach((t, i) => i ? g.lineTo(X(t), Y(s.photonRate[i])) : g.moveTo(X(t), Y(s.photonRate[i]))); g.stroke(); g.fillStyle = c; g.font = '12px Inter'; g.fillText(l, w - 80, 30 + 16 * k); });
+  g.fillStyle = '#8ea3b5'; g.fillText('time after laser on (µs) · shaded: readout window', 44, h - 6);
+  $('kC').textContent = `${(100 * PH.contrast(beta(), 0.3)).toFixed(0)}%`;
+  const e = PH.evolve(beta(), '1', 3); const p = e.pops.at(-1); $('kP').textContent = `${(100 * (p[0] + p[2] + p[4] * PH.K.sg0 / (PH.K.sg0 + PH.K.sg1))).toFixed(0)}% in mₛ = 0`;
+}
+function hist() {
+  const { g, w, h } = fitCanvas($('hist'), 230); g.clearRect(0, 0, w, h); if (!counts.length) { g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText('Press "Repeat 500 times"', 20, h / 2); return; }
+  const mx = Math.max(...counts, 1), bins = Array(mx + 1).fill(0); counts.forEach(c => bins[c]++); const bm = Math.max(...bins), bw = (w - 50) / bins.length;
+  bins.forEach((n, i) => { g.fillStyle = start === '0' ? '#ff5d6c' : '#9d7bff'; g.fillRect(40 + i * bw, h - 24 - (h - 44) * n / bm, bw - 2, (h - 44) * n / bm); });
+  g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(`mean ${(counts.reduce((a, b) => a + b) / counts.length).toFixed(2)} photons · ${start === '0' ? 'mₛ = 0' : 'mₛ = ±1'}`, 44, 16);
+}
+$('many').onclick = () => { counts = []; for (let k = 0; k < 500; k++) counts.push(PH.trajectory(beta(), start, 0.3).filter(j => j.kind === 'photon' && Math.random() < 0.1).length); hist(); };
+$('go').onclick = () => { jumps = PH.trajectory(beta(), start, 3); t0 = performance.now(); photons = []; };
+function draw(now) {
+  const { g, w, h } = fitCanvas($('lev'), 420); g.clearRect(0, 0, w, h);
+  const P = k => [LV[k][0] * w, LV[k][1] * h];
+  for (const k of [0, 1, 2, 3, 4]) { const [x, y] = P(k); g.strokeStyle = k === 4 ? '#8ea3b5' : '#e8f1f8'; g.lineWidth = 3; g.beginPath(); g.moveTo(x - 60, y); g.lineTo(x + 60, y); g.stroke(); g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText(LV[k][2], x - 58, y + 18); }
+  const tNV = jumps.length ? (now - t0) / 1000 / speed() : 0;                                 // microseconds of NV time
+  let state = start === '0' ? 0 : 1, shown = 0;
+  for (const j of jumps) { if (j.t > tNV) break; state = j.to; if (j.kind === 'photon') shown++;
+    if (tNV - j.t < 0.06) { const [x1, y1] = P(j.from), [x2, y2] = P(j.to); g.strokeStyle = { pump: '#48e5a3', photon: '#ff5d6c', isc: '#8ea3b5', relax: '#8ea3b5' }[j.kind]; g.lineWidth = j.kind === 'pump' || j.kind === 'photon' ? 4 : 2;
+      g.setLineDash(j.kind === 'isc' || j.kind === 'relax' ? [6, 5] : []); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.setLineDash([]);
+      if (j.kind === 'photon' && !photons.includes(j)) photons.push(j); } }
+  photons.forEach(p => { const age = tNV - p.t; if (age < 0.5) { const [x, y] = P(2), r = 20 + age * 700; g.strokeStyle = `rgba(255,93,108,${1 - age * 2})`; g.lineWidth = 2; g.beginPath(); g.arc(x - 90, y + h * .33, r * .4, -0.6, 0.6); g.stroke(); } });
+  const [sx, sy] = P(state); g.fillStyle = state === 4 ? '#8ea3b5' : state >= 2 ? '#ffc46b' : '#2de2e6'; g.shadowColor = g.fillStyle; g.shadowBlur = 20; g.beginPath(); g.arc(sx, sy, 10, 0, 7); g.fill(); g.shadowBlur = 0;
+  $('kN').textContent = shown; $('hud').textContent = jumps.length ? `t = ${Math.min(tNV, 3).toFixed(3)} µs · green: laser absorption · red: photon · dashed: dark path through the singlet` : 'Energy levels of the NV center (not to scale). Press "Fire the laser".';
+  requestAnimationFrame(draw);
+}
+labels(); curve(); hist(); requestAnimationFrame(draw);
+</script></body></html>

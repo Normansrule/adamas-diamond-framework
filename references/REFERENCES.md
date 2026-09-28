@@ -1,6 +1,6 @@
 # References
 
-**525 references.** 489 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 473 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**527 references.** 491 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 475 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
