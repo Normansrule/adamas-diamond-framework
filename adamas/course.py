@@ -130,6 +130,27 @@ LESSONS = [
              "why": "Bias-tailored codes turn Z-dominated noise into an advantage, about 10× more tolerable readout here [bonillaataides2021] (E6.1d)."},
         ],
     },
+    {
+        "id": 7, "title": "Building it: the process traveler", "minutes": 60,
+        "objectives": ["Order a diamond process by its thermal budget", "Explain why gold goes on right after hydrogen termination",
+                       "Choose NO₂ and ALD options for a target product"],
+        "read": [("Process engineering overview", "docs/process/README.md"), ("Traveler T1, all 19 steps", "docs/process/TRAVELER.md"),
+                 ("From process to product", "docs/process/APPLICATIONS.md")],
+        "lab": ("process.html", "Select the 'Power switch' variant and walk from S01 to S19 with the arrow keys. Which steps are skipped, and which single step would you change to build the RF amplifier instead?"),
+        "code": ["from adamas import traveler as T",
+                 "print('thermal-budget violations:', T.thermal_violations())\nfor s in T.STEPS[:9]:\n    print(s['id'], s['short'], s['t_max_c'], '°C')",
+                 "print(T.VARIANTS['rf']['name'], '→ skips', T.VARIANTS['rf']['skip'])"],
+        "quiz": [
+            {"q": "Why must the NV anneal (up to about 1100 °C) come before the first gold deposition?", "o": ["Gold blocks nitrogen", "Gold melts at 1064 °C and the hole gas and oxide cannot survive such heat", "The anneal needs gold as a catalyst", "It does not matter"], "a": 1,
+             "why": "Heat is spent early: growth and the NV anneal precede all metal; after gold the flow stays below about 500 °C (Figure 42; [pezzagna2010])."},
+            {"q": "What creates the transistor channel in hydrogen-terminated diamond?", "o": ["Boron implantation", "A two-dimensional hole gas from surface transfer doping at the C–H surface", "An inversion layer under the gate", "Phosphorus diffusion"], "a": 1,
+             "why": "Acceptors on the C–H surface pull electrons out of the diamond, leaving holes a few nanometers deep [maier2000] [kawarada2023]."},
+            {"q": "How are neighboring transistors isolated in this flow?", "o": ["Shallow-trench isolation", "An oxygen plasma turns exposed C–H into C–O, killing the hole gas", "Reverse-biased wells", "Etching mesas 1 µm deep"], "a": 1,
+             "why": "One masked oxygen-plasma step isolates every device and also restores oxygen termination on the NV windows [kawarada2023] [hauf2011]."},
+            {"q": "For a transistor that must run at 400 °C, which options fit best?", "o": ["NO₂ doping with ≤ 150 °C ALD", "No NO₂, about 450 °C ALD", "No ALD at all", "Any option works"], "a": 1,
+             "why": "NO₂ desorbs when hot; high-temperature ALD Al₂O₃ enabled 400 °C operation [kawarada2014]."},
+        ],
+    },
 ]
 
 

@@ -286,7 +286,80 @@ def fig_resource_estimate(out: Path) -> Path:
                    "[fowler2012] [litinski2019] [google2025] [dolde2013] [maurer2012] [gidney2021stim]; adamas.resource model (illustrative workloads, NV noise p_link 0.3%)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate]
+def fig_process_flow(out: Path) -> Path:
+    """Figure 41: the T1 process flow as a subway map, with modules, peak temperatures, and optional branches."""
+    from matplotlib.patches import FancyBboxPatch
+    from . import traveler as T
+    mods = {m[0]: m for m in T.MODULES}
+    fig, ax = plt.subplots(figsize=(18, 5.4)); ax.set_xlim(-0.8, len(T.STEPS) - 0.2); ax.set_ylim(-3.0, 2.6); ax.axis("off")
+    ax.plot([0, len(T.STEPS) - 1], [0, 0], color="#c9d3da", lw=7, zorder=0, solid_capstyle="round")
+    branch = {"S06": 1.3, "S07": 1.3, "S12": -1.3}
+    for k, st in enumerate(T.STEPS):
+        c = mods[st["module"]][2]; y = branch.get(st["id"], 0.0)
+        if y:
+            ax.plot([k - 0.5, k, k + 0.5], [0, y, 0], color=c, lw=3, alpha=.55, zorder=1)
+        ax.scatter(k, y, s=520, color=c, edgecolor=INK, lw=1.2, zorder=3)
+        ax.text(k, y, st["id"][1:], ha="center", va="center", fontsize=8.5, fontweight="bold", color=INK, zorder=4)
+        if y > 0:
+            ax.text(k, y + 0.38, st["short"], ha="center", va="bottom", fontsize=9, color=INK)
+        elif y < 0:
+            ax.text(k, y - 0.38, st["short"], ha="center", va="top", fontsize=9, color=INK)
+        else:
+            ax.text(k, -0.45 - 0.42 * (k % 2), st["short"], ha="center", va="top", fontsize=9, color=INK)
+        ax.text(k, 2.35, f"{st['t_max_c']}°", ha="center", fontsize=8, color=RED if st["t_max_c"] > 500 else "#5b6775")
+    ax.text(-0.75, 2.35, "peak", fontsize=8, color="#5b6775", ha="left")
+    for mid, name, col in T.MODULES:
+        ks = [k for k, s_ in enumerate(T.STEPS) if s_["module"] == mid]
+        ax.add_patch(FancyBboxPatch((min(ks) - .45, -2.85), max(ks) - min(ks) + .9, .4, boxstyle="round,pad=0.02", color=col, alpha=.35))
+        ax.text((min(ks) + max(ks)) / 2, -2.65, name, ha="center", va="center", fontsize=9.5, fontweight="bold", color=INK)
+    ax.text(5.5, 2.0, "quantum branch: NV windows", fontsize=9, color=RED, ha="center")
+    ax.text(11, -2.2, "option A: NO₂ doping", fontsize=9, color="#0b8a93", ha="center")
+    ax.set_title("Process traveler T1: hydrogen-terminated diamond transistors with optional NV qubit windows (19 steps)", fontsize=12)
+    return _finish(fig, out, "fig41_process_flow.png", "[kawarada2023] [kasu2012] [pezzagna2010] [hauf2011] [lu2013]; adamas.traveler")
+
+
+def fig_thermal_budget(out: Path) -> Path:
+    """Figure 42: the thermal budget, the ordering rule every diamond flow must respect."""
+    from . import traveler as T
+    fig, ax = plt.subplots(figsize=(13, 4.6))
+    k = np.arange(len(T.STEPS)); t = [s_["t_max_c"] for s_ in T.STEPS]
+    mods = {m[0]: m[2] for m in T.MODULES}
+    ax.bar(k, t, color=[mods[s_["module"]] for s_ in T.STEPS], edgecolor=INK, lw=.6)
+    ax.axvline(T.step_index("S09") - .5, color=GOLD, lw=2); ax.text(T.step_index("S09") - .4, 1030, "first gold: from here on stay below 500 °C", fontsize=9, color=INK)
+    for yv, lab in [(1064, "gold melts (1064 °C)"), (500, "post-metal ceiling (ADAMAS)"), (450, "option-B ALD (450 °C)")]:
+        ax.axhline(yv, color=RED if yv > 1000 else INK, ls="--", lw=1, alpha=.7); ax.text(len(T.STEPS) - .5, yv + 12, lab, ha="right", fontsize=8.5)
+    ax.set_xticks(k); ax.set_xticklabels([s_["id"] for s_ in T.STEPS], fontsize=8); ax.set_ylabel("Peak temperature (°C)"); ax.set_ylim(0, 1200)
+    ax.set_title("Thermal budget: everything hot (growth, NV anneal) must happen before the first metal", fontsize=11)
+    return _finish(fig, out, "fig42_thermal_budget.png", "[pezzagna2010] [kawarada2014] [kasu2012] [lu2013]; adamas.traveler")
+
+
+def fig_cross_sections(out: Path) -> Path:
+    """Figure 43: the device cross-section after every step, drawn from the same geometry as the web traveler."""
+    from matplotlib.patches import Rectangle
+    from . import traveler as T
+    n = len(T.STEPS); cols = 5; rows = (n + cols - 1) // cols
+    fig, axes = plt.subplots(rows, cols, figsize=(17, 2.6 * rows))
+    for k, ax in enumerate(axes.flat):
+        ax.axis("off")
+        if k >= n:
+            continue
+        ax.set_xlim(20, 880); ax.set_ylim(360, 0)
+        for sh in T.XS:
+            if not T.visible(sh, k):
+                continue
+            name, x0, x1, y, h, col = sh[:6]
+            if col == "holes":
+                ax.scatter(np.arange(x0 + 8, x1, 16), [y + 1] * len(np.arange(x0 + 8, x1, 16)), s=4, color=COLORS["Diamond"], zorder=5)
+            elif col == "no2":
+                ax.scatter(np.arange(x0 + 8, x1, 14), [y + 3] * len(np.arange(x0 + 8, x1, 14)), s=10, color="#ff5d8f", zorder=5)
+            else:
+                ax.add_patch(Rectangle((x0, y), x1 - x0, h, color={"gold": "#e0b030"}.get(col, col), alpha=.95 if name not in ("laser",) else .35, zorder=2 if name in ("sub", "epi") else 3))
+        ax.set_title(f"{T.STEPS[k]['id']}  {T.STEPS[k]['short']}", fontsize=10, loc="left", fontweight="bold")
+    fig.suptitle("Cross-section after each step (not to scale): substrate, epilayer, C–H / C–O surfaces, hole gas, gold, NO₂, Al₂O₃, gate, vias, pads, NV centers", fontsize=11, y=1.0)
+    return _finish(fig, out, "fig43_cross_sections.png", "adamas.traveler geometry; process after [kawarada2023] [kasu2012] [pezzagna2010]")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
