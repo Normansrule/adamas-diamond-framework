@@ -44,6 +44,8 @@ def site_data() -> dict:
     data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}
     from . import traveler
     data["traveler"] = traveler.to_json()
+    from . import experiments
+    data["experiments"] = experiments.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))

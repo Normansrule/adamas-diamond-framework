@@ -1,0 +1,166 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<title>Experiments · ADAMAS</title>
+<style>
+.xtabs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.xtabs button{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);border-radius:12px;padding:10px 14px;cursor:pointer;text-align:left;font:500 14px Inter}
+.xtabs button.on{border-color:var(--teal);background:rgba(45,226,230,.12)}.xtabs small{display:block;color:var(--mute);font-size:12px}
+.xlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:16px}
+.xlist button{border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:14px;padding:12px;text-align:left;cursor:pointer;font:500 14px Inter}
+.xlist button.on{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.xlist b{display:block;margin-bottom:4px}
+.xgrid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;padding-bottom:60px}@media(max-width:1000px){.xgrid{grid-template-columns:1fr}}
+.steps li{margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid var(--line);cursor:pointer;list-style:none}.steps li.on{border-color:var(--teal);background:rgba(45,226,230,.1)}
+.steps{padding:0;margin:0}.steps li b{display:block}
+table.pt{width:100%;border-collapse:collapse;font-size:13.5px}table.pt td,table.pt th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}table.pt th{color:var(--mute)}
+.safety{border-left:4px solid var(--red);background:rgba(255,93,108,.08);padding:10px 12px;border-radius:8px;margin:10px 0}
+.meter{height:12px;border-radius:7px;background:rgba(255,255,255,.06);position:relative;overflow:hidden;margin:6px 0 2px}.meter i{position:absolute;top:0;bottom:0;border-radius:7px;background:var(--grad)}
+</style></head><body>
+<main class="wrap">
+<section class="block" style="padding:50px 0 0"><span class="eyebrow">Hands-on</span>
+<h1 style="font-size:clamp(32px,4.6vw,58px)">Experiments, <span class="grad">from US$100 to a pilot line</span></h1>
+<p class="lead">Ten experiments in four budgets. Each one is drawn in 3-D: click a step and the parts it uses light up. Parts lists carry approximate 2026 prices, every step is spelled out, and the plot shows what a working setup should measure, simulated from the same models as the rest of the site.</p>
+<p class="src">Prices are approximate street prices for generic parts; check with vendors. Safety notes summarize hazards and never replace your institution's training. Markdown version: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/experiments/EXPERIMENTS.md">docs/experiments/EXPERIMENTS.md</a>.</p></section>
+<div class="xtabs" id="tiers"></div>
+<div class="xlist" id="xlist"></div>
+<div class="xgrid">
+  <div>
+    <div class="stage" style="min-height:0"><canvas id="c3" style="height:460px"></canvas><div class="hud" id="hud">Drag to orbit · scroll to zoom · click a step</div></div>
+    <div class="card" style="margin-top:14px"><h3 id="plotTitle">What you should see</h3><canvas id="plot" style="width:100%;height:280px"></canvas><p class="src" id="plotNote"></p></div>
+  </div>
+  <div>
+    <div class="card" id="head"></div>
+    <div class="card" style="margin-top:14px"><h3>Step by step</h3><ol class="steps" id="steps"></ol></div>
+    <div class="card" style="margin-top:14px"><h3>Parts and cost</h3><div id="parts"></div></div>
+  </div>
+</div>
+</main>
+<script type="module">
+import { boot, data, fitCanvas } from './assets/site.js';
+boot('Experiments');
+const $ = id => document.getElementById(id), D = (await data()).experiments, T = D.tiers, E = D.experiments;
+let tier = 'A', cur = E[0], stepI = -1;
+const money = v => v >= 1e6 ? `$${(v / 1e6).toFixed(v >= 1e7 ? 0 : 1)}M` : v >= 1e3 ? `$${(v / 1e3).toFixed(v >= 1e4 ? 0 : 1)}k` : `$${v}`;
+$('tiers').innerHTML = Object.entries(T).map(([k, t]) => `<button data-t="${k}" class="${k === tier ? 'on' : ''}"><span style="color:${t.color}">●</span> Tier ${k} · ${t.name}<small>${t.range} · ${t.who}</small></button>`).join('');
+$('tiers').onclick = e => { const b = e.target.closest('button'); if (!b) return; tier = b.dataset.t; $('tiers').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); list(); pick(E.find(x => x.tier === tier)); };
+function list() { $('xlist').innerHTML = E.filter(x => x.tier === tier).map(x => `<button data-id="${x.id}" class="${x === cur ? 'on' : ''}"><b>${x.id} · ${x.title}</b><span style="color:var(--mute);font-size:12.5px">${money(x.cost[0])} to ${money(x.cost[1])} · ${x.time}</span></button>`).join('');
+  $('xlist').querySelectorAll('button').forEach(b => b.onclick = () => pick(E.find(x => x.id === b.dataset.id))); }
+
+// ---------------- 3-D ----------------
+const THREE = await import('three');
+const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+const cv = $('c3'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(40, 1, .1, 500); cam.position.set(18, 16, 22);
+const ctl = new OrbitControls(cam, cv); ctl.enableDamping = true;
+scene.add(new THREE.AmbientLight(0x9ab, .8)); const dl = new THREE.DirectionalLight(0xffffff, 1.5); dl.position.set(10, 20, 12); scene.add(dl);
+const table = new THREE.Mesh(new THREE.BoxGeometry(44, .4, 30), new THREE.MeshStandardMaterial({ color: 0x15202e, roughness: .9 })); table.position.y = -1.4; scene.add(table);
+const holes = new THREE.Group(); for (let i = -21; i <= 21; i += 2.5) for (let j = -14; j <= 14; j += 2.5) { const h = new THREE.Mesh(new THREE.CircleGeometry(.12, 8), new THREE.MeshBasicMaterial({ color: 0x0a1018 })); h.rotation.x = -Math.PI / 2; h.position.set(i, -1.19, j); holes.add(h); } scene.add(holes);
+let rig = new THREE.Group(); scene.add(rig); let parts = {}, beams = [];
+const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .45, metalness: .15, ...o });
+function mesh(kind, s, c) {
+  const g = new THREE.Group(), add = (geo, mat, p = [0, 0, 0], r = [0, 0, 0]) => { const m = new THREE.Mesh(geo, mat); m.position.set(...p); m.rotation.set(...r); g.add(m); return m; };
+  switch (kind) {
+    case 'led': add(new THREE.CylinderGeometry(s * .45, s * .45, s, 20), M(0x3a3f48), [0, 0, 0], [0, 0, Math.PI / 2]); add(new THREE.SphereGeometry(s * .42, 20, 10), M(c, { emissive: c, emissiveIntensity: .9 }), [s * .55, 0, 0]); break;
+    case 'laser': add(new THREE.BoxGeometry(s * 4, s, s), M(0x2d2d2d)); add(new THREE.CylinderGeometry(s * .2, s * .2, .2, 16), M(0x48e5a3, { emissive: 0x48e5a3 }), [s * 2, 0, 0], [0, 0, Math.PI / 2]); break;
+    case 'lens': add(new THREE.CylinderGeometry(s * .6, s * .6, .15, 32), M(c, { transparent: true, opacity: .45 }), [0, 0, 0], [0, 0, Math.PI / 2]); break;
+    case 'dichroic': add(new THREE.BoxGeometry(.12, s, s), M(c, { transparent: true, opacity: .45 }), [0, 0, 0], [0, Math.PI / 4, 0]); break;
+    case 'filter': add(new THREE.BoxGeometry(.12, s, s), M(c, { transparent: true, opacity: .7 }), [0, 0, 0], [0, 0, 0]); break;
+    case 'diamond': add(new THREE.OctahedronGeometry(s), M(c, { emissive: 0x2de2e6, emissiveIntensity: .5, transparent: true, opacity: .9, metalness: .6, roughness: .1 })); break;
+    case 'loop': add(new THREE.TorusGeometry(s * .5, .08, 12, 40), M(c, { metalness: .8, roughness: .3 }), [0, 0, 0], [Math.PI / 2, 0, 0]); break;
+    case 'pcb': add(new THREE.BoxGeometry(s, .12, s * .7), M(c)); break;
+    case 'board': add(new THREE.BoxGeometry(s, .2, s * .6), M(c)); for (let k = 0; k < 3; k++) add(new THREE.BoxGeometry(.5, .25, .5), M(0x111111), [-s * .3 + k * s * .3, .2, 0]); break;
+    case 'box': add(new THREE.BoxGeometry(s, s * .8, s), M(c)); break;
+    case 'block': add(new THREE.BoxGeometry(s, s * .25, s * .7), M(c)); break;
+    case 'plate': add(new THREE.BoxGeometry(s, .15, s), M(c, { transparent: true, opacity: .85, metalness: .5 })); break;
+    case 'magnet': add(new THREE.BoxGeometry(s, s, s * .5), M(0xd14b4b), [0, 0, -s * .25]); add(new THREE.BoxGeometry(s, s, s * .5), M(0x4b6fd1), [0, 0, s * .25]); break;
+    case 'rail': add(new THREE.BoxGeometry(.8, .2, s), M(c)); break;
+    case 'probe': add(new THREE.CylinderGeometry(.06, .06, 3, 8), M(c, { metalness: .8 }), [0, 0, 0], [0, 0, .5]); break;
+    case 'probe4': for (let k = 0; k < 4; k++) add(new THREE.CylinderGeometry(.05, .05, 2.5, 8), M(c, { metalness: .8 }), [-.9 + k * .6, 0, 0], [0.4, 0, 0]); break;
+    case 'coils': [-1, 1].forEach(k => add(new THREE.TorusGeometry(s * .5, .25, 12, 40), M(c, { metalness: .6 }), [k * s * .35, 0, 0], [0, Math.PI / 2, 0])); break;
+    case 'coils3': [[[0, Math.PI / 2, 0], 0], [[Math.PI / 2, 0, 0], 1], [[0, 0, 0], 2]].forEach(([rot, ax]) => [-1, 1].forEach(k => { const p = [0, 0, 0]; p[ax] = k * s * .35; add(new THREE.TorusGeometry(s * .5, .2, 10, 40), M(c, { metalness: .6 }), p, rot); })); break;
+    case 'objective': add(new THREE.CylinderGeometry(s * .5, s * .3, s * 2, 24), M(c, { metalness: .7 })); break;
+    case 'reactor': add(new THREE.CylinderGeometry(s * .8, s * .8, s * .8, 32), M(c, { metalness: .6 }), [0, -s * .2, 0]); add(new THREE.SphereGeometry(s * .8, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M(0xb7c4d0, { transparent: true, opacity: .5 }), [0, s * .2, 0]);
+      add(new THREE.SphereGeometry(s * .35, 20, 10), M(0xd08bff, { emissive: 0xb45cff, emissiveIntensity: 1.2, transparent: true, opacity: .8 }), [0, s * .35, 0]); break;
+    case 'prober': add(new THREE.BoxGeometry(s * 1.4, s * .3, s), M(0x4d5a68)); [-1, 1].forEach(k => add(new THREE.CylinderGeometry(.05, .05, s, 8), M(0xe8f1f8, { metalness: .8 }), [k * s * .35, s * .45, 0], [0, 0, k * .6])); break;
+    case 'implanter': add(new THREE.CylinderGeometry(s * .25, s * .25, s * 2, 24), M(c, { metalness: .6 }), [0, 0, 0], [0, 0, Math.PI / 2]); add(new THREE.BoxGeometry(s * .6, s * .6, s * .6), M(0x3b4656), [-s, 0, 0]); break;
+    case 'rack': add(new THREE.BoxGeometry(s * .6, s * 1.6, s * .6), M(c)); for (let k = 0; k < 5; k++) add(new THREE.BoxGeometry(s * .55, .05, .02), M(0x2de2e6, { emissive: 0x2de2e6 }), [0, -s * .6 + k * s * .3, s * .31]); break;
+    case 'wafer': add(new THREE.CylinderGeometry(s, s, .1, 64), M(c, { metalness: .7, roughness: .15, transparent: true, opacity: .85 })); break;
+    default: add(new THREE.BoxGeometry(s, s, s), M(c));
+  }
+  return g;
+}
+function build(x) {
+  scene.remove(rig); rig = new THREE.Group(); scene.add(rig); parts = {}; beams = [];
+  for (const [name, kind, pos, size, color] of x.scene) { const g = mesh(kind, size, new THREE.Color(color)); g.position.set(...pos); g.userData.name = name; rig.add(g); parts[name] = g; }
+  for (const [col, pts] of Object.entries(x.beams || {})) {
+    if (!pts.length) continue;
+    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(...p)));
+    const line = new THREE.Line(geo, new THREE.LineDashedMaterial({ color: col === 'green' ? 0x48e5a3 : 0xff4d5e, dashSize: .6, gapSize: .35, linewidth: 2 }));
+    line.computeLineDistances(); rig.add(line); beams.push(line);
+    const glow = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: col === 'green' ? 0x48e5a3 : 0xff4d5e, transparent: true, opacity: .25 })); rig.add(glow);
+  }
+  const box = new THREE.Box3().setFromObject(rig), c = box.getCenter(new THREE.Vector3()); ctl.target.copy(c);
+}
+function highlight(names) {
+  for (const [n, g] of Object.entries(parts)) g.traverse(m => { if (m.material) { m.material.transparent = true; m.userData.o = m.userData.o ?? m.material.opacity; m.material.opacity = !names || names.includes(n) ? m.userData.o : .15; } });
+  if (names && names.length) { const box = new THREE.Box3(); names.forEach(n => parts[n] && box.expandByObject(parts[n])); if (!box.isEmpty()) fly(box.getCenter(new THREE.Vector3())); }
+}
+function fly(target) { const from = ctl.target.clone(), camFrom = cam.position.clone(), off = cam.position.clone().sub(ctl.target).setLength(Math.max(10, Math.min(24, cam.position.distanceTo(ctl.target)))); let t = 0;
+  const f = () => { t = Math.min(1, t + .05); const e = 1 - Math.pow(1 - t, 3); ctl.target.lerpVectors(from, target, e); cam.position.lerpVectors(camFrom, target.clone().add(off), e); if (t < 1) requestAnimationFrame(f); }; f(); }
+function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); plot(); } addEventListener('resize', size);
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+cv.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); mouse.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(mouse, cam);
+  const hit = ray.intersectObjects(rig.children, true)[0]; let o = hit && hit.object; while (o && !o.userData.name) o = o.parent;
+  $('hud').textContent = o ? `${o.userData.name}` : 'Drag to orbit · scroll to zoom · click a step'; });
+let t0 = 0; R.setAnimationLoop(() => { t0 += .016; ctl.update(); beams.forEach(b => { b.material.dashOffset = -t0 * 2; });
+  Object.values(parts).forEach(g => g.traverse(m => { if (m.geometry && m.geometry.type === 'OctahedronGeometry') m.rotation.y += .01; })); R.render(scene, cam); });
+
+// ---------------- panels ----------------
+function head(x) {
+  const t = T[x.tier], lo = Math.log10(Math.max(x.cost[0], 50)), hi = Math.log10(x.cost[1]), L = v => 100 * (v - 2) / 6;
+  $('head').innerHTML = `<span class="tag" style="background:${t.color}22;color:${t.color}">Tier ${x.tier} · ${t.name}</span><h2 style="font-size:26px;margin:.4em 0 .2em">${x.id} · ${x.title}</h2>
+    <p style="color:var(--ink)">${x.goal}</p><p><b>You will learn:</b> ${x.learn.join('; ')}.</p><p><b>Time:</b> ${x.time} · <b>Needs:</b> ${x.skill}</p>
+    <div style="font-size:12px;color:var(--mute);display:flex;justify-content:space-between"><span>$100</span><span>$10k</span><span>$1M</span><span>$100M</span></div>
+    <div class="meter"><i style="left:${L(lo)}%;width:${Math.max(2, L(hi) - L(lo))}%"></i></div><p style="font-size:13px;color:var(--mute)">About ${money(x.cost[0])} to ${money(x.cost[1])}</p>
+    <div class="safety"><b>Safety.</b> ${x.safety.join(' ')}</div>
+    <p><b>Analysis.</b> ${x.analysis}</p><p><a class="btn small" href="${x.lab}">Try it first in the browser →</a></p><p class="src">Sources: ${x.refs.map(r => `[${r}]`).join(' ')}</p>`;
+}
+function stepsUI(x) {
+  $('steps').innerHTML = x.steps.map(([t, d], i) => `<li data-i="${i}" class="${i === stepI ? 'on' : ''}"><b>${i + 1}. ${t}</b>${d}</li>`).join('');
+  $('steps').querySelectorAll('li').forEach(li => li.onclick = () => { stepI = +li.dataset.i; stepsUI(x); highlight(x.steps[stepI][2]); });
+}
+function partsUI(x) {
+  const lo = x.parts.reduce((s, p) => s + p[2], 0), hi = x.parts.reduce((s, p) => s + p[3], 0);
+  $('parts').innerHTML = `<table class="pt"><tr><th>Part</th><th>Specification</th><th>US$</th></tr>${x.parts.map(([a, b, c, d]) => `<tr><td>${a}</td><td>${b}</td><td style="white-space:nowrap">${money(c)} to ${money(d)}</td></tr>`).join('')}
+    <tr><td colspan="2"><b>Total of parts</b></td><td style="white-space:nowrap"><b>${money(lo)} to ${money(hi)}</b></td></tr></table>`;
+}
+const PAL = ['#2de2e6', '#ff5d6c', '#ffc46b', '#9d7bff', '#48e5a3'];
+function plot() {
+  const r = cur.result, { g, w, h } = fitCanvas($('plot'), 280); g.clearRect(0, 0, w, h); g.font = '11px Inter';
+  const panels = r.panels ? Object.entries(r.panels).map(([k, [x, y]]) => ({ title: k, x, series: { [k]: y } })) : [{ title: '', x: r.x, series: r.series }];
+  const pw = (w - 20) / panels.length;
+  panels.forEach((p, pi) => {
+    const x0 = 10 + pi * pw + 46, x1 = 10 + (pi + 1) * pw - 10, y0 = 20, y1 = h - 34, all = Object.values(p.series).flat().filter(Number.isFinite);
+    const lx = r.log, ly = r.log || r.logy, fx = v => lx ? Math.log10(v) : v, fy = v => ly ? Math.log10(Math.max(v, 1e-9)) : v;
+    const xs = p.x.map(fx), xmin = Math.min(...xs), xmax = Math.max(...xs), ys = all.map(fy), ymin = Math.min(...ys), ymax = Math.max(...ys), pad = (ymax - ymin) * .08 || 1;
+    const X = v => x0 + (x1 - x0) * (fx(v) - xmin) / (xmax - xmin || 1), Y = v => y1 - (y1 - y0) * (fy(v) - ymin + pad) / (ymax - ymin + 2 * pad);
+    g.strokeStyle = 'rgba(148,190,220,.25)'; g.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    g.fillStyle = '#8ea3b5'; for (let k = 0; k <= 4; k++) { const v = ymin - pad + (ymax - ymin + 2 * pad) * k / 4, yy = y1 - (y1 - y0) * k / 4; g.fillText(ly ? (10 ** v).toPrecision(2) : v.toPrecision(3), x0 - 44, yy + 4); }
+    for (let k = 0; k <= 4; k++) { const v = xmin + (xmax - xmin) * k / 4; g.fillText(lx ? (10 ** v).toPrecision(2) : (+v.toPrecision(3)).toString(), x0 + (x1 - x0) * k / 4 - 10, y1 + 14); }
+    if (p.title) g.fillText(p.title, x0 + 4, y0 - 6);
+    Object.entries(p.series).forEach(([name, y], si) => {
+      g.strokeStyle = g.fillStyle = PAL[si % PAL.length];
+      if (r.bar) { const bw = (x1 - x0) / p.x.length / (Object.keys(p.series).length + 1); p.x.forEach((xv, i) => g.fillRect(x0 + (i + .5) * (x1 - x0) / p.x.length - bw + si * bw, Y(y[i]), bw - 2, y1 - Y(y[i]))); }
+      else if (y.length > 60 && (p.title || name.includes('data') || name.includes('no magnet') || name.includes('offset'))) { y.forEach((v, i) => { g.fillRect(X(p.x[i]) - 1, Y(v) - 1, 2.2, 2.2); }); }
+      else { g.lineWidth = 2; g.beginPath(); y.forEach((v, i) => i ? g.lineTo(X(p.x[i]), Y(v)) : g.moveTo(X(p.x[i]), Y(v))); g.stroke(); if (y.length < 12) y.forEach((v, i) => { g.beginPath(); g.arc(X(p.x[i]), Y(v), 3.5, 0, 7); g.fill(); }); }
+      if (!p.title) { g.fillText(name, x0 + 8, y0 + 14 + si * 14); }
+    });
+    if (r.model) Object.values(r.model).forEach(y => { g.strokeStyle = '#ff5d6c'; g.lineWidth = 1.4; g.beginPath(); y.forEach((v, i) => i ? g.lineTo(X(p.x[i]), Y(v)) : g.moveTo(X(p.x[i]), Y(v))); g.stroke(); });
+  });
+  g.fillStyle = '#8ea3b5'; if (r.xlabel) g.fillText(r.xlabel, w / 2 - 60, h - 6);
+  $('plotNote').textContent = `${r.ylabel || ''}${r.ea_fit_ev ? ` · corrected Arrhenius fit: E_A = ${r.ea_fit_ev.toFixed(3)} eV` : ''} · simulated from adamas models; your data should look like this.`;
+}
+function pick(x) { cur = x; stepI = -1; list(); build(x); highlight(null); head(x); stepsUI(x); partsUI(x); plot(); }
+size(); pick(E[0]);
+</script></body></html>

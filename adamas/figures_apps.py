@@ -359,7 +359,124 @@ def fig_cross_sections(out: Path) -> Path:
     return _finish(fig, out, "fig43_cross_sections.png", "adamas.traveler geometry; process after [kawarada2023] [kasu2012] [pezzagna2010]")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections]
+def fig_expected_tier_a(out: Path) -> Path:
+    """Figure 44: what a working tier-A setup should show (ODMR, magnet law, heat-spreader race), with fits."""
+    from scipy.optimize import curve_fit
+    from . import experiments as X
+    fig, axes = plt.subplots(1, 3, figsize=(17, 4.9))
+    r = X.expected("odmr_ensemble"); f = np.array(r["x"]); ax = axes[0]
+    for (name, y), c in zip(r["series"].items(), [COLORS["Diamond"], RED]):
+        ax.plot(f, y, ".", ms=3, color=c, alpha=.55, label=f"{name} (simulated data)")
+    lor = lambda x, a, x0, w, c0: c0 - a * w ** 2 / ((x - x0) ** 2 + w ** 2)  # noqa: E731
+    y0 = np.array(r["series"]["no magnet"]); p, _ = curve_fit(lor, f, y0, p0=[0.01, 2870, 6, 1])
+    ax.plot(f, lor(f, *p), color=INK, lw=1.8, label=f"Lorentzian fit: D = {p[1]:.1f} MHz, contrast {100 * p[0] / p[3]:.1f}%")
+    ax.plot(f, r["model"]["magnet near"], color=RED, lw=1.4, label="model: 4 orientations × 2 lines")
+    ax.axvline(2870, color=INK, ls=":", lw=1); ax.text(2873, 1.004, "D = 2870 MHz", fontsize=8.5)
+    ax.text(2795, 0.968, "a magnet splits one dip into up to eight", fontsize=8.5, color=RED)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("A1 · ODMR of an NV ensemble", fontsize=11); ax.legend(fontsize=7, loc="center left", bbox_to_anchor=(0.0, 0.62)); ax.grid(True, which="both", alpha=.12)
+    r = X.expected("magnet_distance"); ax = axes[1]; d = np.array(r["x"]); meas = np.array(r["series"]["measured"])
+    ax.errorbar(d, meas, yerr=0.05 * meas, fmt="o", color=RED, capsize=3, label="measured (±5%)")
+    k, b = np.polyfit(np.log(d), np.log(meas), 1); dd = np.linspace(2.5, 11, 50)
+    ax.loglog(dd, np.exp(b) * dd ** k, color=INK, lw=1.8, label=f"fit: slope {k:.2f} (dipole: −3)")
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("A2 · Weigh a magnet with light", fontsize=11); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.15)
+    from matplotlib.ticker import FixedLocator, ScalarFormatter
+    ax.xaxis.set_major_locator(FixedLocator([3, 4, 5, 6, 8, 10])); ax.xaxis.set_major_formatter(ScalarFormatter()); ax.xaxis.set_minor_locator(plt.NullLocator())
+    ax.text(0.04, 0.06, "splitting = 2γB, γ = 28 MHz/mT\nB ∝ m / r³", transform=ax.transAxes, fontsize=8.5, bbox=dict(boxstyle="round", fc="white", ec="#dde3e8"))
+    r = X.expected("heat_spreaders"); ax = axes[2]; t = np.array(r["x"])
+    cols = {"silicon": COLORS["Si"], "aluminium": GOLD, "copper": "#b87333", "diamond": COLORS["Diamond"]}
+    for name, y in r["series"].items():
+        ax.plot(t, y, color=cols[name], lw=2.2, label=f"{name}: {y[-1]:.1f} K at 3 min")
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("A3 · Heat-spreader race, 1.5 W heater", fontsize=11); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.12)
+    ax.text(0.45, 0.08, "paste and heat sink add a floor\nthat no plate can remove", transform=ax.transAxes, fontsize=8.5, color="#5b6775")
+    return _finish(fig, out, "fig44_expected_tier_a.png", "[stegemann2023] [williams2026] [doherty2013] [wei1993]; simulated with adamas.nv and adamas.experiments (noise levels typical of tier-A photodiode readout)")
+
+
+def fig_expected_tier_b(out: Path) -> Path:
+    """Figure 45: tier-B expected results: pulsed control with fits, vector magnetometry, and dopant activation."""
+    from scipy.optimize import curve_fit
+    from . import experiments as X
+    fig = plt.figure(figsize=(17, 8.6)); gs = fig.add_gridspec(2, 3, hspace=.38, wspace=.28)
+    P = X.expected("pulsed")["panels"]
+    specs = [("Rabi (µs)", lambda t, a, f, T, c: c + a * (1 - np.cos(2 * np.pi * f * t) * np.exp(-t / T)), [0.05, 5, 0.8, 0], "Rabi: Ω = {1:.2f} MHz, π pulse = {pi:.0f} ns"),
+             ("Ramsey (µs)", lambda t, a, f, T, c: c + a * (1 - np.cos(2 * np.pi * f * t) * np.exp(-(t / T) ** 2)), [0.05, 3, 0.6, 0], "Ramsey: detuning {1:.2f} MHz, T₂* = {2:.2f} µs"),
+             ("Echo (µs)", lambda t, a, T, n, c: c + a * np.exp(-(t / T) ** n), [0.1, 300, 1.5, 0], "Echo: T₂ = {1:.0f} µs, n = {2:.2f}")]
+    for k, (key, fn, p0, fmt) in enumerate(specs):
+        ax = fig.add_subplot(gs[0, k]); x, y = map(np.array, P[key])
+        ax.plot(x, y, "o", ms=3, color=COLORS["Diamond"], alpha=.7, label="simulated data")
+        p, cov = curve_fit(fn, x, y, p0=p0, maxfev=20000); xx = np.linspace(x.min(), x.max(), 400)
+        ax.plot(xx, fn(xx, *p), color=RED, lw=1.8, label="fit")
+        ax.set_title(fmt.format(*p, pi=500 / p[1] if k == 0 else 0), fontsize=10.5); ax.set_xlabel(key.split(" ")[0] + " time (µs)"); ax.set_ylabel("Contrast"); ax.grid(True, which="both", alpha=.12); ax.legend(fontsize=8)
+    r = X.expected("vector"); ax = fig.add_subplot(gs[1, 0]); x = np.arange(4)
+    ax.bar(x - .18, r["series"]["applied"], .36, color=COLORS["Si"], label="applied field"); ax.bar(x + .18, r["series"]["fitted"], .36, color=COLORS["Diamond"], label="fitted from 8 lines")
+    ax.set_xticks(x); ax.set_xticklabels(["[111]", "[1̄1̄1]", "[1̄11̄]", "[11̄1̄]"]); ax.set_ylabel(r["ylabel"]); ax.set_title(f"B2 · Vector magnetometry: B = ({', '.join(f'{v:.1f}' for v in r['B'])}) mT", fontsize=10.5); ax.legend(fontsize=8)
+    r = X.expected("arrhenius"); ax = fig.add_subplot(gs[1, 1:]); x = np.array(r["x"]); R = np.array(r["series"]["resistivity (Ω·cm)"])
+    ax.semilogy(x, R, "o", color=RED, label="simulated four-point data, [B] = 3×10¹⁷, [N] = 5×10¹⁶ cm⁻³")
+    T = 1000 / x; kfit = np.polyfit(x[:9], np.log(R[:9] * T[:9] ** -0.7), 1)
+    ax.semilogy(x[:9], np.exp(np.polyval(kfit, x[:9])) * T[:9] ** 0.7, color=INK, lw=2, label=f"corrected fit: E_A = {r['ea_fit_ev']:.3f} eV (raw slope {r['ea_raw_ev']:.3f} eV)")
+    ax.axhspan(R.min(), R.min() * 3, color=COLORS["Diamond"], alpha=.08); ax.text(x.min() + .05, R.min() * 1.4, "hot: boron wakes up, resistance drops", fontsize=9)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("B3 · Dopant activation: recover the 0.37 eV boron level", fontsize=10.5, pad=34); ax.legend(fontsize=8.5); ax.grid(True, which="both", alpha=.15)
+    sec = ax.secondary_xaxis("top", functions=(lambda v: 1000 / np.maximum(v, 1e-9) - 273.15, lambda c: 1000 / (c + 273.15))); sec.set_xlabel("Temperature (°C)")
+    return _finish(fig, out, "fig45_expected_tier_b.png", "[sewani2020] [hahn1950] [rondin2014] [lagrange1998] [sze2006]; simulated with adamas.experiments")
+
+
+def fig_expected_tier_cd(out: Path) -> Path:
+    """Figure 46: tier-C and tier-D expected results: antibunching, hyperfine triplet, transistor, Bell fidelity, yield."""
+    from . import experiments as X
+    fig, axes = plt.subplots(2, 3, figsize=(17, 8.6)); plt.subplots_adjust(hspace=.38, wspace=.28)
+    rng = np.random.default_rng(2); ax = axes[0, 0]
+    img = rng.poisson(20, (80, 80)).astype(float); yy, xx = np.mgrid[0:80, 0:80]
+    for cx, cy in rng.uniform(5, 75, (9, 2)):
+        img += 260 * np.exp(-((xx - cx) ** 2 + (yy - cy) ** 2) / (2 * 1.4 ** 2))
+    im = ax.imshow(img, cmap="magma", extent=[0, 20, 0, 20]); fig.colorbar(im, ax=ax, label="kcounts/s")
+    ax.set_title("C1 · Confocal scan: isolated spots are NV candidates", fontsize=10.5); ax.set_xlabel("µm"); ax.set_ylabel("µm")
+    P = X.expected("single_nv")["panels"]; ax = axes[0, 1]; t, g = map(np.array, P["g2"])
+    ax.plot(t, g, ".", color=COLORS["Diamond"], ms=4); ax.plot(t, 1 - 0.8 * np.exp(-np.abs(t) / 12), color=RED, lw=1.8)
+    ax.axhline(0.5, color=INK, ls="--", lw=1); ax.text(-78, 0.53, "single-emitter threshold g⁽²⁾(0) = 0.5", fontsize=8.5)
+    ax.set_xlabel("Delay τ (ns)"); ax.set_ylabel("g⁽²⁾(τ)"); ax.set_title("C1 · Antibunching proves one emitter", fontsize=10.5); ax.grid(True, alpha=.12)
+    ax = axes[0, 2]; f, s_ = map(np.array, P["hyperfine"]); ax.plot(f, s_, color=COLORS["Diamond"], lw=1.2)
+    for k in (-1, 0, 1):
+        ax.axvline(2870 + 2.16 * k, color=RED, ls=":", lw=1)
+    ax.set_xlabel("Frequency (MHz)"); ax.set_ylabel("Fluorescence"); ax.set_title("C1 · ¹⁴N hyperfine triplet, 2.16 MHz apart", fontsize=10.5)
+    r = X.expected("fet_curves"); ax = axes[1, 0]
+    for (name, y), c in zip(r["series"].items(), [COLORS["Si"], GOLD, COLORS["4H-SiC"], COLORS["Diamond"]]):
+        ax.plot(r["x"], y, color=c, lw=2, label=name)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("C2 · Output curves of a hole-gas transistor (model)", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, alpha=.12)
+    r = X.expected("bell_q"); ax = axes[1, 1]; ax.plot(r["x"], r["series"]["model (published pair)"], color=COLORS["Diamond"], lw=2.5, label="ADAMAS budget, published pair")
+    for q, F, lab in r["marks"]:
+        ax.plot(q, F, "*", ms=14, color=RED); ax.annotate(f"{lab}: {F}", (q, F), xytext=(q - 0.13, F + 0.06), fontsize=9, arrowprops=dict(arrowstyle="->", lw=.8))
+    ax.axhline(0.5, color=INK, ls=":", lw=1); ax.text(0.51, 0.52, "entanglement threshold", fontsize=8.5)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("D1 · Two-qubit fidelity is set by charge-state preparation", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, alpha=.12)
+    r = X.expected("good_dies"); ax = axes[1, 2]
+    for (name, y), c in zip(r["series"].items(), [COLORS["Diamond"], GOLD, RED]):
+        ax.loglog(r["x"], np.maximum(y, 1e-1), color=c, lw=2.2, label=name)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("D2 · Good dies per 3-inch wafer (Murphy yield)", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.15)
+    return _finish(fig, out, "fig46_expected_tier_cd.png", "[kurtsiefer2000] [doherty2013] [kawarada2023] [dolde2013] [dolde2014] [murphy1964]; simulated with adamas.experiments")
+
+
+def fig_experiment_ladder(out: Path) -> Path:
+    """Figure 47: the experiment ladder: what each budget lets you prove, from a glowing diamond to a pilot line."""
+    from . import experiments as X
+    fig, ax = plt.subplots(figsize=(16, 6.6))
+    levels = ["see NV glow", "sense a field", "measure heat flow", "control a spin", "measure a dopant", "isolate one qubit", "build a transistor", "entangle two qubits", "manufacture"]
+    ylev = {"A1": 0, "A2": 1, "B2": 1.45, "A3": 2, "B1": 3, "B3": 4, "C1": 5, "C2": 6, "D1": 7, "D2": 8}
+    short = {"A1": "A1 NV glow and ODMR", "A2": "A2 weigh a magnet (adds to A1)", "A3": "A3 heat-spreader race", "B1": "B1 Rabi, Ramsey, echo",
+             "B2": "B2 vector magnetometry", "B3": "B3 boron activation energy", "C1": "C1 single NV, antibunching", "C2": "C2 cleanroom transistor",
+             "D1": "D1 room-temperature entanglement", "D2": "D2 3-inch pilot line"}
+    for k, (tid, t) in enumerate(X.TIERS.items()):
+        lo, hi = [(1e2, 1e3), (1e3, 1e4), (1e4, 1e5), (1e5, 1e8)][k]
+        ax.axvspan(lo, hi, color=t["color"], alpha=.10); ax.text(np.sqrt(lo * hi), 8.75, f"Tier {tid} · {t['name']}\n{t['range']}", ha="center", fontsize=9.5, fontweight="bold", color=INK)
+    for e in X.EXPERIMENTS:
+        lo = max(e["cost"][0], 60); hi = max(e["cost"][1], lo * 2.2); y = ylev[e["id"]]; c = X.TIERS[e["tier"]]["color"]
+        ax.plot([lo, hi], [y, y], color=c, lw=9, alpha=.8, solid_capstyle="round")
+        ax.text(hi * 1.25, y, short[e["id"]], ha="left", va="center", fontsize=9, color=INK)
+    ax.set_xscale("log"); ax.set_xlim(40, 1e8); ax.set_ylim(-0.6, 9.4); ax.yaxis.set_minor_locator(plt.NullLocator())
+    ax.set_yticks(range(len(levels))); ax.set_yticklabels(levels); ax.set_xlabel("Approximate cost (US$, 2026, log scale)")
+    ax.set_title("The experiment ladder: each order of magnitude in budget unlocks a new thing you can prove about diamond", fontsize=11.5)
+    ax.grid(True, axis="x", which="both", alpha=.15)
+    return _finish(fig, out, "fig47_experiment_ladder.png", "adamas.experiments (prices are approximate street prices; verify with vendors)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
