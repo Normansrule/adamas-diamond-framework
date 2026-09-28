@@ -12,6 +12,21 @@
   <a href="https://codespaces.new/Normansrule/adamas-diamond-framework"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="32"></a>
 </p>
 
+## 🔬 Do it yourself: ten experiments from US$100 to a pilot line
+
+[EXPERIMENTS.md](docs/experiments/EXPERIMENTS.md) and the [interactive 3-D version](https://normansrule.github.io/adamas-diamond-framework/experiments.html) give ten experiments in four budgets, each with a parts list and approximate prices, safety notes, numbered steps, the analysis, and simulated expected results so you know what a working setup should show.
+
+| Tier | Budget | Experiments |
+|---|---|---|
+| A · Kitchen table | US$100 to 500 | NV glow and ODMR; weigh a magnet with light; heat-spreader race |
+| B · Teaching lab | US$1,000 to 10,000 | Rabi, Ramsey, and echo; vector magnetometry; boron activation energy |
+| C · Research lab | US$10,000 to 100,000 | Single NV centers and photon antibunching; a diamond transistor from a university cleanroom |
+| D · Facility | US$100,000 to tens of millions | Room-temperature entanglement of two qubits; a 3-inch pilot line |
+
+![Experiment ladder](docs/img/fig47_experiment_ladder.png)
+
+![Expected results, tier B](docs/img/fig45_expected_tier_b.png)
+
 ## 🏭 Build it: a process engineer's traveler
 
 The [process folder](docs/process/README.md) turns the framework into a cleanroom run sheet. [Traveler T1](docs/process/TRAVELER.md) takes a bare diamond plate to a tested chip in 19 steps; each step has its purpose, equipment, starting-point parameters with sources, in-line checks with pass windows, safety notes, failure modes, and what silicon does instead. [Applications](docs/process/APPLICATIONS.md) maps five product variants (power switch, RF amplifier, high-temperature logic, quantum sensor, qubit chip) onto the flow with acceptance tests and the published numbers to beat. The [interactive traveler](https://normansrule.github.io/adamas-diamond-framework/process.html) animates the cross-section, keeps a run log that checks your measurements, and exports CSV.
@@ -64,7 +79,7 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>43 figures, 6 animations, a trailer, 13 labs, a 7-lesson course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>47 figures, 6 animations, a trailer, 13 labs, 10 hands-on experiments, a 7-lesson course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -300,7 +315,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 74 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 86 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -333,6 +348,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.orfs_platform` | Complete OpenROAD-flow-scripts platform for PDK-0; `make orfs` routes DIA-4 in Docker | [ajayi2019], [meadconway1980] |
 | `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
+| `adamas.experiments` | Ten tiered experiments: parts and prices, steps, safety, 3-D scenes, simulated expected results (`make experiments`) | [stegemann2023], [williams2026], [sewani2020] |
 | `adamas.traveler` | Process traveler T1: 19 steps with parameters, checks, safety, failure modes, cross-section geometry, product variants (`make traveler`) | [kawarada2023], [kasu2012], [pezzagna2010] |
 | `adamas.photophysics` | NV optical cycle: five-level rate model, readout contrast, polarization; Photon Lab | [tetienne2012], [manson2006] |
 | `adamas.course` | The seven-lesson course: web pages, quizzes, and notebooks from one file (`make notebooks`) | see [the course](https://normansrule.github.io/adamas-diamond-framework/course/) |

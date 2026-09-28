@@ -1,6 +1,6 @@
 # References
 
-**534 references.** 497 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 481 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**537 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -183,12 +183,13 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[liang2021]`** Liang, J.; Kobayashi, A.; Shimizu, Y.; et al. (2021). Fabrication of GaN/diamond heterointerface and interfacial chemical bonding state for highly efficient device design. *Advanced Materials*, 33, 2104564. [doi:10.1002/adma.202104564](https://doi.org/10.1002/adma.202104564)
 - ✅ **`[malakoutian2021]`** Malakoutian, M.; Field, D. E.; Hines, N. J.; et al. (2021). Record-low thermal boundary resistance between diamond and GaN-on-SiC for enabling radiofrequency device cooling. *ACS Applied Materials and Interfaces*, 13, 60553. [doi:10.1021/acsami.1c13833](https://doi.org/10.1021/acsami.1c13833)
 
-## Nitrogen-vacancy (NV) center physics (44)
+## Nitrogen-vacancy (NV) center physics (47)
 
 - ✅ **`[davies1976]`** Davies, G.; Hamer, M. F. (1976). Optical studies of the 1.945 eV vibronic band in diamond. *Proceedings of the Royal Society A*, 348, 285. [doi:10.1098/rspa.1976.0039](https://doi.org/10.1098/rspa.1976.0039)
 - ✅ **`[loubser1978]`** Loubser, J. H. N.; van Wyk, J. A. (1978). Electron spin resonance in the study of diamond. *Reports on Progress in Physics*, 41, 1201. [doi:10.1088/0034-4885/41/8/002](https://doi.org/10.1088/0034-4885/41/8/002)
 - ✅ **`[gruber1997]`** Gruber, A.; Draebenstedt, A.; Tietz, C.; et al. (1997). Scanning confocal optical microscopy and magnetic resonance on single defect centers. *Science*, 276, 2012. [doi:10.1126/science.276.5321.2012](https://doi.org/10.1126/science.276.5321.2012)
 - ✅ **`[vanwyk1997]`** van Wyk, J. A.; Reynhardt, E. C.; High, G. L.; Kiflawi, I. (1997). The dependences of ESR line widths and spin-spin relaxation times of single nitrogen defects on the concentration of nitrogen defects in diamond. *Journal of Physics D: Applied Physics*, 30, 1790. [doi:10.1088/0022-3727/30/12/016](https://doi.org/10.1088/0022-3727/30/12/016)
+- ✅ **`[kurtsiefer2000]`** Kurtsiefer, C.; Mayer, S.; Zarda, P.; Weinfurter, H. (2000). Stable solid-state source of single photons. *Physical Review Letters*, 85, 290. [doi:10.1103/physrevlett.85.290](https://doi.org/10.1103/physrevlett.85.290)
 - ✅ **`[jelezko2004a]`** Jelezko, F.; Gaebel, T.; Popa, I.; Gruber, A.; Wrachtrup, J. (2004). Observation of coherent oscillations in a single electron spin. *Physical Review Letters*, 92, 076401. [doi:10.1103/physrevlett.92.076401](https://doi.org/10.1103/physrevlett.92.076401)
 - ✅ **`[jelezko2004b]`** Jelezko, F.; Gaebel, T.; Popa, I.; et al. (2004). Observation of coherent oscillation of a single nuclear spin and realization of a two-qubit conditional quantum gate. *Physical Review Letters*, 93, 130501. [doi:10.1103/physrevlett.93.130501](https://doi.org/10.1103/physrevlett.93.130501)
 - ✅ **`[childress2006]`** Childress, L.; Gurudev Dutt, M. V.; Taylor, J. M.; et al. (2006). Coherent dynamics of coupled electron and nuclear spin qubits in diamond. *Science*, 314, 281. [doi:10.1126/science.1131871](https://doi.org/10.1126/science.1131871)
@@ -229,6 +230,8 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[sangtawesin2019]`** Sangtawesin, S.; Dwyer, B. L.; Srinivasan, S.; et al. (2019). Origins of diamond surface noise probed by correlating single-spin measurements with surface spectroscopy. *Physical Review X*, 9, 031052. [doi:10.1103/physrevx.9.031052](https://doi.org/10.1103/physrevx.9.031052)
 - ✅ **`[bauch2020]`** Bauch, E.; Singh, S.; Lee, J.; et al. (2020). Decoherence of ensembles of nitrogen-vacancy centers in diamond. *Physical Review B*, 102, 134210. [doi:10.1103/physrevb.102.134210](https://doi.org/10.1103/physrevb.102.134210)
 - ✅ **`[cambria2023]`** Cambria, M. C.; Norambuena, A.; Dinani, H. T.; et al. (2023). Temperature-dependent spin-lattice relaxation of the nitrogen-vacancy spin triplet in diamond. *Physical Review Letters*, 130, 256903. [doi:10.1103/physrevlett.130.256903](https://doi.org/10.1103/physrevlett.130.256903)
+- ✅ **`[stegemann2023]`** Stegemann, J.; et al. (2023). Modular low-cost 3D printed setup for experiments with NV centers in diamond. *European Journal of Physics*, 44, 035402. [doi:10.1088/1361-6404/acbe7c](https://doi.org/10.1088/1361-6404/acbe7c)
+- ✅ **`[williams2026]`** Williams, H.; Newman, A.; Graham, S.; Stephen, C.; Morley, G. (2026). A portable LED-based diamond magnetometer for outreach and teaching labs. *American Journal of Physics*, 94, 489. [doi:10.1119/5.0295777](https://doi.org/10.1119/5.0295777)
 
 ## Quantum sensing (17)
 

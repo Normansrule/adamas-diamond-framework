@@ -28,7 +28,7 @@ plt.rcParams.update({
     "figure.facecolor": "white", "axes.facecolor": "white", "savefig.facecolor": "white",
     "font.size": 11, "axes.titlesize": 13, "axes.titleweight": "bold", "axes.spines.top": False,
     "axes.spines.right": False, "axes.edgecolor": INK, "text.color": INK, "axes.labelcolor": INK,
-    "xtick.color": INK, "ytick.color": INK, "legend.frameon": False, "figure.dpi": 130,
+    "xtick.color": INK, "ytick.color": INK, "legend.frameon": False, "figure.dpi": 130, "savefig.dpi": 170, "xtick.minor.visible": True, "ytick.minor.visible": True,
 })
 
 
