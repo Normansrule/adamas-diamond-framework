@@ -142,3 +142,7 @@ body main{animation:enter .7s cubic-bezier(.2,.8,.2,1) both}@keyframes enter{fro
 .stage::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1px 1px at 20% 30%,rgba(111,243,255,.5),transparent),radial-gradient(1px 1px at 70% 60%,rgba(157,123,255,.5),transparent),radial-gradient(1px 1px at 40% 80%,rgba(255,93,143,.4),transparent),radial-gradient(1px 1px at 85% 20%,rgba(111,243,255,.4),transparent);background-size:220px 220px;animation:drift 40s linear infinite;opacity:.5}
 @keyframes drift{to{background-position:220px 440px,-220px 220px,440px -220px,-440px 440px}}
 .kpi b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* v0.18: glossary hover definitions */
+abbr.gl{text-decoration:none;border-bottom:1px dotted rgba(111,243,255,.7);cursor:help;position:relative}
+abbr.gl:hover::after{content:attr(data-tip);position:absolute;left:0;top:1.6em;z-index:80;width:min(320px,70vw);padding:10px 12px;border-radius:10px;background:#0b1626;border:1px solid rgba(111,243,255,.35);color:#e8f1f8;font:400 13px/1.5 Inter;box-shadow:0 12px 40px rgba(0,0,0,.5);white-space:normal}

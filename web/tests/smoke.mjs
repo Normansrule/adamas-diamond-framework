@@ -18,7 +18,7 @@ Object.defineProperty(W.HTMLElement.prototype, 'clientHeight', { get: () => 420 
 W.URL.createObjectURL = () => 'blob:x'; W.HTMLAnchorElement.prototype.click = function () {};
 W.IntersectionObserver = class { constructor(cb) { this.cb = cb; } observe(el) { this.cb([{ isIntersecting: true, target: el }]); } unobserve() {} disconnect() {} };
 let frames = 0; W.requestAnimationFrame = cb => (frames++ < 40 ? setTimeout(() => cb(performance.now()), 1) : 0);
-for (const k of ['window', 'document', 'navigator', 'HTMLElement', 'IntersectionObserver', 'requestAnimationFrame', 'getComputedStyle'])
+for (const k of ['window', 'document', 'navigator', 'HTMLElement', 'IntersectionObserver', 'requestAnimationFrame', 'getComputedStyle', 'NodeFilter'])
   Object.defineProperty(globalThis, k, { value: k === 'window' ? W : W[k], configurable: true, writable: true });
 globalThis.addEventListener = W.addEventListener.bind(W); globalThis.devicePixelRatio = 1; W.SVGElement.prototype.getTotalLength = () => 1000;
 globalThis.fetch = async u => { const p = path.join(siteDir, page.includes('/') ? 'labs' : '', u); return { json: async () => JSON.parse(fs.readFileSync(p, 'utf8')) }; };
@@ -33,10 +33,11 @@ try { await import(pathToFileURL(tmp).href); } catch (e) { errors.push(String(e.
 await new Promise(r => setTimeout(r, 200));
 const $ = id => W.document.getElementById(id);
 for (const a of (actions || '').split(',').filter(Boolean)) {
+  if (a === 'loadex') { const k = W.document.getElementById('kind'); const f = path.join(siteDir, 'data', 'examples', 'rabi.csv'); W.document.getElementById('paste').value = fs.readFileSync(f, 'utf8'); k.value = 'rabi'; W.document.getElementById('go').click(); continue; }
   if (a === 'step1') { W.document.querySelector('#steps li')?.click(); continue; }
   if (a === 'tierC') { W.document.querySelector('#tiers button[data-t="C"]')?.click(); continue; }
   if (a === 'quizall') { W.document.querySelectorAll('[data-q] button[data-k="1"]').forEach(b => b.click()); continue; } const [id, n] = a.split('*'); for (let i = 0; i < (+n || 1); i++) $(id).click(); await new Promise(r => setTimeout(r, 60)); }
 await new Promise(r => setTimeout(r, 300));
 if (errors.length) { console.error(JSON.stringify({ page, errors })); process.exit(1); }
-console.log(JSON.stringify({ page, errors, probe: Object.fromEntries(['plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])) }));
+console.log(JSON.stringify({ page, errors, gl: W.document.querySelectorAll('abbr.gl').length, probe: Object.fromEntries(['notes', 'plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])) }));
 process.exit(0);

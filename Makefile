@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks traveler experiments explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
@@ -64,6 +64,12 @@ traveler:        ## regenerate docs/process/TRAVELER.md from adamas/traveler.py
 
 experiments:     ## regenerate docs/experiments/EXPERIMENTS.md from adamas/experiments.py
 	$(PY) -c "from adamas.experiments import write; write()"
+
+examples:        ## regenerate the practice datasets in docs/data/examples
+	$(PY) -c "from adamas.fitting import example_datasets; example_datasets()"
+
+glossary:        ## regenerate docs/GLOSSARY.md
+	$(PY) -c "from adamas.glossary import write; write()"
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

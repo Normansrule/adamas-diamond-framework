@@ -49,7 +49,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 5. **Find the dip.** Plot detector signal versus frequency. A dip of about 0.5 to 3% near 2870 MHz is ODMR. Average longer if it is buried in noise.
 6. **Split it.** Bring the magnet closer: the single dip splits into up to eight (four NV orientations × two), moving apart as the field grows.
 
-**Analysis.** Fit Lorentzians to the dips. The center is D ≈ 2870 MHz; each pair splits by 2γB∥ with γ = 28 MHz/mT. Compare with the Lattice Lab.
+**Analysis.** Fit Lorentzians to the dips. The center is D ≈ 2870 MHz; each pair splits by 2γB∥ with γ = 28 MHz/mT. Compare with the Lattice Lab. Fit your data with `python -m adamas.fit odmr data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [labs/lattice.html](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html). Sources: [stegemann2023] [williams2026] [gruber1997] [doherty2013].
 
@@ -76,7 +76,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 3. **Step the distance.** Repeat at 3, 4, 5, 6, 8, and 10 cm.
 4. **Plot log-log.** Plot splitting against distance on log-log axes; fit a straight line.
 
-**Analysis.** The slope should be close to −3. The intercept gives the magnet's dipole moment; a 10 mm N52 cube is about 1.2 A·m².
+**Analysis.** The slope should be close to −3. The intercept gives the magnet's dipole moment; a 10 mm N52 cube is about 1.2 A·m². Fit your data with `python -m adamas.fit odmr data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [labs/lattice.html](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html). Sources: [rondin2014] [doherty2013].
 
@@ -139,7 +139,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 4. **Ramsey.** π/2, wait τ, π/2 with a small detuning: fringes that decay with T₂*.
 5. **Echo.** π/2, τ/2, π, τ/2, π/2: the decay envelope gives T₂, far longer than T₂*.
 
-**Analysis.** Fit a damped cosine to Rabi, a decaying cosine to Ramsey (T₂*), and exp(−(τ/T₂)ⁿ) to echo. Compare with the Qubit Lab.
+**Analysis.** Fit a damped cosine to Rabi, a decaying cosine to Ramsey (T₂*), and exp(−(τ/T₂)ⁿ) to echo. Compare with the Qubit Lab. Fit your data with `python -m adamas.fit rabi data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [labs/qubit.html](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html). Sources: [sewani2020] [jelezko2004a] [hahn1950] [childress2006].
 
@@ -165,7 +165,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 2. **Unknown field.** Set an arbitrary combination of currents; record the spectrum.
 3. **Fit.** Fit the field vector that best reproduces all eight lines; compare with the coil calibration.
 
-**Analysis.** The line pair of each orientation gives |B·n̂ᵢ|; four orientations over-determine the three components. Residuals test the model.
+**Analysis.** The line pair of each orientation gives |B·n̂ᵢ|; four orientations over-determine the three components. Residuals test the model. Fit your data with `python -m adamas.fit odmr data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [labs/lattice.html](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html). Sources: [rondin2014] [barry2020] [doherty2013].
 
@@ -192,7 +192,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 2. **Heat in steps.** Step 25 to 500 °C in 25 °C steps; wait for stability; record resistance in both current directions.
 3. **Arrhenius plot.** Plot ln(R) against 1000/T and fit the straight part.
 
-**Analysis.** A raw Arrhenius slope underestimates the acceptor energy because the density of states grows as T^1.5 and the lattice mobility falls as about T^-2.2; fit ln(R·T^-0.7) instead. In the compensated regime the corrected slope gives E_A ≈ 0.37 eV (without compensation it approaches E_A/2). A Hall measurement separates density from mobility directly.
+**Analysis.** A raw Arrhenius slope underestimates the acceptor energy because the density of states grows as T^1.5 and the lattice mobility falls as about T^-2.2; fit ln(R·T^-0.7) instead. In the compensated regime the corrected slope gives E_A ≈ 0.37 eV (without compensation it approaches E_A/2). A Hall measurement separates density from mobility directly. Fit your data with `python -m adamas.fit arrhenius data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [explorer.html#ion](https://normansrule.github.io/adamas-diamond-framework/explorer.html#ion). Sources: [lagrange1998] [sze2006] [pernot2010].
 
@@ -223,7 +223,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 3. **Check g⁽²⁾(0).** A dip below 0.5 at zero delay proves a single emitter.
 4. **Resolve hyperfine.** Low-power ODMR on that NV shows three lines 2.16 MHz apart from the ¹⁴N nucleus.
 
-**Analysis.** Fit g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁); background lifts g₀ above zero. The hyperfine triplet is the nuclear memory used in chapter E5.
+**Analysis.** Fit g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁); background lifts g₀ above zero. The hyperfine triplet is the nuclear memory used in chapter E5. Fit your data with `python -m adamas.fit g2 data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [labs/photon.html](https://normansrule.github.io/adamas-diamond-framework/labs/photon.html). Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [doherty2013].
 
@@ -251,7 +251,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 3. **Test.** Measure TLM, MOS capacitor, transistor, and ring oscillator at 25 and 200 °C.
 4. **Calibrate the models.** Enter the measured parameters into adamas.logic and the SPICE models (projects P-3, D-2).
 
-**Analysis.** Extract threshold voltage, mobility, contact resistance, and ring-oscillator stage delay; compare with the Transistor Lab and the ngspice deck.
+**Analysis.** Extract threshold voltage, mobility, contact resistance, and ring-oscillator stage delay; compare with the Transistor Lab and the ngspice deck. Fit your data with `python -m adamas.fit iv data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
 **Try it first in the browser:** [process.html](https://normansrule.github.io/adamas-diamond-framework/process.html). Sources: [kawarada2023] [kasu2012] [liu2017].
 

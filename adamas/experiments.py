@@ -264,6 +264,9 @@ def expected(kind: str) -> dict:
     raise KeyError(kind)
 
 
+FIT_KIND = {"odmr_ensemble": "odmr", "magnet_distance": "odmr", "pulsed": "rabi", "vector": "odmr", "arrhenius": "arrhenius", "single_nv": "g2", "fet_curves": "iv"}
+
+
 def to_json() -> dict:
     return {"tiers": TIERS, "experiments": [{**e, "result": expected(e["expected"])} for e in EXPERIMENTS]}
 
@@ -286,7 +289,9 @@ def to_markdown() -> str:
         L += [f"| {a} | {b} | {c:,} to {d:,} |" for a, b, c, d in e["parts"]]
         L += ["", "**Safety.** " + " ".join(e["safety"]), "", "**Steps.**", ""]
         L += [f"{i + 1}. **{t}.** {d}" for i, (t, d, _) in enumerate(e["steps"])]
-        L += ["", f"**Analysis.** {e['analysis']}", "", f"**Try it first in the browser:** [{e['lab']}](https://normansrule.github.io/adamas-diamond-framework/{e['lab']}). "
+        fk = FIT_KIND.get(e["expected"])
+        fitline = f" Fit your data with `python -m adamas.fit {fk} data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html)." if fk else ""
+        L += ["", f"**Analysis.** {e['analysis']}{fitline}", "", f"**Try it first in the browser:** [{e['lab']}](https://normansrule.github.io/adamas-diamond-framework/{e['lab']}). "
               f"Sources: {' '.join(f'[{k}]' for k in e['refs'])}.", ""]
     return "\n".join(L) + "\n"
 
