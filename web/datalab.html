@@ -1,0 +1,73 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Data Lab · ADAMAS</title>
+<style>.dz{border:2px dashed rgba(111,243,255,.35);border-radius:14px;padding:16px;text-align:center;color:var(--mute);cursor:pointer}.dz.hot{background:rgba(45,226,230,.08)}
+table.pt{width:100%;border-collapse:collapse;font:13px var(--mono)}table.pt td,table.pt th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}table.pt th{color:var(--mute);font-family:Inter}</style></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <span class="eyebrow">Analysis · Data Lab</span><h1>Fit your own data</h1>
+  <p>Drop a two-column CSV from any experiment and watch the fit converge. Everything runs in your browser; nothing is uploaded.</p>
+  <div class="ctl"><label>Experiment type</label><select id="kind">
+    <option value="odmr">ODMR spectrum (MHz, signal) · A1, B2</option><option value="rabi">Rabi (µs, contrast) · B1</option><option value="ramsey">Ramsey (µs, contrast) · B1</option>
+    <option value="echo">Spin echo (µs, contrast) · B1</option><option value="arrhenius">Arrhenius (1000/T, resistance) · B3</option><option value="iv">Transistor output curve (V, mA) · C2</option><option value="g2">Photon correlation g⁽²⁾ (ns, g2) · C1</option></select></div>
+  <div class="dz" id="dz">Drop a CSV here, or click to choose a file<input type="file" id="file" accept=".csv,.txt" hidden></div>
+  <div class="ctl"><label>…or paste data</label><textarea id="paste" rows="5" placeholder="2860, 0.998&#10;2861, 0.996&#10;…"></textarea></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary small" id="go">Fit</button><button class="btn small" id="ex">Load example</button><button class="btn small" id="dl">⬇ Results (JSON)</button></div>
+  <p id="err" style="color:var(--red);font-size:13px"></p>
+  <p class="src">Same models as <code>python -m adamas.fit KIND file.csv</code>. Example files: <a href="https://github.com/Normansrule/adamas-diamond-framework/tree/main/docs/data/examples">docs/data/examples</a>.</p>
+</aside>
+<div>
+  <div class="stage" style="min-height:0"><canvas id="plot" style="height:380px"></canvas><div class="hud" id="hud">Load data to begin</div></div>
+  <div class="stage" style="margin-top:8px;min-height:0"><canvas id="resid" style="height:110px"></canvas><div class="hud">Residuals (data − fit): should look like structureless noise</div></div>
+  <div class="card" style="margin-top:14px"><h3>Results</h3><div id="table"></div><ul id="notes"></ul></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">A fit is a smooth curve that follows your wiggly measurements as closely as it can. The numbers that make the curve fit best tell you something real, like how strong a magnet is or how long a qubit remembers.</div>
+    <div class="lvl" data-l="s">Levenberg–Marquardt least squares: the solver takes steps that blend gradient descent (safe when far away) with Gauss–Newton (fast when close). The uncertainties come from the curvature of the error surface at the minimum. The animation shows every accepted step.</div>
+    <div class="lvl" data-l="r">Uncertainties are 1σ from (JᵀJ)⁻¹ scaled by the residual variance, assuming independent Gaussian noise; correlated noise (slow drift) makes them optimistic, so check the residual plot. ODMR lines are found on a lightly smoothed copy and pruned below 2.5σ significance. The Arrhenius fit corrects for the T^1.5 density of states and T^−2.2 lattice mobility before extracting E_A.</div>
+    <p class="src">Sources: [doherty2013] [jelezko2004a] [hahn1950] [lagrange1998] [sze2006] [kurtsiefer2000]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from './assets/site.js';
+import * as F from './assets/sim/fit.js';
+boot('Data Lab');
+const $ = id => document.getElementById(id), EX = { odmr: 'odmr_with_magnet', rabi: 'rabi', ramsey: 'ramsey', echo: 'echo', arrhenius: 'arrhenius', iv: 'iv_vgs7', g2: 'g2' };
+let D = null, R = null, anim = 0;
+$('dz').onclick = () => $('file').click();
+['dragover', 'dragenter'].forEach(ev => $('dz').addEventListener(ev, e => { e.preventDefault(); $('dz').classList.add('hot'); }));
+['dragleave', 'drop'].forEach(ev => $('dz').addEventListener(ev, e => { e.preventDefault(); $('dz').classList.remove('hot'); }));
+$('dz').addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(t => { $('paste').value = t; run(); }); });
+$('file').onchange = () => { const f = $('file').files[0]; if (f) f.text().then(t => { $('paste').value = t; run(); }); };
+$('ex').onclick = async () => { const r = await fetch(`data/examples/${EX[$('kind').value]}.csv`); $('paste').value = await r.text(); run(); };
+$('go').onclick = run;
+$('dl').onclick = () => { if (!R) return; const blob = new Blob([JSON.stringify({ kind: $('kind').value, params: Object.fromEntries(R.names.map((n, i) => [n, R.p[i]])), errors: Object.fromEntries(R.names.map((n, i) => [n, R.err[i]])), notes: R.notes }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `adamas_fit_${$('kind').value}.json`; a.click(); };
+function run() {
+  $('err').textContent = '';
+  try { D = F.parseCSV($('paste').value); R = F.fit($('kind').value, D.x, D.y); } catch (e) { $('err').textContent = e.message; return; }
+  anim = 0; table(); frame();
+}
+function table() {
+  $('table').innerHTML = `<table class="pt"><tr><th>Parameter</th><th>Value</th><th>± 1σ</th></tr>${R.names.map((n, i) => `<tr><td>${n}</td><td>${R.p[i].toPrecision(6)}</td><td>${R.err[i].toPrecision(2)}</td></tr>`).join('')}</table>`;
+  $('notes').innerHTML = R.notes.map(n => `<li>${n}</li>`).join('');
+}
+function frame() {
+  if (!D || !R) return;
+  const k = Math.min(R.hist.length - 1, Math.floor(anim)), q = R.hist[k], kind = $('kind').value, logy = kind === 'arrhenius';
+  const P = fitCanvas($('plot'), 380), g = P.g, w = P.w, h = P.h; g.clearRect(0, 0, w, h);
+  const xs = D.x, ys = D.y.map(v => logy ? Math.log10(v) : v), xmin = Math.min(...xs), xmax = Math.max(...xs), ymin = Math.min(...ys), ymax = Math.max(...ys), pad = (ymax - ymin) * .08 || 1;
+  const X = v => 56 + (w - 76) * (v - xmin) / (xmax - xmin || 1), Y = v => h - 34 - (h - 54) * ((logy ? Math.log10(v) : v) - ymin + pad) / (ymax - ymin + 2 * pad);
+  g.strokeStyle = 'rgba(148,190,220,.18)'; g.fillStyle = '#8ea3b5'; g.font = '11px Inter';
+  for (let i = 0; i <= 4; i++) { const yy = 20 + (h - 54) * i / 4, v = ymax + pad - (ymax - ymin + 2 * pad) * i / 4; g.beginPath(); g.moveTo(56, yy); g.lineTo(w - 20, yy); g.stroke(); g.fillText(logy ? (10 ** v).toPrecision(2) : v.toPrecision(4), 4, yy + 4); }
+  for (let i = 0; i <= 5; i++) { const v = xmin + (xmax - xmin) * i / 5; g.fillText((+v.toPrecision(4)).toString(), X(v) - 12, h - 16); }
+  g.fillStyle = '#2de2e6'; D.x.forEach((x, i) => { g.beginPath(); g.arc(X(x), Y(D.y[i]), 2.4, 0, 7); g.fill(); });
+  const xx = [...Array(400)].map((_, i) => xmin + (xmax - xmin) * i / 399).filter(v => !(kind === 'arrhenius' && R.xfit && v < Math.min(...R.xfit)));
+  g.strokeStyle = k === R.hist.length - 1 ? '#ff5d6c' : 'rgba(255,196,107,.9)'; g.lineWidth = 2.4; g.beginPath();
+  xx.forEach((x, i) => { const v = R.f(x, q); if (!Number.isFinite(v) || (logy && v <= 0)) return; i ? g.lineTo(X(x), Y(v)) : g.moveTo(X(x), Y(v)); }); g.stroke();
+  $('hud').textContent = k < R.hist.length - 1 ? `Levenberg–Marquardt step ${k} of ${R.hist.length - 1}` : `Converged in ${R.hist.length - 1} accepted steps`;
+  const Q = fitCanvas($('resid'), 110); Q.g.clearRect(0, 0, Q.w, Q.h); const res = D.x.map((x, i) => D.y[i] - R.f(x, R.p)), rm = Math.max(...res.map(Math.abs)) || 1;
+  Q.g.strokeStyle = 'rgba(148,190,220,.3)'; Q.g.beginPath(); Q.g.moveTo(56, Q.h / 2); Q.g.lineTo(Q.w - 20, Q.h / 2); Q.g.stroke();
+  Q.g.fillStyle = '#9d7bff'; D.x.forEach((x, i) => { if (kind === 'arrhenius' && R.xfit && x < Math.min(...R.xfit)) return; Q.g.fillRect(56 + (Q.w - 76) * (x - xmin) / (xmax - xmin || 1) - 1, Q.h / 2 - (Q.h / 2 - 8) * res[i] / rm - 1, 2.5, 2.5); });
+  if (anim < R.hist.length - 1) { anim += 0.25; requestAnimationFrame(frame); }
+}
+addEventListener('resize', frame);
+</script></body></html>

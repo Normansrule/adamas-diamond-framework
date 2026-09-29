@@ -23,6 +23,8 @@
 | C · Research lab | US$10,000 to 100,000 | Single NV centers and photon antibunching; a diamond transistor from a university cleanroom |
 | D · Facility | US$100,000 to tens of millions | Room-temperature entanglement of two qubits; a 3-inch pilot line |
 
+**Analyze what you measure.** `python -m adamas.fit odmr my_sweep.csv` (also `rabi`, `ramsey`, `echo`, `arrhenius`, `iv`, `g2`) returns fitted values with uncertainties and a physical interpretation, for example the magnetic field from an ODMR splitting or the acceptor energy from an Arrhenius plot. The browser [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html) runs the same models and animates the fit converging. Practice datasets are in [docs/data/examples](docs/data/examples). Every acronym is spelled out in the [glossary](docs/GLOSSARY.md), and on the website a dotted underline on the first use of a term shows its definition.
+
 ![Experiment ladder](docs/img/fig47_experiment_ladder.png)
 
 ![Expected results, tier B](docs/img/fig45_expected_tier_b.png)
@@ -315,7 +317,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 86 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 91 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -348,6 +350,8 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.orfs_platform` | Complete OpenROAD-flow-scripts platform for PDK-0; `make orfs` routes DIA-4 in Docker | [ajayi2019], [meadconway1980] |
 | `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
+| `adamas.fitting` (`python -m adamas.fit`) | Fits for ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g⁽²⁾ with uncertainties and interpretation; Data Lab | [doherty2013], [lagrange1998], [kurtsiefer2000] |
+| `adamas.glossary` | 48 terms spelled out; hover definitions across the website (`make glossary`) | |
 | `adamas.experiments` | Ten tiered experiments: parts and prices, steps, safety, 3-D scenes, simulated expected results (`make experiments`) | [stegemann2023], [williams2026], [sewani2020] |
 | `adamas.traveler` | Process traveler T1: 19 steps with parameters, checks, safety, failure modes, cross-section geometry, product variants (`make traveler`) | [kawarada2023], [kasu2012], [pezzagna2010] |
 | `adamas.photophysics` | NV optical cycle: five-level rate model, readout contrast, polarization; Photon Lab | [tetienne2012], [manson2006] |

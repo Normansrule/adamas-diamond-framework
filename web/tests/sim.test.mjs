@@ -98,3 +98,15 @@ test('wafer: Monte Carlo yield matches Poisson within sampling error', () => {
   assert.ok(Math.abs(good / total - Y.poisson(25, 2)) < 0.04, `${good / total} vs ${Y.poisson(25, 2)}`);
   assert.equal(Y.diesPerWafer(300, 100), 640);
 });
+import * as FIT from '../assets/sim/fit.js';
+import fs from 'node:fs';
+const ex = n => FIT.parseCSV(fs.readFileSync(new URL(`../../docs/data/examples/${n}.csv`, import.meta.url), 'utf8'));
+test('fit.js recovers the parameters of the example datasets', () => {
+  let d = ex('rabi'), r = FIT.fit('rabi', d.x, d.y); assert.ok(Math.abs(r.p[1] - 5) < 0.05, `rabi ${r.p[1]}`);
+  d = ex('echo'); r = FIT.fit('echo', d.x, d.y); assert.ok(Math.abs(r.p[1] - 300) < 30, `T2 ${r.p[1]}`);
+  d = ex('arrhenius'); r = FIT.fit('arrhenius', d.x, d.y); assert.ok(Math.abs(r.ea - 0.37) < 0.02, `Ea ${r.ea}`);
+  d = ex('g2'); r = FIT.fit('g2', d.x, d.y); assert.ok(r.p[0] < 0.3);
+  d = ex('odmr_zero_field'); r = FIT.fit('odmr', d.x, d.y); assert.equal((r.p.length - 1) / 3, 1); assert.ok(Math.abs(r.p[2] - 2870) < 0.5);
+  d = ex('odmr_with_magnet'); r = FIT.fit('odmr', d.x, d.y); assert.ok((r.p.length - 1) / 3 >= 4, `lines ${(r.p.length - 1) / 3}`);
+  assert.ok(r.hist.length > 2);
+});

@@ -172,6 +172,11 @@ def build(out: str | Path = "site") -> Path:
         page.write_text(page.read_text(encoding="utf-8").replace("<!--HEAD-->", head), encoding="utf-8")
     (out / "data").mkdir(exist_ok=True)
     (out / "data" / "site.json").write_text(json.dumps(site_data()), encoding="utf-8")
+    from . import glossary
+    (out / "data" / "glossary.json").write_text(json.dumps(glossary.to_json()), encoding="utf-8")
+    ex = ROOT / "docs" / "data" / "examples"
+    if ex.exists():
+        shutil.copytree(ex, out / "data" / "examples")
     sm = ROOT / "docs" / "data" / "surface_map.json"
     if sm.exists():
         shutil.copy(sm, out / "data" / "surface_map.json")
