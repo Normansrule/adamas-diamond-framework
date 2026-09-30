@@ -52,6 +52,7 @@ three.js 0.160 (3-D crystal, Bloch sphere, bloom post-processing), GSAP 3.12 wit
 | Power Lab | animated half-bridge SVG, loss bars | `sim/converter.js` + `data/site.json` power block (vs `adamas.converter`) |
 | Photon Lab | energy-level canvas with quantum jumps, fluorescence curves, photon histogram | `sim/photophys.js` (vs `adamas.photophysics`) |
 | Wafer Lab | wafer canvas with falling defects | `sim/yield.js` (Monte Carlo vs Poisson; formulas vs `adamas.wafer`) |
+| Preprint | `paper/adamas.pdf`, copied into the site by `adamas.site` | numbers from `adamas.paper` |
 | Data Lab | drag-and-drop CSV, animated Levenberg–Marquardt convergence, residuals, JSON export | `sim/fit.js` (vs `adamas.fitting`) |
 | Glossary tooltips | dotted underline on the first use of each term, every page | `assets/glossary.js` + `data/glossary.json` (from `adamas.glossary`) |
 | Experiments | three.js apparatus per experiment with animated beams and step highlighting, parts and cost meter, expected-results plot | `data/site.json` experiments block (from `adamas.experiments`) |
