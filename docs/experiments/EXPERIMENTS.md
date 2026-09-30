@@ -35,7 +35,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 | Photodetector | Silicon photodiode with a JFET-input transimpedance amplifier (for example TL082) | 10 to 40 |
 | Microwave source | PLL synthesizer board covering 2.7 to 3.0 GHz (ADF4351-class) | 30 to 60 |
 | Antenna | Short microstrip line or a copper wire loop under the diamond | 5 to 20 |
-| Controller | Microcontroller with ADC and USB (sweeps frequency, reads the detector) | 10 to 40 |
+| Controller | Raspberry Pi Pico (or any microcontroller with SPI, ADC, and USB); ready-made firmware in hardware/a1_odmr | 5 to 40 |
 | Mechanics | 3-D printed cube mounts or a breadboard; neodymium magnet | 10 to 50 |
 
 **Safety.** Even a 1 mW green laser can damage eyes: never look into the beam; use a phone camera to align. The LED version avoids laser hazards. Microwave powers here are milliwatts; keep the antenna enclosed and away from the body anyway.
@@ -45,7 +45,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 1. **Mount the diamond on the antenna.** Glue the diamond (or a spot of powder) onto the microstrip or inside the loop; the microwave field must reach it.
 2. **Illuminate.** Point the green source at the diamond from a few millimeters. Through the red filter you see red fluorescence: NV centers emitting.
 3. **Detect.** Place the filter and photodiode to collect the red light; check that the amplifier output rises when the green light is on.
-4. **Sweep.** Step the synthesizer from 2800 to 2940 MHz in 0.5 MHz steps, averaging the detector at each step.
+4. **Sweep.** Step the synthesizer from 2800 to 2940 MHz in 0.5 MHz steps, averaging the detector at each step. With the ADAMAS firmware: python hardware/a1_odmr/host.py --port <port>.
 5. **Find the dip.** Plot detector signal versus frequency. A dip of about 0.5 to 3% near 2870 MHz is ODMR. Average longer if it is buried in noise.
 6. **Split it.** Bring the magnet closer: the single dip splits into up to eight (four NV orientations × two), moving apart as the field grows.
 

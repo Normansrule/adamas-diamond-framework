@@ -476,7 +476,44 @@ def fig_experiment_ladder(out: Path) -> Path:
     return _finish(fig, out, "fig47_experiment_ladder.png", "adamas.experiments (prices are approximate street prices; verify with vendors)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder]
+def fig_a1_kit(out: Path) -> Path:
+    """Figure 48: the A1 ODMR kit signal chain and the synthesizer registers for 2870 MHz."""
+    from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+    from .hw.adf4351 import registers
+    fig, ax = plt.subplots(figsize=(16, 6.2)); ax.set_xlim(0, 16); ax.set_ylim(0, 6.2); ax.axis("off")
+    def block(x, y, w, h, title, sub, col):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05,rounding_size=0.15", fc=col, ec=INK, lw=1.2, alpha=.9))
+        ax.text(x + w / 2, y + h * .62, title, ha="center", va="center", fontsize=11, fontweight="bold", color=INK)
+        ax.text(x + w / 2, y + h * .3, sub, ha="center", va="center", fontsize=8.5, color=INK)
+    def arrow(a, b, lab="", col=INK, rad=0.0):
+        ax.add_patch(FancyArrowPatch(a, b, arrowstyle="-|>", mutation_scale=16, lw=1.8, color=col, connectionstyle=f"arc3,rad={rad}"))
+        if lab:
+            ax.text((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + .18, lab, ha="center", fontsize=8.5, color=col)
+    block(0.3, 2.6, 2.2, 1.2, "Computer", "host.py → CSV → fit", "#e8eef3")
+    block(3.3, 2.6, 2.4, 1.2, "Raspberry Pi Pico", "MicroPython main.py", "#cfe8d6")
+    block(6.6, 4.2, 2.6, 1.2, "ADF4351 synthesizer", "35 MHz to 4.4 GHz, a few mW", "#cfe3f1")
+    block(10.2, 4.2, 2.4, 1.2, "Antenna loop", "under the diamond", "#f3dcc4")
+    block(10.2, 2.6, 2.4, 1.2, "NV diamond", "glows red under green", "#c7f2f4")
+    block(13.2, 2.6, 2.4, 1.2, "Green LED", "or < 1 mW 532 nm laser", "#d7f5dc")
+    block(10.2, 0.9, 2.4, 1.2, "Filter + photodiode", "600 to 650 nm longpass", "#f7d3d6")
+    block(6.6, 0.9, 2.6, 1.2, "TL082 transimpedance", "nanoamperes → volts", "#e6ddf7")
+    arrow((2.5, 3.2), (3.3, 3.2), "USB serial")
+    arrow((5.7, 3.5), (6.6, 4.6), "SPI: CLK, DATA, LE", rad=-.15)
+    arrow((9.2, 4.8), (10.2, 4.8), "RF (SMA)", col="#2c6e8f")
+    arrow((11.4, 4.2), (11.4, 3.8), "", col="#2c6e8f")
+    arrow((13.2, 3.2), (12.6, 3.2), "green", col=GREEN)
+    arrow((11.4, 2.6), (11.4, 2.1), "red", col=RED)
+    arrow((10.2, 1.5), (9.2, 1.5), "photocurrent", col=RED)
+    arrow((6.6, 1.5), (5.2, 2.6), "ADC0 (GP26)", rad=.15)
+    regs, info = registers(2870.0)
+    tab = "\n".join(f"R{i}  0x{w:08X}" for i, w in enumerate(regs))
+    ax.text(0.35, 0.3, f"ADF4351 registers for 2870 MHz\n(25 MHz reference, 100 kHz spacing)\nINT {info['int']}, FRAC {info['frac']}, MOD {info['mod']}, divider {info['divider']}\n\n" + tab,
+            family="monospace", fontsize=8.8, va="bottom", bbox=dict(boxstyle="round", fc="white", ec="#c9d3da"))
+    ax.set_title("A1 kit: a sub-US$400 ODMR instrument (firmware in hardware/a1_odmr, registers from adamas.hw.adf4351)", fontsize=11.5)
+    return _finish(fig, out, "fig48_a1_kit.png", "[stegemann2023] [williams2026] [doherty2013]; register layout per the ADF4351 data sheet")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

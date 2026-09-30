@@ -14,3 +14,10 @@ circuits/digital/dia4_placed.def
 circuits/digital/openroad/last_run.log
 site/
 web/node_modules/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out

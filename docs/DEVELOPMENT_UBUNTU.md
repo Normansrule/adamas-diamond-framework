@@ -45,13 +45,13 @@ python -c "import adamas, sys; print('adamas', adamas.__version__, 'on python', 
 ```bash
 python -m pytest -q            # always "python -m pytest": a stray ~/.local/bin/pytest can shadow the environment's
 make refs                      # rebuild the bibliography and check every [bibkey]
-make figures                   # regenerate all 47 figures
+make figures                   # regenerate all 48 figures
 make spice                     # ngspice: inverter + ring oscillator (prints the oscillation period)
 make rtl                       # DIA-4 behavioral simulation  -> PASS
 make synth                     # Yosys synthesis + gate-level simulation -> cell counts, PASS
 ```
 
-Expected: 91 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
+Expected: 98 tests pass; `make synth` reports 190 to 220 cells (varies with Yosys version) (13 DFF, 34 INV, 49 NAND2, 100 NOR2, 24 NOR3).
 
 ## 4 · Publish to GitHub
 
@@ -89,6 +89,21 @@ make web-test                             # JavaScript unit tests + every page r
 ```
 
 Edit files in `web/` (never in `site/`, which is regenerated). Physics lives in `web/assets/sim/*.js` as pure modules with tests in `web/tests/sim.test.mjs`; page layout and rendering live in the HTML files. See `docs/WEBSITE.md`.
+
+## 4d · Build the preprint
+
+```bash
+sudo apt install -y texlive-latex-recommended texlive-latex-extra latexmk
+make paper                                # numbers from the package, then paper/adamas.pdf
+```
+
+## 4e · Flash the A1 kit (Raspberry Pi Pico)
+
+```bash
+pip install mpremote pyserial
+mpremote cp adamas/hw/adf4351.py :adf4351.py && mpremote cp adamas/hw/odmr_sweep.py :odmr_sweep.py && mpremote cp hardware/a1_odmr/main.py :main.py && mpremote reset
+python hardware/a1_odmr/host.py --port /dev/ttyACM0 --out sweep.csv
+```
 
 ## 5 · Daily development loop
 

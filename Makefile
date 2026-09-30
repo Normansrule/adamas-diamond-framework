@@ -1,13 +1,13 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary paper explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 47 figures into docs/img/
+figures:         ## regenerate all 48 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -70,6 +70,9 @@ examples:        ## regenerate the practice datasets in docs/data/examples
 
 glossary:        ## regenerate docs/GLOSSARY.md
 	$(PY) -c "from adamas.glossary import write; write()"
+
+paper:           ## numbers from the package, then the preprint PDF (needs pdflatex, latexmk)
+	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error adamas.tex && latexmk -c
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

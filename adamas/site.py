@@ -174,6 +174,9 @@ def build(out: str | Path = "site") -> Path:
     (out / "data" / "site.json").write_text(json.dumps(site_data()), encoding="utf-8")
     from . import glossary
     (out / "data" / "glossary.json").write_text(json.dumps(glossary.to_json()), encoding="utf-8")
+    pdf = ROOT / "paper" / "adamas.pdf"
+    if pdf.exists():
+        (out / "paper").mkdir(exist_ok=True); shutil.copy(pdf, out / "paper" / "adamas.pdf")
     ex = ROOT / "docs" / "data" / "examples"
     if ex.exists():
         shutil.copytree(ex, out / "data" / "examples")

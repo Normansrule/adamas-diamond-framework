@@ -12,6 +12,16 @@
   <a href="https://codespaces.new/Normansrule/adamas-diamond-framework"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="32"></a>
 </p>
 
+## 📄 Preprint
+
+[**ADAMAS: an open, tested framework for diamond electronics and room-temperature nitrogen-vacancy quantum processors**](paper/adamas.pdf) (4 pages). Every number in the text comes from the package (`python -m adamas.paper` writes `paper/numbers.tex`), so `make paper` rebuilds a manuscript that cannot disagree with the code.
+
+## 🔧 Build the A1 kit
+
+[hardware/a1_odmr](hardware/a1_odmr/README.md) turns the US$150 to 400 experiment into an instrument: MicroPython firmware for a Raspberry Pi Pico drives an ADF4351 synthesizer through the NV resonance and streams the spectrum to `host.py`, which saves a CSV and fits it. The synthesizer registers come from `adamas.hw.adf4351`, tested against the evaluation-board values.
+
+![A1 kit](docs/img/fig48_a1_kit.png)
+
 ## 🔬 Do it yourself: ten experiments from US$100 to a pilot line
 
 [EXPERIMENTS.md](docs/experiments/EXPERIMENTS.md) and the [interactive 3-D version](https://normansrule.github.io/adamas-diamond-framework/experiments.html) give ten experiments in four budgets, each with a parts list and approximate prices, safety notes, numbered steps, the analysis, and simulated expected results so you know what a working setup should show.
@@ -81,7 +91,7 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>47 figures, 6 animations, a trailer, 13 labs, 10 hands-on experiments, a 7-lesson course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>48 figures, a preprint, a hardware kit, 13 labs, 10 experiments, a 7-lesson course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -317,7 +327,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 91 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 98 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -350,6 +360,8 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.orfs_platform` | Complete OpenROAD-flow-scripts platform for PDK-0; `make orfs` routes DIA-4 in Docker | [ajayi2019], [meadconway1980] |
 | `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
+| `adamas.hw` + `hardware/a1_odmr` | ADF4351 register calculator (runs under MicroPython), sweep logic, Pico firmware, host capture script | ADF4351 data sheet, [stegemann2023] |
+| `adamas.paper` | Generates the preprint's numbers from the package (`make paper`) | |
 | `adamas.fitting` (`python -m adamas.fit`) | Fits for ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g⁽²⁾ with uncertainties and interpretation; Data Lab | [doherty2013], [lagrange1998], [kurtsiefer2000] |
 | `adamas.glossary` | 48 terms spelled out; hover definitions across the website (`make glossary`) | |
 | `adamas.experiments` | Ten tiered experiments: parts and prices, steps, safety, 3-D scenes, simulated expected results (`make experiments`) | [stegemann2023], [williams2026], [sewani2020] |
