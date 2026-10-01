@@ -1,7 +1,7 @@
 // Shared behavior: navigation, spotlight cards, number tickers, scroll reveals (GSAP ScrollTrigger when present,
 // IntersectionObserver otherwise), reading-level toggles, copy buttons.
 const BASE = document.documentElement.dataset.base || '.';
-const LINKS = [['Home', 'index.html'], ['Experiments', 'experiments.html'], ['Data Lab', 'datalab.html'], ['Process', 'process.html'], ['Course', 'course/index.html'], ['Lattice', 'labs/lattice.html'], ['Qubit', 'labs/qubit.html'], ['Photon', 'labs/photon.html'], ['Wafer', 'labs/wafer.html'], ['Heat', 'labs/heat.html'], ['Transistor', 'labs/transistor.html'], ['Power', 'labs/power.html'],
+const LINKS = [['Home', 'index.html'], ['Experiments', 'experiments.html'], ['Data Lab', 'datalab.html'], ['Confidence', 'confidence.html'], ['Process', 'process.html'], ['Course', 'course/index.html'], ['Lattice', 'labs/lattice.html'], ['Qubit', 'labs/qubit.html'], ['Photon', 'labs/photon.html'], ['Wafer', 'labs/wafer.html'], ['Heat', 'labs/heat.html'], ['Transistor', 'labs/transistor.html'], ['Power', 'labs/power.html'],
   ['Chip', 'labs/cpu.html'], ['Error correction', 'labs/qec.html'], ['Fab', 'labs/fab.html'], ['Stack', 'labs/stack.html'], ['Machine', 'labs/machine.html'], ['Globe', 'labs/globe.html'], ['Gallery', 'gallery.html'], ['Explorer', 'explorer.html']];
 const LOGO = '<svg viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ff3ff"/><stop offset="1" stop-color="#9d7bff"/></linearGradient></defs><path d="M8 4h16l6 8-14 17L2 12z" fill="url(#lg)"/><path d="M8 4l4 8 4-8 4 8 4-8M2 12h28M12 12l4 17 4-17" stroke="#05070d" stroke-width="1.2" fill="none" opacity=".5"/></svg>';
 

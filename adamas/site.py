@@ -46,6 +46,9 @@ def site_data() -> dict:
     data["traveler"] = traveler.to_json()
     from . import experiments
     data["experiments"] = experiments.to_json()
+    from . import uncertainty, validation
+    data["validation"] = validation.to_json()
+    data["uncertainty"] = uncertainty.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -174,9 +177,10 @@ def build(out: str | Path = "site") -> Path:
     (out / "data" / "site.json").write_text(json.dumps(site_data()), encoding="utf-8")
     from . import glossary
     (out / "data" / "glossary.json").write_text(json.dumps(glossary.to_json()), encoding="utf-8")
-    pdf = ROOT / "paper" / "adamas.pdf"
-    if pdf.exists():
-        (out / "paper").mkdir(exist_ok=True); shutil.copy(pdf, out / "paper" / "adamas.pdf")
+    for name in ("adamas.pdf", "talk.pdf", "poster.pdf"):
+        pdf = ROOT / "paper" / name
+        if pdf.exists():
+            (out / "paper").mkdir(exist_ok=True); shutil.copy(pdf, out / "paper" / name)
     ex = ROOT / "docs" / "data" / "examples"
     if ex.exists():
         shutil.copytree(ex, out / "data" / "examples")

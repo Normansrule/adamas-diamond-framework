@@ -12,7 +12,23 @@
   <a href="https://codespaces.new/Normansrule/adamas-diamond-framework"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="32"></a>
 </p>
 
-## 📄 Preprint
+## ✅ How much to trust it
+
+[VALIDATION.md](docs/VALIDATION.md) lists every check behind the models: against published results (for example the surface-code threshold, 3.1% against the published 2.93%), against an independent tool (JavaScript against Python, emulator against Verilog, hand model against SPICE), or against a known answer. [Figure 49](docs/img/fig49_uncertainty.png) propagates honest parameter ranges through the two headline results: diamond's inverter-loss advantage over silicon carbide is a median of about 3.8× (P10 to P90 roughly 2.5× to 5.5×), below the optimistic 6.7× baseline. The [Confidence page](https://normansrule.github.io/adamas-diamond-framework/confidence.html) animates the matrix and reruns the Monte Carlo live with ranges you choose.
+
+![Uncertainty](docs/img/fig49_uncertainty.png)
+
+## 📄 Preprint, talk, and poster
+
+| Download | What | Rebuild |
+|---|---|---|
+| [paper/adamas.pdf](paper/adamas.pdf) | 5-page preprint with sources, uncertainty, and limitations | `make paper` |
+| [paper/talk.pdf](paper/talk.pdf) | 12-slide talk (12 to 15 minutes), [speaker notes](docs/TALK_NOTES.md) with likely questions | `make talk` |
+| [paper/poster.pdf](paper/poster.pdf) | A0 conference poster with a QR code to the website | `make poster` |
+
+All three read their numbers from `paper/numbers.tex`, which `python -m adamas.paper` generates from the package, so they always match the code.
+
+### Preprint
 
 [**ADAMAS: an open, tested framework for diamond electronics and room-temperature nitrogen-vacancy quantum processors**](paper/adamas.pdf) (4 pages). Every number in the text comes from the package (`python -m adamas.paper` writes `paper/numbers.tex`), so `make paper` rebuilds a manuscript that cannot disagree with the code.
 
@@ -91,7 +107,7 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>48 figures, a preprint, a hardware kit, 13 labs, 10 experiments, a 7-lesson course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>49 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -327,7 +343,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 98 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 105 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -361,6 +377,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
 | `adamas.hw` + `hardware/a1_odmr` | ADF4351 register calculator (runs under MicroPython), sweep logic, Pico firmware, host capture script | ADF4351 data sheet, [stegemann2023] |
+| `adamas.validation`, `adamas.uncertainty` | Validation matrix (literature, cross-tool, analytic) and Monte Carlo + tornado sensitivity analysis; Confidence page | [wang2003], [isberg2002], [kimoto2014] |
 | `adamas.paper` | Generates the preprint's numbers from the package (`make paper`) | |
 | `adamas.fitting` (`python -m adamas.fit`) | Fits for ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g⁽²⁾ with uncertainties and interpretation; Data Lab | [doherty2013], [lagrange1998], [kurtsiefer2000] |
 | `adamas.glossary` | 48 terms spelled out; hover definitions across the website (`make glossary`) | |

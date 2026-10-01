@@ -110,3 +110,10 @@ test('fit.js recovers the parameters of the example datasets', () => {
   d = ex('odmr_with_magnet'); r = FIT.fit('odmr', d.x, d.y); assert.ok((r.p.length - 1) / 3 >= 4, `lines ${(r.p.length - 1) / 3}`);
   assert.ok(r.hist.length > 2);
 });
+import * as UN from '../assets/sim/uncertainty.js';
+test('uncertainty: power ratio baseline 6.67 and permittivity-free; LHS covers every stratum', () => {
+  const P = { 'Diamond critical field': [10, 5, 10, 'lin'], 'Diamond hole mobility': [3800, 1000, 3800, 'log'], 'SiC critical field': [3, 2.5, 3.5, 'lin'], 'SiC electron mobility': [950, 700, 1000, 'lin'] };
+  assert.ok(Math.abs(UN.powerRatio(UN.baseline(P)) - 6.667) < 0.01);
+  const s = UN.lhs(P, 100), f = s.map(x => x['Diamond critical field']);
+  for (let k = 0; k < 100; k++) assert.equal(f.filter(v => v >= 5 + 0.05 * k && v < 5 + 0.05 * (k + 1)).length, 1);
+});

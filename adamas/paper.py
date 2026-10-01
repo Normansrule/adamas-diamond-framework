@@ -43,6 +43,12 @@ def numbers() -> dict:
     sys.path.insert(0, str(ROOT / "tools")); from refs_common import load
     refs = load(); N["NumRefs"] = str(len(refs)); N["NumVerified"] = str(sum(r.status == "V" for r in refs))
     N["NumFigures"] = str(len(list((ROOT / "docs" / "img").glob("fig*.png"))))
+    from . import uncertainty
+    mp, mq = uncertainty.monte_carlo("power", 4000), uncertainty.monte_carlo("quantum", 4000)
+    N["UncPowerPten"], N["UncPowerPfifty"], N["UncPowerPninety"] = (f"{mp[k]:.1f}" for k in ("p10", "p50", "p90"))
+    N["UncQPten"], N["UncQPfifty"], N["UncQPninety"] = (f"{mq[k]:.1f}" for k in ("p10", "p50", "p90"))
+    from . import validation
+    sv = validation.summary(); N["ValChecks"] = str(sum(sv.values())); N["ValPass"] = str(sv["pass"])
     N["BreakevenStdMs"] = "100"; N["BreakevenXZZXMs"] = "1000"          # chapter E6, sections E6.1c and E6.1d
     return N
 

@@ -6,12 +6,15 @@ from adamas import paper
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_every_macro_in_the_manuscript_is_generated():
+import pytest
+
+
+@pytest.mark.parametrize("doc", ["adamas.tex", "talk.tex", "poster.tex"])
+def test_every_macro_in_the_documents_is_generated(doc):
     n = paper.numbers()
-    used = set(re.findall(r"\\([A-Z][A-Za-z]+)", (ROOT / "paper" / "adamas.tex").read_text(encoding="utf-8")))
-    generated = set(n)
-    known_latex = {"LaTeX", "Lambda", "Omega"}      # Greek letters in math mode
-    assert used - known_latex <= generated, sorted(used - generated - known_latex)
+    used = set(re.findall(r"\\([A-Z][A-Za-z]+)", (ROOT / "paper" / doc).read_text(encoding="utf-8")))
+    known_latex = {"LaTeX", "Lambda", "Omega", "Huge", "Large", "Rightarrow"}   # LaTeX and Greek macros
+    assert used - known_latex <= set(n), sorted(used - set(n) - known_latex)
 
 
 def test_headline_numbers_match_the_models():
