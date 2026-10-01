@@ -21,3 +21,6 @@ paper/*.fdb_latexmk
 paper/*.fls
 paper/*.log
 paper/*.out
+paper/*.nav
+paper/*.snm
+paper/*.toc

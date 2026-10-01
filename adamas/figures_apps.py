@@ -513,7 +513,41 @@ def fig_a1_kit(out: Path) -> Path:
     return _finish(fig, out, "fig48_a1_kit.png", "[stegemann2023] [williams2026] [doherty2013]; register layout per the ADF4351 data sheet")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit]
+def fig_uncertainty(out: Path) -> Path:
+    """Figure 49: how sure are the headline numbers? Monte Carlo distributions and tornado diagrams."""
+    from . import uncertainty as U
+    fig, axes = plt.subplots(2, 2, figsize=(16, 9.2), gridspec_kw={"width_ratios": [1, 1.15]}); plt.subplots_adjust(hspace=.42, wspace=.42)
+    for row, (study, logx, unit) in enumerate([("power", False, "×"), ("quantum", True, " yr")]):
+        mc = U.monte_carlo(study, 4000); vals = np.array(mc["values"]); vals = vals[np.isfinite(vals)]
+        ax = axes[row, 0]
+        bins = np.logspace(np.log10(vals.min()), np.log10(vals.max()), 50) if logx else 50
+        ax.hist(vals, bins=bins, color=COLORS["Diamond"] if row == 0 else "#9d7bff", alpha=.85, edgecolor="white", lw=.4)
+        if logx:
+            ax.set_xscale("log")
+        for q, ls, name in [(mc["p10"], ":", "P10"), (mc["p50"], "-", "P50"), (mc["p90"], ":", "P90")]:
+            ax.axvline(q, color=INK, ls=ls, lw=1.6); ax.text(q, ax.get_ylim()[1] * .93, f" {name} {q:.1f}{unit}", fontsize=9, rotation=90, va="top")
+        ax.axvline(mc["baseline"], color=RED, lw=2.2); ax.text(mc["baseline"], ax.get_ylim()[1] * .5, f" baseline {mc['baseline']:.1f}{unit}", color=RED, fontsize=9, rotation=90)
+        ax.set_xlabel(mc["label"]); ax.set_ylabel("Samples (Latin hypercube, n = 4000)")
+        ax.set_title(("Power: how much better than SiC is diamond, really?" if row == 0 else "Quantum: how long would the RSA-scale job take?"), fontsize=11)
+        ax = axes[row, 1]; rows = U.tornado(study); base = rows[0]["baseline"]
+        for i, r in enumerate(rows[::-1]):
+            lo, hi = sorted([r["y_low"], r["y_high"]])
+            ax.barh(i, hi - lo, left=lo, color=COLORS["Si"], alpha=.35, height=.6)
+            ax.barh(i, r["y_low"] - base, left=base, color=GOLD, height=.6); ax.barh(i, r["y_high"] - base, left=base, color=COLORS["Diamond"], height=.6)
+            ax.text(max(hi, base) * (1.03 if logx else 1) + (0 if logx else .1), i, f"{r['low']:g} → {r['high']:g} {U.STUDIES[study][0][r['name']][4]}", va="center", fontsize=8.5)
+        ax.set_yticks(range(len(rows))); ax.set_yticklabels([r["name"] for r in rows[::-1]]); ax.yaxis.set_minor_locator(plt.NullLocator())
+        ax.axvline(base, color=RED, lw=1.8)
+        allv = [base] + [r["y_low"] for r in rows] + [r["y_high"] for r in rows]
+        if logx:
+            ax.set_xscale("log"); ax.set_xlim(min(allv) / 1.5, max(allv) * 3.5)
+        else:
+            ax.set_xlim(min(allv) - .4, max(allv) + 1.8)
+        ax.set_xlabel(mc["label"]); ax.set_title("Tornado: one input at a time, low (gold) and high (teal)", fontsize=11)
+    return _finish(fig, out, "fig49_uncertainty.png",
+                   "[isberg2002] [wort2008] [donato2020] [kimoto2014] [hopper2018] [maurer2012] [dolde2013] [litinski2019]; adamas.uncertainty (ranges are this repository's judgment)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

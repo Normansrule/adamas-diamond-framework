@@ -1,0 +1,78 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Confidence · ADAMAS</title>
+<style>.vrow{display:grid;grid-template-columns:120px 1fr 110px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.vbar{position:relative;height:14px;background:rgba(255,255,255,.05);border-radius:7px;overflow:hidden}.vbar i{position:absolute;top:0;bottom:0;left:0;border-radius:7px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.vbar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:#e8f1f8}.st{font:600 12px var(--mono);padding:3px 8px;border-radius:7px;text-align:center}
+.pass{background:rgba(72,229,163,.18);color:var(--green)}.disc{background:rgba(255,196,107,.18);color:var(--gold)}.fail{background:rgba(255,93,108,.18);color:var(--red)}
+.pgrid{display:grid;grid-template-columns:320px 1fr;gap:18px}@media(max-width:1000px){.pgrid{grid-template-columns:1fr}}</style></head><body>
+<main class="wrap">
+<section class="block" style="padding:50px 0 10px"><span class="eyebrow">Rigor</span><h1 style="font-size:clamp(32px,4.6vw,58px)">How much should you <span class="grad">trust these numbers?</span></h1>
+<p class="lead">Two answers. The validation matrix shows how each model is checked: against published results, against an independent tool, or against a known answer. The uncertainty lab propagates honest parameter ranges through the headline results, live in your browser.</p></section>
+<section class="block" style="padding-top:10px"><h2 style="font-size:30px">1 · Validation matrix</h2><div class="seg" id="kinds"><button class="on" data-k="all">All</button><button data-k="literature">Literature</button><button data-k="cross-tool">Cross-tool</button><button data-k="analytic">Analytic</button></div>
+<p id="vsum" style="color:var(--mute)"></p><div class="card" id="vtable"></div>
+<p class="src">Bars show the deviation from the reference as a fraction of the allowed tolerance; the white line is the tolerance. Markdown version: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/VALIDATION.md">docs/VALIDATION.md</a>.</p></section>
+<section class="block"><h2 style="font-size:30px">2 · Uncertainty lab</h2>
+<div class="seg" id="studies"><button class="on" data-s="power">Power: SiC ÷ diamond inverter loss</button><button data-s="quantum">Quantum: RSA-scale runtime</button></div>
+<div class="pgrid" style="margin-top:14px"><aside class="panel" style="position:static"><h3 style="margin-top:0">Parameter ranges</h3><div id="ranges"></div>
+  <div class="ctl"><label>Samples <b id="nV"></b></label><input type="range" id="n" min="200" max="5000" step="100" value="2000"></div>
+  <button class="btn primary" id="run">▶ Run Monte Carlo</button><div class="kpis" id="kpis"></div></aside>
+<div><div class="stage" style="min-height:0"><canvas id="hist" style="height:300px"></canvas><div class="hud" id="hud"></div></div>
+<div class="stage" style="margin-top:14px;min-height:0"><canvas id="torn" style="height:260px"></canvas><div class="hud">Tornado: each input alone at its low (gold) and high (teal) value</div></div></div></div>
+<div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+  <div class="lvl" data-l="k">Scientists don't know every number exactly. So we roll the dice thousands of times, each time picking values inside the range we believe, and see how the answer spreads out. The tornado shows which unknown number matters most.</div>
+  <div class="lvl" data-l="s">Latin-hypercube sampling covers each parameter's range evenly with few samples. P10, P50, and P90 are the values below which 10, 50, and 90% of outcomes fall. A tornado diagram varies one input at a time; the widest bar is the one to measure first.</div>
+  <div class="lvl" data-l="r">Uniform or log-uniform priors over the stated ranges, independent inputs, and the same models as adamas.uncertainty; the Python Monte Carlo gives P50 ≈ 3.8× (power) and ≈ 3.6 years (quantum). Ranges are this repository's judgment from the cited spreads; correlated inputs (critical field and mobility both improve with crystal quality) would widen the tails.</div>
+  <p class="src">Sources: [isberg2002] [wort2008] [donato2020] [kimoto2014] [hopper2018] [maurer2012] [dolde2013] [litinski2019]</p></div></section>
+</main>
+<script type="module">
+import { boot, data, fitCanvas } from './assets/site.js';
+import * as U from './assets/sim/uncertainty.js';
+boot('Confidence');
+const $ = id => document.getElementById(id), D = await data(), V = D.validation, S = D.uncertainty, TBL = D.resource;
+let kind = 'all', study = 'power', params = null, samples = [], shown = 0;
+function vtable() {
+  const rows = V.filter(r => kind === 'all' || r.kind === kind), c = { pass: 0, disc: 0, fail: 0 }; V.forEach(r => r.status === 'pass' ? c.pass++ : r.status === 'FAIL' ? c.fail++ : c.disc++);
+  $('vsum').textContent = `${V.length} checks: ${c.pass} pass, ${c.disc} known discrepancy (explained), ${c.fail} fail.`;
+  $('vtable').innerHTML = rows.map(r => { const frac = r.tol ? Math.min(1.5, (r.deviation || 0) / r.tol) : (r.deviation ? 1.5 : 0), cls = r.status === 'pass' ? 'pass' : r.status === 'FAIL' ? 'fail' : 'disc';
+    return `<div class="vrow"><span style="color:var(--mute)">${r.area}<br><small>${r.kind}</small></span><div><b style="font-weight:500">${r.check}</b>
+      <div style="font:12px var(--mono);color:var(--mute);margin:4px 0">model ${(+r.model).toPrecision(4)} · reference ${(+r.reference).toPrecision(4)} · ${r.tol === 0 ? 'exact' : `tolerance ±${(100 * r.tol).toFixed(0)}%`} · ${r.source}</div>
+      <div class="vbar"><i data-w="${100 * frac / 1.5}" style="width:0;background:${cls === 'pass' ? 'var(--green)' : cls === 'disc' ? 'var(--gold)' : 'var(--red)'}"></i><b style="left:${100 / 1.5}%"></b></div>
+      ${r.discrepancy ? `<div style="font-size:12.5px;color:var(--gold);margin-top:4px">${r.discrepancy}</div>` : ''}</div><span class="st ${cls}">${r.status}</span></div>`; }).join('');
+  requestAnimationFrame(() => $('vtable').querySelectorAll('.vbar i').forEach(i => i.style.width = i.dataset.w + '%'));
+}
+$('kinds').onclick = e => { const b = e.target.closest('button'); if (!b) return; kind = b.dataset.k; $('kinds').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); vtable(); };
+const f = p => study === 'power' ? U.powerRatio(p) : U.quantumYears(p, TBL);
+function rangesUI() {
+  params = JSON.parse(JSON.stringify(S[study].params));
+  $('ranges').innerHTML = Object.entries(params).map(([k, [b, lo, hi, sc, unit]]) => `<div class="ctl"><label>${k} <b>${sc === 'choice' ? `${lo} or ${hi}` : `${lo} to ${hi}`} ${unit}</b></label>${sc === 'choice' ? '' :
+    `<div style="display:flex;gap:6px"><input type="range" data-k="${k}" data-e="lo" min="${lo / 3}" max="${b}" step="${(b - lo / 3) / 100}" value="${lo}"><input type="range" data-k="${k}" data-e="hi" min="${b}" max="${hi * 2}" step="${(hi * 2 - b) / 100}" value="${hi}"></div>`}</div>`).join('');
+  $('ranges').querySelectorAll('input').forEach(inp => inp.oninput = () => { const p = params[inp.dataset.k]; p[inp.dataset.e === 'lo' ? 1 : 2] = +inp.value;
+    inp.closest('.ctl').querySelector('b').textContent = `${(+p[1]).toPrecision(3)} to ${(+p[2]).toPrecision(3)} ${p[4]}`; });
+}
+$('studies').onclick = e => { const b = e.target.closest('button'); if (!b) return; study = b.dataset.s; $('studies').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); rangesUI(); run(); };
+$('n').oninput = () => $('nV').textContent = $('n').value; $('n').oninput();
+$('run').onclick = run;
+function run() { samples = U.lhs(params, +$('n').value, U.rng(Math.floor(Math.random() * 1e6))).map(f).filter(Number.isFinite); shown = 0; torn(); anim(); }
+function anim() {
+  shown = Math.min(samples.length, shown + Math.ceil(samples.length / 40)); const cur = samples.slice(0, shown), log = study === 'quantum';
+  const { g, w, h } = fitCanvas($('hist'), 300); g.clearRect(0, 0, w, h); if (!cur.length) return;
+  const T = v => log ? Math.log10(v) : v, all = samples.map(T), lo = Math.min(...all), hi = Math.max(...all), nb = 45, bins = Array(nb).fill(0);
+  cur.forEach(v => bins[Math.min(nb - 1, Math.floor((T(v) - lo) / (hi - lo || 1) * nb))]++); const mx = Math.max(...bins, 1), X = v => 40 + (w - 60) * (T(v) - lo) / (hi - lo || 1);
+  bins.forEach((c, i) => { g.fillStyle = study === 'power' ? '#2de2e6' : '#9d7bff'; const bw = (w - 60) / nb; g.fillRect(40 + i * bw, h - 30 - (h - 60) * c / mx, bw - 1.5, (h - 60) * c / mx); });
+  const sorted = [...cur].sort((a, b) => a - b), p10 = U.percentile(sorted, .1), p50 = U.percentile(sorted, .5), p90 = U.percentile(sorted, .9), base = f(U.baseline(params));
+  [[p10, 'P10', '#e8f1f8'], [p50, 'P50', '#e8f1f8'], [p90, 'P90', '#e8f1f8'], [base, 'baseline', '#ff5d6c']].forEach(([v, l, c]) => { g.strokeStyle = c; g.setLineDash(l === 'P50' || l === 'baseline' ? [] : [4, 4]); g.beginPath(); g.moveTo(X(v), 18); g.lineTo(X(v), h - 30); g.stroke(); g.setLineDash([]); g.fillStyle = c; g.font = '11px Inter'; g.fillText(`${l} ${v.toPrecision(3)}`, X(v) + 4, 28 + (l === 'baseline' ? 14 : 0)); });
+  g.fillStyle = '#8ea3b5'; g.fillText(S[study].label + (log ? ' (log axis)' : ''), w / 2 - 90, h - 8);
+  $('hud').textContent = `${shown} of ${samples.length} samples`;
+  $('kpis').innerHTML = [[p10, 'P10'], [p50, 'median'], [p90, 'P90'], [base, 'baseline']].map(([v, l]) => `<div class="kpi"><b>${v.toPrecision(3)}${study === 'power' ? '×' : ' yr'}</b><span>${l}</span></div>`).join('');
+  if (shown < samples.length) requestAnimationFrame(anim);
+}
+function torn() {
+  const rows = U.tornado(params, f), { g, w, h } = fitCanvas($('torn'), 260); g.clearRect(0, 0, w, h); const log = study === 'quantum';
+  const vals = rows.flatMap(r => [r.yl, r.yh, r.y0]).filter(Number.isFinite), T = v => log ? Math.log10(v) : v, lo = Math.min(...vals.map(T)), hi = Math.max(...vals.map(T)), X = v => 190 + (w - 230) * (T(v) - lo) / (hi - lo || 1);
+  rows.forEach((r, i) => { const y = 20 + i * ((h - 40) / rows.length); g.fillStyle = '#c7d6e3'; g.font = '12.5px Inter'; g.fillText(r.name, 8, y + 14);
+    g.fillStyle = '#ffc46b'; g.fillRect(Math.min(X(r.y0), X(r.yl)), y + 2, Math.abs(X(r.yl) - X(r.y0)), 18); g.fillStyle = '#2de2e6'; g.fillRect(Math.min(X(r.y0), X(r.yh)), y + 2, Math.abs(X(r.yh) - X(r.y0)), 18); });
+  g.strokeStyle = '#ff5d6c'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(rows[0].y0), 10); g.lineTo(X(rows[0].y0), h - 10); g.stroke();
+}
+vtable(); rangesUI(); run(); addEventListener('resize', () => { torn(); shown = samples.length - 1; anim(); });
+</script></body></html>

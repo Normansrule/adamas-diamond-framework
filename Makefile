@@ -1,13 +1,13 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary paper explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
 
 all: refs test figures
 
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 48 figures into docs/img/
+figures:         ## regenerate all 49 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -73,6 +73,15 @@ glossary:        ## regenerate docs/GLOSSARY.md
 
 paper:           ## numbers from the package, then the preprint PDF (needs pdflatex, latexmk)
 	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error adamas.tex && latexmk -c
+
+validation:      ## regenerate docs/VALIDATION.md (validation matrix and uncertainty summary)
+	$(PY) -c "from adamas.validation import write; write()"
+
+talk:            ## 12-slide Beamer talk, numbers from the package (paper/talk.pdf)
+	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error talk.tex && latexmk -c talk.tex && rm -f talk.nav talk.snm
+
+poster:          ## A0 conference poster with QR code (paper/poster.pdf)
+	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error poster.tex && latexmk -c poster.tex
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log
