@@ -117,3 +117,11 @@ test('uncertainty: power ratio baseline 6.67 and permittivity-free; LHS covers e
   const s = UN.lhs(P, 100), f = s.map(x => x['Diamond critical field']);
   for (let k = 0; k < 100; k++) assert.equal(f.filter(v => v >= 5 + 0.05 * k && v < 5 + 0.05 * (k + 1)).length, 1);
 });
+import { search, score } from '../assets/search.js';
+test('search palette ranks title matches first and tolerates partial words', () => {
+  const items = [{ title: 'Qubit Lab', kind: 'lab', text: 'Bloch sphere' }, { title: 'Heat Race', kind: 'lab', text: 'qubit cooling is not the point' }, { title: 'XZZX: XZZX surface code', kind: 'term', text: 'biased noise' }];
+  assert.equal(search(items, 'qubit')[0].title, 'Qubit Lab');
+  assert.equal(search(items, 'xzz')[0].kind, 'term');
+  assert.equal(search(items, 'zzzzzz').length, 0);
+  assert.ok(score(items[0], 'qub lab') > 0);
+});

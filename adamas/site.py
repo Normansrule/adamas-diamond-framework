@@ -141,7 +141,7 @@ def gallery_items() -> list[dict]:
 def build_gallery(out: Path) -> None:
     import html as H
     items = gallery_items()
-    tiles = "".join(f'''<figure class="tile" data-kind="{i["kind"]}" data-text="{H.escape((i["title"] + " " + i["caption"]).lower())}">
+    tiles = "".join(f'''<figure class="tile" id="{Path(i["src"]).stem}" data-kind="{i["kind"]}" data-text="{H.escape((i["title"] + " " + i["caption"]).lower())}">
       <img loading="lazy" src="{i["src"]}" alt="{H.escape(i["title"])}"><figcaption><b>{H.escape(i["title"])}</b><span>{H.escape(i["caption"])}</span></figcaption></figure>''' for i in items)
     n_fig = sum(i["kind"] == "figure" for i in items); n_anim = len(items) - n_fig
     (out / "gallery.html").write_text(f'''<!doctype html><html lang="en" data-base="."><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -160,8 +160,62 @@ function filter() {{ const q = $('q').value.toLowerCase().trim(); document.query
 $('kind').onclick = e => {{ const b = e.target.closest('button'); if (!b) return; kind = b.dataset.k; $('kind').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); filter(); }};
 $('q').oninput = filter;
 document.querySelectorAll('.tile').forEach(t => t.onclick = () => {{ $('lbImg').src = t.querySelector('img').src; $('lbCap').textContent = t.querySelector('figcaption').innerText; $('lb').classList.add('on'); }});
-$('lb').onclick = () => $('lb').classList.remove('on'); addEventListener('keydown', e => {{ if (e.key === 'Escape') $('lb').classList.remove('on'); }});
+$('lb').onclick = () => $('lb').classList.remove('on');
+if (window.location && window.location.hash) {{ const t = document.getElementById(window.location.hash.slice(1)); if (t) {{ t.scrollIntoView({{ block: 'center' }}); t.click(); }} }} addEventListener('keydown', e => {{ if (e.key === 'Escape') $('lb').classList.remove('on'); }});
 </script></body></html>''', encoding="utf-8")
+
+
+PAGES = [  # (title, href, kind, description) for the search index; labs and tools mirror web/assets/site.js NAV
+    ("Home", "index.html", "page", "diamond chips from wafer to qubit, overview, key findings, choose your path"),
+    ("Course", "course/index.html", "page", "seven lessons, notebooks, quizzes"), ("Explorer", "explorer.html", "page", "every equation in nine live panels, guided tour"),
+    ("Gallery", "gallery.html", "page", "all figures and animations"), ("Glossary", "glossary.html", "page", "acronyms and terms"),
+    ("Process Traveler", "process.html", "page", "19 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
+    ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
+    ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
+    ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado"),
+    ("Preprint (PDF)", "paper/adamas.pdf", "page", "paper, results, references"), ("Talk (PDF)", "paper/talk.pdf", "page", "12 slides"), ("Poster (PDF)", "paper/poster.pdf", "page", "A0 poster"),
+    ("Lattice Lab", "labs/lattice.html", "lab", "crystal, NV center, magnet, ODMR lines"), ("Heat Race", "labs/heat.html", "lab", "thermal conductivity, hot spot, silicon vs diamond"),
+    ("Wafer Lab", "labs/wafer.html", "lab", "yield, defects, dies per wafer, Poisson, Murphy"), ("Fab Walkthrough", "labs/fab.html", "lab", "process, layers, cleanroom"),
+    ("Transistor Lab", "labs/transistor.html", "lab", "I-V curves, inverter, ring oscillator, SPICE"), ("Power Lab", "labs/power.html", "lab", "EV inverter, switch loss, SiC, GaN"),
+    ("Diamond CPU", "labs/cpu.html", "lab", "DIA-4 processor, assembly, emulator, Verilog"), ("Qubit Lab", "labs/qubit.html", "lab", "Bloch sphere, Rabi, Ramsey, echo"),
+    ("Photon Lab", "labs/photon.html", "lab", "optical cycle, fluorescence, readout contrast"), ("Break the Code", "labs/qec.html", "lab", "surface code, error correction, decoder"),
+    ("Machine Builder", "labs/machine.html", "lab", "resource estimate, qubits, runtime, code distance"), ("The Chip Stack", "labs/stack.html", "lab", "architecture, layers"),
+    ("Who is building it", "labs/globe.html", "lab", "globe, labs, companies"),
+]
+
+
+def search_index() -> list[dict]:
+    from . import experiments, glossary, traveler
+    from .course import LESSONS
+    items = [{"title": t, "href": h, "kind": k, "text": d} for t, h, k, d in PAGES]
+    items += [{"title": f"{k}: {v['full']}", "href": f"glossary.html#{k}", "kind": "term", "text": v["def"]} for k, v in glossary.to_json().items()]
+    items += [{"title": i["title"], "href": f"gallery.html#{Path(i['src']).stem}", "kind": "figure", "text": i["caption"]} for i in gallery_items()]
+    items += [{"title": f"{e['id']} · {e['title']}", "href": "experiments.html", "kind": "experiment", "text": e["goal"]} for e in experiments.EXPERIMENTS]
+    items += [{"title": f"{s['id']} · {s['title']}", "href": "process.html", "kind": "step", "text": s["why"]} for s in traveler.STEPS]
+    items += [{"title": f"Lesson {L['id']}: {L['title']}", "href": f"course/lesson-{L['id']}.html", "kind": "lesson", "text": "; ".join(L["objectives"])} for L in LESSONS]
+    return items
+
+
+def findings() -> dict:
+    """Headline numbers for the landing page, from the same generator as the preprint."""
+    from . import paper
+    N = paper.numbers()
+    return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven",
+                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
+
+
+def build_glossary_page(out: Path) -> None:
+    import html as H
+    from . import glossary
+    rows = "".join(f'''<div class="gterm" id="{H.escape(k)}" data-text="{H.escape((k + ' ' + v['full'] + ' ' + v['def']).lower())}"><b>{H.escape(k)}</b><span><i>{H.escape(v["full"])}</i> · {H.escape(v["def"])}</span></div>'''
+                   for k, v in sorted(glossary.to_json().items(), key=lambda kv: kv[0].lower()))
+    (out / "glossary.html").write_text(f'''<!doctype html><html lang="en" data-base="."><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Glossary · ADAMAS</title><style>.gterm{{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:12px 4px;border-bottom:1px solid var(--line)}}
+.gterm b{{font:700 15px var(--mono);color:var(--teal)}}.gterm i{{color:var(--ink);font-style:normal;font-weight:600}}.gterm span{{color:var(--mute)}}.gterm:target{{background:rgba(45,226,230,.1);border-radius:10px}}.gterm[hidden]{{display:none}}</style></head><body>
+<main class="wrap"><section class="block" style="padding:60px 0 20px"><span class="eyebrow">Glossary</span><h1 style="font-size:clamp(34px,5vw,60px)">Every acronym, <span class="grad">spelled out</span></h1>
+<input type="text" id="q" placeholder="Filter terms…" style="max-width:360px"></section><div class="card" id="list">{rows}</div></main>
+<script type="module">import {{ boot }} from './assets/site.js'; boot('Glossary');
+const q = document.getElementById('q'); q.oninput = () => document.querySelectorAll('.gterm').forEach(t => t.hidden = !t.dataset.text.includes(q.value.toLowerCase().trim()));</script></body></html>''', encoding="utf-8")
 
 
 def build(out: str | Path = "site") -> Path:
@@ -193,6 +247,9 @@ def build(out: str | Path = "site") -> Path:
     (out / "explorer.html").write_text(html, encoding="utf-8")
     build_course(out, head)
     build_gallery(out)
+    build_glossary_page(out)
+    (out / "data" / "search.json").write_text(json.dumps(search_index()), encoding="utf-8")
+    (out / "data" / "findings.json").write_text(json.dumps(findings()), encoding="utf-8")
     (out / ".nojekyll").write_text("")
     return out
 

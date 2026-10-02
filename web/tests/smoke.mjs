@@ -32,12 +32,14 @@ const tmp = path.join(os.tmpdir(), 'adamas_' + page.replace(/\W/g, '_') + '.mjs'
 try { await import(pathToFileURL(tmp).href); } catch (e) { errors.push(String(e.stack || e)); }
 await new Promise(r => setTimeout(r, 200));
 const $ = id => W.document.getElementById(id);
+const extra = {};
 for (const a of (actions || '').split(',').filter(Boolean)) {
+  if (a === 'search') { W.document.getElementById('openSearch').click(); await new Promise(r => setTimeout(r, 200)); const q = W.document.getElementById('pq'); q.value = 'xzzx'; q.dispatchEvent(new W.Event('input')); await new Promise(r => setTimeout(r, 50)); extra.palette = W.document.getElementById('pres').textContent.slice(0, 160); continue; }
   if (a === 'loadex') { const k = W.document.getElementById('kind'); const f = path.join(siteDir, 'data', 'examples', 'rabi.csv'); W.document.getElementById('paste').value = fs.readFileSync(f, 'utf8'); k.value = 'rabi'; W.document.getElementById('go').click(); continue; }
   if (a === 'step1') { W.document.querySelector('#steps li')?.click(); continue; }
   if (a === 'tierC') { W.document.querySelector('#tiers button[data-t="C"]')?.click(); continue; }
   if (a === 'quizall') { W.document.querySelectorAll('[data-q] button[data-k="1"]').forEach(b => b.click()); continue; } const [id, n] = a.split('*'); for (let i = 0; i < (+n || 1); i++) $(id).click(); await new Promise(r => setTimeout(r, 60)); }
 await new Promise(r => setTimeout(r, 300));
 if (errors.length) { console.error(JSON.stringify({ page, errors })); process.exit(1); }
-console.log(JSON.stringify({ page, errors, gl: W.document.querySelectorAll('abbr.gl').length, probe: Object.fromEntries(['vsum', 'kpis', 'notes', 'plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])) }));
+console.log(JSON.stringify({ page, errors, gl: W.document.querySelectorAll('abbr.gl').length, probe: Object.assign(Object.fromEntries(['fcards', 'vsum', 'kpis', 'notes', 'plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])), extra) }));
 process.exit(0);

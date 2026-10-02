@@ -86,6 +86,9 @@ poster:          ## A0 conference poster with QR code (paper/poster.pdf)
 xzzx:            ## rerun the native XZZX study (about a minute) into docs/data/xzzx_native.json
 	rm -f docs/data/xzzx_native.json && $(PY) -c "from adamas.xzzx_native import cached_study; cached_study()"
 
+docs:            ## regenerate traveler, experiments, glossary, validation, and the README key-findings block
+	$(PY) -m adamas build docs
+
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +

@@ -1,18 +1,50 @@
 // Shared behavior: navigation, spotlight cards, number tickers, scroll reveals (GSAP ScrollTrigger when present,
 // IntersectionObserver otherwise), reading-level toggles, copy buttons.
 const BASE = document.documentElement.dataset.base || '.';
-const LINKS = [['Home', 'index.html'], ['Experiments', 'experiments.html'], ['Data Lab', 'datalab.html'], ['Confidence', 'confidence.html'], ['Process', 'process.html'], ['Course', 'course/index.html'], ['Lattice', 'labs/lattice.html'], ['Qubit', 'labs/qubit.html'], ['Photon', 'labs/photon.html'], ['Wafer', 'labs/wafer.html'], ['Heat', 'labs/heat.html'], ['Transistor', 'labs/transistor.html'], ['Power', 'labs/power.html'],
-  ['Chip', 'labs/cpu.html'], ['Error correction', 'labs/qec.html'], ['Fab', 'labs/fab.html'], ['Stack', 'labs/stack.html'], ['Machine', 'labs/machine.html'], ['Globe', 'labs/globe.html'], ['Gallery', 'gallery.html'], ['Explorer', 'explorer.html']];
+// Grouped navigation: [group, [[label, href, short description], ...]]. Labels double as boot(active) names.
+export const NAV = [
+  ['Learn', [['Course', 'course/index.html', 'Seven lessons with notebooks and graded checks'], ['Explorer', 'explorer.html', 'Every equation, nine live panels'],
+    ['Gallery', 'gallery.html', 'All figures and animations'], ['Glossary', 'glossary.html', 'Every acronym, spelled out']]],
+  ['Labs', [['Lattice', 'labs/lattice.html', 'Materials · crystal and NV center'], ['Heat', 'labs/heat.html', 'Materials · heat race'], ['Wafer', 'labs/wafer.html', 'Manufacturing · yield'],
+    ['Fab', 'labs/fab.html', 'Manufacturing · process walkthrough'], ['Transistor', 'labs/transistor.html', 'Devices · I–V and ring oscillator'], ['Power', 'labs/power.html', 'Devices · EV inverter'],
+    ['Chip', 'labs/cpu.html', 'Logic · program DIA-4'], ['Qubit', 'labs/qubit.html', 'Quantum · Bloch sphere'], ['Photon', 'labs/photon.html', 'Quantum · optical cycle'],
+    ['Error correction', 'labs/qec.html', 'Quantum · break the code'], ['Machine', 'labs/machine.html', 'Architecture · size a computer'], ['Stack', 'labs/stack.html', 'Architecture · chip stack'],
+    ['Globe', 'labs/globe.html', 'Landscape · who is building it']]],
+  ['Build', [['Process', 'process.html', '19-step cleanroom traveler'], ['Experiments', 'experiments.html', 'Ten experiments, US$100 and up'], ['Data Lab', 'datalab.html', 'Fit your own measurements']]],
+  ['Trust', [['Confidence', 'confidence.html', 'Validation matrix and uncertainty'], ['Preprint', 'paper/adamas.pdf', 'PDF, every number generated'],
+    ['Talk', 'paper/talk.pdf', '12 slides'], ['Poster', 'paper/poster.pdf', 'A0 with QR code']]],
+];
+export const LINKS = [['Home', 'index.html'], ...NAV.flatMap(([, items]) => items.map(([t, h]) => [t, h]))];
 const LOGO = '<svg viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ff3ff"/><stop offset="1" stop-color="#9d7bff"/></linearGradient></defs><path d="M8 4h16l6 8-14 17L2 12z" fill="url(#lg)"/><path d="M8 4l4 8 4-8 4 8 4-8M2 12h28M12 12l4 17 4-17" stroke="#05070d" stroke-width="1.2" fill="none" opacity=".5"/></svg>';
 
 export function mountNav(active) {
-  const nav = document.createElement('nav'); nav.className = 'top';
-  nav.innerHTML = `<a class="brand" href="${BASE}/index.html">${LOGO}ADAMAS</a><div class="links">` +
-    LINKS.map(([t, h]) => `<a href="${BASE}/${h}" class="${t === active ? 'on' : ''}">${t}</a>`).join('') +
-    `<a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">★ GitHub</a></div>`;
+  const nav = document.createElement('nav'); nav.className = 'top'; nav.setAttribute('aria-label', 'Main');
+  const group = NAV.find(([, items]) => items.some(([t]) => t === active));
+  nav.innerHTML = `<a class="brand" href="${BASE}/index.html">${LOGO}ADAMAS</a>
+    <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="links">` + NAV.map(([g, items]) => `<div class="dd${group && group[0] === g ? ' on' : ''}"><button class="ddb" aria-expanded="false">${g} <i>▾</i></button>
+      <div class="ddm${items.length > 6 ? ' wide' : ''}">${items.map(([t, h, d]) => `<a href="${BASE}/${h}" class="${t === active ? 'on' : ''}"><b>${t === 'Chip' ? 'Diamond CPU' : t}</b><small>${d}</small></a>`).join('')}</div></div>`).join('') +
+    `<button class="kbtn" id="openSearch" aria-label="Search">⌕ Search <kbd>Ctrl K</kbd></button><a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">★ GitHub</a></div>`;
   document.body.prepend(nav);
+  const close = () => nav.querySelectorAll('.dd').forEach(d => { d.classList.remove('open'); d.querySelector('.ddb').setAttribute('aria-expanded', 'false'); });
+  nav.querySelectorAll('.ddb').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const d = b.parentElement, was = d.classList.contains('open'); close(); if (!was) { d.classList.add('open'); b.setAttribute('aria-expanded', 'true'); } }));
+  document.addEventListener('click', close); addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  const burger = nav.querySelector('.burger'); burger.addEventListener('click', e => { e.stopPropagation(); const o = nav.classList.toggle('mobile'); burger.setAttribute('aria-expanded', String(o)); });
+  nav.querySelector('#openSearch').addEventListener('click', e => { e.stopPropagation(); import('./search.js').then(m => m.open(BASE)); });
+  addEventListener('keydown', e => { if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || ''))) { e.preventDefault(); import('./search.js').then(m => m.open(BASE)); } });
   const a = document.createElement('div'); a.className = 'aurora'; const g = document.createElement('div'); g.className = 'gridbg';
   document.body.prepend(g); document.body.prepend(a);
+  mountFooter();
+}
+
+export function mountFooter() {
+  if (document.querySelector('footer.site')) return;
+  const f = document.createElement('footer'); f.className = 'site';
+  f.innerHTML = `<div class="wrap fgrid">${NAV.map(([g, items]) => `<div><b>${g}</b>${items.slice(0, 7).map(([t, h]) => `<a href="${BASE}/${h}">${t === 'Chip' ? 'Diamond CPU' : t}</a>`).join('')}</div>`).join('')}
+    <div><b>Project</b><a href="https://github.com/Normansrule/adamas-diamond-framework">Source on GitHub</a><a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/CITATION.cff">Cite this work</a><a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/references/REFERENCES.md">All references</a></div></div>
+    <div class="wrap fnote">ADAMAS · MIT License · open research framework for diamond electronics and room-temperature quantum processors · every number is computed by the Python package and tested · press <kbd>Ctrl K</kbd> to search</div>`;
+  document.body.appendChild(f);
 }
 
 export function spotlight() {
