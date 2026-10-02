@@ -49,6 +49,10 @@ def numbers() -> dict:
     N["UncQPten"], N["UncQPfifty"], N["UncQPninety"] = (f"{mq[k]:.1f}" for k in ("p10", "p50", "p90"))
     from . import validation
     sv = validation.summary(); N["ValChecks"] = str(sum(sv.values())); N["ValPass"] = str(sv["pass"])
+    from . import xzzx_native
+    S = xzzx_native.cached_study(); i = S["etas"].index(100); j = S["t_read_us"].index(1000)
+    N["ThrCSSBias"] = f"{100 * S['thr']['css'][i]:.2f}"; N["ThrXZZXBias"] = f"{100 * S['thr']['xzzx'][i]:.2f}"; N["ThrDepol"] = f"{100 * S['thr']['css'][0]:.2f}"
+    N["NativeGain"] = f"{S['nv']['css'][7][j] / S['nv']['xzzx'][7][j]:.0f}"
     N["BreakevenStdMs"] = "100"; N["BreakevenXZZXMs"] = "1000"          # chapter E6, sections E6.1c and E6.1d
     return N
 

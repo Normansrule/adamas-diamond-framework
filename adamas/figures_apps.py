@@ -547,7 +547,34 @@ def fig_uncertainty(out: Path) -> Path:
                    "[isberg2002] [wort2008] [donato2020] [kimoto2014] [hopper2018] [maurer2012] [dolde2013] [litinski2019]; adamas.uncertainty (ranges are this repository's judgment)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty]
+def fig_xzzx_native(out: Path) -> Path:
+    """Figure 50: native XZZX syndrome circuits with biased gate noise and hook errors (project X-5)."""
+    from . import xzzx_native as X
+    S = X.cached_study()
+    fig, axes = plt.subplots(1, 3, figsize=(17.5, 5.2)); plt.subplots_adjust(wspace=.3)
+    ax = axes[0]
+    for c, col, lab in [("css", COLORS["Si"], "standard (CSS) code"), ("xzzx", COLORS["Diamond"], "XZZX code, native circuit")]:
+        ax.semilogx(S["etas"], np.array(S["thr"][c]) * 100, "o-", color=col, lw=2.4, ms=7, label=lab)
+    ax.axvline(0.5, color=INK, ls=":", lw=1); ax.text(0.55, ax.get_ylim()[1] * .98 if ax.get_ylim()[1] else 1.6, "depolarizing", fontsize=8.5, va="top")
+    ax.set_xlabel("Gate-noise bias η = p_Z / (p_X + p_Y)"); ax.set_ylabel("Circuit-level threshold (%), worse basis")
+    ax.set_title("Bias helps XZZX and hurts the standard code", fontsize=11); ax.legend(fontsize=9); ax.grid(True, which="both", alpha=.15)
+    ax = axes[1]; ps = np.array(S["ps"]) * 100
+    for c, ls in [("css", "--"), ("xzzx", "-")]:
+        for d, col in zip((3, 5, 7), (GOLD, "#9d7bff", COLORS["Diamond"])):
+            ax.loglog(ps, np.where(np.array(S["curves"][c][d]) > 0, S["curves"][c][d], np.nan), ls, marker="o", ms=4, color=col, lw=1.8, label=f"{c.upper()} d = {d}")
+    ax.set_xlabel("Physical error rate p (%), bias η = 100"); ax.set_ylabel("Logical error per round, worse basis")
+    ax.set_title("At strong bias only XZZX suppresses errors", fontsize=11); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
+    ax = axes[2]; tr = np.array(S["t_read_us"]) / 1e3
+    for c, ls in [("css", "--"), ("xzzx", "-")]:
+        for d, col in zip((3, 5, 7), (GOLD, "#9d7bff", COLORS["Diamond"])):
+            ax.loglog(tr, np.where(np.array(S["nv"][c][d]) > 0, S["nv"][c][d], np.nan), ls, marker="o", ms=4, color=col, lw=1.8, label=f"{c.upper()} d = {d}")
+    ax.axvline(1, color=RED, ls=":", lw=1.2); ax.text(1.1, 3e-2, "1 ms readout", color=RED, fontsize=8.5)
+    ax.set_xlabel("Readout time (ms), 1 s nuclear memory"); ax.set_ylabel("Logical error per round, worse basis")
+    ax.set_title("NV cell: 0.3% gates (η = 100), 1% readout, dephasing idle", fontsize=10.5); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
+    return _finish(fig, out, "fig50_xzzx_native.png", "[bonillaataides2021] [tuckett2018] [gidney2021stim] [higgott2022] [maurer2012]; adamas.xzzx_native (native circuits, bias-preserving gate-noise assumption)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

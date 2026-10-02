@@ -70,6 +70,13 @@ def rows() -> list[Row]:
                  "tests/test_web.py::test_machine_builder_javascript_matches_python"))
     R.append(Row("Qubits", "Photon Lab readout contrast, JavaScript vs Python", "cross-tool", 1.0, 1.0, 0.02, "adamas.photophysics",
                  "tests/test_photophysics.py::test_photon_lab_matches_python"))
+    try:
+        from . import xzzx_native
+        a = xzzx_native.worse_basis(3, 0.006, 0.5, "css", shots=40000, seed=5); b = xzzx_native.worse_basis(3, 0.006, 0.5, "xzzx", shots=40000, seed=6)
+        R.append(Row("Error correction", "Native XZZX circuit equals the standard code under depolarizing noise (ratio of logical errors)", "cross-tool", b / a, 1.0, 0.2,
+                     "[bonillaataides2021]", "adamas.xzzx_native: Clifford-equivalent circuits must perform the same; 40,000 shots each"))
+    except ImportError:
+        pass
     regs, _ = registers(2870.0)
     match = sum(a == b for a, b in zip(regs[2:], [0x18004E42, 0x000004B3, 0x008C803C, 0x00580005]))
     R.append(Row("Hardware", "ADF4351 registers R2 to R5 vs evaluation-board defaults", "cross-tool", match, 4, 0.0, "ADF4351 data sheet",
