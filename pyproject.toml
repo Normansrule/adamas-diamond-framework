@@ -4,13 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "adamas-diamond-framework"
-version = "0.22.0"
+version = "0.23.0"
 description = "ADAMAS: a referenced scientific framework for diamond-wafer electronics, from wafer growth to room-temperature nitrogen-vacancy quantum processors"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Aleksander Norman" }]
 dependencies = ["numpy>=1.26", "scipy>=1.11", "matplotlib>=3.8"]
+
+[project.scripts]
+adamas = "adamas.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pymatching>=2.1", "stim>=1.12", "nbformat>=5", "nbclient>=0.8", "ipykernel>=6"]
