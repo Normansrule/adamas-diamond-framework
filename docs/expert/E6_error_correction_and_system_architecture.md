@@ -93,6 +93,25 @@ Section E6.1c modeled the idle error as depolarizing. A nuclear spin waiting und
 
 **Reading.** A computation needs both bases, so the standard code is limited by its X memory and gains nothing from the bias. Spreading the dephasing across both logical sectors, as XZZX does, buys about ten times more readout time before scaling stops (break-even moves from about 10% to about 100% of the memory coherence time). The stricter budget of E6.1c, readout that at most doubles the distance-7 error, relaxes less: from about 5 ms to about 12 ms for a 1 s memory, or roughly 0.5% to 1.2% of the coherence time. The remaining project (X-5): a native XZZX syndrome circuit with its own hook errors, bias-aware decoding, and the effect on the resource estimate of [E10](E10_scaling_a_room_temperature_quantum_computer.md).
 
+### E6.1e Native XZZX circuits with biased gate noise (project X-5, done)
+
+E6.1d emulated the XZZX code by changing only the idle noise. A real XZZX processor measures different stabilizers with different gates, so one gate fault can spread differently ("hook" errors), and the gates themselves can have biased noise. `adamas.xzzx_native` builds the circuit natively: it takes Stim's rotated surface-code memory and rewrites it gate by gate, so that on one checkerboard sublattice of data qubits resets become RX, measurements become MX, CX(ancilla → data) becomes CZ, and CX(data → ancilla) becomes XCX [bonillaataides2021]. Stim confirms that every detector and the logical observable of the rewritten circuit are deterministic without noise, in both memory bases. The same noise is then inserted into both codes: an independent biased Pauli channel after every two-qubit gate with bias η = p_Z/(p_X + p_Y), readout and reset flips, and Z-only dephasing on the data during each ancilla readout. Errors after ideal gates keep their bias; for the NV dipolar interaction, a diagonal ZZ coupling, dephasing commutes with the gate, which motivates this assumption [dolde2013] [tuckett2018].
+
+![Native XZZX](../img/fig50_xzzx_native.png)
+
+Results (Figure 50, worse of the two memory bases, distances 3 and 5 for thresholds):
+
+| Gate-noise bias η | 0.5 (depolarizing) | 10 | 100 |
+|---|---|---|---|
+| Standard (CSS) threshold | 0.95% | 0.68% | 0.63% |
+| XZZX threshold (native) | 0.93% | 1.30% | 1.59% |
+
+1. **Sanity check.** Under depolarizing noise the two codes are Clifford-equivalent and must perform the same; they do, within sampling error (validation matrix).
+2. **Bias hurts the standard code and helps XZZX.** The CSS threshold falls as the noise concentrates on Z, because its X-memory sector sees all of it; the XZZX threshold rises, because the code spreads Z errors over both sectors.
+3. **For an NV cell** (0.3% gates at η = 100, 1% readout, 0.2% preparation, 1 s nuclear memory), at 1 ms readout the distance-7 XZZX code reaches a worse-basis logical error about 12× lower than the standard code, and distance 7 still beats distance 3 at 100 ms readout.
+
+The native result confirms the E6.1d emulation and strengthens it: with biased gates the advantage holds at the gate level, not only in the idle. Caveats: the bias of NV two-qubit gates has not been measured, decoding uses matching on decomposed errors (a bias-tailored decoder would do better), and the resource estimate of E10 still uses the standard code, so it is conservative.
+
 ## E6.2 Mapping codes onto NV hardware
 
 ```mermaid

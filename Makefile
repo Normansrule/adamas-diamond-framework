@@ -7,7 +7,7 @@ all: refs test figures
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 49 figures into docs/img/
+figures:         ## regenerate all 50 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -82,6 +82,9 @@ talk:            ## 12-slide Beamer talk, numbers from the package (paper/talk.p
 
 poster:          ## A0 conference poster with QR code (paper/poster.pdf)
 	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error poster.tex && latexmk -c poster.tex
+
+xzzx:            ## rerun the native XZZX study (about a minute) into docs/data/xzzx_native.json
+	rm -f docs/data/xzzx_native.json && $(PY) -c "from adamas.xzzx_native import cached_study; cached_study()"
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log
