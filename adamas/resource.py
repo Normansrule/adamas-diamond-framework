@@ -58,6 +58,41 @@ def build_table(shots: int = 200000) -> dict:
     return out
 
 
+MODELS = {  # resource tables: (file stem, description)
+    "standard": ("resource_fit", "standard code, depolarizing gate and idle noise (chapter E10)"),
+    "css_biased": ("resource_fit_css_biased", "standard code, biased NV noise (gates at bias 100, dephasing idle)"),
+    "xzzx_biased": ("resource_fit_xzzx_biased", "native XZZX code, biased NV noise (gates at bias 100, dephasing idle)"),
+}
+
+
+def build_biased_table(code: str, shots: int = 100000, eta: float = 100.0) -> dict:
+    """Circuit-level fits with the native circuits of adamas.xzzx_native (worse of the two memory bases)."""
+    from . import xzzx_native as X
+    out = {"readout_us": READOUT_US, "t2_mem_ms": T2_MEM_MS, "d": [3, 5, 7], "shots": shots, "code": code, "eta": eta,
+           "noise": {"p_link": 3e-3, "p_meas": 1e-2, "p_init": 2e-3, "idle": "Z only, 0.5(1 - exp(-t/T2))"}, "fits": {}}
+    for t2 in T2_MEM_MS:
+        rows = []
+        for tr in READOUT_US:
+            pid = 0.5 * (1 - math.exp(-tr / (t2 * 1e3)))
+            pls = [X.worse_basis(d, 3e-3, eta, code, p_meas=1e-2, p_init=2e-3, p_idle=pid, shots=shots, seed=11 + d) for d in (3, 5, 7)]
+            A, lam = fit_lambda([3, 5, 7], [max(p, 1e-7) for p in pls])
+            rows.append({"pL": pls, "A": A, "Lambda": lam})
+        for k in range(1, len(rows)):
+            if rows[k]["Lambda"] > rows[k - 1]["Lambda"]:
+                rows[k]["Lambda"] = rows[k - 1]["Lambda"]
+        out["fits"][str(int(t2))] = rows
+    return out
+
+
+def table_for(model: str = "standard", refresh: bool = False) -> dict:
+    if model == "standard":
+        return table(refresh)
+    path = DATA.parent / f"{MODELS[model][0]}.json"
+    if path.exists() and not refresh:
+        return json.loads(path.read_text())
+    t = build_biased_table("xzzx" if model.startswith("xzzx") else "css"); path.write_text(json.dumps(t)); return t
+
+
 def table(refresh: bool = False) -> dict:
     if DATA.exists() and not refresh:
         return json.loads(DATA.read_text())
@@ -84,8 +119,8 @@ class Estimate:
 
 def estimate(n_logical: float, steps: float, t_read_us: float = 1000.0, t2_mem_ms: float = 1000.0, eps: float = 0.01,
              gate_us: float = 25.0, prep_us: float = 5.0, overhead: float = 2.0, qubits_per_cell: int = 4,
-             pitch_um: float = 1.0, fill: float = 0.6, t: dict | None = None) -> Estimate | None:
-    t = t or table()
+             pitch_um: float = 1.0, fill: float = 0.6, t: dict | None = None, model: str = "standard") -> Estimate | None:
+    t = t or table_for(model)
     A, lam = interp_fit(t, t_read_us, t2_mem_ms)
     if lam <= 1.0:
         return None                                   # above threshold: no distance helps

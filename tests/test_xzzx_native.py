@@ -32,3 +32,14 @@ def test_cached_study_shows_opposite_trends():
     S = X.cached_study()
     css, xz = S["thr"]["css"], S["thr"]["xzzx"]
     assert css[-2] < css[0] and xz[-2] > 1.4 * xz[0]
+
+
+def test_biased_resource_tables_order_the_codes():
+    from adamas import resource as R
+    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    std, cssb, xz = (R.estimate(n, st, 1000, 1000, model=m) for m in ("standard", "css_biased", "xzzx_biased"))
+    assert cssb.physical_qubits > 3 * xz.physical_qubits          # biased noise hurts the standard code badly
+    assert xz.distance <= std.distance + 2                          # XZZX recovers the depolarizing baseline
+    for m in ("css_biased", "xzzx_biased"):
+        lams = [r["Lambda"] for r in R.table_for(m)["fits"]["1000"]]
+        assert all(a >= b for a, b in zip(lams, lams[1:]))          # slower readout never helps

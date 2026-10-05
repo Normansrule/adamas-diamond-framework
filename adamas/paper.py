@@ -42,7 +42,11 @@ def numbers() -> dict:
     import sys
     sys.path.insert(0, str(ROOT / "tools")); from refs_common import load
     refs = load(); N["NumRefs"] = str(len(refs)); N["NumVerified"] = str(sum(r.status == "V" for r in refs))
-    N["NumFigures"] = str(len(list((ROOT / "docs" / "img").glob("fig*.png"))))
+    # count the figures the code draws (not the files on disk, which lag until  make figures  runs)
+    names = set()
+    for f in ("figures.py", "figures_expert.py", "figures_apps.py"):
+        names |= set(re.findall(r'"(fig\d\d_\w+\.png)"', (ROOT / "adamas" / f).read_text(encoding="utf-8")))
+    N["NumFigures"] = str(len(names))
     from . import uncertainty
     mp, mq = uncertainty.monte_carlo("power", 4000), uncertainty.monte_carlo("quantum", 4000)
     N["UncPowerPten"], N["UncPowerPfifty"], N["UncPowerPninety"] = (f"{mp[k]:.1f}" for k in ("p10", "p50", "p90"))
@@ -53,6 +57,9 @@ def numbers() -> dict:
     S = xzzx_native.cached_study(); i = S["etas"].index(100); j = S["t_read_us"].index(1000)
     N["ThrCSSBias"] = f"{100 * S['thr']['css'][i]:.2f}"; N["ThrXZZXBias"] = f"{100 * S['thr']['xzzx'][i]:.2f}"; N["ThrDepol"] = f"{100 * S['thr']['css'][0]:.2f}"
     N["NativeGain"] = f"{S['nv']['css'][7][j] / S['nv']['xzzx'][7][j]:.0f}"
+    eb = resource.estimate(n, st, 1000.0, 1000.0, model="css_biased"); ex = resource.estimate(n, st, 1000.0, 1000.0, model="xzzx_biased")
+    N["RSADistanceCSSBiased"] = str(eb.distance); N["RSAQubitsMCSSBiased"] = f"{eb.physical_qubits / 1e6:.0f}"; N["RSAYearsCSSBiased"] = f"{eb.runtime_hours / 8766:.1f}"
+    N["RSADistanceXZZX"] = str(ex.distance); N["RSAQubitsMXZZX"] = f"{ex.physical_qubits / 1e6:.0f}"; N["RSAYearsXZZX"] = f"{ex.runtime_hours / 8766:.1f}"
     N["BreakevenStdMs"] = "100"; N["BreakevenXZZXMs"] = "1000"          # chapter E6, sections E6.1c and E6.1d
     return N
 
