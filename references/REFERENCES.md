@@ -1,6 +1,6 @@
 # References
 
-**537 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**541 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -477,9 +477,13 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[meneghini2021]`** Meneghini, M.; De Santi, C.; Abid, I.; et al. (2021). GaN-based power devices: physics, reliability, and perspectives. *Journal of Applied Physics*, 130, 181101. [doi:10.1063/5.0061354](https://doi.org/10.1063/5.0061354)
 - 📚 **`[kassakian2023]`** Kassakian, J. G.; Perreault, D. J.; Verghese, G. C.; Schlecht, M. F. (2023). Principles of Power Electronics (2nd ed.). *Cambridge University Press*.
 
-## Applications and requirements (8)
+## Applications and requirements (12)
 
+- 📚 **`[howard1966]`** Howard, R. A. (1966). Information value theory. *IEEE Transactions on Systems Science and Cybernetics*, 2, 22-26.
+- 📚 **`[jansen1999]`** Jansen, M. J. W. (1999). Analysis of variance designs for model output. *Computer Physics Communications*, 117, 35-43.
 - ✅ **`[tapper2000]`** Tapper, R. J. (2000). Diamond detectors in particle physics. *Reports on Progress in Physics*, 63, 1273. [doi:10.1088/0034-4885/63/8/203](https://doi.org/10.1088/0034-4885/63/8/203)
+- 📚 **`[sobol2001]`** Sobol, I. M. (2001). Global sensitivity indices for nonlinear mathematical models and their Monte Carlo estimates. *Mathematics and Computers in Simulation*, 55, 271-280.
+- 📚 **`[saltelli2002]`** Saltelli, A. (2002). Making best use of model evaluations to compute sensitivity indices. *Computer Physics Communications*, 145, 280-297.
 - ✅ **`[johnson2004]`** Johnson, R. W.; Evans, J. L.; Jacobsen, P.; Thompson, J. R.; Christopher, M. (2004). The changing automotive environment: high-temperature electronics. *IEEE Transactions on Electronics Packaging Manufacturing*, 27, 164. [doi:10.1109/tepm.2004.843109](https://doi.org/10.1109/tepm.2004.843109)
 - ✅ **`[tao2014]`** Tao, Y.; Boss, J. M.; Moores, B. A.; Degen, C. L. (2014). Single-crystal diamond nanomechanical resonators with quality factors exceeding one million. *Nature Communications*, 5, 3638. [doi:10.1038/ncomms4638](https://doi.org/10.1038/ncomms4638)
 - ✅ **`[watson2015]`** Watson, J.; Castro, G. (2015). A review of high-temperature electronics technology and applications. *Journal of Materials Science: Materials in Electronics*, 26, 9226. [doi:10.1007/s10854-015-3459-4](https://doi.org/10.1007/s10854-015-3459-4)

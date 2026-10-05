@@ -50,6 +50,8 @@ def site_data() -> dict:
     from . import uncertainty, validation
     data["validation"] = validation.to_json()
     data["uncertainty"] = uncertainty.to_json()
+    from . import decision
+    data["decision"] = decision.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -93,8 +95,8 @@ def build_course(out: Path, head: str) -> None:
       <p>{H.escape(L["objectives"][0])}.</p><span class="go">Start → <span id="badge{L["id"]}" style="color:var(--mute);font-weight:400;margin-left:8px"></span></span></a>''' for L in LESSONS)
     ids = [L["id"] for L in LESSONS]
     (d / "index.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Course · ADAMAS</title></head><body><main class="wrap">
-<section class="block" style="padding:60px 0 10px"><span class="eyebrow">Course</span><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in seven lessons</span></h1>
-<p class="lead">From "why diamond?" to "how big is the machine?". Each lesson has objectives, readings, a lab task, a notebook you can run in your browser, and a four-question check. About six hours in total; suitable for self-study or a one-month module.</p>
+<section class="block" style="padding:60px 0 10px"><span class="eyebrow">Course</span><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in eight lessons</span></h1>
+<p class="lead">From "why diamond?" to "how big is the machine?". Each lesson has objectives, readings, a lab task, a notebook you can run in your browser, and a four-question check. About seven hours in total; suitable for self-study or a one-month module.</p>
 <div id="progress" class="card" style="margin-top:20px"></div></section>
 <div class="bento" style="grid-template-columns:repeat(3,1fr)">{cards}</div>
 <section class="block"><div class="card"><h3>For instructors</h3><p>Notebooks live in <a href="{REPO}/tree/main/notebooks">notebooks/</a> and open in Google Colab or GitHub Codespaces. Every quiz answer cites a source in the repository's reference database; the lesson content is one Python file, <a href="{REPO}/blob/main/adamas/course.py">adamas/course.py</a>, so it is easy to fork and adapt.</p></div></section>
@@ -107,7 +109,7 @@ def build_course(out: Path, head: str) -> None:
         code = H.escape("\n\n".join(L["code"]))
         (d / f"lesson-{L['id']}.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Lesson {L["id"]}: {H.escape(L["title"])} · ADAMAS</title></head><body><main class="wrap" style="max-width:920px">
 <section class="block" style="padding:50px 0 10px"><span class="eyebrow">Lesson {L["id"]} of {len(LESSONS)} · {L["minutes"]} minutes</span><h1 style="font-size:clamp(32px,4.5vw,54px)">{H.escape(L["title"])}</h1>
-<canvas class="mini" data-mini="{ {1: "lattice", 2: "power", 3: "ring", 4: "rabi", 5: "stack", 6: "machine", 7: "fab"}.get(L["id"], "lattice") }" style="height:110px;margin:6px 0 14px"></canvas>
+<canvas class="mini" data-mini="{ {1: "lattice", 2: "power", 3: "ring", 4: "rabi", 5: "stack", 6: "machine", 7: "fab", 8: "qec"}.get(L["id"], "lattice") }" style="height:110px;margin:6px 0 14px"></canvas>
 <div class="card"><h3>You will be able to</h3><ul>{"".join(f"<li>{H.escape(o)}</li>" for o in L["objectives"])}</ul></div></section>
 <div class="card" style="margin:14px 0"><span class="tag gold">1 · Read</span><ul>{reads}</ul></div>
 <div class="card" style="margin:14px 0"><span class="tag">2 · Play</span><p style="color:var(--ink)">{H.escape(L["lab"][1])}</p><a class="btn primary" href="../{L["lab"][0]}">Open the lab →</a></div>
@@ -168,12 +170,12 @@ if (window.location && window.location.hash) {{ const t = document.getElementByI
 
 PAGES = [  # (title, href, kind, description) for the search index; labs and tools mirror web/assets/site.js NAV
     ("Home", "index.html", "page", "diamond chips from wafer to qubit, overview, key findings, choose your path"),
-    ("Course", "course/index.html", "page", "seven lessons, notebooks, quizzes"), ("Explorer", "explorer.html", "page", "every equation in nine live panels, guided tour"),
+    ("Course", "course/index.html", "page", "eight lessons, notebooks, quizzes"), ("Explorer", "explorer.html", "page", "every equation in nine live panels, guided tour"),
     ("Gallery", "gallery.html", "page", "all figures and animations"), ("Glossary", "glossary.html", "page", "acronyms and terms"),
     ("Process Traveler", "process.html", "page", "19 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
     ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
     ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
-    ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado"),
+    ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado, Sobol, value of information, what to measure next"),
     ("Preprint (PDF)", "paper/adamas.pdf", "page", "paper, results, references"), ("Talk (PDF)", "paper/talk.pdf", "page", "12 slides"), ("Poster (PDF)", "paper/poster.pdf", "page", "A0 poster"),
     ("Lattice Lab", "labs/lattice.html", "lab", "crystal, NV center, magnet, ODMR lines"), ("Heat Race", "labs/heat.html", "lab", "thermal conductivity, hot spot, silicon vs diamond"),
     ("Wafer Lab", "labs/wafer.html", "lab", "yield, defects, dies per wafer, Poisson, Murphy"), ("Fab Walkthrough", "labs/fab.html", "lab", "process, layers, cleanroom"),
@@ -202,7 +204,7 @@ def findings() -> dict:
     from . import paper
     N = paper.numbers()
     return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven",
-                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
+                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "SobolMobility", "SobolReadout", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
 
 
 def build_glossary_page(out: Path) -> None:

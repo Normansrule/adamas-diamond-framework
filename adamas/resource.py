@@ -93,6 +93,20 @@ def table_for(model: str = "standard", refresh: bool = False) -> dict:
     t = build_biased_table("xzzx" if model.startswith("xzzx") else "css"); path.write_text(json.dumps(t)); return t
 
 
+BIAS_GRID = (0.5, 10.0, 100.0)      # gate-noise bias values with stored native-circuit tables (0.5 = depolarizing)
+
+
+def table_eta(code: str, eta: float, refresh: bool = False) -> dict:
+    """Native-circuit resource table for code 'css' or 'xzzx' at gate-noise bias eta (dephasing idle in all cases).
+    Bias 100 reuses the css_biased / xzzx_biased tables; other values are cached as resource_fit_<code>_eta<eta>.json."""
+    if float(eta) == 100.0:
+        return table_for(f"{code}_biased", refresh)
+    path = DATA.parent / f"resource_fit_{code}_eta{eta:g}.json"
+    if path.exists() and not refresh:
+        return json.loads(path.read_text())
+    t = build_biased_table(code, eta=eta); path.write_text(json.dumps(t)); return t
+
+
 def table(refresh: bool = False) -> dict:
     if DATA.exists() and not refresh:
         return json.loads(DATA.read_text())

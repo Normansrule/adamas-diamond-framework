@@ -7,7 +7,7 @@ all: refs test figures
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 51 figures into docs/img/
+figures:         ## regenerate all 52 figures into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -91,6 +91,9 @@ docs:            ## regenerate traveler, experiments, glossary, validation, and 
 
 resource-biased: ## rebuild the biased-noise resource tables for both codes (about 2 minutes)
 	$(PY) -c "from adamas import resource as R; [R.table_for(m, refresh=True) for m in ('css_biased', 'xzzx_biased')]"
+
+resource-bias:   ## rebuild the native-circuit tables at bias 0.5 and 10 for both codes (about 4 minutes)
+	$(PY) -c "from adamas import resource as R; [R.table_eta(c, e, refresh=True) for c in ('css', 'xzzx') for e in (0.5, 10.0)]"
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

@@ -597,7 +597,42 @@ def fig_xzzx_machine(out: Path) -> Path:
     return _finish(fig, out, "fig51_xzzx_machine.png", "[bonillaataides2021] [fowler2012] [litinski2019]; adamas.resource with adamas.xzzx_native tables (gates at bias 100, assumed)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine]
+def fig_what_to_measure(out: Path) -> Path:
+    """Figure 52: what to measure next: Sobol indices, variance removed per dollar, and the code decision under unknown bias."""
+    from . import decision as D
+    from . import resource as R
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5.6), gridspec_kw={"width_ratios": [1.1, 1.25, 1]}); plt.subplots_adjust(wspace=.55)
+    ax = axes[0]; rows = []
+    for study, col in (("power", COLORS["Diamond"]), ("quantum", "#9d7bff")):
+        rows += [(r["name"], r["S1"], r["ST"], col) for r in D.sobol(study) if r["ST"] >= D.RESOLUTION]
+    y = np.arange(len(rows))[::-1]
+    ax.barh(y, [r[2] for r in rows], color=[r[3] for r in rows], alpha=.3, height=.7, label="total index S_T (with interactions)")
+    ax.barh(y, [r[1] for r in rows], color=[r[3] for r in rows], height=.42, label="first-order index S₁ (learn it alone)")
+    ax.set_yticks(y); ax.set_yticklabels([r[0] for r in rows]); ax.yaxis.set_minor_locator(plt.NullLocator()); ax.set_xlim(0, 1.05)
+    ax.set_xlabel("Share of output variance"); ax.legend(fontsize=8, loc="lower right")
+    ax.set_title("Which unknown explains the spread?\nteal: SiC÷diamond loss · violet: log runtime", fontsize=10.5)
+    ax = axes[1]; rm = [r for r in D.roadmap() if r["resolved"]]
+    y = np.arange(len(rm))[::-1]
+    ax.barh(y, [r["S1_per_10k"] for r in rm], color=[COLORS["Diamond"] if r["study"] == "power" else "#9d7bff" for r in rm], height=.6)
+    ax.set_xscale("log"); ax.set_yticks(y); ax.set_yticklabels([f"{r['name']}\n{r['experiment']} · ${r['cost_usd']:,.0f}" for r in rm], fontsize=8.5)
+    ax.yaxis.set_minor_locator(plt.NullLocator())
+    for yy, r in zip(y, rm):
+        ax.text(r["S1_per_10k"] * 1.15, yy, f"S₁ = {r['S1']:.2f}", va="center", fontsize=8.5)
+    ax.set_xlim(min(r["S1_per_10k"] for r in rm) / 2, max(r["S1_per_10k"] for r in rm) * 8)
+    ax.set_xlabel("Variance removed per US$10,000 (S₁ × 10⁴ / cost)"); ax.set_title("Measurement roadmap: best value first", fontsize=10.5)
+    ax = axes[2]; d = D.code_decision(); x = np.arange(len(R.BIAS_GRID))
+    for k, (code, col, lab) in enumerate((("css", GOLD, "standard code"), ("xzzx", COLORS["Diamond"], "XZZX code"))):
+        v = [d["payoff"][(code, e)][0] for e in R.BIAS_GRID]
+        ax.bar(x + (k - .5) * .38, v, .36, color=col, label=lab)
+        for xx, vv, e in zip(x, v, R.BIAS_GRID):
+            ax.text(xx + (k - .5) * .38, vv + 6, f"d{d['payoff'][(code, e)][2]}", ha="center", fontsize=8)
+    ax.set_xticks(x); ax.set_xticklabels([f"η = {e:g}" for e in R.BIAS_GRID]); ax.set_ylabel("Physical qubits (millions), RSA scale, 1 ms readout")
+    ax.set_xlabel("Gate-noise bias of NV two-qubit gates (unmeasured)")
+    ax.set_title(f"Code decision: XZZX wins at every bias\nEVPI on the bias = {d['evpi']:.0f} M qubits", fontsize=10.5); ax.legend(fontsize=8.5)
+    return _finish(fig, out, "fig52_what_to_measure.png", "[sobol2001] [saltelli2002] [howard1966]; adamas.decision (costs: adamas.experiments; native-circuit tables at bias 0.5, 10, 100)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

@@ -100,7 +100,44 @@ E10.5b used the standard surface code with depolarizing noise. Chapter E6.1e sho
 
 ![Code choice](../img/fig51_xzzx_machine.png)
 
-**Reading the table.** If NV noise really is strongly biased, the standard-code estimate of E10.5b is optimistic: Λ drops to about 1.75, the distance more than doubles, and the machine needs about six times as many qubits. The native XZZX code recovers, and slightly improves on, the depolarizing baseline. The practical conclusion is a measurement priority: **measure the error bias of NV two-qubit gates**, because it decides which code a room-temperature machine should run. The Machine Builder lab has a selector for all three models.
+**Reading the table.** If NV noise really is strongly biased, the standard-code estimate of E10.5b is optimistic: Λ drops to about 1.75, the distance more than doubles, and the machine needs about six times as many qubits. The native XZZX code recovers, and slightly improves on, the depolarizing baseline. Section E10.5d asks what measuring the bias is worth and finds that it does not change the code choice: XZZX is better at every bias, so the bias matters for planning the machine's size, not for choosing its code. The Machine Builder lab has a selector for all three models.
+
+## E10.5d What to measure next (decision analysis)
+
+E10.5c raised a question it did not answer: if the bias of NV two-qubit gates decides which code to run, how much is measuring it worth? `adamas.decision` answers that and its broader cousin, which unknown in the whole framework is worth measuring first.
+
+**Variance-based sensitivity.** The tornado of Figure 49 moves one input at a time. Sobol indices [sobol2001] instead ask what share of the output variance each input explains when all inputs vary together. The first-order index S₁ of an input is exactly the fraction of the variance that would disappear, on average, if that input were known perfectly; the total index S_T adds its interactions. They are estimated with the pick-freeze scheme of Saltelli and Jansen [saltelli2002] [jansen1999] on 16,000 Latin-hypercube samples (seed-to-seed scatter about ±0.02; the validation matrix checks the estimator against an exact case).
+
+- **Power** (silicon-carbide-to-diamond inverter loss): diamond's hole mobility (S₁ ≈ 0.42) and critical field (0.42) share almost all of the spread, as expected from the ratio's dependence on μE_c²; silicon carbide's own parameters add about 0.13.
+- **Quantum** (log runtime of the RSA-scale job): readout time explains 96% of the variance; every other input is at or near the estimator's resolution.
+
+**Measurement roadmap.** Each input is mapped to the experiment that pins it down (costs are geometric means of the price ranges in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md); desk studies are a nominal US$1,000), and ranked by variance removed per dollar:
+
+| Rank | Input | Study | S₁ | How it is measured | Cost | S₁ per US$10k |
+|---|---|---|---|---|---|---|
+| 1 | Diamond hole mobility | power | 0.42 | B3 (Hall and four-point measurement on doped single-crystal diamond) | $3,000 | 1.414 |
+| 2 | SiC critical field | power | 0.10 | desk study (literature review of commercial 4H-SiC) | $1,000 | 0.997 |
+| 3 | SiC electron mobility | power | 0.03 | desk study (literature review of commercial 4H-SiC) | $1,000 | 0.312 |
+| 4 | Diamond critical field | power | 0.42 | C2 (breakdown of sacrificial devices from a traveler run) | $22,361 | 0.189 |
+| 5 | Readout time | quantum | 0.96 | C1 (single-shot readout on a single NV by photon counting or photocurrent) | $54,772 | 0.175 |
+| 6 | Nuclear memory T₂ | quantum | 0.03 | C1 (nuclear-spin echo while the electron is read out) | $54,772 | 0.005 |
+| 7 | Two-qubit gate time | quantum | 0.02 | D1 (dipolar coupling of implanted pairs) | $1,000,000 | 0.000 |
+
+The cheapest high-value measurement in the framework is a **Hall measurement of hole mobility in doped single-crystal diamond** (experiment B3, a few thousand dollars), which addresses about 40% of the uncertainty in the power case. Desk studies of silicon carbide rank high only because they are nearly free; they can narrow the range only as far as the literature agrees. On the quantum side, single-NV readout experiments (C1) dominate everything else by a wide margin.
+
+**The code decision under unknown bias.** Native-circuit resource tables were built at gate-noise bias η = 0.5 (depolarizing gates), 10, and 100, for both codes, always with dephasing idle errors during readout (RSA-scale job, 1 ms readout, 1 s memory; entries are distance · physical qubits · runtime):
+
+| Gate-noise bias | Standard code | XZZX code |
+|---|---|---|
+| η = 0.5 | 83 · 165 M · 8.7 yr | 77 · 142 M · 8.1 yr |
+| η = 10 | 121 · 351 M · 12.7 yr | 59 · 84 M · 6.2 yr |
+| η = 100 | 129 · 399 M · 13.6 yr | 53 · 67 M · 5.6 yr |
+
+The XZZX code needs fewer qubits and less time at every bias, so it **dominates**: the expected value of perfect information on the bias for this decision [howard1966] is 0 M qubits and 0.0 years. This refines E10.5c. Measuring the bias does not change which code to run; choose XZZX regardless. It still matters for *planning*, because under XZZX the machine ranges from 67 M qubits (strong bias) to 142 M (no bias). Even at η = 0.5 XZZX wins because the idle error during readout is pure dephasing.
+
+Caveats: these native tables put an independent single-qubit channel of probability p on each qubit after a two-qubit gate, about twice the error of the two-qubit depolarizing channel used in E10.5b, so their absolute numbers are more pessimistic than the E10.5b baseline; compare codes within one model, not across models. The prior over the bias (uniform over three values) is an assumption, but because XZZX dominates, any prior gives the same choice. XZZX's practical cost (CZ and XCX gates on one sublattice, a mixed-basis readout) is assumed equal to the standard code's for NV hardware, where all gates come from the same dipolar coupling and microwave rotations.
+
+![What to measure next](../img/fig52_what_to_measure.png)
 
 ## E10.6 Projects
 

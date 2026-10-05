@@ -60,6 +60,11 @@ def numbers() -> dict:
     eb = resource.estimate(n, st, 1000.0, 1000.0, model="css_biased"); ex = resource.estimate(n, st, 1000.0, 1000.0, model="xzzx_biased")
     N["RSADistanceCSSBiased"] = str(eb.distance); N["RSAQubitsMCSSBiased"] = f"{eb.physical_qubits / 1e6:.0f}"; N["RSAYearsCSSBiased"] = f"{eb.runtime_hours / 8766:.1f}"
     N["RSADistanceXZZX"] = str(ex.distance); N["RSAQubitsMXZZX"] = f"{ex.physical_qubits / 1e6:.0f}"; N["RSAYearsXZZX"] = f"{ex.runtime_hours / 8766:.1f}"
+    from . import decision
+    S = {s: {r["name"]: r["S1"] for r in decision.sobol(s)} for s in ("power", "quantum")}
+    N["SobolMobility"] = f"{S['power']['Diamond hole mobility']:.2f}"; N["SobolField"] = f"{S['power']['Diamond critical field']:.2f}"
+    N["SobolReadout"] = f"{S['quantum']['Readout time']:.2f}"
+    dd = decision.code_decision(); N["XZZXDepolQubitsM"] = f"{dd['payoff'][('xzzx', 0.5)][0]:.0f}"; N["CSSDepolQubitsM"] = f"{dd['payoff'][('css', 0.5)][0]:.0f}"
     N["BreakevenStdMs"] = "100"; N["BreakevenXZZXMs"] = "1000"          # chapter E6, sections E6.1c and E6.1d
     return N
 

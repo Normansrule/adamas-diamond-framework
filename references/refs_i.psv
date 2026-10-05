@@ -1,0 +1,5 @@
+# ADAMAS reference database (part I, v0.25.0): sensitivity analysis and decision analysis for the measurement roadmap.
+sobol2001 | Sobol, I. M. | 2001 | Global sensitivity indices for nonlinear mathematical models and their Monte Carlo estimates | Mathematics and Computers in Simulation | 55, 271-280 | app | K
+saltelli2002 | Saltelli, A. | 2002 | Making best use of model evaluations to compute sensitivity indices | Computer Physics Communications | 145, 280-297 | app | K
+jansen1999 | Jansen, M. J. W. | 1999 | Analysis of variance designs for model output | Computer Physics Communications | 117, 35-43 | app | K
+howard1966 | Howard, R. A. | 1966 | Information value theory | IEEE Transactions on Systems Science and Cybernetics | 2, 22-26 | app | K

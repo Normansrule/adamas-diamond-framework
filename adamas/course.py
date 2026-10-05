@@ -151,6 +151,27 @@ LESSONS = [
              "why": "NO₂ desorbs when hot; high-temperature ALD Al₂O₃ enabled 400 °C operation [kawarada2014]."},
         ],
     },
+    {
+        "id": 8, "title": "Deciding what to measure next", "minutes": 50,
+        "objectives": ["Read a Sobol index as the value of learning one unknown", "Rank measurements by variance removed per dollar",
+                       "Recognize a dominant choice, whose value of information is zero"],
+        "read": [("What to measure next (E10.5d)", "docs/expert/E10_scaling_a_room_temperature_quantum_computer.md"), ("Validation and uncertainty", "docs/VALIDATION.md")],
+        "lab": ("confidence.html#measure", "Read the roadmap. Why does a US$3,000 Hall measurement outrank a US$55,000 single-NV experiment, even though readout time explains far more of its own output's spread? Then look at the code decision: what would it take for measuring the gate bias to be worth something?"),
+        "code": ["from adamas import decision as D",
+                 "for r in D.sobol('power'):\n    print(f\"{r['name']:24s} S1 = {r['S1']:.2f}  ST = {r['ST']:.2f}\")",
+                 "for r in D.roadmap()[:5]:\n    print(r['name'], r['experiment'], round(r['cost_usd']), round(r['S1_per_10k'], 3))",
+                 "d = D.code_decision()\nprint('XZZX dominates:', d['xzzx_dominates'], ' EVPI (M qubits):', round(d['evpi'], 1))"],
+        "quiz": [
+            {"q": "The first-order Sobol index of an input is 0.42. What does that mean?", "o": ["The input is 42% uncertain", "Measuring it perfectly would remove, on average, 42% of the output variance", "The output changes by 42% across the input's range", "The input is correct with probability 0.42"], "a": 1,
+             "why": "S₁ = Var(E[Y | Xᵢ]) / Var(Y): the share of the variance explained by that input alone [sobol2001]."},
+            {"q": "Readout time explains 96% of the runtime spread, diamond hole mobility 42% of the power spread. Why can the mobility measurement rank first?", "o": ["Mobility is more important physically", "The roadmap ranks variance removed per dollar, and a Hall measurement costs about 20× less", "Readout time cannot be measured", "Runtime does not matter"], "a": 1,
+             "why": "Value per dollar, not value alone, orders a measurement plan; the two outputs are different questions with different budgets (chapter E10.5d)."},
+            {"q": "The XZZX code needs fewer qubits than the standard code at every possible gate bias. What is the value of measuring the bias for choosing the code?", "o": ["Very high", "Zero: the choice is the same whatever the measurement shows", "Equal to the qubit difference", "It cannot be computed"], "a": 1,
+             "why": "When one option dominates in every state, perfect information cannot change the decision, so its expected value of perfect information is zero [howard1966]. The bias still matters for sizing the machine."},
+            {"q": "Diamond permittivity has a total Sobol index of zero for the power ratio. Why?", "o": ["It was measured perfectly", "It cancels exactly in the loss ratio at the optimum die area", "The estimator failed", "Permittivity does not affect any transistor"], "a": 1,
+             "why": "At the area optimum the SiC-to-diamond loss ratio depends only on mobility times critical field squared; permittivity cancels, so no measurement of it can change the answer [sobol2001]."},
+        ],
+    },
 ]
 
 

@@ -8,7 +8,7 @@
 .pgrid{display:grid;grid-template-columns:320px 1fr;gap:18px}@media(max-width:1000px){.pgrid{grid-template-columns:1fr}}</style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 10px"><span class="eyebrow">Rigor</span><h1 style="font-size:clamp(32px,4.6vw,58px)">How much should you <span class="grad">trust these numbers?</span></h1>
-<p class="lead">Two answers. The validation matrix shows how each model is checked: against published results, against an independent tool, or against a known answer. The uncertainty lab propagates honest parameter ranges through the headline results, live in your browser.</p></section>
+<p class="lead">Three answers. The validation matrix shows how each model is checked: against published results, against an independent tool, or against a known answer. The uncertainty lab propagates honest parameter ranges through the headline results, live in your browser. A value-of-information analysis says which measurement would shrink that uncertainty most per dollar.</p></section>
 <section class="block" style="padding-top:10px"><h2 style="font-size:30px">1 · Validation matrix</h2><div class="seg" id="kinds"><button class="on" data-k="all">All</button><button data-k="literature">Literature</button><button data-k="cross-tool">Cross-tool</button><button data-k="analytic">Analytic</button></div>
 <p id="vsum" style="color:var(--mute)"></p><div class="card" id="vtable"></div>
 <p class="src">Bars show the deviation from the reference as a fraction of the allowed tolerance; the white line is the tolerance. Markdown version: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/VALIDATION.md">docs/VALIDATION.md</a>.</p></section>
@@ -24,6 +24,13 @@
   <div class="lvl" data-l="s">Latin-hypercube sampling covers each parameter's range evenly with few samples. P10, P50, and P90 are the values below which 10, 50, and 90% of outcomes fall. A tornado diagram varies one input at a time; the widest bar is the one to measure first.</div>
   <div class="lvl" data-l="r">Uniform or log-uniform priors over the stated ranges, independent inputs, and the same models as adamas.uncertainty; the Python Monte Carlo gives P50 ≈ 3.8× (power) and ≈ 3.6 years (quantum). Ranges are this repository's judgment from the cited spreads; correlated inputs (critical field and mobility both improve with crystal quality) would widen the tails.</div>
   <p class="src">Sources: [isberg2002] [wort2008] [donato2020] [kimoto2014] [hopper2018] [maurer2012] [dolde2013] [litinski2019]</p></div></section>
+<section class="block" id="measure"><h2 style="font-size:30px">3 · What to measure next</h2>
+<p class="lead" style="max-width:820px">The Sobol index S₁ of an unknown is the share of the spread that would vanish, on average, if it were measured perfectly. Divide by the cost of the experiment that measures it and you get a roadmap.</p>
+<div class="card" id="road"></div>
+<h3 style="margin-top:26px">Which error-correcting code should a room-temperature machine run?</h3>
+<p style="color:var(--mute);max-width:820px">The bias of NV two-qubit gates has never been measured. Physical qubits for the RSA-scale job at each possible bias:</p>
+<div class="card" id="dec"></div>
+<p class="src">Chapter E10.5d. Sources: [sobol2001] [saltelli2002] [jansen1999] [howard1966]. Costs are geometric means of the price ranges on the Experiments page; desk studies are a nominal US$1,000.</p></section>
 </main>
 <script type="module">
 import { boot, data, fitCanvas } from './assets/site.js';
@@ -74,5 +81,21 @@ function torn() {
     g.fillStyle = '#ffc46b'; g.fillRect(Math.min(X(r.y0), X(r.yl)), y + 2, Math.abs(X(r.yl) - X(r.y0)), 18); g.fillStyle = '#2de2e6'; g.fillRect(Math.min(X(r.y0), X(r.yh)), y + 2, Math.abs(X(r.yh) - X(r.y0)), 18); });
   g.strokeStyle = '#ff5d6c'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(rows[0].y0), 10); g.lineTo(X(rows[0].y0), h - 10); g.stroke();
 }
+
+function road() {
+  const R = D.decision.roadmap.filter(r => r.resolved), mx = Math.max(...R.map(r => r.S1_per_10k));
+  $('road').innerHTML = `<div class="vrow" style="color:var(--mute);font-size:12.5px"><span>Rank · study</span><span>Unknown, and how to measure it</span><span>S₁ · cost</span></div>` + R.map((r, i) => `<div class="vrow"><span style="color:var(--mute)">#${i + 1}<br><small>${r.study}</small></span>
+    <div><b style="font-weight:500">${r.name}</b><div style="font-size:12.5px;color:var(--mute);margin:3px 0">${r.experiment} · ${r.what}</div>
+    <div class="vbar"><i data-w="${100 * Math.log10(1 + 1e3 * r.S1_per_10k) / Math.log10(1 + 1e3 * mx)}" style="width:0;background:${r.study === 'power' ? 'var(--teal)' : 'var(--violet, #9d7bff)'}"></i></div></div>
+    <span class="st pass">${r.S1.toFixed(2)} · $${Math.round(r.cost_usd).toLocaleString()}</span></div>`).join('');
+  const C = D.decision.decision, top = Math.max(...C.qubits_m.css, ...C.qubits_m.xzzx);
+  $('dec').innerHTML = `<div style="display:grid;grid-template-columns:repeat(${C.etas.length},1fr);gap:16px;align-items:end;height:220px">` + C.etas.map((e, i) => `<div style="display:flex;gap:8px;align-items:end;justify-content:center;height:100%">
+      ${[['css', 'var(--gold)', 'standard'], ['xzzx', 'var(--teal)', 'XZZX']].map(([c, col, lab]) => `<div style="text-align:center;width:42%"><small style="color:var(--mute)">${C.qubits_m[c][i].toFixed(0)} M</small>
+      <div class="dbar" data-h="${100 * C.qubits_m[c][i] / top}" style="height:0;background:${col};border-radius:6px 6px 0 0;transition:height 1s cubic-bezier(.2,.8,.2,1)"></div><small>${lab}</small></div>`).join('')}</div>`).join('') + `</div>
+    <div style="display:grid;grid-template-columns:repeat(${C.etas.length},1fr);gap:16px;text-align:center;margin-top:6px;color:var(--mute)">${C.etas.map(e => `<span>bias η = ${e}</span>`).join('')}</div>
+    <p id="evpi" style="margin-top:14px">${C.xzzx_dominates ? '<b>XZZX wins at every bias.</b> ' : ''}Expected value of perfect information on the bias for this choice: <b>${C.evpi_qubits_m.toFixed(0)} M qubits</b>, ${C.evpi_years.toFixed(1)} years. Measure the bias to size the machine, not to pick its code.</p>`;
+  requestAnimationFrame(() => { $('road').querySelectorAll('.vbar i').forEach(i => i.style.width = i.dataset.w + '%'); $('dec').querySelectorAll('.dbar').forEach(b => b.style.height = (1.8 * b.dataset.h) + 'px'); });
+}
+road();
 vtable(); rangesUI(); run(); addEventListener('resize', () => { torn(); shown = samples.length - 1; anim(); });
 </script></body></html>

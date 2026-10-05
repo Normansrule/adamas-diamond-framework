@@ -77,6 +77,13 @@ def rows() -> list[Row]:
                      "[bonillaataides2021]", "adamas.xzzx_native: Clifford-equivalent circuits must perform the same; 40,000 shots each"))
     except ImportError:
         pass
+    from . import decision
+    lin = {"a": (0.0, 0.0, 1.0, "lin", "", ""), "b": (0.0, 0.0, 1.0, "lin", "", "")}      # Y = a + 2b, both uniform on [0, 1]: S_b = 4/5
+    from . import uncertainty as _U
+    _U.STUDIES["_linear_check"] = (lin, lambda p: p["a"] + 2 * p["b"], "linear test")
+    sb = next(r["S1"] for r in decision.sobol("_linear_check", 8000) if r["name"] == "b"); del _U.STUDIES["_linear_check"]
+    R.append(Row("Systems", "Sobol first-order index recovers the exact value 0.8 for Y = a + 2b (uniform inputs)", "analytic", sb, 0.8, 0.03,
+                 "[sobol2001] [jansen1999]", "adamas.decision pick-freeze estimator, 8,000 samples"))
     regs, _ = registers(2870.0)
     match = sum(a == b for a, b in zip(regs[2:], [0x18004E42, 0x000004B3, 0x008C803C, 0x00580005]))
     R.append(Row("Hardware", "ADF4351 registers R2 to R5 vs evaluation-board defaults", "cross-tool", match, 4, 0.0, "ADF4351 data sheet",

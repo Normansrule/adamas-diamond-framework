@@ -2,7 +2,7 @@
 
 _Generated from `adamas/validation.py` (`make validation`). Interactive version: [validation.html](https://normansrule.github.io/adamas-diamond-framework/validation.html)._
 
-**18 checks: 17 pass, 1 known discrepancy (explained), 0 fail.** Evidence types: *literature* (reproduces a published result), *cross-tool* (two independent implementations agree), *analytic* (recovers a known or injected answer).
+**19 checks: 18 pass, 1 known discrepancy (explained), 0 fail.** Evidence types: *literature* (reproduces a published result), *cross-tool* (two independent implementations agree), *analytic* (recovers a known or injected answer).
 
 ![Uncertainty](img/fig49_uncertainty.png)
 
@@ -20,6 +20,7 @@ _Generated from `adamas/validation.py` (`make validation`). Interactive version:
 | Systems | Machine Builder runtime, JavaScript vs adamas.resource | cross-tool | 1 | 1 | ±1e-07% | pass | adamas.resource | tests/test_web.py::test_machine_builder_javascript_matches_python |
 | Qubits | Photon Lab readout contrast, JavaScript vs Python | cross-tool | 1 | 1 | ±2% | pass | adamas.photophysics | tests/test_photophysics.py::test_photon_lab_matches_python |
 | Error correction | Native XZZX circuit equals the standard code under depolarizing noise (ratio of logical errors) | cross-tool | 1.071 | 1 | ±20% | pass | [bonillaataides2021] | adamas.xzzx_native: Clifford-equivalent circuits must perform the same; 40,000 shots each |
+| Systems | Sobol first-order index recovers the exact value 0.8 for Y = a + 2b (uniform inputs) | analytic | 0.8038 | 0.8 | ±3% | pass | [sobol2001] [jansen1999] | adamas.decision pick-freeze estimator, 8,000 samples |
 | Hardware | ADF4351 registers R2 to R5 vs evaluation-board defaults | cross-tool | 4 | 4 | exact | pass | ADF4351 data sheet | adamas.hw.adf4351, tests/test_hardware.py |
 | Thermal | Steady hot-spot ratio silicon/diamond equals the conductivity ratio | analytic | 14.67 | 14.67 | ±1% | pass | [carslaw1959] | web/assets/sim/heat.js steady solver (unit test to 1%) |
 | Doping | Arrhenius analysis recovers the boron acceptor energy put into the model (eV) | analytic | 0.3661 | 0.37 | ±3% | pass | [lagrange1998] | adamas.experiments B3 with the density-of-states and mobility correction |

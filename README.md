@@ -21,7 +21,8 @@
 | **Two-qubit gates** | Coherence would allow a Bell fidelity of **0.998**; the measured 0.67 means the NV⁻ charge state was ready only **0.75** of the time. Preparation, not coherence, is the bottleneck. | [E5](docs/expert/E5_nv_qubit_engineering.md) |
 | **Error correction** | With strongly biased noise the native XZZX code's threshold rises to **1.59%** while the standard code falls to 0.63%. | [E6.1e](docs/expert/E6_error_correction_and_system_architecture.md) |
 | **Machine size** | A factoring-scale room-temperature machine fits on a **5.7 mm** die but runs **6.0 years** at 1 ms readout (1.2 to 15.5 years with uncertainty). If gate noise is biased, the standard code needs 399 M qubits and the XZZX code **67 M**. | [E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
-| **Evidence** | **17 of 18** validation checks pass (the other is an explained discrepancy); 537 references; 51 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
+| **What to measure next** | Diamond hole mobility and critical field each explain about 0.42 of the power-ratio spread; readout time explains 0.96 of the runtime spread. Per dollar, a few-thousand-dollar **Hall measurement of diamond mobility** comes first. XZZX wins at every gate bias, so measuring the bias sizes the machine but does not change the code. | [E10.5d](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
+| **Evidence** | **18 of 19** validation checks pass (the other is an explained discrepancy); 541 references; 52 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
 <!-- findings:end -->
 
 ## 🚀 Start here
@@ -106,14 +107,14 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>51 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>52 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
 
 ---
 
-## 🎓 Learn it or teach it: a seven-lesson course
+## 🎓 Learn it or teach it: an eight-lesson course
 
 A [course on the website](https://normansrule.github.io/adamas-diamond-framework/course/) walks from "why diamond?" to "how do I build it?". Each lesson has objectives, readings in this repository, a lab task, a notebook that runs in your browser, and a four-question check with sourced explanations. Progress is saved in your browser. Instructors can fork `adamas/course.py`, the single source for the pages and notebooks.
 
@@ -126,6 +127,7 @@ A [course on the website](https://normansrule.github.io/adamas-diamond-framework
 | 5 | [Two qubits and the real bottleneck](https://normansrule.github.io/adamas-diamond-framework/course/lesson-5.html) | 45 min | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Normansrule/adamas-diamond-framework/blob/main/notebooks/lesson_5.ipynb) |
 | 6 | [Error correction and the size of the machine](https://normansrule.github.io/adamas-diamond-framework/course/lesson-6.html) | 60 min | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Normansrule/adamas-diamond-framework/blob/main/notebooks/lesson_6.ipynb) |
 | 7 | [Building it: the process traveler](https://normansrule.github.io/adamas-diamond-framework/course/lesson-7.html) | 60 min | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Normansrule/adamas-diamond-framework/blob/main/notebooks/lesson_7.ipynb) |
+| 8 | [Deciding what to measure next](https://normansrule.github.io/adamas-diamond-framework/course/lesson-8.html) | 50 min | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Normansrule/adamas-diamond-framework/blob/main/notebooks/lesson_8.ipynb) |
 
 ## 🔬 Do it yourself: ten experiments from US$100 to a pilot line
 
@@ -156,9 +158,15 @@ The [process folder](docs/process/README.md) turns the framework into a cleanroo
 
 ![Process flow](docs/img/fig41_process_flow.png)
 
-**In the machine (v0.24).** If NV gate noise is that biased, the standard code's error suppression drops from Λ ≈ 3.6 to about 1.75 and an RSA-scale machine needs about 400 million qubits; the native XZZX code brings it back to about 67 million (Figure 51, [chapter E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md)). Measuring the bias of NV two-qubit gates is therefore a top experimental priority. The Machine Builder has a selector for all three models.
+**In the machine (v0.24).** If NV gate noise is that biased, the standard code's error suppression drops from Λ ≈ 3.6 to about 1.75 and an RSA-scale machine needs about 400 million qubits; the native XZZX code brings it back to about 67 million (Figure 51, [chapter E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md)). Because XZZX also wins without bias, it is a no-regret choice: measuring the bias sizes the machine but does not change the code ([E10.5d](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md)). The Machine Builder has a selector for all three models.
 
 ![Code choice in the machine](docs/img/fig51_xzzx_machine.png)
+
+## 🧭 What to measure next (v0.25)
+
+`adamas.decision` turns the uncertainty analysis into a measurement plan. Sobol indices give each unknown's share of the output spread; dividing by the cost of the experiment that pins it down ranks the measurements. A few-thousand-dollar Hall measurement of diamond hole mobility (experiment B3) is the best value in the framework; single-NV readout experiments (C1) dominate the quantum side. A decision analysis over the unmeasured gate bias shows the XZZX code wins at every bias, so its expected value of perfect information for the code choice is zero ([chapter E10.5d](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md), lesson 8, and section 3 of the [Confidence page](https://normansrule.github.io/adamas-diamond-framework/confidence.html#measure)).
+
+![What to measure next](docs/img/fig52_what_to_measure.png)
 
 ## ✅ How much to trust it
 
@@ -388,7 +396,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 117 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 120 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -423,6 +431,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
 | `adamas.hw` + `hardware/a1_odmr` | ADF4351 register calculator (runs under MicroPython), sweep logic, Pico firmware, host capture script | ADF4351 data sheet, [stegemann2023] |
 | `adamas.xzzx_native` | Native XZZX syndrome circuits with biased gate noise and hook errors; thresholds versus bias (`make xzzx`) | [bonillaataides2021], [tuckett2018] |
+| `adamas.decision` | Sobol sensitivity indices, measurement roadmap by variance removed per dollar, code decision and value of information under unknown gate bias | [sobol2001], [saltelli2002], [howard1966] |
 | `adamas.validation`, `adamas.uncertainty` | Validation matrix (literature, cross-tool, analytic) and Monte Carlo + tornado sensitivity analysis; Confidence page | [wang2003], [isberg2002], [kimoto2014] |
 | `adamas.paper` | Generates the preprint's numbers from the package (`make paper`) | |
 | `adamas.fitting` (`python -m adamas.fit`) | Fits for ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g⁽²⁾ with uncertainties and interpretation; Data Lab | [doherty2013], [lagrange1998], [kurtsiefer2000] |
@@ -430,7 +439,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.experiments` | Ten tiered experiments: parts and prices, steps, safety, 3-D scenes, simulated expected results (`make experiments`) | [stegemann2023], [williams2026], [sewani2020] |
 | `adamas.traveler` | Process traveler T1: 19 steps with parameters, checks, safety, failure modes, cross-section geometry, product variants (`make traveler`) | [kawarada2023], [kasu2012], [pezzagna2010] |
 | `adamas.photophysics` | NV optical cycle: five-level rate model, readout contrast, polarization; Photon Lab | [tetienne2012], [manson2006] |
-| `adamas.course` | The seven-lesson course: web pages, quizzes, and notebooks from one file (`make notebooks`) | see [the course](https://normansrule.github.io/adamas-diamond-framework/course/) |
+| `adamas.course` | The eight-lesson course: web pages, quizzes, and notebooks from one file (`make notebooks`) | see [the course](https://normansrule.github.io/adamas-diamond-framework/course/) |
 | `adamas.resource` | Space-time resource estimate from circuit-level fits: distance, qubits, die size, runtime; Machine Builder lab | [litinski2019], [fowler2012], [google2025] |
 | `adamas.trailer` | A 20-second trailer rendered from the package's own models (`make trailer`) | [wort2008], [doherty2013] |
 | `adamas.circuit_qec` | Circuit-level surface code (Stim + PyMatching) with NV idle-during-readout noise; the readout-time design rule | [gidney2021stim], [higgott2022], [maurer2012] |

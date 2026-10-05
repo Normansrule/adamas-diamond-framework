@@ -3,7 +3,7 @@
 const BASE = document.documentElement.dataset.base || '.';
 // Grouped navigation: [group, [[label, href, short description], ...]]. Labels double as boot(active) names.
 export const NAV = [
-  ['Learn', [['Course', 'course/index.html', 'Seven lessons with notebooks and graded checks'], ['Explorer', 'explorer.html', 'Every equation, nine live panels'],
+  ['Learn', [['Course', 'course/index.html', 'Eight lessons with notebooks and graded checks'], ['Explorer', 'explorer.html', 'Every equation, nine live panels'],
     ['Gallery', 'gallery.html', 'All figures and animations'], ['Glossary', 'glossary.html', 'Every acronym, spelled out']]],
   ['Labs', [['Lattice', 'labs/lattice.html', 'Materials · crystal and NV center'], ['Heat', 'labs/heat.html', 'Materials · heat race'], ['Wafer', 'labs/wafer.html', 'Manufacturing · yield'],
     ['Fab', 'labs/fab.html', 'Manufacturing · process walkthrough'], ['Transistor', 'labs/transistor.html', 'Devices · I–V and ring oscillator'], ['Power', 'labs/power.html', 'Devices · EV inverter'],

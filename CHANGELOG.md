@@ -4,6 +4,7 @@ Every release is a squash-merged pull request on `main`, tagged and published as
 
 | Version | Highlights |
 |---|---|
+| 0.25.0 | What to measure next: Sobol sensitivity indices, a measurement roadmap ranked by variance removed per dollar (a Hall measurement of diamond mobility first), native-circuit resource tables at bias 0.5, 10, 100, and a code decision showing XZZX dominates (zero value of information on the bias); Confidence page section 3; lesson 8; Figure 52; four references |
 | 0.24.0 | Native XZZX in the machine: circuit-level resource tables for both codes under biased NV noise; with bias 100 the standard code needs about 400 M qubits for the RSA-scale job and XZZX about 67 M; Machine Builder code selector; Figure 51; preprint, talk, poster, and README findings updated |
 | 0.23.0 | Grouped navigation with mobile menu, Ctrl K search palette over pages, labs, terms, figures, experiments, steps, and lessons; glossary page; site footer; landing page with key findings, audience paths, lab filter, and a build section; `adamas` command-line tool (info, doctor, fit, estimate, validate, uncertainty, findings, build); README reorganized with a generated key-findings block; this changelog |
 | 0.22.0 | Native XZZX syndrome circuits with biased gate noise and hook errors (X-5): XZZX threshold rises to about 1.6% at bias 100 while the standard code falls to about 0.6% |
