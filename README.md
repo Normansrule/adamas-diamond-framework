@@ -20,8 +20,8 @@
 | **Power switches** | Diamond's ideal figure of merit is **48,976×** silicon's; with honest material uncertainty its EV-inverter loss advantage over silicon carbide is a median **3.8×** (2.5× to 5.5×). | [Confidence](docs/VALIDATION.md) |
 | **Two-qubit gates** | Coherence would allow a Bell fidelity of **0.998**; the measured 0.67 means the NV⁻ charge state was ready only **0.75** of the time. Preparation, not coherence, is the bottleneck. | [E5](docs/expert/E5_nv_qubit_engineering.md) |
 | **Error correction** | With strongly biased noise the native XZZX code's threshold rises to **1.59%** while the standard code falls to 0.63%. | [E6.1e](docs/expert/E6_error_correction_and_system_architecture.md) |
-| **Machine size** | A factoring-scale room-temperature machine fits on a **5.7 mm** die but runs **6.0 years** at 1 ms readout (1.2 to 15.5 years with uncertainty). | [E10](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
-| **Evidence** | **17 of 18** validation checks pass (the other is an explained discrepancy); 537 references; 50 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
+| **Machine size** | A factoring-scale room-temperature machine fits on a **5.7 mm** die but runs **6.0 years** at 1 ms readout (1.2 to 15.5 years with uncertainty). If gate noise is biased, the standard code needs 399 M qubits and the XZZX code **67 M**. | [E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
+| **Evidence** | **17 of 18** validation checks pass (the other is an explained discrepancy); 537 references; 51 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
 <!-- findings:end -->
 
 ## 🚀 Start here
@@ -106,7 +106,7 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>50 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>524 references</b> · <b>51 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -155,6 +155,10 @@ A [course on the website](https://normansrule.github.io/adamas-diamond-framework
 The [process folder](docs/process/README.md) turns the framework into a cleanroom run sheet. [Traveler T1](docs/process/TRAVELER.md) takes a bare diamond plate to a tested chip in 19 steps; each step has its purpose, equipment, starting-point parameters with sources, in-line checks with pass windows, safety notes, failure modes, and what silicon does instead. [Applications](docs/process/APPLICATIONS.md) maps five product variants (power switch, RF amplifier, high-temperature logic, quantum sensor, qubit chip) onto the flow with acceptance tests and the published numbers to beat. The [interactive traveler](https://normansrule.github.io/adamas-diamond-framework/process.html) animates the cross-section, keeps a run log that checks your measurements, and exports CSV.
 
 ![Process flow](docs/img/fig41_process_flow.png)
+
+**In the machine (v0.24).** If NV gate noise is that biased, the standard code's error suppression drops from Λ ≈ 3.6 to about 1.75 and an RSA-scale machine needs about 400 million qubits; the native XZZX code brings it back to about 67 million (Figure 51, [chapter E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md)). Measuring the bias of NV two-qubit gates is therefore a top experimental priority. The Machine Builder has a selector for all three models.
+
+![Code choice in the machine](docs/img/fig51_xzzx_machine.png)
 
 ## ✅ How much to trust it
 
@@ -384,7 +388,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 116 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 117 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity

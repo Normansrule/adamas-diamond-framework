@@ -88,6 +88,20 @@ Three findings follow.
 
 The asymmetry must be stated: the NV numbers assume a 0.3% link error, far better than the best demonstrated room-temperature NV–NV entangling fidelity (0.82, [dolde2014]), while the superconducting column uses a measured Λ = 2.14 ([google2025]). The comparison therefore shows what NV hardware would need, not what it has. The interactive version is the [Machine Builder](https://normansrule.github.io/adamas-diamond-framework/labs/machine.html).
 
+## E10.5c The code choice matters if the noise is biased (project X-5, applied)
+
+E10.5b used the standard surface code with depolarizing noise. Chapter E6.1e showed that if NV gate errors are dominated by dephasing, the standard code loses much of its margin while the XZZX code gains. The resource tables were therefore rebuilt with the native circuits of `adamas.xzzx_native` under biased NV noise: gates at bias η = 100 (an assumption: the bias of NV dipolar gates has not been measured), 0.3% gate error, 1% readout, 0.2% preparation, and pure dephasing during readout (100,000 shots per point, worse memory basis). Same RSA-2048-scale job, 1 ms readout, 1 s memory:
+
+| Code and noise model | Λ at 1 ms | Distance | Physical qubits | Die side | Runtime |
+|---|---|---|---|---|---|
+| standard code, depolarizing gate and idle noise (chapter E10) | 3.56 | 57 | 78 M | 5.7 mm | 6.0 years |
+| standard code, biased NV noise (gates at bias 100, dephasing idle) | 1.75 | 129 | 399 M | 12.9 mm | 13.6 years |
+| native XZZX code, biased NV noise (gates at bias 100, dephasing idle) | 3.91 | 53 | 67 M | 5.3 mm | 5.6 years |
+
+![Code choice](../img/fig51_xzzx_machine.png)
+
+**Reading the table.** If NV noise really is strongly biased, the standard-code estimate of E10.5b is optimistic: Λ drops to about 1.75, the distance more than doubles, and the machine needs about six times as many qubits. The native XZZX code recovers, and slightly improves on, the depolarizing baseline. The practical conclusion is a measurement priority: **measure the error bias of NV two-qubit gates**, because it decides which code a room-temperature machine should run. The Machine Builder lab has a selector for all three models.
+
 ## E10.6 Projects
 
 | ID | Item | Deliverable |

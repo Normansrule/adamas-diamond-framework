@@ -6,6 +6,7 @@
   <span class="eyebrow">Architecture · Lab 11</span><h1>Machine Builder</h1>
   <p>Size a room-temperature diamond quantum computer for a real job. Error rates come from circuit-level simulations of NV hardware; every slider is a hardware choice.</p>
   <div class="ctl"><label>Job</label><select id="job"></select></div>
+  <div class="ctl"><label>Code and noise model</label><div class="seg" id="model"><button class="on" data-x="standard" title="Standard surface code, depolarizing noise">Standard</button><button data-x="css_biased" title="Standard code, gates biased toward Z (bias 100), dephasing idle">Standard, biased</button><button data-x="xzzx_biased" title="Native XZZX code, same biased noise">XZZX, biased</button></div></div>
   <div class="ctl"><label>Ancilla readout time <b id="rdV"></b></label><input type="range" id="rd" min="148" max="400" value="300"></div>
   <div class="ctl"><label>Nuclear memory T₂ under light</label><div class="seg" id="mem"><button class="on" data-m="1000">1 s</button><button data-m="100">0.1 s</button></div></div>
   <div class="ctl"><label>Two-qubit gate time <b id="gV"></b></label><input type="range" id="g" min="1" max="60" value="25"></div>
@@ -19,15 +20,16 @@
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">A big quantum job needs millions of qubits working together and checking each other's mistakes over and over. Diamond qubits don't need a freezer and fit on a chip smaller than a stamp, but each check is slow, so big jobs can take years. Make the reading faster and watch the time drop.</div>
     <div class="lvl" data-l="s">Each logical qubit is a d × d surface-code patch. The code distance d is the smallest odd number that keeps the total failure below 1%: n_L · steps · d · p_L(d) ≤ 0.01, with p_L(d) = A·Λ^(−(d+1)/2). One syndrome round takes preparation + four gates + readout, and each logical step takes d rounds.</div>
-    <div class="lvl" data-l="r">A and Λ are fitted to Stim + PyMatching circuit-level simulations (d = 3, 5, 7; 200,000 shots) with NV noise: 0.3% link, 1% readout, 0.2% preparation, and idle depolarization during readout; Λ is forced non-increasing in readout time. The NV Λ assumes a 0.3% link error that has not been demonstrated, while the superconducting reference uses the measured Λ = 2.14. Workloads are illustrative scales, not published algorithm counts. Chapter E10, Section E10.5.</div>
+    <div class="lvl" data-l="r">A and Λ are fitted to Stim + PyMatching circuit-level simulations (d = 3, 5, 7) with NV noise: 0.3% link, 1% readout, 0.2% preparation, and idle error during readout; Λ is forced non-increasing in readout time. "Standard" uses depolarizing gate and idle noise (200,000 shots); the two "biased" models use native circuits from adamas.xzzx_native with gate noise biased toward Z (bias 100, assumed, not measured) and pure dephasing during readout (100,000 shots, worse memory basis). If NV noise is that biased, the standard code needs about twice the distance and the XZZX code restores the baseline (Figure 51). The NV Λ assumes a 0.3% link error that has not been demonstrated, while the superconducting reference uses the measured Λ = 2.14. Workloads are illustrative scales, not published algorithm counts. Chapter E10, Section E10.5.</div>
     <p class="src">Sources: [gidney2021stim] [higgott2022] [fowler2012] [litinski2019] [google2025] [dolde2013] [maurer2012] [gidney2021]</p></div>
 </div></div></main>
 <script type="module">
 import { boot, fitCanvas, data } from '../assets/site.js';
 import * as R from '../assets/sim/resource.js';
 boot('Machine');
-const $ = id => document.getElementById(id), D = await data(), T = D.resource, W = D.workloads;
-let mem = 1000, t0 = performance.now();
+const $ = id => document.getElementById(id), D = await data(), W = D.workloads, TM = D.resource_models || { standard: D.resource };
+let T = TM.standard, mem = 1000, t0 = performance.now();
+$('model').onclick = e => { const b = e.target.closest('button'); if (!b || !TM[b.dataset.x]) return; T = TM[b.dataset.x]; $('model').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
 $('job').innerHTML = Object.keys(W).map(k => `<option>${k}</option>`).join(''); $('job').selectedIndex = 1;
 $('mem').onclick = e => { const b = e.target.closest('button'); if (!b) return; mem = +b.dataset.m; $('mem').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
 const tread = () => 10 ** (+$('rd').value / 100);

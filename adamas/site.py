@@ -41,6 +41,7 @@ def site_data() -> dict:
     data["power"] = power_data()
     from . import resource
     data["resource"] = resource.table()
+    data["resource_models"] = {m: resource.table_for(m) for m in resource.MODELS}
     data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}
     from . import traveler
     data["traveler"] = traveler.to_json()
@@ -201,7 +202,7 @@ def findings() -> dict:
     from . import paper
     N = paper.numbers()
     return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven",
-                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
+                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
 
 
 def build_glossary_page(out: Path) -> None:

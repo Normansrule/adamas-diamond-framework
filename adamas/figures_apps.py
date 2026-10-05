@@ -574,7 +574,30 @@ def fig_xzzx_native(out: Path) -> Path:
     return _finish(fig, out, "fig50_xzzx_native.png", "[bonillaataides2021] [tuckett2018] [gidney2021stim] [higgott2022] [maurer2012]; adamas.xzzx_native (native circuits, bias-preserving gate-noise assumption)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native]
+def fig_xzzx_machine(out: Path) -> Path:
+    """Figure 51: what the code choice does to the machine when NV noise is biased."""
+    from . import resource as R
+    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    tr = np.geomspace(30, 10000, 40)
+    styles = {"standard": (COLORS["Si"], ":", "standard code, depolarizing noise (E10 baseline)"),
+              "css_biased": (GOLD, "--", "standard code, biased NV noise"), "xzzx_biased": (COLORS["Diamond"], "-", "native XZZX code, biased NV noise")}
+    fig, axes = plt.subplots(1, 3, figsize=(17.5, 5.1)); plt.subplots_adjust(wspace=.3)
+    for m, (col, ls, lab) in styles.items():
+        t = R.table_for(m)
+        ax = axes[0]; ax.semilogx(t["readout_us"], [r["Lambda"] for r in t["fits"]["1000"]], ls, marker="o", color=col, lw=2.2, label=lab)
+        es = [R.estimate(n, st, x, 1000, t=t) for x in tr]
+        axes[1].loglog(tr / 1e3, [e.physical_qubits / 1e6 if e else np.nan for e in es], ls, color=col, lw=2.4, label=lab)
+        axes[2].loglog(tr / 1e3, [e.runtime_hours / 8766 if e else np.nan for e in es], ls, color=col, lw=2.4, label=lab)
+    axes[0].axhline(1, color=RED, lw=1); axes[0].set_xlabel("Readout time (µs), 1 s nuclear memory"); axes[0].set_ylabel("Error-suppression factor Λ")
+    axes[0].set_title("Biased noise halves Λ for the standard code", fontsize=11); axes[0].legend(fontsize=8)
+    axes[1].set_xlabel("Readout time (ms)"); axes[1].set_ylabel("Physical qubits (millions), RSA-2048 scale"); axes[1].set_title("XZZX keeps the machine small", fontsize=11)
+    axes[2].set_xlabel("Readout time (ms)"); axes[2].set_ylabel("Runtime (years)"); axes[2].set_title("…and about as fast as the depolarizing baseline", fontsize=11)
+    for ax in axes:
+        ax.grid(True, which="both", alpha=.15)
+    return _finish(fig, out, "fig51_xzzx_machine.png", "[bonillaataides2021] [fowler2012] [litinski2019]; adamas.resource with adamas.xzzx_native tables (gates at bias 100, assumed)")
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

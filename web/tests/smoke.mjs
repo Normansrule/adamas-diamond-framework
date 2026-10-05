@@ -34,6 +34,7 @@ await new Promise(r => setTimeout(r, 200));
 const $ = id => W.document.getElementById(id);
 const extra = {};
 for (const a of (actions || '').split(',').filter(Boolean)) {
+  if (a === 'xzzx') { W.document.querySelector('#model button[data-x="xzzx_biased"]')?.click(); continue; }
   if (a === 'search') { W.document.getElementById('openSearch').click(); await new Promise(r => setTimeout(r, 200)); const q = W.document.getElementById('pq'); q.value = 'xzzx'; q.dispatchEvent(new W.Event('input')); await new Promise(r => setTimeout(r, 50)); extra.palette = W.document.getElementById('pres').textContent.slice(0, 160); continue; }
   if (a === 'loadex') { const k = W.document.getElementById('kind'); const f = path.join(siteDir, 'data', 'examples', 'rabi.csv'); W.document.getElementById('paste').value = fs.readFileSync(f, 'utf8'); k.value = 'rabi'; W.document.getElementById('go').click(); continue; }
   if (a === 'step1') { W.document.querySelector('#steps li')?.click(); continue; }
