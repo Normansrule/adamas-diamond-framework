@@ -70,3 +70,28 @@ test('every equation panel in the Python registry has a JavaScript model and a c
     for (const k of Object.keys(p.vars)) assert.ok(k in MODELS[id].defaults || p.vars[k].derived, `panel ${id}: no default for ${k}`);
   }
 });
+test('v0.29 panels: ODMR to second order, slowest thermal mode, ring estimate, logical error, failure budget, output bias', async () => {
+  const PHY = await import('../assets/sim/physics.js'), HT = await import('../assets/sim/heat.js'), FT = await import('../assets/sim/fet.js'), RS = await import('../assets/sim/resource.js');
+  for (const [b, th, pert, exact] of G.odmr2) {
+    const [a, c] = PHY.linesPerturbative(b, th), [m, n] = MODELS.odmr.lines({ B: b, th, D: 2870 }), [ea, ec] = ACT.odmrLines(b, th);
+    assert.ok(close(a, pert[0]) && close(c, pert[1]) && close(m, pert[0]) && close(n, pert[1]), `perturbative ${b} ${th}`);
+    assert.ok(close(ea, exact[0], 1e-9, 1e-6) && close(ec, exact[1], 1e-9, 1e-6), `exact ${b} ${th}`);
+  }
+  for (const [k, rc, L, v] of G.heat) { assert.ok(close(HT.slowestModeTime(k, rc, L), v)); assert.ok(close(MODELS.heat.f({ k, rc, L }), 1e3 * v)); }
+  for (const [mu, ve, vd, r, vdd, e] of G.ring) {
+    const j = FT.ringEstimate(mu, ve, vd, r, vdd);
+    for (const [js, py] of [['period', 'period_s'], ['c', 'c_f'], ['iLoad', 'i_load_a'], ['iDrv', 'i_drv_a']]) assert.ok(close(j[js], e[py]), `ring ${js} ${mu}`);
+    assert.ok(close(MODELS.ring.f({ mu, V: vdd, ve, vd, r }), 1e9 * e.period_s));
+  }
+  for (const [p, d, pth, A, v] of G.logical) assert.ok(close(MODELS.logical.f({ p, d, pth, A }), v));
+  for (const [n, st, d, A, lam, v] of G.budget) { assert.ok(close(RS.failureProbability(n, st, d, A, lam), v)); assert.ok(close(MODELS.budget.f({ n, st, d, A, lam }), v)); }
+  for (const [k, eta, h, b] of G.outbias) { const o = GB.outputBias(k, eta, h); assert.ok(close(o[0], b['0']) && close(o[1], b['1']), `bias ${k} ${eta} ${h}`); }
+  assert.ok(close(MODELS.bias.f({ eta: 100, h: 1e-9 }), 1 / 201, 1e-6), 'short-Hadamard limit 1/(2 eta + 1)');
+});
+test('assumption checkers flag the states they should', () => {
+  assert.equal(MODELS.odmr.checks.weak({ B: 0.5, th: 60, D: 2870 }).ok, true);
+  assert.equal(MODELS.logical.checks.below({ p: 0.12, pth: 0.103 }).ok, false);
+  assert.equal(MODELS.ring.checks.vsim({ mu: 150, V: 10, ve: 1.5, vd: -2, r: 8, sim: 24.58 }).ok, true);
+  assert.equal(MODELS.heat.checks.settled({ k: 22, rc: 1.79, L: 0.2, tlab: 0.5 }).ok, false);
+  assert.equal(MODELS.budget.checks.below({ lam: 0.9 }).ok, false);
+});

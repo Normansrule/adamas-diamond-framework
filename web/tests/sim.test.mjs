@@ -41,7 +41,7 @@ test('surface code: single error corrected, a full chain is a logical error', ()
 });
 test('NV lines split by 2 gamma B along an axis; lattice bonds are tetrahedral', () => {
   const a = phys.NV_AXES[0], ls = phys.lines(a.map(x => x * 1.0)).filter(l => l.axis === 0).map(l => l.f);
-  assert.ok(Math.abs(ls[1] - ls[0] - 2 * 28.025) < 1e-6);
+  assert.ok(Math.abs(ls[1] - ls[0] - 2 * phys.GAMMA_MHZ_PER_MT) < 1e-6);
   const L = phys.diamondLattice(3); assert.ok(Math.abs(L.bond - 1.5445) < 1e-3);
   const deg = new Array(L.atoms.length).fill(0); L.bonds.forEach(([i, j]) => { deg[i]++; deg[j]++; });
   assert.ok(Math.max(...deg) === 4);
@@ -162,4 +162,19 @@ test('equations in action: identities the page relies on', () => {
   for (const tau of [0.3, 0.8]) { const m = ds.reduce((s, d) => s + Math.cos(2 * Math.PI * d * tau), 0) / ds.length; assert.ok(Math.abs(m - Math.exp(-(tau ** 2))) < 0.01, `ramsey ${m}`); }
   const g = act.plate(30); for (let i = 0; i < 40; i++) act.plateStep(g, 11, 100, 0.05); const h = act.plate(30); for (let i = 0; i < 40; i++) act.plateStep(h, 1.16, 100, 0.05);
   assert.ok(Math.max(...g.T) < Math.max(...h.T), 'the diamond plate stays cooler than copper');
+});
+test('surface-code scaling fit recovers A and p_th from exact data', () => {
+  const ps = [0.01, 0.02, 0.04, 0.06], ds = [3, 5, 7], res = {};
+  for (const d of ds) res[d] = ps.map(p => 0.2 * (p / 0.08) ** ((d + 1) / 2));
+  const f = sc.fitScaling(ps, ds, res);
+  assert.ok(Math.abs(f.A - 0.2) < 1e-6 && Math.abs(f.pth - 0.08) < 1e-6, JSON.stringify(f));
+});
+test('P1 thermometer in the browser: unbiased slope, honest error bars, pass rate near Python\'s', async () => {
+  const BP = await import('../assets/sim/build.js');
+  const runs = [...Array(60)].map((_, k) => BP.thermometerRun(500 + k));
+  const mean = runs.reduce((s, r) => s + r.slope, 0) / runs.length, sd = Math.sqrt(runs.reduce((s, r) => s + (r.slope - mean) ** 2, 0) / runs.length);
+  const meanErr = runs.reduce((s, r) => s + r.slopeErr, 0) / runs.length;
+  assert.ok(Math.abs(mean + 74.2) < 3 * sd / Math.sqrt(runs.length) + 0.3, `mean slope ${mean}`);
+  assert.ok(meanErr > 0.6 * sd && meanErr < 1.6 * sd, `error bars ${meanErr} vs scatter ${sd}`);
+  assert.ok(runs.filter(r => r.pass).length / runs.length > 0.9);
 });

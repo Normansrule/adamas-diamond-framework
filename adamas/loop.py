@@ -8,9 +8,13 @@ writes Python values at fixed inputs to web/tests/loop_golden.json for the node 
 relative unless stated).
 
 Panels: Qubit Lab (Rabi, Ramsey, mistimed echo), Photon Lab (measured contrast), Power Lab (hot switch), Addressing Lab
-(crosstalk), Wafer Lab (critical field and strain-limited T2* versus dislocation density).
+(crosstalk), Wafer Lab (critical field and strain-limited T2* versus dislocation density), Lattice Lab (ODMR lines to
+second order), Heat Race (slowest thermal mode), Transistor Lab (ring-oscillator hand estimate), Break the Code (logical
+error scaling), Machine Builder (failure budget), Gate Bias Lab (output bias).
 """
 from __future__ import annotations
+
+import math
 
 S = lambda k, html: f'<button class="v" type="button" data-k="{k}">{html}</button>'   # noqa: E731  clickable symbol
 FR = lambda a, b: f'<span class="fr"><span>{a}</span><span>{b}</span></span>'          # noqa: E731
@@ -91,6 +95,76 @@ PANELS = {
   "units": ["log of a ratio of densities", "GHz × strain × µs: dimensionless"],
   "assumptions": [{"id": "fit", "text": "E_c(D) is an engineering fit, not a law"}, {"id": "range", "text": "fit range 10⁴ to 10⁸ cm⁻²"}],
   "refs": ["volpe2010", "kwak2021", "weippert2022", "marshall2022", "stehl2013"], "derivation": ["Chapter 2", "docs/02_wafer_manufacturing.md"]},
+ "odmr": {
+  "lab": "labs/lattice.html", "title": "Where the magnetic-resonance lines sit", "python": "adamas.nv.lines_perturbative_mhz",
+  "html": f"<i>f</i><sub>±</sub> = {S('D', '<i>D</i>')} + {FR('3<i>b</i><sub>⊥</sub><sup>2</sup>', '2' + S('D', '<i>D</i>'))} ± √(<i>b</i><sub>∥</sub><sup>2</sup> + ({FR('<i>b</i><sub>⊥</sub><sup>2</sup>', '2' + S('D', '<i>D</i>'))})<sup>2</sup>), &nbsp; <i>b</i><sub>∥</sub> = γ<sub>e</sub>{S('B', '<i>B</i>')} cos {S('th', 'θ')}, <i>b</i><sub>⊥</sub> = γ<sub>e</sub>{S('B', '<i>B</i>')} sin {S('th', 'θ')}",
+  "result": {"sym": "Δf", "name": "splitting of the two lines of the NV along [111]", "unit": "MHz", "digits": 1},
+  "vars": {"B": {"sym": "B", "name": "field magnitude", "unit": "mT", "min": 0, "max": 8, "digits": 2, "src": "the magnet (experiment A2: a magnet's dipole field)"},
+           "th": {"sym": "θ", "name": "angle between the field and the [111] NV axis", "unit": "°", "derived": True, "digits": 1, "src": "set by the lab's field direction"},
+           "D": {"sym": "D", "name": "zero-field splitting", "unit": "MHz", "min": 2860, "max": 2880, "digits": 1, "src": "2870 MHz at 300 K, −74.2 kHz/K [acosta2010] [doherty2013]"}},
+  "units": ["γₑ = 28.03 MHz/mT, so γₑB is in MHz", "b²/D: MHz²/MHz = MHz"],
+  "assumptions": [{"id": "weak", "text": "second order in B: γₑB ≪ D (the ±1 pair mixes near 90°)"}, {"id": "strainfree", "text": "no strain or electric field (E = 0)"}],
+  "refs": ["doherty2013", "acosta2010"], "derivation": ["Chapter 6", "docs/06_nv_center_physics.md"]},
+ "heat": {
+  "lab": "labs/heat.html", "title": "How long the hot spot takes to settle", "python": "adamas.thermal.slowest_mode_time_s",
+  "html": f"τ = {FR('4' + S('L', '<i>L</i>') + '<sup>2</sup>', 'π<sup>2</sup>' + S('al', 'α'))}, &nbsp; {S('al', 'α')} = {FR(S('k', 'κ'), S('rc', 'ρ<i>c</i>'))}, &nbsp; steady peak ∝ 1/{S('k', 'κ')}",
+  "result": {"sym": "τ", "name": "time constant of the slowest thermal mode (95 % settled after 3τ)", "unit": "ms", "digits": 2},
+  "vars": {"k": {"sym": "κ", "name": "thermal conductivity", "unit": "W/(cm·K)", "min": 1, "max": 25, "log": True, "digits": 2, "src": "diamond 22 [wei1993], SiC 4.9 [kimoto2014], GaN 2.3 [mishra2008], Si 1.5 [sze2006]; click a tile to load it"},
+           "rc": {"sym": "ρc", "name": "volumetric heat capacity", "unit": "J/(cm³·K)", "min": 1, "max": 3.5, "digits": 2, "src": "density × specific heat: diamond 3.52 × 0.509, silicon 2.33 × 0.705 [haynes2016]"},
+           "L": {"sym": "L", "name": "die thickness", "unit": "cm", "min": 0.02, "max": 0.5, "digits": 2, "src": "the lab's cross-section is 0.2 cm deep"},
+           "al": {"sym": "α", "name": "thermal diffusivity", "unit": "cm²/s", "derived": True, "digits": 2, "src": "κ / (ρc)"}},
+  "units": ["cm² / (cm²/s) = s, shown in ms", "W/(cm·K) ÷ J/(cm³·K) = cm²/s"],
+  "assumptions": [{"id": "constk", "text": "constant κ (it falls as the die heats)"}, {"id": "settled", "text": "the lab has run for 3τ (steady state)"}],
+  "refs": ["carslaw1959", "wei1993", "sze2006", "kimoto2014", "mishra2008", "haynes2016"], "derivation": ["Chapter 4", "docs/04_analog_power_rf_devices.md"]},
+ "ring": {
+  "lab": "labs/transistor.html", "title": "A hand estimate of the ring oscillator", "python": "adamas.logic.ring_period_estimate_s",
+  "html": f"<i>T</i> = {S('N', '<i>N</i>')} ({FR(S('C', '<i>C</i>') + S('V', '<i>V</i><sub>DD</sub>'), '2' + S('IL', '<i>I</i><sub>L</sub>'))} + {FR(S('C', '<i>C</i>') + S('V', '<i>V</i><sub>DD</sub>'), '2(' + S('ID', '<i>I</i><sub>D</sub>') + ' − ' + S('IL', '<i>I</i><sub>L</sub>') + ')')}), &nbsp; <i>I</i> ∝ {S('mu', 'μ')}",
+  "result": {"sym": "T", "name": "estimated period of the five-stage ring", "unit": "ns", "digits": 1},
+  "vars": {"mu": {"sym": "μ", "name": "hole mobility in the channel", "unit": "cm²/(V·s)", "min": 20, "max": 600, "digits": 0, "src": "hydrogen-terminated diamond, 50 to 300 typical [kawarada2017]"},
+           "V": {"sym": "V_DD", "name": "supply voltage", "unit": "V", "min": 4, "max": 20, "step": 1, "digits": 1, "src": "the lab's supply"},
+           "N": {"sym": "N", "name": "number of stages", "unit": "", "derived": True, "digits": 0, "src": "five, as in the lab and the ngspice netlist"},
+           "C": {"sym": "C", "name": "node capacitance (gate plus 20 fF wiring)", "unit": "fF", "derived": True, "digits": 1, "src": "C_ox W L of the next driver + wiring"},
+           "IL": {"sym": "I_L", "name": "load current (depletion device, V_GS = 0)", "unit": "mA", "derived": True, "digits": 3, "src": "square law at saturation"},
+           "ID": {"sym": "I_D", "name": "driver current at V_DS = V_DD/2", "unit": "mA", "derived": True, "digits": 3, "src": "square law, input at V_DD"}},
+  "units": ["F × V / A = s, shown in ns"],
+  "assumptions": [{"id": "vsim", "text": "the hand estimate agrees with the lab's transient simulation within 50 %"},
+                  {"id": "longch", "text": "long channel: no velocity saturation"}],
+  "refs": ["rabaey2003", "sze2006", "liu2017"], "derivation": ["E3", "docs/expert/E3_digital_and_cpu_design.md"]},
+ "logical": {
+  "lab": "labs/qec.html", "title": "How fast a bigger code wins", "python": "adamas.qec.surface_code_logical_error",
+  "html": f"<i>p</i><sub>L</sub> ≈ {S('A', '<i>A</i>')} ({FR(S('p', '<i>p</i>'), S('pth', '<i>p</i><sub>th</sub>'))})<sup>({S('d', '<i>d</i>')} + 1)/2</sup>",
+  "result": {"sym": "p_L", "name": "logical failure probability per decoding trial", "unit": "", "digits": 4},
+  "vars": {"p": {"sym": "p", "name": "physical error rate", "unit": "", "min": 0.01, "max": 0.2, "step": 0.01, "digits": 3, "src": "the lab's slider: independent bit flips"},
+           "d": {"sym": "d", "name": "code distance", "unit": "", "min": 3, "max": 9, "step": 2, "digits": 0, "src": "the lab's code size"},
+           "pth": {"sym": "p_th", "name": "threshold", "unit": "", "min": 0.03, "max": 0.15, "digits": 3, "src": "10.3 % for code capacity with minimum-weight matching [wang2003]; this lab's greedy decoder is lower"},
+           "A": {"sym": "A", "name": "prefactor", "unit": "", "min": 0.01, "max": 1, "log": True, "digits": 2, "src": "fitted to simulation (the lab fits it to its own threshold run); 0.1 is the round value used by [gidney2021]"}},
+  "units": ["p / p_th is dimensionless"],
+  "assumptions": [{"id": "below", "text": "below threshold: p < p_th"}, {"id": "lowp", "text": "leading order: valid well below threshold"},
+                  {"id": "codecap", "text": "code capacity: perfect syndrome measurements"}],
+  "refs": ["dennis2002", "wang2003", "fowler2012", "gidney2021"], "derivation": ["E6", "docs/expert/E6_error_correction_and_system_architecture.md"]},
+ "budget": {
+  "lab": "labs/machine.html", "title": "The failure budget that sets the code distance", "python": "adamas.resource.failure_probability",
+  "html": f"<i>P</i><sub>fail</sub> = {S('n', '<i>n</i><sub>L</sub>')} · {S('st', '<i>S</i>')} · {S('d', '<i>d</i>')} · {S('A', '<i>A</i>')} {S('lam', 'Λ')}<sup>−({S('d', '<i>d</i>')} + 1)/2</sup> ≤ ε",
+  "result": {"sym": "P_fail", "name": "probability that the whole computation fails", "unit": "", "digits": 4},
+  "vars": {"n": {"sym": "n_L", "name": "logical qubits", "unit": "", "derived": True, "digits": 0, "src": "the chosen job"},
+           "st": {"sym": "S", "name": "logical steps", "unit": "", "derived": True, "digits": 2, "src": "the chosen job (RSA-2048 calibrated to 1.07 × 10⁹)"},
+           "d": {"sym": "d", "name": "code distance (smallest odd d meeting ε = 1 %)", "unit": "", "derived": True, "digits": 0, "src": "chosen by the lab"},
+           "A": {"sym": "A", "name": "fit prefactor", "unit": "", "derived": True, "digits": 3, "src": "Stim circuit-level fit at this readout time and memory [gidney2021stim]"},
+           "lam": {"sym": "Λ", "name": "error suppression per +2 distance", "unit": "", "derived": True, "digits": 2, "src": "same fit; 2.14 measured on superconducting hardware [google2025]"}},
+  "units": ["a product of counts and probabilities: dimensionless"],
+  "assumptions": [{"id": "below", "text": "below threshold: Λ > 1"}, {"id": "union", "text": "union bound: failures independent and rare"},
+                  {"id": "link", "text": "the 0.3 % inter-cell link is proposed, not demonstrated"}],
+  "refs": ["fowler2012", "litinski2019", "gidney2021stim", "google2025"], "derivation": ["E10", "docs/expert/E10_scaling_a_room_temperature_quantum_computer.md"]},
+ "bias": {
+  "lab": "labs/bias.html", "title": "What bias leaves the gate", "python": "adamas.gatebias.output_bias",
+  "html": f"η<sub>out</sub> = {FR('<i>P</i><sub>Z</sub>', '<i>P</i><sub>X</sub> + <i>P</i><sub>Y</sub>')} on the target; CZ: η<sub>out</sub> = {S('eta', 'η')}, &nbsp; H·CZ·H: η<sub>out</sub> → {FR('1', '2' + S('eta', 'η') + ' + 1')} as {S('h', '<i>h</i>')} → 0",
+  "result": {"sym": "η_out", "name": "bias of the target's errors leaving the H · CZ · H CNOT", "unit": "", "digits": 4},
+  "vars": {"eta": {"sym": "η", "name": "bias going in, p_Z / (p_X + p_Y)", "unit": "", "min": 0.5, "max": 1000, "log": True, "digits": 2, "src": "NV dephasing dominates; the value for two-qubit gates is an assumption"},
+           "h": {"sym": "h", "name": "Hadamard time over CZ time", "unit": "", "min": 0.001, "max": 0.5, "log": True, "digits": 3, "src": "lab slider; short pulses make h small"}},
+  "units": ["a ratio of probabilities: dimensionless"],
+  "assumptions": [{"id": "first", "text": "first order in the error rate"}, {"id": "endseg", "text": "errors at the end of each segment (spread is a lower bound)"},
+                  {"id": "shorth", "text": "short Hadamards: h ≪ 1"}],
+  "refs": ["guillaud2019", "etxezarreta2025", "gidney2021stim"], "derivation": ["E6.1e", "docs/expert/E6_error_correction_and_system_architecture.md"]},
 }
 
 
@@ -122,6 +196,16 @@ def golden() -> dict:
     out["bias"] = [[k, eta, h, {str(q): v for q, v in gatebias.output_distribution(k, eta, h)["per_qubit"].items()},
                     gatebias.output_distribution(k, eta, h)["spread"]] for k in ("cz", "cnot") for eta in (0.5, 10.0, 100.0) for h in (0.002, 0.2)]
     out["propagate"] = [[q, p, gatebias.propagate({q: p}, [("CZ", (0, 1)), ("H", (1,))])] for q in (0, 1) for p in "XYZ"]
+    from . import logic, qec, resource, thermal
+    out["odmr2"] = [[b, th, list(nv.lines_perturbative_mhz(b, th)),
+                     list(nv.transition_frequencies_mhz((b * math.sin(math.radians(th)), 0.0, b * math.cos(math.radians(th)))))]
+                    for b in (0.5, 3.0, 8.0) for th in (0.0, 40.0, 90.0, 130.0)]
+    out["heat"] = [[k, rc, L, thermal.slowest_mode_time_s(k, rc, L)] for k, rc in ((22.0, 3.52 * 0.509), (1.5, 2.33 * 0.705)) for L in (0.05, 0.2)]
+    out["ring"] = [[mu, ve, vd, r, vdd, logic.ring_period_estimate_s(mu, ve, vd, r, vdd)] for mu, ve, vd, r, vdd in
+                   ((150.0, 1.5, -2.0, 8.0, 10.0), (300.0, 1.0, -1.0, 4.0, 6.0), (60.0, 3.0, -4.0, 16.0, 15.0))]
+    out["logical"] = [[p, d, pth, A, qec.surface_code_logical_error(p, d, pth, A)] for p in (0.02, 0.08) for d in (3, 7) for pth, A in ((0.103, 0.1), (0.05, 0.3))]
+    out["budget"] = [[n, st, d, A, lam, resource.failure_probability(n, st, d, A, lam)] for n, st in ((100.0, 1e6), (1000.0, 1.07e9)) for d in (11, 27) for A, lam in ((0.03, 2.14), (0.1, 4.0))]
+    out["outbias"] = [[k, eta, h, {str(q): v for q, v in gatebias.output_bias(k, eta, h).items()}] for k in ("cz", "cnot") for eta in (1.0, 100.0) for h in (0.001, 0.1)]
     return out
 
 

@@ -17,6 +17,7 @@
   <div class="kpis" id="kpis" style="margin:0 0 14px"></div>
   <div class="stage" style="min-height:0"><canvas id="chip" style="height:430px"></canvas><div class="hud" id="chipHud"></div></div>
   <div class="stage" style="margin-top:14px;min-height:0"><canvas id="time" style="height:150px"></canvas><div class="hud">Runtime, log scale: this machine versus a superconducting machine at today's measured error suppression</div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">A big quantum job needs millions of qubits working together and checking each other's mistakes over and over. Diamond qubits don't need a freezer and fit on a chip smaller than a stamp, but each check is slow, so big jobs can take years. Make the reading faster and watch the time drop.</div>
     <div class="lvl" data-l="s">Each logical qubit is a d × d surface-code patch. The code distance d is the smallest odd number that keeps the total failure below 1%: n_L · steps · d · p_L(d) ≤ 0.01, with p_L(d) = A·Λ^(−(d+1)/2). One syndrome round takes preparation + four gates + readout, and each logical step takes d rounds.</div>
@@ -26,6 +27,7 @@
 <script type="module">
 import { boot, fitCanvas, data } from '../assets/site.js';
 import * as R from '../assets/sim/resource.js';
+import { loop } from '../assets/eqloop.js';
 boot('Machine');
 const $ = id => document.getElementById(id), D = await data(), W = D.workloads, TM = D.resource_models || { standard: D.resource };
 let T = TM.standard, mem = 1000, t0 = performance.now();
@@ -34,7 +36,7 @@ $('job').innerHTML = Object.keys(W).map(k => `<option>${k}</option>`).join(''); 
 $('mem').onclick = e => { const b = e.target.closest('button'); if (!b) return; mem = +b.dataset.m; $('mem').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
 const tread = () => 10 ** (+$('rd').value / 100);
 function fmt(x) { return x >= 1e9 ? (x / 1e9).toFixed(1) + ' B' : x >= 1e6 ? (x / 1e6).toFixed(1) + ' M' : x >= 1e3 ? (x / 1e3).toFixed(0) + ' k' : x.toFixed(0); }
-let est = null, sc = null;
+let est = null, sc = null, EQ = null;
 function update() {
   const [n, st] = W[$('job').value], cfg = { nLogical: n, steps: st, tReadUs: tread(), t2MemMs: mem, gateUs: +$('g').value, pitchUm: +$('p').value / 10 };
   $('rdV').textContent = tread() >= 1000 ? `${(tread() / 1000).toFixed(2)} ms` : `${tread().toFixed(0)} µs`; $('gV').textContent = `${$('g').value} µs`; $('pV').textContent = `${(+$('p').value / 10).toFixed(1)} µm`;
@@ -43,9 +45,12 @@ function update() {
     [`${est.cycleUs.toFixed(0)} µs`, 'one error-correction round'], [R.human(est.runtimeHours), 'runtime'], [`Λ = ${est.lam.toFixed(2)}`, 'error suppression per +2 distance']]
     .map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('') :
     `<div class="kpi" style="grid-column:1/-1"><b style="color:var(--red)">Above threshold</b><span>Readout is so slow compared with the memory that a larger code makes things worse. Speed up readout or pick the 1 s memory.</span></div>`;
+  if (EQ) { const f = R.interpFit(T, tread(), mem); EQ.set(est ? { n, st, d: est.distance, A: f.A, lam: f.lam } : { n, st, d: NaN, A: f.A, lam: f.lam }); }
   drawTime();
 }
 ['job', 'rd', 'g', 'p'].forEach(i => $(i).oninput = update);
+{ const [n, st] = W[$('job').value], f = R.interpFit(T, tread(), mem), e0 = R.estimate(T, { nLogical: n, steps: st, tReadUs: tread(), t2MemMs: mem });
+  EQ = await loop($('loop'), 'budget', { state: e0 ? { n, st, d: e0.distance, A: f.A, lam: f.lam } : {}, select: 'lam' }); }
 function drawTime() {
   const { g, w, h } = fitCanvas($('time'), 150); g.clearRect(0, 0, w, h);
   const rows = [['Diamond NV (this design)', est ? est.runtimeHours : NaN, '#2de2e6'], ['Superconducting (measured Λ)', sc.runtimeHours, '#9d7bff']];

@@ -54,3 +54,21 @@ export function decode(L, s) {
 export function logicalFlip(L, flips, corr) {
   let p = 0; L.edges.forEach((e, i) => { if (e.logical) p ^= (flips[i] ^ corr[i]); }); return p;
 }
+
+// Fit p_L = A (p / p_th)^((d+1)/2) to threshold-experiment data by weighted least squares in log space:
+// log p_L - k log p = log A - k log p_th, k = (d+1)/2, each point weighted by its binomial precision N p_L / (1 - p_L).
+// Only points below the current p_th estimate are used (the leading-order regime), iterating the cut; zero counts carry
+// no log and are skipped, which biases A slightly upward at the smallest p (stated in the lab).
+export function fitScaling(ps, ds, res, trials = 600, iters = 4) {
+  let pth = Infinity, out = null;
+  for (let it = 0; it < iters; it++) {
+    let s11 = 0, s12 = 0, s22 = 0, b1 = 0, b2 = 0, n = 0;
+    for (const d of ds) { const k = (d + 1) / 2; ps.forEach((p, i) => { const v = res[d][i]; if (!(v > 0 && v < 0.5) || p >= pth) return;
+      const w = trials * v / (1 - v), y = Math.log(v) - k * Math.log(p); s11 += w; s12 -= w * k; s22 += w * k * k; b1 += w * y; b2 -= w * k * y; n++; }); }
+    const det = s11 * s22 - s12 * s12; if (n < 3 || Math.abs(det) < 1e-12) return out;
+    const a = (b1 * s22 - s12 * b2) / det, c = (s11 * b2 - s12 * b1) / det;
+    out = { A: Math.exp(a), pth: Math.exp(c), n };
+    if (Math.exp(c) === pth) break; pth = Math.exp(c);
+  }
+  return out;
+}

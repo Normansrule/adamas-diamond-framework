@@ -1,12 +1,14 @@
 // NV resonance lines and the diamond lattice: pure functions shared by the 3-D labs. Unit-tested with node.
-export const D_MHZ = 2870, GAMMA_MHZ_PER_MT = 28.025;                           // [doherty2013]
+import { GAMMA } from './action.js';
+export const D_MHZ = 2870, GAMMA_MHZ_PER_MT = GAMMA;                            // 28.03 MHz/mT, g = 2.0028 [doherty2013]
 export const NV_AXES = [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]].map(a => a.map(x => x / Math.sqrt(3)));
 
 export function lines(B) {           // B in mT (vector); two lines per orientation, second-order perpendicular shift included
   const b2 = B[0] ** 2 + B[1] ** 2 + B[2] ** 2, out = [];
   NV_AXES.forEach((a, k) => {
     const bp = a[0] * B[0] + a[1] * B[1] + a[2] * B[2], bt2 = Math.max(b2 - bp * bp, 0), shift = 3 * GAMMA_MHZ_PER_MT ** 2 * bt2 / (2 * D_MHZ);
-    out.push({ axis: k, f: D_MHZ - GAMMA_MHZ_PER_MT * Math.abs(bp) + shift }, { axis: k, f: D_MHZ + GAMMA_MHZ_PER_MT * Math.abs(bp) + shift });
+    const half = Math.hypot(GAMMA_MHZ_PER_MT * bp, GAMMA_MHZ_PER_MT ** 2 * bt2 / (2 * D_MHZ));     // +/-1 mixing near 90 degrees (adamas.nv.lines_perturbative_mhz)
+    out.push({ axis: k, f: D_MHZ + shift - half }, { axis: k, f: D_MHZ + shift + half });
   });
   return out;
 }
@@ -27,4 +29,11 @@ export function diamondLattice(cells = 2, a = 3.567) {   // conventional cubic c
     if (Math.abs(d - bond) < 0.05 * a) bonds.push([i, j]);
   }
   return { atoms, bonds, bond, a };
+}
+
+// Lines of one NV to second order in the field, theta = angle between B and the NV axis (mirrors adamas.nv.lines_perturbative_mhz)
+export function linesPerturbative(bMt, thDeg, d = D_MHZ) {
+  const bpar = bMt * Math.abs(Math.cos(thDeg * Math.PI / 180)), bperp = bMt * Math.abs(Math.sin(thDeg * Math.PI / 180));
+  const sh = 3 * (GAMMA_MHZ_PER_MT * bperp) ** 2 / (2 * d), half = Math.hypot(GAMMA_MHZ_PER_MT * bpar, (GAMMA_MHZ_PER_MT * bperp) ** 2 / (2 * d));
+  return [d + sh - half, d + sh + half];
 }

@@ -1,0 +1,130 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Build Program · ADAMAS</title>
+<style>
+.ladder{width:100%;display:block}
+.ladder .node{cursor:pointer}
+.ladder .node rect{fill:var(--bg2);stroke:var(--line);stroke-width:1.5;transition:stroke .15s ease}
+.ladder .node.written rect{stroke:var(--teal)}
+.ladder .node.outline rect{stroke-dasharray:5 4}
+.ladder .node.on rect{fill:rgba(45,226,230,.14);stroke:var(--cyan);stroke-width:2}
+.ladder .node:focus-visible{outline:none}.ladder .node:focus-visible rect{stroke:var(--cyan);stroke-width:3}
+.ladder text{fill:var(--ink);font:600 15px Inter}.ladder text.s{fill:var(--mute);font:400 12px Inter}
+.ladder path{fill:none;stroke:rgba(148,190,220,.4);stroke-width:1.5}
+.pcard{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}@media(max-width:1000px){.pcard{grid-template-columns:1fr}}
+.pcard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}.pcard dt{color:var(--mute);font-size:13px}.pcard dd{margin:0;font-size:14.5px}
+.tests{width:100%;border-collapse:collapse;font-size:14px}.tests td,.tests th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tests th{color:var(--mute);font-weight:500;font-size:12.5px}.tests td.n{font:500 13px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.verdict{font:600 12px var(--mono);padding:3px 8px;border-radius:7px}.verdict.go{background:rgba(72,229,163,.18);color:var(--green)}.verdict.stop{background:rgba(255,93,108,.18);color:var(--red)}
+.verdict.out{background:rgba(255,255,255,.06);color:var(--mute)}
+</style></head><body>
+<main class="wrap">
+<section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 and P1 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P2 to P8 are outlines until their sources are in.</p></section>
+<section class="block" style="padding-top:6px">
+  <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
+  <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
+</section>
+<section class="block" style="padding-top:6px"><div class="card pcard" id="detail"></div><p class="sr-only" aria-live="polite" id="pickSay"></p></section>
+<section class="block" id="sim" style="padding-top:6px">
+  <h2 style="font-size:30px">Would a good kit pass P1?</h2>
+  <p class="lead" style="max-width:860px">Each run simulates the A1 kit at five temperatures from 20 to 50 °C with its noise model, fits every spectrum the way the Data Lab does, and fits a slope through the centers. A run passes when the slope is within two combined standard errors of −74.2 kHz/K [acosta2010]. Repeat it and watch how often a kit that is exactly right still fails.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px"><button class="btn primary" id="go" data-icon="play">Run 200 kits</button><button class="btn" id="one">One run</button><button class="btn" id="clear">Clear</button></div>
+  <div class="pcard"><div class="stage" style="min-height:0"><canvas id="hist" style="height:300px" role="img" aria-label="Histogram of fitted slopes with the pass band"></canvas><div class="hud" id="histHud">No runs yet</div></div>
+  <div class="stage" style="min-height:0"><canvas id="run" style="height:300px" role="img" aria-label="The latest run: fitted D against temperature"></canvas><div class="hud" id="runHud">The latest run</div></div></div>
+  <div class="kpis" id="kpis" style="margin-top:14px"></div><p class="sr-only" aria-live="polite" id="runSay"></p>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">A diamond's glow dips at a radio frequency that slides down a little as it warms up. If our homemade kit can see that slide and measure how big it is, it works as a thermometer. Even a perfect kit has noise, so sometimes it misses by chance; this page shows how often.</div>
+    <div class="lvl" data-l="s">D(T) ≈ 2870 MHz + (dD/dT)(T − 300 K). Each spectrum is fitted with Lorentzians (Levenberg–Marquardt); the slope is a weighted least-squares line through the five centers. The pass band is ±2√(σ_fit² + σ_ref²), with σ_ref = 0.7 kHz/K from the published measurement, so a correct kit passes more often than the 95 % a band on the fit alone would give.</div>
+    <div class="lvl" data-l="r">Noise model: contrast 1.2 %, 6 MHz full width, 0.12 % white noise per 0.25 MHz step (adamas.experiments; illustrative kit values, not a measurement). The browser draws its own random numbers, so individual runs differ from Python's; the tests compare the mean slope, the error-bar calibration, and the pass rate. The Python reference is adamas.build_program.p1_thermometer; the written phase is docs/build/P1_proof_of_concept.md.</div>
+    <p class="src">Sources: [acosta2010] [doherty2013]</p></div>
+</section>
+</main>
+<script type="module">
+import { boot, data, fitCanvas, label } from './assets/site.js';
+import * as BP from './assets/sim/build.js';
+boot('Build program');
+const $ = id => document.getElementById(id), D = (await data()).build, NS = 'http://www.w3.org/2000/svg';
+const POS = { P0: [70, 125], P1: [200, 125], P2: [330, 125], P3: [480, 62], P4: [480, 188], P5: [630, 62], P6: [780, 125], P7: [930, 125], P8: [1080, 125] };
+const EDGES = [['P0', 'P1'], ['P1', 'P2'], ['P2', 'P3'], ['P2', 'P4'], ['P3', 'P5'], ['P4', 'P6'], ['P5', 'P6'], ['P6', 'P7'], ['P7', 'P8']];
+const byId = Object.fromEntries(D.phases.map(p => [p.id, p]));
+let sel = 'P1';
+function ladder() {
+  const svg = $('ladder'); svg.innerHTML = '';
+  for (const [a, b] of EDGES) { const [x1, y1] = POS[a], [x2, y2] = POS[b], p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', `M${x1 + 55} ${y1} C ${(x1 + x2) / 2} ${y1}, ${(x1 + x2) / 2} ${y2}, ${x2 - 55} ${y2}`); svg.appendChild(p); }
+  for (const ph of D.phases) { const [x, y] = POS[ph.id], g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', `node ${ph.status}${ph.id === sel ? ' on' : ''}`); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+    g.setAttribute('aria-pressed', String(ph.id === sel)); g.setAttribute('aria-label', `${ph.id} ${ph.name}, ${ph.status === 'written' ? 'written in full' : 'outline'}`);
+    g.innerHTML = `<rect x="${x - 55}" y="${y - 30}" width="110" height="60" rx="12"/><text x="${x}" y="${y - 4}" text-anchor="middle">${ph.id}</text><text class="s" x="${x}" y="${y + 15}" text-anchor="middle">${ph.name.length > 17 ? ph.name.split(' ')[0] : ph.name}</text>`;
+    g.onclick = () => pick(ph.id); g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(ph.id); } };
+    svg.appendChild(g); }
+}
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const V = (ok, txt) => `<span class="verdict ${ok === null ? 'out' : ok ? 'go' : 'stop'}">${txt}</span>`;
+function pick(id) { sel = id; ladder(); detail(); document.querySelector(`#ladder .node.on`)?.focus(); $('pickSay').textContent = `${id} ${byId[id].name}: ${byId[id].status === 'written' ? 'written in full' : 'outline'}`; }
+function detail() {
+  const p = byId[sel]; let right = '';
+  if (sel === 'P0') { const g = D.p0;
+    right = `<h3 style="margin-top:0">Gate, evaluated now ${V(g.verdict === 'go', g.verdict)}</h3><table class="tests"><tr><th>Criterion</th><th>Result</th></tr>
+      <tr><td>No validation check fails</td><td class="n">${g.fail} of ${g.checks} fail</td></tr><tr><td>Checks within tolerance</td><td class="n">${g.pass} of ${g.checks}</td></tr>
+      <tr><td>Known discrepancies, carried to later phases</td><td class="n">${g.known}</td></tr></table>
+      <p class="src">${g.known_checks.map(esc).join('; ')}. Full matrix: <a href="confidence.html">Confidence</a>.</p>`; }
+  else if (sel === 'P1') { const g = D.p1, d = g.detection, m = g.magnetometer, t = g.thermometer;
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><table class="tests"><tr><th>Test</th><th>Simulated result</th><th></th></tr>
+      <tr><td>Find the dip (signal-to-noise ≥ 5)</td><td class="n">${d.snr.toFixed(0)}; ${d.center_mhz.toFixed(2)} ± ${d.center_err_mhz.toFixed(2)} MHz</td><td>${V(d.pass, d.pass ? 'pass' : 'fail')}</td></tr>
+      <tr><td>Magnetometer (slope −3)</td><td class="n">${m.slope.toFixed(3)} ± ${m.slope_err.toFixed(3)}</td><td>${V(m.pass, m.pass ? 'pass' : 'fail')}</td></tr>
+      <tr><td>Thermometer (−74.2 kHz/K)</td><td class="n">${t.slope_khz_k.toFixed(1)} ± ${t.slope_err_khz_k.toFixed(1)}, band ±${t.tolerance_khz_k.toFixed(1)}</td><td>${V(t.pass, t.pass ? 'pass' : 'fail')}</td></tr></table>
+      <p class="src">Parts US$${g.bill.low} to ${g.bill.high} (estimates). A correct kit passes the thermometer test in ${(100 * g.pass_rate).toFixed(1)} % of Python's simulated runs; try it below.</p>`; }
+  else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
+  const doc = { P0: 'P0_simulation.md', P1: 'P1_proof_of_concept.md' }[sel];
+  $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>
+    <dt>Pass/fail</dt><dd>${esc(p.metric)}</dd><dt>Gate question</dt><dd>${esc(p.gate)}</dd></dl>${doc ? `<p class="src">Full write-up: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/build/${doc}">docs/build/${doc}</a></p>` : ''}</div><div>${right}</div>`;
+}
+ladder(); detail();
+// ---- repeated P1 runs ----
+let runs = [], seed = 1, busy = false;
+const BAND = D.p1.thermometer.tolerance_khz_k;   // Python's tolerance, drawn for orientation; each run is judged with its own error bar
+function drawHist() {
+  const { g, w, h } = fitCanvas($('hist'), 300); g.clearRect(0, 0, w, h);
+  const lo = -84, hi = -64, nb = 40, X = v => 30 + (w - 50) * (v - lo) / (hi - lo), counts = new Array(nb).fill(0);
+  runs.forEach(r => { const k = Math.floor((r.slope - lo) / (hi - lo) * nb); if (k >= 0 && k < nb) counts[k]++; });
+  const top = 70, base = h - 34, mx = Math.max(4, ...counts), Y = c => base - (base - top) * c / mx;
+  g.fillStyle = 'rgba(72,229,163,.10)'; g.fillRect(X(-74.2 - BAND), top - 6, X(-74.2 + BAND) - X(-74.2 - BAND), base - top + 6);
+  counts.forEach((c, k) => { if (!c) return; g.fillStyle = '#2de2e6'; const x0 = X(lo + (hi - lo) * k / nb), x1 = X(lo + (hi - lo) * (k + 1) / nb); g.fillRect(x0 + 1, Y(c), x1 - x0 - 2, base - Y(c)); });
+  g.strokeStyle = '#ff5d6c'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(-74.2), top - 6); g.lineTo(X(-74.2), base); g.stroke();
+  g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; for (let v = -84; v <= -64; v += 4) g.fillText(String(v), X(v) - 9, h - 16);
+  g.fillText('fitted slope (kHz/K); red: −74.2, green band: typical pass range', 30, h - 2);
+}
+function drawRun(r) {
+  const { g, w, h } = fitCanvas($('run'), 300); g.clearRect(0, 0, w, h); if (!r) return;
+  const top = 70, base = h - 40, X = t => 60 + (w - 90) * (t - 15) / 40, Y = f => base - (base - top) * (f - 2867) / 4.2;
+  g.strokeStyle = 'rgba(148,190,220,.2)'; g.fillStyle = '#8ea3b5'; g.font = '11px Inter';
+  for (let f = 2867; f <= 2871; f++) { g.beginPath(); g.moveTo(60, Y(f)); g.lineTo(w - 30, Y(f)); g.stroke(); g.fillText(String(f), 14, Y(f) + 4); }
+  for (const t of [20, 30, 40, 50]) g.fillText(`${t} °C`, X(t) - 14, h - 22);
+  g.strokeStyle = '#ff5d6c'; g.beginPath(); g.moveTo(X(15), Y(BP.A1.d300 + BP.A1.dddt * (15 + 273.15 - 300))); g.lineTo(X(55), Y(BP.A1.d300 + BP.A1.dddt * (55 + 273.15 - 300))); g.stroke();
+  r.temps.forEach((t, i) => { g.strokeStyle = '#2de2e6'; g.beginPath(); g.moveTo(X(t), Y(r.centers[i] - 2 * r.errs[i])); g.lineTo(X(t), Y(r.centers[i] + 2 * r.errs[i])); g.stroke();
+    g.fillStyle = '#2de2e6'; g.beginPath(); g.arc(X(t), Y(r.centers[i]), 4, 0, 7); g.fill(); });
+  g.fillStyle = '#8ea3b5'; g.fillText('fitted D (MHz) against plate temperature; red: published slope; bars: ±2σ', 14, h - 4);
+  $('runHud').textContent = `Run ${runs.length}: ${r.slope.toFixed(1)} ± ${r.slopeErr.toFixed(1)} kHz/K → ${r.pass ? 'pass' : 'fail'}`;
+}
+function kpis() {
+  const n = runs.length, ok = runs.filter(r => r.pass).length, m = n ? runs.reduce((s, r) => s + r.slope, 0) / n : NaN;
+  $('kpis').innerHTML = [[n, 'simulated kits'], [n ? `${(100 * ok / n).toFixed(1)} %` : '–', 'passed (Python: ' + (100 * D.p1.pass_rate).toFixed(1) + ' %)'], [n ? m.toFixed(1) : '–', 'mean slope, kHz/K']]
+    .map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('histHud').textContent = n ? `${n} runs, ${ok} passed` : 'No runs yet';
+}
+function batch(total) {
+  if (busy) return; busy = true; $('go').disabled = $('one').disabled = true; $('go').textContent = 'Running…'; let left = total;
+  const reduce = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  (function step() { const k = Math.min(left, reduce ? 25 : 4); for (let i = 0; i < k; i++) runs.push(BP.thermometerRun(seed++)); left -= k;   // reduced motion: fewer, larger steps, never one long freeze
+    drawHist(); drawRun(runs[runs.length - 1]); kpis();
+    if (left > 0) (reduce ? setTimeout(step, 0) : requestAnimationFrame(step));
+    else { busy = false; $('go').disabled = $('one').disabled = false; label($('go'), 'play', 'Run 200 kits');
+      const ok = runs.filter(r => r.pass).length; $('runSay').textContent = `${runs.length} simulated kits, ${ok} passed (${(100 * ok / runs.length).toFixed(1)} %).`;
+      $('hist').setAttribute('aria-label', `Histogram of ${runs.length} fitted slopes; ${ok} inside their pass bands`); } })();
+}
+$('go').onclick = () => batch(200); $('one').onclick = () => batch(1); $('clear').onclick = () => { if (busy) return; runs = []; drawHist(); drawRun(null); kpis(); $('runHud').textContent = 'The latest run'; };
+addEventListener('resize', () => { drawHist(); drawRun(runs[runs.length - 1]); });
+drawHist(); kpis();
+</script></body></html>

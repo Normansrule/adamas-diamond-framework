@@ -64,3 +64,21 @@ def noise_margins(vin, vout):
     vil, vih = vin[idx[0]], vin[idx[-1]]
     voh, vol = vout[idx[0]], vout[idx[-1]]
     return float(vil - vol), float(voh - vih), float(np.min(gain))
+
+
+def ring_period_estimate_s(mu: float, vth_driver: float, vth_load: float, ratio: float, vdd: float, stages: int = 5,
+                           w_driver_um: float = 16.0, c_wire_f: float = 20e-15) -> dict:
+    """Hand estimate of an E/D ring-oscillator period, the Transistor Lab's configuration (driver W = 16 um, load
+    W = 16 / ratio, L = 2 um, 20 fF of wiring per node). Each node swings V_DD / 2 before the next stage switches:
+    rising by the load's saturation current I_L, falling by the driver's current at V_DS = V_DD / 2 minus I_L:
+        T = N (C V_DD / (2 I_L) + C V_DD / (2 (I_D - I_L))),   C = C_ox W_drv L + C_wire   [rabaey2003]
+    Returns the period and its parts; the lab compares it with its transient simulation."""
+    drv = Fet(mu_cm2_vs=mu, w_um=w_driver_um, vth=vth_driver)
+    load = Fet(mu_cm2_vs=mu, w_um=w_driver_um / ratio, vth=vth_load)
+    cox = drv.eps_ox * EPS0 * 1e-2 / (drv.tox_nm * 1e-7)
+    c = cox * drv.w_um * drv.l_um * 1e-8 + c_wire_f
+    i_l, i_d = load.current(0.0, vdd), drv.current(vdd, vdd / 2)
+    t_rise = c * vdd / (2 * i_l) if i_l > 0 else float("inf")
+    t_fall = c * vdd / (2 * (i_d - i_l)) if i_d > i_l else float("inf")
+    return {"period_s": stages * (t_rise + t_fall), "c_f": c, "i_load_a": i_l, "i_drv_a": i_d, "t_rise_s": t_rise, "t_fall_s": t_fall}
+

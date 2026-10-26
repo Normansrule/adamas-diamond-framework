@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://github.com/Normansrule/adamas-diamond-framework/releases/latest"><img src="https://img.shields.io/github/v/release/Normansrule/adamas-diamond-framework?label=release&color=2de2e6" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9d7bff" alt="MIT license"></a>
-  <a href="references/REFERENCES.md"><img src="https://img.shields.io/badge/references-582-48e5a3" alt="582 references"></a>
+  <a href="references/REFERENCES.md"><img src="https://img.shields.io/badge/references-583-48e5a3" alt="583 references"></a>
   <a href="docs/VALIDATION.md"><img src="https://img.shields.io/badge/validation-17%2F18%20pass-48e5a3" alt="Validation"></a>
   <a href="https://normansrule.github.io/adamas-diamond-framework/action.html"><img src="https://img.shields.io/badge/equations%20in%20action-14-ffc46b" alt="14 equations in action"></a>
   <a href="https://normansrule.github.io/adamas-diamond-framework/download.html"><img src="https://img.shields.io/badge/desktop%20app-Windows%20·%20macOS%20·%20Linux-ff5d8f" alt="Desktop app"></a>
@@ -36,7 +36,7 @@
 | **Error correction** | With two-level qubits only CZ gates keep a noise bias; CNOTs keep at most η ≈ 5 [etxezarreta2025]. In that model, at bias 100 on CZ, the native XZZX code's threshold is **1.81%** against 0.86% for the standard code (model of this repository; the published two-level study finds the same roughly twofold rise, to 1.27%, with a different noise model [etxezarreta2025]). Bias-preserving CNOTs would give 3.25%, an upper bound no two-level qubit reaches. | [E6.1e](docs/expert/E6_error_correction_and_system_architecture.md) |
 | **Machine size** | RSA-2048, with the logical step count calibrated so that the published superconducting parameters give the published 8 hours (1.07×10⁹ steps [gidney2021]), takes **2.1 years** at 1 ms readout on a 5.5 mm die (0.4 to 5.3 years with uncertainty); counting every Toffoli as a serial step gives an upper bound of 6.0 years. The inter-cell link is an assumption (proposed here). With biased gate noise the standard code needs 173 M qubits and the XZZX code **58 M**. | [E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
 | **What to measure next** | Diamond hole mobility explains about 0.64 of the power-ratio spread and its critical field 0.17; readout time explains 0.96 of the runtime spread. Per dollar, a few-thousand-dollar **Hall measurement of diamond mobility** comes first. | [E10.5d](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
-| **Evidence** | **17 of 18** validation checks pass (the others are explained discrepancies); 582 references; 53 figures regenerated from code. The [audit](docs/AUDIT.md) lists every claim that was corrected, and [STATUS.md](docs/STATUS.md) lists everything still deferred or assumed, with the reason. | [VALIDATION.md](docs/VALIDATION.md) |
+| **Evidence** | **17 of 18** validation checks pass (the others are explained discrepancies); 583 references; 53 figures regenerated from code. The [audit](docs/AUDIT.md) lists every claim that was corrected, and [STATUS.md](docs/STATUS.md) lists everything still deferred or assumed, with the reason. | [VALIDATION.md](docs/VALIDATION.md) |
 <!-- findings:end -->
 
 ## ⚡ Equations in action (new in v0.26)
@@ -215,12 +215,14 @@ Fifteen hands-on labs, plus fourteen equations in action, run in the browser on 
 
 ### Equation in the loop
 
-Five labs (Qubit, Photon, Power, Wafer, and Addressing) carry seven live panels (Rabi, Ramsey, and echo in the Qubit Lab) under the simulation that show the equation the lab is running, with the lab's current numbers substituted as it plays. Every symbol is a button: select it to see its value, range, source, the local sensitivity ∂y/∂x, and a sparkline of the output against it; arrow keys nudge it, and the lab follows. Each assumption chip says in words whether it holds, is outside its range (amber; for example, a junction temperature above silicon carbide's limit or a dislocation density outside the fitted range), or is only assumed because the lab cannot test it. The panels' metadata comes from one Python registry, `adamas.loop`; the browser arithmetic is checked against Python golden values in CI, and a test fails if any symbol, assumption, or source is missing.
+<p align="center"><img src="docs/img/anim_equation_loop.gif" alt="The Lattice Lab's equation panel: the field B rises, the numbers are substituted live, and the inspector shows the sensitivity and a sparkline" width="62%"></p>
+
+Eleven labs carry thirteen live panels under the simulation (Rabi, Ramsey, and echo in the Qubit Lab; one each in Photon, Power, Wafer, Addressing, Lattice, Heat Race, Transistor, Break the Code, Machine Builder, and Gate Bias) that show the equation the lab is running, with the lab's current numbers substituted as it plays. Every symbol is a button: select it to see its value, range, source, the local sensitivity ∂y/∂x, and a sparkline of the output against it; arrow keys nudge it, and the lab follows. Each assumption chip says in words whether it holds, is outside its range (amber; for example, a junction temperature above silicon carbide's limit or a dislocation density outside the fitted range), or is only assumed because the lab cannot test it. The panels' metadata comes from one Python registry, `adamas.loop`; the browser arithmetic is checked against Python golden values in CI, and a test fails if any symbol, assumption, or source is missing.
 
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>582 references</b> · <b>53 figures, 14 live equations, a desktop app, a validation matrix, a preprint, a hardware kit, 15 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>583 references</b> · <b>54 figures, 14 live equations, a desktop app, a validation matrix, a preprint, a hardware kit, 15 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -310,6 +312,12 @@ The [process folder](docs/process/README.md) turns the framework into a cleanroo
 
 ![Native XZZX](docs/img/fig50_xzzx_native.png)
 
+## 🪜 Build program: from a laptop to a pilot line
+
+Nine phases, each ending at a decision gate ([docs/build](docs/build/README.md), [Build Program page](https://normansrule.github.io/adamas-diamond-framework/build.html)). **P0 Simulation** and **P1 Proof of concept** are written in full, and their gates are evaluated by `adamas.build_program`: P0 from the validation matrix, P1 from a simulated A1 kit (an ODMR magnetometer and thermometer) fitted with the same code you use on your data. The P1 thermometer must recover dD/dT = −74.2(7) kHz/K [acosta2010] within two combined standard errors; a kit that behaves exactly like the model passes about 98 % of the time, and the web page lets you run 200 kits to watch it. P2 to P8 are outlines until their sources are in ([STATUS.md](docs/STATUS.md)).
+
+![Expected P1 results](docs/img/fig54_build_p1.png)
+
 ## 📄 Preprint, talk, and poster
 
 | Download | What | Rebuild |
@@ -331,7 +339,7 @@ All three read their numbers from `paper/numbers.tex`, which `python -m adamas.p
 | ![Diamond lattice with an NV center](docs/img/anim_crystal.gif) | ![Heat race, silicon versus diamond](docs/img/anim_heat_race.gif) |
 | ![Five diamond logic gates in a ring oscillator](docs/img/anim_ring_oscillator.gif) | ![Surface code: errors light up their checks](docs/img/anim_surface_code.gif) |
 | ![Boron ionization and switch loss versus temperature: diamond passes silicon carbide near 400 K](docs/img/anim_hot_switch.gif) | ![Two NV centers in one spot told apart by crystal axis as the field turns](docs/img/anim_addressing.gif) |
-| ![A phase error followed through a CZ and through a CNOT built as H · CZ · H](docs/img/anim_gate_bias.gif) | |
+| ![A phase error followed through a CZ and through a CNOT built as H · CZ · H](docs/img/anim_gate_bias.gif) | ![The A1 kit as a thermometer: the zero-field dip slides by −74.2 kHz/K as the diamond warms](docs/img/anim_thermometer.gif) |
 
 All animations are drawn by the package (`make animations`); the [gallery](https://normansrule.github.io/adamas-diamond-framework/gallery.html) shows every figure and animation with searchable captions.
 
@@ -527,7 +535,7 @@ flowchart LR
 | 12 | [Silicon versus diamond scorecard](docs/12_silicon_vs_diamond_scorecard.md) | Row-by-row comparison |
 | 13 | [Economics and risk](docs/13_economics_and_risk.md) | Product sequence and risk register |
 | E1–E8 | [Expert track](docs/expert/) | Lithography → design kit → processors → analog → qubit engineering → error correction → beyond → projects |
-| — | [Glossary](docs/glossary.md) · [All 582 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
+| — | [Glossary](docs/glossary.md) · [All 583 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
 
 ## ⚙️ Quick start
 
@@ -574,6 +582,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.xzzx_native` | Native XZZX syndrome circuits with biased gate noise and hook errors; thresholds versus bias (`make xzzx`) | [bonillaataides2021], [tuckett2018] |
 | `adamas.addressing` | Airy spot width, exact spin-1 lines per NV axis, gradient shift, crosstalk, and line width for two NVs in one focus | [born1999], [dolde2013], [doherty2013] |
 | `adamas.gatebias` | Pauli propagation through CZ and H · CZ · H (checked against Stim) and the output bias of each construction | [guillaud2019], [etxezarreta2025] |
+| `adamas.build_program` | Build-program phases P0 to P8; P0 and P1 written in full with gates evaluated by code (`docs/build/`) | [acosta2010], [doherty2013] |
 | `adamas.loop` | Registry of the equation-in-the-loop panels: symbols, units, ranges, assumptions, sources, golden values for the browser | each panel's own sources |
 | `adamas.action` | Fourteen equations in action: scene definitions, Python golden values the browser physics is tested against, Figure 53 (`adamas build docs`) | [doherty2013], [baliga1982], [fowler2012] |
 | `adamas.icons`, `desktop/` | App icons drawn from the logo; the Electron desktop app (offline site, `app://` scheme, self-test) built for Windows, macOS, and Linux by `.github/workflows/desktop.yml` | see [docs/APP.md](docs/APP.md) |
@@ -599,7 +608,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 2. `tools/check_citations.py` runs in continuous integration and fails the build on any unknown key.
 3. Models that originate in this repository (the gate-fidelity bound, the placement Monte Carlo, the yield plot's defect densities) are labeled as such wherever they appear.
 
-**Honest status of the reference list.** About 500 of the 582 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
+**Honest status of the reference list.** About 500 of the 583 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
 
 ```bash
 python tools/verify_refs.py        # queries Crossref, writes references/verification_report.csv

@@ -1,6 +1,6 @@
 # Build program P0–P8 and the Machines and Facilities Atlas: outline (Phase 0 draft)
 
-Status: **outline for review at the Phase 0 gate.** Nothing here is final. Full phase write-ups are roadmap
+Status: **outline for review at the Phase 0 gate.** P0 and P1 are now written in full in [docs/build](../build/README.md) (v0.29.0), where the P1 budget is computed from the part lists instead of the draft range below. Nothing else here is final. Full phase write-ups are roadmap
 steps 1 and 3, and full Atlas entries are step 2. Budgets come from `adamas/experiments.py`, which already prices
 experiments A1–D2. Any number marked *to source* still needs a citation before it ships, per the rigor rules.
 

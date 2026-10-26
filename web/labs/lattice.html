@@ -16,6 +16,7 @@
 <div>
   <div class="stage"><canvas id="c3" style="height:470px"></canvas><div class="hud" id="hud"></div></div>
   <div class="stage" style="margin-top:14px;min-height:0"><canvas id="spec" style="height:210px"></canvas><div class="hud">Optically detected magnetic resonance: red glow versus microwave frequency</div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Both crystals are built from the same pattern of atoms holding four hands each. Diamond's atoms are smaller and hold on tighter, which is why it is so hard and carries heat so well. Swap one carbon for nitrogen and leave its neighbor empty, and you get a tiny compass that glows. Point a magnet at it and its "notes" split apart.</div>
     <div class="lvl" data-l="s">Diamond cubic: an FCC lattice with a two-atom basis at (0,0,0) and (¼,¼,¼)a, bond length a√3/4 (1.545 Å in diamond, 2.352 Å in silicon). The NV axis lies along one of four ⟨111⟩ directions. Each orientation sees its own field projection B∥, giving resonance lines at D ± γB∥ with D = 2.870 GHz and γ = 28.0 MHz/mT.</div>
@@ -25,9 +26,14 @@
 <script type="module">
 import { boot, fitCanvas } from '../assets/site.js';
 import { diamondLattice, lines, spectrum, NV_AXES } from '../assets/sim/physics.js';
+import { loop } from '../assets/eqloop.js';
 boot('Lattice');
 const $ = id => document.getElementById(id), AX = [0xff5d6c, 0x48e5a3, 0xffc46b, 0x9d7bff], AXC = ['#ff5d6c', '#48e5a3', '#ffc46b', '#9d7bff'];
-let mat = 'C';
+let mat = 'C', EQ = null;
+function loopState() {     // field magnitude and its angle to the [111] axis (red), for the equation panel
+  const B = field(), b = Math.hypot(...B), a = NV_AXES[0], c = b ? (B[0] * a[0] + B[1] * a[1] + B[2] * a[2]) / b : 1;
+  return { B: b, th: Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI };
+}
 const THREE = await import('three');
 const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
 const cv = $('c3'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
@@ -62,9 +68,11 @@ function spec() {
   lines(B).forEach(l => { g.strokeStyle = AXC[l.axis]; g.globalAlpha = .45; g.beginPath(); g.moveTo(X(l.f), 18); g.lineTo(X(l.f), h - 28); g.stroke(); }); g.globalAlpha = 1;
   g.strokeStyle = '#e8f1f8'; g.lineWidth = 2; g.beginPath(); fs.forEach((f, i) => i ? g.lineTo(X(f), Y(ys[i])) : g.moveTo(X(f), Y(ys[i]))); g.stroke();
   g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; for (let f = 2650; f <= 3100; f += 150) g.fillText(`${f} MHz`, X(f) - 24, h - 8);
+  EQ?.set(loopState());
 }
 ['cells', 'nv'].forEach(i => $(i).oninput = build); ['b', 'th', 'ph'].forEach(i => $(i).oninput = spec);
 $('mat').onclick = e => { const b = e.target.closest('button'); if (!b) return; mat = b.dataset.m; $('mat').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); build(); };
 function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); spec(); } addEventListener('resize', size);
 build(); size(); R.setAnimationLoop(() => { ctl.update(); R.render(scene, cam); });
+EQ = await loop($('loop'), 'odmr', { state: loopState(), select: 'B', onChange: (st, ks) => { if (ks.includes('B')) { $('b').value = Math.round(st.B * 10); spec(); } } });
 </script></body></html>

@@ -22,7 +22,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
 
-GAMMA_MHZ_PER_MT = 28.025
+from .nv import GAMMA_MHZ_PER_MT  # noqa: E402  28.03 MHz/mT, g = 2.0028 [doherty2013]; one value everywhere
 KB_EV = 8.617333262e-5
 
 

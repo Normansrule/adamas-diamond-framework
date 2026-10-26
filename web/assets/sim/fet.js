@@ -38,3 +38,12 @@ export function ring(drv, load, { vdd = 10, stages = 5, cWire = 20e-15, tEnd = 2
   const periods = rises.slice(1).map((x, i) => x - rises[i]);
   return { t, wave, period: periods.length > 2 ? periods.slice(2).reduce((a, b) => a + b) / (periods.length - 2) : NaN, C };
 }
+
+// Hand estimate of the lab's ring period (mirrors adamas.logic.ring_period_estimate_s): each node swings V_DD/2,
+// rising on the load current, falling on the driver current at V_DD/2 minus the load current [rabaey2003].
+export function ringEstimate(mu, vthDrv, vthLoad, ratio, vdd, stages = 5, wDrv = 16, cWire = 20e-15) {
+  const d = fet({ mu, w: wDrv, vth: vthDrv }), l = fet({ mu, w: wDrv / ratio, vth: vthLoad }), c = d.cgate + cWire;
+  const iL = l.current(0, vdd), iD = d.current(vdd, vdd / 2);
+  const tRise = iL > 0 ? c * vdd / (2 * iL) : Infinity, tFall = iD > iL ? c * vdd / (2 * (iD - iL)) : Infinity;
+  return { period: stages * (tRise + tFall), c, iLoad: iL, iDrv: iD, tRise, tFall };
+}

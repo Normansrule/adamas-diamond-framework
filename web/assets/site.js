@@ -10,7 +10,7 @@ export const NAV = [
     ['Chip', 'labs/cpu.html', 'Logic · program DIA-4'], ['Qubit', 'labs/qubit.html', 'Quantum · Bloch sphere'], ['Photon', 'labs/photon.html', 'Quantum · optical cycle'], ['Addressing', 'labs/addressing.html', 'Quantum · two qubits in one laser spot'], ['Gate bias', 'labs/bias.html', 'Quantum · why only CZ keeps the bias'],
     ['Error correction', 'labs/qec.html', 'Quantum · break the code'], ['Machine', 'labs/machine.html', 'Architecture · size a computer'], ['Stack', 'labs/stack.html', 'Architecture · chip stack'],
     ['Globe', 'labs/globe.html', 'Landscape · who is building it']]],
-  ['Build', [['Process', 'process.html', '20-step cleanroom traveler'], ['Experiments', 'experiments.html', 'Ten experiments, US$100 and up'], ['Data Lab', 'datalab.html', 'Fit your own measurements']]],
+  ['Build', [['Build program', 'build.html', 'P0 to P8, gates evaluated by code'], ['Process', 'process.html', '20-step cleanroom traveler'], ['Experiments', 'experiments.html', 'Ten experiments, US$100 and up'], ['Data Lab', 'datalab.html', 'Fit your own measurements']]],
   ['Trust', [['Confidence', 'confidence.html', 'Validation matrix and uncertainty'], ['Preprint', 'paper/adamas.pdf', 'PDF, every number generated'],
     ['Talk', 'paper/talk.pdf', '12 slides'], ['Poster', 'paper/poster.pdf', 'A0 with QR code']]],
 ];

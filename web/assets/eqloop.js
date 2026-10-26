@@ -40,14 +40,14 @@ export function mountLoop(host, meta, opts = {}) {
     b.dataset.hue = hue[k]; b.setAttribute('aria-label', `${v.name}${v.unit ? `, ${v.unit}` : ''}: inspect${v.derived ? '' : '; arrow keys change it'}`);
     b.onclick = () => select(k);
     b.onkeydown = e => { if (v.derived || !['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'].includes(e.key)) return; e.preventDefault();
-      const up = e.key === 'ArrowUp' || e.key === 'ArrowRight', st = v.log ? 10 ** (Math.log10(v.max / v.min) / 50) : (v.max - v.min) / 50;
-      const nv = v.log ? S[k] * (up ? st : 1 / st) : S[k] + (up ? st : -st); set({ [k]: Math.min(v.max, Math.max(v.min, nv)) }, true); select(k); };
+      const up = e.key === 'ArrowUp' || e.key === 'ArrowRight', st = v.step ?? (v.log ? 10 ** (Math.log10(v.max / v.min) / 50) : (v.max - v.min) / 50);
+      const nv = v.log && !v.step ? S[k] * (up ? st : 1 / st) : S[k] + (up ? st : -st); set({ [k]: Math.min(v.max, Math.max(v.min, nv)) }, true); select(k); };
   });
   // optional sliders for the variables the lab does not own
   const ctl = q('.eql-ctl');
   if (ctl) {
     ctl.innerHTML = opts.controls.map(k => { const v = meta.vars[k], lg = !!v.log, val = lg ? Math.log10(S[k]) : S[k];
-      return `<label class="eql-c" data-hue="${hue[k]}"><span class="eql-cs">${sym(v.sym)}</span><input type="range" data-k="${k}" min="${lg ? Math.log10(v.min) : v.min}" max="${lg ? Math.log10(v.max) : v.max}" step="${lg ? 0.01 : (v.max - v.min) / 400}" value="${val}" aria-label="${esc(v.name)}"><output></output></label>`; }).join('');
+      return `<label class="eql-c" data-hue="${hue[k]}"><span class="eql-cs">${sym(v.sym)}</span><input type="range" data-k="${k}" min="${lg ? Math.log10(v.min) : v.min}" max="${lg ? Math.log10(v.max) : v.max}" step="${v.step ?? (lg ? 0.01 : (v.max - v.min) / 400)}" value="${val}" aria-label="${esc(v.name)}"><output></output></label>`; }).join('');
     ctl.querySelectorAll('input').forEach(i => i.oninput = () => { const k = i.dataset.k, v = meta.vars[k]; set({ [k]: v.log ? 10 ** +i.value : +i.value }, true); select(k); });
   }
   function derived() { return model.derive ? model.derive(S) : {}; }
@@ -94,7 +94,7 @@ export function mountLoop(host, meta, opts = {}) {
     q('.eql-sub').innerHTML = model.sub(S);
     q('.eql-rv').textContent = fmt(y, meta.result.digits ?? 3);
     eqEl.querySelectorAll('.v').forEach(b => { const on = b.dataset.k === sel; b.classList.toggle('sel', on); b.setAttribute('aria-pressed', String(on)); });
-    if (ctl) ctl.querySelectorAll('input').forEach(i => { const k = i.dataset.k, v = meta.vars[k]; i.nextElementSibling.textContent = `${fmt(S[k], v.digits ?? 2)} ${v.unit || ''}`; });
+    if (ctl) ctl.querySelectorAll('input').forEach(i => { const k = i.dataset.k, v = meta.vars[k]; if (document.activeElement !== i) i.value = v.log ? Math.log10(S[k]) : S[k]; i.setAttribute('aria-valuetext', `${fmt(S[k], v.digits ?? 2)} ${v.unit || ''}`); i.nextElementSibling.textContent = `${fmt(S[k], v.digits ?? 2)} ${v.unit || ''}`; });
     chips(); inspector();
     if (rendered) { clearTimeout(lastSpoken); lastSpoken = setTimeout(() => { q('[data-k="speak"]').textContent = `${meta.result.name}: ${meta.result.sym} = ${fmt(value(), meta.result.digits ?? 3)} ${meta.result.unit || ''}`; }, 700); } rendered = true;
   }

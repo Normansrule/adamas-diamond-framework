@@ -1,7 +1,8 @@
 // Curve fitting in the browser, mirroring adamas.fitting: a small Levenberg-Marquardt solver plus the experiment
 // models (ODMR Lorentzians, Rabi, Ramsey, echo, Arrhenius, transistor square law, g2). Returns the iteration
 // history so the Data Lab can animate convergence. Unit-tested with node against the Python fits.
-const GAMMA = 28.025, KB = 8.617333262e-5;
+import { GAMMA } from './action.js';              // 28.03 MHz/mT, g = 2.0028 [doherty2013], same constant as Python
+const KB = 8.617333262e-5;
 
 function solve(A, b) {                         // Gaussian elimination with partial pivoting
   const n = b.length, M = A.map((r, i) => [...r, b[i]]);

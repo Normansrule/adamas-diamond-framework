@@ -740,10 +740,16 @@ def fig_equations_in_action(out: Path) -> Path:
     return _finish(fig, out, "fig53_equations_in_action.png", "adamas.action (every curve from the cited package models); scene sources in docs/EQUATIONS_IN_ACTION.md")
 
 
+def fig_build_p1(out: Path) -> Path:
+    """Figure 54: expected results of build-program phase P1 (adamas.build_program.p1_figure)."""
+    from .build_program import p1_figure
+    return p1_figure(out)
+
+
 ABBR_ = {"Si": "silicon", "4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond (holes)"}
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action]
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action, fig_build_p1]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
