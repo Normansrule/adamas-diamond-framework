@@ -5,14 +5,14 @@
 table.pt{width:100%;border-collapse:collapse;font:13px var(--mono)}table.pt td,table.pt th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}table.pt th{color:var(--mute);font-family:Inter}</style></head><body>
 <main class="wrap"><div class="lab">
 <aside class="panel">
-  <span class="eyebrow">Analysis · Data Lab</span><h1>Fit your own data</h1>
+  <h1>Fit your own data</h1>
   <p>Drop a two-column CSV from any experiment and watch the fit converge. Everything runs in your browser; nothing is uploaded.</p>
   <div class="ctl"><label>Experiment type</label><select id="kind">
     <option value="odmr">ODMR spectrum (MHz, signal) · A1, B2</option><option value="rabi">Rabi (µs, contrast) · B1</option><option value="ramsey">Ramsey (µs, contrast) · B1</option>
     <option value="echo">Spin echo (µs, contrast) · B1</option><option value="arrhenius">Arrhenius (1000/T, resistance) · B3</option><option value="iv">Transistor output curve (V, mA) · C2</option><option value="g2">Photon correlation g⁽²⁾ (ns, g2) · C1</option></select></div>
   <div class="dz" id="dz">Drop a CSV here, or click to choose a file<input type="file" id="file" accept=".csv,.txt" hidden></div>
   <div class="ctl"><label>…or paste data</label><textarea id="paste" rows="5" placeholder="2860, 0.998&#10;2861, 0.996&#10;…"></textarea></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary small" id="go">Fit</button><button class="btn small" id="ex">Load example</button><button class="btn small" id="dl">⬇ Results (JSON)</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary small" id="go">Fit</button><button class="btn small" id="ex">Load example</button><button class="btn small" id="dl" data-icon="download">Results (JSON)</button></div>
   <p id="err" style="color:var(--red);font-size:13px"></p>
   <p class="src">Same models as <code>python -m adamas.fit KIND file.csv</code>. Example files: <a href="https://github.com/Normansrule/adamas-diamond-framework/tree/main/docs/data/examples">docs/data/examples</a>.</p>
 </aside>

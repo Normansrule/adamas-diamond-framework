@@ -56,6 +56,8 @@ def site_data() -> dict:
     data["decision"] = decision.to_json()
     from . import action
     data["action"] = action.to_json()
+    from . import loop
+    data["loops"] = loop.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -99,7 +101,7 @@ def build_course(out: Path, head: str) -> None:
       <p>{H.escape(L["objectives"][0])}.</p><span class="go">Start → <span id="badge{L["id"]}" style="color:var(--mute);font-weight:400;margin-left:8px"></span></span></a>''' for L in LESSONS)
     ids = [L["id"] for L in LESSONS]
     (d / "index.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Course · ADAMAS</title></head><body><main class="wrap">
-<section class="block" style="padding:60px 0 10px"><span class="eyebrow">Course</span><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in eight lessons</span></h1>
+<section class="block" style="padding:60px 0 10px"><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in eight lessons</span></h1>
 <p class="lead">From "why diamond?" to "how big is the machine?". Each lesson has objectives, readings, a lab task, a notebook you can run in your browser, and a four-question check. About seven hours in total; suitable for self-study or a one-month module.</p>
 <div id="progress" class="card" style="margin-top:20px"></div></section>
 <div class="bento" style="grid-template-columns:repeat(3,1fr)">{cards}</div>
@@ -112,7 +114,7 @@ def build_course(out: Path, head: str) -> None:
         reads = "".join(f'<li><a href="{REPO}/blob/main/{p}">{H.escape(t)}</a></li>' for t, p in L["read"])
         code = H.escape("\n\n".join(L["code"]))
         (d / f"lesson-{L['id']}.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Lesson {L["id"]}: {H.escape(L["title"])} · ADAMAS</title></head><body><main class="wrap" style="max-width:920px">
-<section class="block" style="padding:50px 0 10px"><span class="eyebrow">Lesson {L["id"]} of {len(LESSONS)} · {L["minutes"]} minutes</span><h1 style="font-size:clamp(32px,4.5vw,54px)">{H.escape(L["title"])}</h1>
+<section class="block" style="padding:50px 0 10px"><h1 style="font-size:clamp(32px,4.5vw,54px)">{H.escape(L["title"])}</h1>
 <canvas class="mini" data-mini="{ {1: "lattice", 2: "power", 3: "ring", 4: "rabi", 5: "stack", 6: "machine", 7: "fab", 8: "qec"}.get(L["id"], "lattice") }" style="height:110px;margin:6px 0 14px"></canvas>
 <div class="card"><h3>You will be able to</h3><ul>{"".join(f"<li>{H.escape(o)}</li>" for o in L["objectives"])}</ul></div></section>
 <div class="card" style="margin:14px 0"><span class="tag gold">1 · Read</span><ul>{reads}</ul></div>
@@ -148,27 +150,30 @@ def gallery_items() -> list[dict]:
 def build_gallery(out: Path) -> None:
     import html as H
     items = gallery_items()
-    tiles = "".join(f'''<figure class="tile" id="{Path(i["src"]).stem}" data-kind="{i["kind"]}" data-text="{H.escape((i["title"] + " " + i["caption"]).lower())}">
+    tiles = "".join(f'''<figure class="tile" id="{Path(i["src"]).stem}" data-kind="{i["kind"]}" data-text="{H.escape((i["title"] + " " + i["caption"]).lower())}" tabindex="0" role="button" aria-label="Enlarge: {H.escape(i["title"])}">
       <img loading="lazy" src="{i["src"]}" alt="{H.escape(i["title"])}"><figcaption><b>{H.escape(i["title"])}</b><span>{H.escape(i["caption"])}</span></figcaption></figure>''' for i in items)
     n_fig = sum(i["kind"] == "figure" for i in items); n_anim = len(items) - n_fig
     (out / "gallery.html").write_text(f'''<!doctype html><html lang="en" data-base="."><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Gallery · ADAMAS</title>
 <style>.masonry{{columns:3 320px;column-gap:16px;margin-top:24px}}.tile{{break-inside:avoid;margin:0 0 16px;background:var(--glass);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .25s,border-color .25s}}
-.tile:hover{{transform:translateY(-3px);border-color:rgba(111,243,255,.4)}}.tile img{{width:100%;display:block;background:#fff}}.tile figcaption{{padding:10px 12px;font-size:13px;color:var(--mute)}}.tile figcaption b{{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}}
+.tile:hover,.tile:focus-visible{{transform:translateY(-3px);border-color:rgba(111,243,255,.4)}}@media (prefers-reduced-motion:reduce){{.tile,.tile:hover{{transition:none;transform:none}}}}.tile img{{width:100%;display:block;background:#fff}}.tile figcaption{{padding:10px 12px;font-size:13px;color:var(--mute)}}.tile figcaption b{{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}}
 .tile[hidden]{{display:none}}#lb{{position:fixed;inset:0;background:rgba(3,5,10,.92);display:none;align-items:center;justify-content:center;z-index:100;flex-direction:column;padding:24px}}#lb.on{{display:flex}}#lb img{{max-width:95vw;max-height:80vh;border-radius:10px;background:#fff}}#lb p{{color:var(--ink);max-width:900px;text-align:center}}</style></head><body>
-<main class="wrap"><section class="block" style="padding:60px 0 10px"><span class="eyebrow">Gallery</span><h1 style="font-size:clamp(34px,5vw,60px)">Every figure, <span class="grad">every animation</span></h1>
+<main class="wrap"><section class="block" style="padding:60px 0 10px"><h1 style="font-size:clamp(34px,5vw,60px)">Every figure, <span class="grad">every animation</span></h1>
 <p class="lead">{n_fig} figures and {n_anim} animations, all regenerated from code by <code>make figures animations</code>. Click any tile to enlarge it; each caption names the model and sources.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="seg" id="kind"><button class="on" data-k="all">All</button><button data-k="figure">Figures</button><button data-k="animation">Animations</button></div>
 <input type="text" id="q" placeholder="Search: qubit, heat, wafer, surface code…" style="max-width:340px"></div></section>
-<div class="masonry" id="grid">{tiles}</div></main><div id="lb"><img id="lbImg" alt=""><p id="lbCap"></p><p style="color:var(--mute);font-size:13px">Click anywhere or press Esc to close</p></div>
+<div class="masonry" id="grid">{tiles}</div></main><div id="lb" role="dialog" aria-modal="true" aria-label="Enlarged figure" tabindex="-1"><img id="lbImg" alt=""><p id="lbCap"></p><p style="color:var(--mute);font-size:13px">Click anywhere or press Esc to close</p></div>
 <script type="module">import {{ boot }} from './assets/site.js'; boot('Gallery');
 const $ = id => document.getElementById(id); let kind = 'all';
 function filter() {{ const q = $('q').value.toLowerCase().trim(); document.querySelectorAll('.tile').forEach(t => t.hidden = !((kind === 'all' || t.dataset.kind === kind) && (!q || t.dataset.text.includes(q)))); }}
 $('kind').onclick = e => {{ const b = e.target.closest('button'); if (!b) return; kind = b.dataset.k; $('kind').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); filter(); }};
 $('q').oninput = filter;
-document.querySelectorAll('.tile').forEach(t => t.onclick = () => {{ $('lbImg').src = t.querySelector('img').src; $('lbCap').textContent = t.querySelector('figcaption').innerText; $('lb').classList.add('on'); }});
-$('lb').onclick = () => $('lb').classList.remove('on');
-if (window.location && window.location.hash) {{ const t = document.getElementById(window.location.hash.slice(1)); if (t) {{ t.scrollIntoView({{ block: 'center' }}); t.click(); }} }} addEventListener('keydown', e => {{ if (e.key === 'Escape') $('lb').classList.remove('on'); }});
+let opener = null;
+function openLb(t) {{ opener = t; $('lbImg').src = t.querySelector('img').src; $('lbImg').alt = t.querySelector('b').textContent; $('lbCap').textContent = t.querySelector('figcaption').innerText; $('lb').classList.add('on'); $('lb').focus(); }}
+function closeLb() {{ if (!$('lb').classList.contains('on')) return; $('lb').classList.remove('on'); opener?.focus(); }}
+document.querySelectorAll('.tile').forEach(t => {{ t.onclick = () => openLb(t); t.onkeydown = e => {{ if (e.key === 'Enter' || e.key === ' ') {{ e.preventDefault(); openLb(t); }} }}; }});
+$('lb').onclick = closeLb;
+if (window.location && window.location.hash) {{ const t = document.getElementById(window.location.hash.slice(1)); if (t) {{ t.scrollIntoView({{ block: 'center' }}); t.click(); }} }} addEventListener('keydown', e => {{ if (e.key === 'Escape') closeLb(); }});
 </script></body></html>''', encoding="utf-8")
 
 
@@ -187,7 +192,7 @@ PAGES = [  # (title, href, kind, description) for the search index; labs and too
     ("Wafer Lab", "labs/wafer.html", "lab", "yield, defects, dies per wafer, Poisson, Murphy"), ("Fab Walkthrough", "labs/fab.html", "lab", "process, layers, cleanroom"),
     ("Transistor Lab", "labs/transistor.html", "lab", "I-V curves, inverter, ring oscillator, SPICE"), ("Power Lab", "labs/power.html", "lab", "EV inverter, switch loss, SiC, GaN"),
     ("Diamond CPU", "labs/cpu.html", "lab", "DIA-4 processor, assembly, emulator, Verilog"), ("Qubit Lab", "labs/qubit.html", "lab", "Bloch sphere, Rabi, Ramsey, echo"),
-    ("Photon Lab", "labs/photon.html", "lab", "optical cycle, fluorescence, readout contrast"), ("Break the Code", "labs/qec.html", "lab", "surface code, error correction, decoder"),
+    ("Photon Lab", "labs/photon.html", "lab", "optical cycle, fluorescence, readout contrast, measured contrast"), ("Addressing Lab", "labs/addressing.html", "lab", "two NV centers in one laser spot, spectral addressing, field gradient, crosstalk, Airy spot"), ("Gate Bias Lab", "labs/bias.html", "lab", "CZ versus CNOT, noise bias, Pauli propagation, XZZX, hook errors"), ("Break the Code", "labs/qec.html", "lab", "surface code, error correction, decoder"),
     ("Machine Builder", "labs/machine.html", "lab", "resource estimate, qubits, runtime, code distance"), ("The Chip Stack", "labs/stack.html", "lab", "architecture, layers"),
     ("Who is building it", "labs/globe.html", "lab", "globe, labs, companies"),
 ]
@@ -224,7 +229,7 @@ def build_glossary_page(out: Path) -> None:
     (out / "glossary.html").write_text(f'''<!doctype html><html lang="en" data-base="."><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Glossary · ADAMAS</title><style>.gterm{{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:12px 4px;border-bottom:1px solid var(--line)}}
 .gterm b{{font:700 15px var(--mono);color:var(--teal)}}.gterm i{{color:var(--ink);font-style:normal;font-weight:600}}.gterm span{{color:var(--mute)}}.gterm:target{{background:rgba(45,226,230,.1);border-radius:10px}}.gterm[hidden]{{display:none}}</style></head><body>
-<main class="wrap"><section class="block" style="padding:60px 0 20px"><span class="eyebrow">Glossary</span><h1 style="font-size:clamp(34px,5vw,60px)">Every acronym, <span class="grad">spelled out</span></h1>
+<main class="wrap"><section class="block" style="padding:60px 0 20px"><h1 style="font-size:clamp(34px,5vw,60px)">Every acronym, <span class="grad">spelled out</span></h1>
 <input type="text" id="q" placeholder="Filter terms…" style="max-width:360px"></section><div class="card" id="list">{rows}</div></main>
 <script type="module">import {{ boot }} from './assets/site.js'; boot('Glossary');
 const q = document.getElementById('q'); q.oninput = () => document.querySelectorAll('.gterm').forEach(t => t.hidden = !t.dataset.text.includes(q.value.toLowerCase().trim()));</script></body></html>''', encoding="utf-8")
@@ -240,7 +245,7 @@ VENDOR = [  # (CDN prefix, path under web/node_modules, destination under vendor
     ("https://cdn.plot.ly/plotly-2.35.2.min.js", "plotly.js-dist-min/plotly.min.js", "plotly/plotly.min.js", False),
 ]
 JSM_DIRS = ("controls", "postprocessing", "shaders")
-FONT_CSS = [("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"),
+FONT_CSS = [("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&display=swap"), ("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"),
             ("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap")]
 
 
@@ -259,12 +264,15 @@ def vendor(out: Path) -> list[str]:
         else:
             (v / dst).parent.mkdir(parents=True, exist_ok=True); shutil.copy(nm / src, v / dst)
     css = []
-    for fam, pkg, weights in (("Inter", "@fontsource/inter", (300, 400, 500, 600, 700, 800)), ("JetBrains Mono", "@fontsource/jetbrains-mono", (400, 600))):
+    fonts = (("Inter", "@fontsource/inter", (300, 400, 500, 600, 700, 800), ("normal",)), ("JetBrains Mono", "@fontsource/jetbrains-mono", (400, 600), ("normal",)),
+             ("STIX Two Text", "@fontsource/stix-two-text", (400, 500), ("normal", "italic")))     # math symbols in the equation panels
+    for fam, pkg, weights, styles in fonts:
         for wgt in weights:
-            f = nm / pkg / "files" / f"{pkg.split('/')[1]}-latin-{wgt}-normal.woff2"
-            if f.exists():
-                (v / "fonts").mkdir(parents=True, exist_ok=True); shutil.copy(f, v / "fonts" / f.name)
-                css.append(f"@font-face{{font-family:'{fam}';font-style:normal;font-weight:{wgt};font-display:swap;src:url({f.name}) format('woff2')}}")
+            for sty in styles:
+                f = nm / pkg / "files" / f"{pkg.split('/')[1]}-latin-{wgt}-{sty}.woff2"
+                if f.exists():
+                    (v / "fonts").mkdir(parents=True, exist_ok=True); shutil.copy(f, v / "fonts" / f.name)
+                    css.append(f"@font-face{{font-family:'{fam}';font-style:{sty};font-weight:{wgt};font-display:swap;src:url({f.name}) format('woff2')}}")
     (v / "fonts").mkdir(parents=True, exist_ok=True); (v / "fonts" / "fonts.css").write_text("\n".join(css) + "\n", encoding="utf-8")
     for p in list(out.rglob("*.html")) + list(out.rglob("*.css")) + list((out / "assets").rglob("*.js")):
         if "vendor" in p.parts:

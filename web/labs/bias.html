@@ -1,0 +1,94 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Gate Bias Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <h1>Gate Bias Lab</h1>
+  <p>Room-temperature spins mostly lose phase (Z errors) rather than flipping (X errors). The XZZX code turns that bias into a higher threshold, but only if the two-qubit gates keep it. Drop an error into a gate and follow it out.</p>
+  <div class="ctl"><label>Gate</label><div class="seg" id="kind" role="group" aria-label="Gate construction"><button class="on" data-k="cz">CZ (native, diagonal)</button><button data-k="cnot">CNOT = H · CZ · H</button></div></div>
+  <div class="ctl"><label>Error to inject</label><div class="seg" id="pauli" role="group" aria-label="Pauli error"><button class="on" data-p="Z">Z (phase)</button><button data-p="X">X (flip)</button><button data-p="Y">Y</button></div></div>
+  <div class="ctl"><label>On which qubit</label><div class="seg" id="qb" role="group" aria-label="Qubit"><button data-q="0">control</button><button class="on" data-q="1">target</button></div></div>
+  <div class="ctl"><label>When, inside the gate <b id="whenV"></b></label><input type="range" id="when" min="0" max="100" value="50" aria-label="Time of the error within the gate, percent"></div>
+  <div class="ctl"><label><span>Input bias η = p<sub>Z</sub> / (p<sub>X</sub> + p<sub>Y</sub>)</span> <b id="etaV"></b></label><input type="range" id="eta" min="-0.3" max="3" step="0.02" value="2" aria-label="Input noise bias, log scale"></div>
+  <div class="ctl"><label>Hadamard time / CZ time <b id="hV"></b></label><input type="range" id="h" min="-3" max="-0.3" step="0.02" value="-2.7" aria-label="Hadamard duration relative to the CZ, log scale"></div>
+  <div style="display:flex;gap:8px"><button class="btn primary" id="play" type="button">Send the error through</button></div>
+  <div class="kpis" id="kpis"></div>
+</aside>
+<div>
+  <div class="stage" style="min-height:0"><canvas id="circ" style="height:300px" role="img" aria-label="The gate as a circuit, with the injected error travelling to the output"></canvas><div class="hud" id="circHud"></div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="dist" style="height:250px" role="img" aria-label="Errors leaving the gate on each qubit, by type"></canvas><div class="hud" id="distHud"></div></div>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Our qubits usually make one kind of mistake, which is good news: a clever code can watch for that kind. But mistakes travel through the gates. One gate leaves the mistake as it is. The other gate turns it into the other kind of mistake on its way out, and the clever code is fooled.</div>
+    <div class="lvl" data-l="s">A CZ gate is diagonal, so a Z error commutes with it and leaves as a Z. Two-level hardware usually makes a CNOT from a CZ between two Hadamards on the target. A Hadamard swaps X and Z, so a phase error during the CZ comes out of the CNOT as a bit flip on the target, and an X error before the CZ also drags a Z onto the control. The bias of the target's errors is inverted: η becomes about 1/η.</div>
+    <div class="lvl" data-l="r">Errors are propagated to the gate's output by Clifford conjugation (H: X↔Z; CZ: X_a → X_a Z_b; checked against Stim's PauliString.after in the tests). Each segment gets independent Pauli errors with probability proportional to its duration and bias η; the bars are first order in p. This is a teaching model of one construction. A bias-preserving CNOT needs a continuous symmetry two-level spins lack (it exists for cat qubits [guillaud2019] [puri2020]); careful two-level designs keep a residual bias of about 5 [etxezarreta2025]. That is why chapter E6.1e gives CZ the full bias and CNOTs at most 5, and why XZZX reaches 1.8% instead of the 3.3% of the bias-preserving upper bound.</div>
+    <p class="src">Sources: [bonillaataides2021] [guillaud2019] [puri2020] [etxezarreta2025] [gidney2021stim] [tuckett2018]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import * as GB from '../assets/sim/gatebias.js';
+boot('Gate bias');
+const $ = id => document.getElementById(id);
+let kind = 'cz', pauli = 'Z', qubit = 1, t0 = -1e9;
+const seg = (id, key, set) => $(id).onclick = e => { const b = e.target.closest('button'); if (!b) return; set(b.dataset[key]); $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); t0 = -1e9; update(); };
+seg('kind', 'k', v => kind = v); seg('pauli', 'p', v => pauli = v); seg('qb', 'q', v => qubit = +v);
+const eta = () => 10 ** +$('eta').value, hf = () => 10 ** +$('h').value, when = () => +$('when').value / 100;
+const COL = { ink: '#e8f1f8', mute: '#8ea3b5', line: 'rgba(148,190,220,.28)', X: '#ff6f7d', Y: '#b39bff', Z: '#2de2e6', gate: '#0f1a2a', gateLine: 'rgba(148,190,220,.45)' };
+// timeline of the gate in normalized units: segments with start/end positions
+function layout() { const sg = GB.construction(kind, hf()), tot = sg.reduce((s, x) => s + x[2], 0); let at = 0;
+  return sg.map(([g, qs, d]) => { const o = { g, qs, a: at / tot, b: (at + d) / tot }; at += d; return o; }); }
+// which gates come after time u (an error inside a segment is applied after that segment: the conservative choice)
+function after(L, u) { const k = L.findIndex(s => u <= s.b + 1e-12); return L.slice(Math.max(0, k) + 1).map(s => [s.g, s.qs]); }
+function trace(L, u) {   // the error's Pauli on each wire after each gate it passes, for the animation
+  const steps = [{ x: u, res: { 0: 'I', 1: 'I', [qubit]: pauli } }]; let cur = { [qubit]: pauli };
+  const k = L.findIndex(s => u <= s.b + 1e-12);
+  for (const s of L.slice(Math.max(0, k) + 1)) { const r = GB.propagate(cur, [[s.g, s.qs]]); cur = Object.fromEntries(Object.entries(r).filter(([, p]) => p !== 'I')); steps.push({ x: (s.a + s.b) / 2, res: r }); }
+  return steps;
+}
+function update() {
+  $('whenV').textContent = `${Math.round(when() * 100)}% of the gate`; $('etaV').textContent = eta() >= 10 ? eta().toFixed(0) : eta().toFixed(2); $('hV').textContent = hf().toFixed(3);
+  const d = GB.outputDistribution(kind, eta(), hf()), b = GB.outputBias(kind, eta(), hf()), w = d.perQubit;
+  const f = x => (Number.isFinite(x) ? (x >= 10 ? x.toFixed(0) : x >= 0.1 ? x.toFixed(2) : x.toExponential(1)) : '∞');
+  $('kpis').innerHTML = [[f(eta()), 'bias going in, both qubits'], [f(b[0]), 'bias leaving, control'], [f(b[1]), 'bias leaving, target'], [`${(100 * d.spread).toFixed(2)}%`, 'error events that hit both qubits']]
+    .map(([v, s]) => `<div class="kpi"><b>${v}</b><span>${s}</span></div>`).join('');
+  drawDist(w, b);
+}
+function drawDist(w, b) {
+  const { g, w: W, h } = fitCanvas($('dist'), 250); g.clearRect(0, 0, W, h);
+  const rows = [['control', w[0], b[0]], ['target', w[1], b[1]]], tot = q => q.X + q.Y + q.Z, x0 = 110, bw = W - x0 - 150;
+  rows.forEach(([l, q, bb], k) => { const y = 64 + k * 76, T = tot(q) || 1; let x = x0;
+    g.fillStyle = COL.ink; g.font = '600 13px Inter'; g.fillText(l, 16, y + 22);
+    for (const P of ['Z', 'X', 'Y']) { const ww = bw * q[P] / T; g.fillStyle = COL[P]; g.globalAlpha = .85; g.fillRect(x, y, ww, 34); g.globalAlpha = 1;
+      if (ww > 34) { g.fillStyle = '#05070d'; g.font = '600 12px "JetBrains Mono"'; g.fillText(`${P} ${(100 * q[P] / T).toFixed(q[P] / T < .1 ? 1 : 0)}%`, x + 6, y + 22); } x += ww; }
+    g.fillStyle = COL.mute; g.font = '12px "JetBrains Mono"'; g.fillText(`η out = ${Number.isFinite(bb) ? (bb >= 10 ? bb.toFixed(0) : bb.toFixed(3)) : '∞'}`, x0 + bw + 14, y + 22); });
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText('Share of the errors each qubit carries out of the gate, first order in p (cyan Z, red X, violet Y)', 16, h - 10);
+  $('distHud').textContent = kind === 'cz' ? 'CZ: the bias leaves exactly as it came in' : 'CNOT: the target leaves with mostly bit flips';
+}
+function drawCirc(now) {
+  const { g, w, h } = fitCanvas($('circ'), 300); g.clearRect(0, 0, w, h);
+  const L = layout(), x0 = 70, x1 = w - 70, X = u => x0 + (x1 - x0) * u, yW = [h * 0.36, h * 0.7];
+  g.strokeStyle = COL.line; g.lineWidth = 2; yW.forEach(y => { g.beginPath(); g.moveTo(30, y); g.lineTo(w - 30, y); g.stroke(); });
+  g.fillStyle = COL.mute; g.font = '12px Inter'; g.fillText('control', 30, yW[0] - 12); g.fillText('target', 30, yW[1] - 12);
+  const minW = 46;
+  for (const s of L) { const a = X(s.a), b = Math.max(X(s.b), a + (s.g === 'H' ? 30 : minW)), mid = (a + b) / 2;
+    if (s.g === 'H') { const y = yW[s.qs[0]]; g.fillStyle = COL.gate; g.strokeStyle = COL.gateLine; g.fillRect(mid - 15, y - 15, 30, 30); g.strokeRect(mid - 15, y - 15, 30, 30); g.fillStyle = COL.ink; g.font = '600 14px Inter'; g.textAlign = 'center'; g.fillText('H', mid, y + 5); g.textAlign = 'left'; }
+    else { g.strokeStyle = COL.ink; g.lineWidth = 2; g.beginPath(); g.moveTo(mid, yW[0]); g.lineTo(mid, yW[1]); g.stroke(); g.fillStyle = COL.ink; yW.forEach(y => { g.beginPath(); g.arc(mid, y, 6, 0, 7); g.fill(); });
+      g.fillStyle = COL.mute; g.font = '600 11px Inter'; g.textAlign = 'center'; g.fillText('CZ', mid, yW[0] - 16); g.textAlign = 'left'; } }
+  // the gate's time axis
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText('gate time →', x0, h - 10);
+  const u = when(), steps = trace(L, u), reduce = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const dur = 2400, prog = reduce ? 1 : Math.min(1, Math.max(0, (now - t0) / dur)), playing = now - t0 < dur && !reduce;
+  const xs = [X(u), ...steps.slice(1).map(s => X(s.x)), x1 + 30], pos = prog >= 1 || !playing ? xs.length - 1 : prog * (xs.length - 1), k = Math.min(xs.length - 2, Math.floor(pos)), fr = pos - k;
+  const xNow = playing ? xs[k] + (xs[k + 1] - xs[k]) * fr : x1 + 30, res = steps[Math.min(steps.length - 1, playing ? k : steps.length - 1)].res;
+  // injection marker
+  g.strokeStyle = COL[pauli]; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(u), yW[qubit] - 26); g.lineTo(X(u), yW[qubit] + 26); g.stroke(); g.setLineDash([]);
+  g.fillStyle = COL[pauli]; g.font = '600 11px Inter'; g.textAlign = 'center'; g.fillText(`${pauli} injected here`, X(u), yW[qubit] + 44); g.textAlign = 'left';
+  for (const q of [0, 1]) { const P = res[q]; if (!P || P === 'I') continue; const x = playing ? xNow : x1 + 30, y = yW[q];
+    g.fillStyle = COL[P]; g.beginPath(); g.arc(x, y, 13, 0, 7); g.fill(); g.fillStyle = '#05070d'; g.font = '700 13px "JetBrains Mono"'; g.textAlign = 'center'; g.fillText(P, x, y + 5); g.textAlign = 'left'; }
+  const fin = steps.at(-1).res, outTxt = [0, 1].map(q => `${q ? 'target' : 'control'} ${fin[q] === 'I' ? 'clean' : fin[q]}`).join(', ');
+  $('circHud').textContent = `${pauli} on the ${qubit ? 'target' : 'control'} at ${Math.round(u * 100)}% → leaves as: ${outTxt}`;
+  requestAnimationFrame(drawCirc);
+}
+$('play').onclick = () => { t0 = performance.now(); };
+['when', 'eta', 'h'].forEach(i => $(i).oninput = update); addEventListener('resize', update);
+update(); requestAnimationFrame(drawCirc);
+</script></body></html>

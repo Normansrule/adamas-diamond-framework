@@ -3,12 +3,12 @@
 <title>Heat Race · ADAMAS</title></head><body>
 <main class="wrap"><div class="lab">
 <aside class="panel">
-  <span class="eyebrow">Power · Lab 2</span><h1>Heat Race</h1>
+  <h1>Heat Race</h1>
   <p>A 2 mm slice of chip with a switching transistor burning power near its top surface. The bottom sits on a heat sink. Same geometry, same power, four materials, solved live with the heat equation.</p>
   <div class="ctl"><label>Power density <b id="qV"></b></label><input type="range" id="q" min="1" max="40" value="12"></div>
   <div class="ctl"><label>Simulation speed <b id="spV"></b></label><input type="range" id="sp" min="1" max="20" value="8"></div>
   <div class="ctl"><label>Color scale</label><div class="seg" id="scale"><button class="on" data-s="shared">Shared (honest)</button><button data-s="own">Each its own</button></div></div>
-  <div style="display:flex;gap:8px"><button class="btn primary" id="play">❚❚ Pause</button><button class="btn" id="reset">Reset</button></div>
+  <div style="display:flex;gap:8px"><button class="btn primary" id="play" data-icon="pause">Pause</button><button class="btn" id="reset">Reset</button></div>
   <div class="kpis" id="kpis"></div>
 </aside>
 <div>
@@ -20,7 +20,7 @@
     <p class="src">Sources: [carslaw1959] [wei1993] [glassbrenner1964] [kimoto2014] [mishra2008] [moore2014] [barcohen2016]</p></div>
 </div></div></main>
 <script type="module">
-import { boot, colormap } from '../assets/site.js';
+import { boot, colormap, label } from '../assets/site.js';
 import * as H from '../assets/sim/heat.js';
 boot('Heat');
 const $ = id => document.getElementById(id), N = 48, keys = ['Si', 'GaN', 'SiC', 'Diamond'];
@@ -29,7 +29,7 @@ $('grid').innerHTML = keys.map(k => `<div style="position:relative"><canvas id="
   <div class="hud" style="left:10px;top:10px"><b style="color:${H.MATERIALS[k].color}">${H.MATERIALS[k].name}</b> · κ = ${H.MATERIALS[k].kappa} W/cm·K<br><span id="t${k}">ΔT 0 K</span></div></div>`).join('');
 $('kpis').innerHTML = `<div class="kpi"><b id="kRatio">–</b><span>Silicon peak ÷ diamond peak</span></div><div class="kpi"><b id="kTime">0</b><span>Simulated time (ms)</span></div>`;
 function reset() { sims = keys.map(k => H.create(k, N, 0.2)); }
-$('reset').onclick = reset; $('play').onclick = () => { playing = !playing; $('play').textContent = playing ? '❚❚ Pause' : '▶ Play'; };
+$('reset').onclick = reset; $('play').onclick = () => { playing = !playing; label($('play'), playing ? 'pause' : 'play', playing ? 'Pause' : 'Play'); };
 $('scale').onclick = e => { const b = e.target.closest('button'); if (!b) return; scale = b.dataset.s; $('scale').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
 const q = () => +$('q').value * 25000, sp = () => +$('sp').value * 2e-5;
 const lab = () => { $('qV').textContent = `${(+$('q').value * 25).toFixed(0)} kW/cm³`; $('spV').textContent = `${(sp() * 1e3 * 60).toFixed(1)} ms per second`; };

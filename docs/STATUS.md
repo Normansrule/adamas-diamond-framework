@@ -1,0 +1,52 @@
+# What is skipped, deferred, or still an assumption, and why
+
+This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
+
+Last updated: v0.28.0 (2026-10-26).
+
+## Fixed in v0.28.0 (were open in v0.27.0)
+
+| Item | Was | Now |
+|---|---|---|
+| Copper's thermal conductivity (README, chapter 00) | Unsourced "5.5× copper" | 4.0 W/(cm·K) at 300 K from the NBS compilation [ho1972] |
+| High-pressure (HPHT) plate size (chapter 02, audit table) | Unsourced | Sourced to a measured HPHT plate [stoupin2016] |
+| Sub-diffraction addressing claims (chapter 07) | Some rows cited the wrong paper | Rows re-cited after reading each source; spot size from [born1999]; implantation conversion numbers corrected (21 % at 18 MeV, about 2 % simulated at 1 MeV) |
+| Photon Lab contrast | The lab showed the pure-state contrast (0.445) | It shows the contrast from the pumped state (0.308), the number a measurement sees; both are labeled |
+| Echo with a timing error | Only the ideal echo was modeled | `adamas.nv.echo_mistimed` and the Qubit Lab show how a mistimed π pulse lets static detuning back in |
+| Addressing two NVs 15–30 nm apart (audit issue 3) | Text only | `adamas.addressing` plus the Addressing Lab: spot size, axis and gradient routes, crosstalk; tested |
+| Gate bias (XZZX) | Stated in text | `adamas.gatebias` plus the Gate Bias Lab: Pauli propagation through CZ and H · CZ · H, checked against Stim |
+| Equation in the loop (Phase 0 outline) | Proposed | Seven live panels in five labs, one Python registry (`adamas.loop`), browser arithmetic golden-tested |
+| Desktop app dependency advisory | `npm audit` reported Electron advisories | Electron updated, `npm audit` reports 0 vulnerabilities |
+
+## Deferred, with the reason
+
+| Item | Why it waits | What closes it |
+|---|---|---|
+| Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
+| Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
+| Build program P0–P8 full write-ups and the Machines and Facilities Atlas | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
+
+## Still assumptions (labeled as such wherever they appear)
+
+| Assumption | Where | Why it is not measured |
+|---|---|---|
+| Bias of NV two-qubit gates (full bias on CZ, at most 5 on CNOT) | E6, `adamas.xzzx_native`, Gate Bias Lab | No published measurement of the Pauli bias of an NV-NV gate exists that we could find. The decision analysis shows the code choice is robust to it (value of information about 3 % of the machine). |
+| Inter-cell photonic link parameters | `adamas.resource.LINK` | Proposed, not demonstrated at the needed rate; labeled proposed. |
+| A1 kit filter prices (US$5 to 80) | EXPERIMENTS.md, `adamas.experiments` | Retail prices vary by vendor and month; given as a range, labeled an estimate. |
+| Tier B and higher experiment totals | EXPERIMENTS.md | Labeled "a reviewer's estimate, not a vendor quote". |
+
+## Tests that skip, and why
+
+Every skip is environmental: the test needs a tool that is not installed. None skips because it fails.
+
+| Skips without | Tests | Install on Ubuntu |
+|---|---|---|
+| Icarus Verilog | DIA-4 Verilog testbench, Verilog against the JavaScript emulator | `sudo apt install -y iverilog` |
+| ngspice | Ring oscillator against the JavaScript transistor model | `sudo apt install -y ngspice` |
+| Node.js or `web/node_modules` | Browser physics, equation-in-the-loop golden values, page smoke tests | `sudo apt install -y nodejs npm && cd web && npm ci` |
+| Stim and PyMatching | Circuit-level error correction, XZZX, Pauli propagation check | `pip install stim pymatching` |
+| ffmpeg | Rendering the trailer video | `sudo apt install -y ffmpeg` |
+| nbclient and ipykernel | Executing the course notebooks | `pip install nbclient ipykernel` |
+
+The preprint, talk, and poster need LaTeX: `sudo apt install -y texlive-latex-recommended texlive-latex-extra texlive-pictures latexmk`, then `make paper talk poster`.
