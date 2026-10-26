@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qubit Lab · equation in the loop (Phase 0 mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<!-- Phase 0 mockup for review only: not wired into the site. The physics is adamas.nv.rabi (two-level, rotating frame). -->
+<style>
+:root{
+  --bg:#06080c; --bg2:#0b0f16; --panel:#0e131c; --line:rgba(170,200,230,.11); --line2:rgba(170,200,230,.22);
+  --ink:#eaf0f6; --ink2:#b7c3cf; --mute:#7f8d9b;
+  --nv:#ff3b4e;        /* NV red fluorescence, 637 nm zero-phonon line */
+  --pump:#3be38a;      /* 532 nm pump green */
+  --mw:#f2b54a;        /* microwave drive */
+  --ice:#bfe9ff;       /* refractive diamond highlight */
+  --ok:#3be38a; --warn:#f2b54a; --bad:#ff3b4e;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; --math:"STIX Two Text","STIX Two Math","Cambria Math",serif;
+  --r:14px;
+}
+:root[data-theme="light"]{
+  --bg:#f4f2ee; --bg2:#ebe8e2; --panel:#fbfaf7; --line:rgba(20,30,45,.10); --line2:rgba(20,30,45,.2);
+  --ink:#121820; --ink2:#36424f; --mute:#66717d; --nv:#d4192d; --pump:#14935a; --mw:#a86a00; --ice:#2c6f99;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ice);outline-offset:2px;border-radius:6px}
+.app{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(380px,1fr);min-height:100vh}
+@media (max-width:980px){.app{grid-template-columns:1fr}.stage{position:relative;height:70vh}}
+/* ---------- top bar ---------- */
+header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:14px 22px;border-bottom:1px solid var(--line)}
+.mark{width:22px;height:22px}
+header h1{font:600 15px var(--sans);letter-spacing:.02em;margin:0}
+header .crumb{color:var(--mute);font-size:13px}
+header .sp{flex:1}
+.pill{border:1px solid var(--line2);border-radius:999px;min-height:40px;padding:8px 14px;font:500 12px var(--mono);color:var(--ink2);background:transparent;cursor:pointer}
+/* ---------- stage ---------- */
+.stage{position:sticky;top:0;align-self:start;height:calc(100vh - 53px);display:grid;grid-template-rows:minmax(0,1fr) auto;border-right:1px solid var(--line);min-height:520px}
+.cwrap{position:relative;min-height:0}canvas#sphere{position:absolute;inset:0;width:100%;height:100%;display:block}
+.readout{position:absolute;left:22px;top:18px;display:grid;gap:8px}
+.ro{display:flex;align-items:baseline;gap:10px;font:500 12px var(--mono);color:var(--mute)}
+.ro b{font:500 22px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.glow{position:absolute;right:22px;top:18px;text-align:right;font:500 12px var(--mono);color:var(--mute)}
+.glow .bar{width:150px;height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden;margin-left:auto}
+.glow .bar i{display:block;height:100%;background:var(--nv);box-shadow:0 0 14px var(--nv);transition:width .08s linear}
+/* transport + pulse timeline */
+.transport{border-top:1px solid var(--line);padding:12px 18px 16px;display:grid;gap:10px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.18))}
+.tbtns{display:flex;align-items:center;gap:6px}
+.tb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);background:var(--bg2);display:grid;place-items:center;cursor:pointer;transition:transform .12s ease-out,border-color .15s ease}
+@media (hover:hover){.tb:hover{border-color:var(--ice)}}.tb:active{transform:scale(.96)}
+.tb.primary{width:54px;background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tb svg{width:14px;height:14px}
+.tclock{margin-left:10px;font:500 13px var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+.tfrozen{margin-left:auto;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ice);opacity:0;transition:opacity .15s}
+.tfrozen.on{opacity:1}
+.seq{position:relative;height:46px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);overflow:hidden;cursor:ew-resize}
+.lane{position:absolute;left:0;right:0;height:14px;font:500 10px var(--mono);color:var(--mute)}
+.lane.l1{top:6px}.lane.l2{top:26px}
+.blk{position:absolute;top:0;height:14px;border-radius:4px}
+.blk.pump{background:var(--pump);opacity:.85}.blk.mw{background:var(--mw)}
+.cursor{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);box-shadow:0 0 10px var(--ink)}
+/* ---------- equation panel ---------- */
+aside{padding:22px 24px 30px;display:flex;flex-direction:column;gap:16px;background:var(--panel)}
+.ptitle{display:flex;align-items:center;gap:10px}
+.ptitle h2{font:600 17px var(--sans);margin:0}
+.state{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid var(--line2);color:var(--pump)}
+.state.frozen{color:var(--ice)}
+.tag{font:500 11px var(--mono);color:var(--mute);margin-left:auto}
+.eq{font:400 27px/1.6 var(--math);padding:18px 14px 12px;border-radius:var(--r);border:1px solid var(--line);background:var(--bg);overflow-x:auto;white-space:nowrap}
+.eq .v{font:inherit;font-style:italic;background:none;border:0;cursor:pointer;border-radius:4px;padding:0 2px;transition:background-color .15s ease}
+.eq .v[data-k=Om]{color:var(--mw)} .eq .v[data-k=de]{color:var(--ice)} .eq .v[data-k=t]{color:var(--pump)}
+.eq .v.sel{background:color-mix(in srgb,currentColor 18%,transparent)}
+.eq .fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.86em;line-height:1.25;margin:0 2px}
+.eq .fr>span:first-child{border-bottom:1px solid currentColor;padding:0 4px 2px}.eq .fr>span:last-child{padding:2px 4px 0}
+.eq .sq>span{border-top:1px solid currentColor;padding:0 2px}
+.sub{font:400 14px/1.9 var(--mono);color:var(--ink2);border-left:2px solid var(--line2);padding:2px 0 2px 14px;font-variant-numeric:tabular-nums}
+.sub .n{color:var(--ink);font-weight:500}.sub .res{color:var(--nv);font-weight:600}
+.units{display:flex;gap:8px;flex-wrap:wrap;font:500 12px var(--mono)}
+.chip{border:1px solid var(--line2);border-radius:8px;padding:5px 9px;color:var(--ink2);display:flex;gap:7px;align-items:center}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+.chip.warn{border-color:color-mix(in srgb,var(--warn) 55%,transparent);color:var(--warn)}.chip.warn i{background:var(--warn)}
+.sect{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:-6px}
+.inspector{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:var(--bg)}
+.inspector dt{color:var(--mute);font-size:13px}.inspector dd{margin:0;font:500 13px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.inspector .big{grid-column:1/-1;display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.inspector .big b{font:400 26px var(--math);font-style:italic}
+.inspector .big span{font:500 22px var(--mono)}
+.inspector canvas{grid-column:1/-1;width:100%;height:70px;margin-top:6px}
+.ctl{display:grid;grid-template-columns:28px 1fr 84px;gap:10px;align-items:center;font:500 13px var(--mono)}
+.ctl label{font:italic 400 19px var(--math)}
+.ctl output{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--ice)}
+.srcs{display:flex;gap:8px;flex-wrap:wrap;font-size:13px}
+.srcs a{color:var(--ice);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--ice) 40%,transparent)}
+.foot{margin-top:auto;font-size:12px;color:var(--mute)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 4h16l6 8-14 17L2 12z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 12h28M12 12l4 17 4-17M8 4l4 8 4-8 4 8 4-8" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/></svg>
+  <h1>Qubit Lab</h1><span class="crumb">Quantum · experiment B1 · Rabi</span><span class="sp"></span>
+  <button class="pill" id="theme" aria-label="Toggle light or dark theme">◐ theme</button>
+</header>
+
+<section class="stage" aria-label="Bloch sphere and pulse sequence">
+  <div class="cwrap"><canvas id="sphere" aria-label="Bloch sphere: the spin vector rotating under a microwave drive"></canvas></div>
+  <div class="readout"><div class="ro">P₋₁ <b id="roP">0.000</b></div><div class="ro">⟨σz⟩ <b id="roZ">+1.000</b></div></div>
+  <div class="glow">NV fluorescence<div class="bar"><i id="glow" style="width:100%"></i></div><span id="glowV">1.00 · bright</span></div>
+  <div class="transport">
+    <div class="tbtns">
+      <button class="tb" id="back" aria-label="Step back 5 nanoseconds"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></button>
+      <button class="tb primary" id="play" aria-label="Play or pause"><svg viewBox="0 0 16 16" id="playIcon"><path d="M5 3l8 5-8 5z" fill="currentColor"/></svg></button>
+      <button class="tb" id="fwd" aria-label="Step forward 5 nanoseconds"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></button>
+      <button class="tb" id="freeze" aria-label="Freeze time and inspect"><svg viewBox="0 0 16 16"><path d="M8 1v14M2 4.5l12 7M2 11.5l12-7" stroke="currentColor" stroke-width="1.4"/></svg></button>
+      <span class="tclock" id="clock">t = 0 ns</span><span class="tfrozen" id="frozenTag">frozen · inspect any symbol</span>
+    </div>
+    <div class="seq" id="seq" role="slider" aria-label="Time within the pulse sequence" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0" aria-valuetext="0 nanoseconds" tabindex="0">
+      <div class="lane l1"><div class="blk pump" style="left:1%;width:16%"></div><div class="blk pump" style="left:83%;width:9%"></div></div>
+      <div class="lane l2"><div class="blk mw" id="mwBlk" style="left:20%;width:60%"></div></div>
+      <div class="cursor" id="cur" style="left:20%"></div>
+    </div>
+  </div>
+</section>
+
+<aside aria-label="Governing equation with live values">
+  <div class="ptitle"><h2>In the loop</h2><span class="state" id="state">live</span><span class="tag">adamas.nv.rabi</span></div>
+  <div class="eq" id="eq">
+    <i>P</i><sub>−1</sub>(<button class="v" data-k="t" aria-label="Inspect time t">t</button>) =
+    <span class="fr"><span><button class="v" data-k="Om" aria-label="Inspect Rabi frequency Omega">Ω</button><sup>2</sup></span><span><button class="v" data-k="Om" aria-label="Inspect Rabi frequency Omega">Ω</button><sup>2</sup> + <button class="v" data-k="de" aria-label="Inspect detuning delta">δ</button><sup>2</sup></span></span>
+    sin<sup>2</sup>(π <span class="sq">√<span><button class="v" data-k="Om" aria-label="Inspect Rabi frequency Omega">Ω</button><sup>2</sup> + <button class="v" data-k="de" aria-label="Inspect detuning delta">δ</button><sup>2</sup></span></span> <button class="v" data-k="t" aria-label="Inspect time t">t</button>)
+  </div>
+  <div class="sub" id="sub"></div>
+  <div class="units" id="units"></div>
+
+  <div class="sect">Drive</div>
+  <div class="ctl"><label for="Om">Ω</label><input id="Om" type="range" min="0.5" max="20" step="0.1" value="5"><output id="OmV">5.0 MHz</output></div>
+  <div class="ctl"><label for="de">δ</label><input id="de" type="range" min="-10" max="10" step="0.1" value="0"><output id="deV">0.0 MHz</output></div>
+
+  <div class="sect">Inspector</div>
+  <dl class="inspector" id="insp"></dl>
+
+  <div class="sect">Derivation and sources</div>
+  <div class="srcs"><a href="#">Derivation: E5 §2 (two-level reduction, rotating frame)</a><a href="#">[rabi1937]</a><a href="#">[jelezko2004a]</a><a href="#">[childress2006]</a></div>
+  <p class="sr" id="live" aria-live="polite"></p><p class="foot">Phase 0 mockup. Same function as the Python package (tested golden values). Keyboard: Space play, ← → step, F freeze.</p>
+</aside>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = { Om: 5, de: 0, t: 0, T: 1.0, playing: true, frozen: false, sel: 'Om' };   // MHz, MHz, µs
+const P = (t, Om, de) => { const w = Math.hypot(Om, de); return w ? (Om / w) ** 2 * Math.sin(Math.PI * w * t) ** 2 : 0; };
+const META = {
+  Om: { name: 'Rabi frequency', unit: 'MHz', range: '0.5 to 20 MHz', src: 'set by microwave power; measured by the π-pulse time t_π = 1/2Ω' },
+  de: { name: 'Detuning', unit: 'MHz', range: '−10 to 10 MHz', src: 'microwave frequency minus the ODMR line (A1)' },
+  t:  { name: 'Pulse length', unit: 'µs', range: '0 to 1 µs', src: 'pulse generator, 1 ns resolution (B1)' },
+};
+function vec(t) {   // Bloch vector after a pulse of length t from +z, rotation about (Om, 0, de)
+  const w = Math.hypot(S.Om, S.de), a = 2 * Math.PI * w * t, k = [S.Om / w, 0, S.de / w], v = [0, 0, 1];
+  const c = Math.cos(a), s = Math.sin(a), d = k[2];
+  const x = [k[1] * v[2] - k[2] * v[1], k[2] * v[0] - k[0] * v[2], k[0] * v[1] - k[1] * v[0]];
+  return v.map((vi, i) => vi * c + x[i] * s + k[i] * d * (1 - c));
+}
+const f = (x, n = 3) => x.toFixed(n);
+function sens(k) {  // numerical sensitivity dP/dk at the current point
+  const h = k === 't' ? 1e-4 : 1e-3, A = { ...S }, B = { ...S }; A[k] -= h; B[k] += h;
+  return (P(B.t, B.Om, B.de) - P(A.t, A.Om, A.de)) / (2 * h);
+}
+function panel() {
+  const w = Math.hypot(S.Om, S.de), p = P(S.t, S.Om, S.de), amp = (S.Om / w) ** 2, phase = Math.PI * w * S.t;
+  $('sub').innerHTML = `= <span class="n">${f(S.Om,1)}²</span> / (<span class="n">${f(S.Om,1)}²</span> + <span class="n">${f(S.de,1)}²</span>) · sin²(π · <span class="n">${f(w,2)}</span> MHz · <span class="n">${f(S.t,3)}</span> µs)<br>= ${f(amp)} · sin²(${f(phase,3)} rad) = <span class="res">${f(p)}</span>`;
+  const t2s = 1.0, rwa = S.Om < 0.02 * 2870;   // dephasing check uses T2* = 1 µs (typical ensemble); RWA needs Ω ≪ D
+  $('units').innerHTML = `<span class="chip"><i></i>MHz × µs = 1 · phase is dimensionless</span>
+    <span class="chip ${rwa ? '' : 'warn'}"><i></i>rotating wave: Ω ≪ D (${f(S.Om / 2870 * 100, 2)}%)</span>
+    <span class="chip ${S.t < 0.3 * t2s ? '' : 'warn'}"><i></i>no decay: t ≪ T₂* ≈ 1 µs</span>
+    <span class="chip"><i></i>two levels: mₛ = 0, −1</span>`;
+  const m = META[S.sel], val = S[S.sel];
+  $('insp').innerHTML = `<div class="big"><b>${{ Om: 'Ω', de: 'δ', t: 't' }[S.sel]}</b><span>${f(val, S.sel === 't' ? 3 : 2)} ${m.unit}</span></div>
+    <dt>quantity</dt><dd>${m.name}</dd><dt>range</dt><dd>${m.range}</dd><dt>∂P/∂${{ Om: 'Ω', de: 'δ', t: 't' }[S.sel]}</dt><dd>${f(sens(S.sel), 3)} per ${m.unit}</dd>
+    <dt>where it comes from</dt><dd style="font-family:var(--sans);font-weight:400;color:var(--ink2)">${m.src}</dd><canvas id="spark"></canvas>`;
+  spark();
+  $('roP').textContent = f(p); const v = vec(S.t); $('roZ').textContent = (v[2] >= 0 ? '+' : '') + f(v[2]);
+  const glow = 1 - 0.3 * p; $('glow').style.width = `${glow * 100}%`; $('glowV').textContent = `${f(glow, 2)} · ${p < .5 ? 'bright' : 'dim'}`;
+  $('clock').textContent = `t = ${(S.t * 1000).toFixed(0)} ns  ·  π pulse at ${(500 / w).toFixed(0)} ns`;
+  $('cur').style.left = `${20 + 60 * S.t / S.T}%`; $('seq').setAttribute('aria-valuenow', Math.round(S.t * 1000)); $('seq').setAttribute('aria-valuetext', `${Math.round(S.t * 1000)} nanoseconds`);
+  if (!S.playing) $('live').textContent = `t ${Math.round(S.t * 1000)} nanoseconds, P minus one ${f(p)}`;
+  $('state').textContent = S.frozen ? 'frozen' : 'live'; $('state').classList.toggle('frozen', S.frozen); $('frozenTag').classList.toggle('on', S.frozen);
+  document.querySelectorAll('.eq .v').forEach(e => e.classList.toggle('sel', e.dataset.k === S.sel));
+}
+function spark() {   // P against the selected variable, with the current point
+  const c = $('spark'); if (!c) return; const d = devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight; c.width = w * d; c.height = h * d;
+  const g = c.getContext('2d'); g.scale(d, d); const css = getComputedStyle(document.documentElement);
+  const lo = { Om: .5, de: -10, t: 0 }[S.sel], hi = { Om: 20, de: 10, t: 1 }[S.sel], X = x => 4 + (w - 8) * (x - lo) / (hi - lo), Y = y => h - 6 - (h - 12) * y;
+  g.strokeStyle = css.getPropertyValue('--line2'); g.beginPath(); g.moveTo(4, Y(0)); g.lineTo(w - 4, Y(0)); g.stroke();
+  g.strokeStyle = css.getPropertyValue('--ice'); g.lineWidth = 1.6; g.beginPath();
+  for (let i = 0; i <= 200; i++) { const x = lo + (hi - lo) * i / 200, A = { ...S, [S.sel]: x }, y = P(A.t, A.Om, A.de); i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y)); } g.stroke();
+  g.fillStyle = css.getPropertyValue('--nv'); g.beginPath(); g.arc(X(S[S.sel]), Y(P(S.t, S.Om, S.de)), 4, 0, 7); g.fill();
+}
+// --- Bloch sphere: a faceted, refractive crystal look in 2-D canvas ---
+const cv = $('sphere'), g = cv.getContext('2d'); let W = 0, H = 0, yaw = .7;
+function size() { const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; g.setTransform(d, 0, 0, d, 0, 0); }
+new ResizeObserver(() => { size(); }).observe(cv.parentElement); addEventListener('resize', panel); size();
+function proj(v, R, cx, cy) { const p = .42, x = v[0] * Math.cos(yaw) - v[1] * Math.sin(yaw), y = v[0] * Math.sin(yaw) + v[1] * Math.cos(yaw); return [cx + R * x, cy - R * (v[2] * Math.cos(p) - y * Math.sin(p)), y * Math.cos(p) + v[2] * Math.sin(p)]; }
+function draw() {
+  const css = getComputedStyle(document.documentElement), ink = css.getPropertyValue('--ink'), ice = css.getPropertyValue('--ice'), nv = css.getPropertyValue('--nv'), mw = css.getPropertyValue('--mw'), line = css.getPropertyValue('--line2');
+  g.clearRect(0, 0, W, H); const R = Math.min(W, H) * .33, cx = W * .5, cy = H * .52;
+  // faceted shell: latitude rings and meridians, brighter on the near side
+  for (let lat = -60; lat <= 60; lat += 30) { g.beginPath(); for (let a = 0; a <= 360; a += 6) { const r = Math.cos(lat * Math.PI / 180), q = proj([r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180), Math.sin(lat * Math.PI / 180)], R, cx, cy); a ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.strokeStyle = line; g.lineWidth = lat === 0 ? 1.2 : .7; g.stroke(); }
+  for (let m = 0; m < 180; m += 30) { g.beginPath(); for (let a = 0; a <= 360; a += 6) { const t = a * Math.PI / 180, ph = m * Math.PI / 180, q = proj([Math.cos(t) * Math.cos(ph), Math.cos(t) * Math.sin(ph), Math.sin(t)], R, cx, cy); a ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.strokeStyle = line; g.lineWidth = .6; g.stroke(); }
+  const hl = g.createRadialGradient(cx - R * .35, cy - R * .45, 2, cx, cy, R * 1.05); hl.addColorStop(0, 'rgba(191,233,255,.16)'); hl.addColorStop(.6, 'rgba(191,233,255,.03)'); hl.addColorStop(1, 'rgba(191,233,255,0)');
+  g.fillStyle = hl; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fill();
+  const lbl = (v, s, c) => { const q = proj(v, R, cx, cy); g.fillStyle = c; g.font = '500 12px "IBM Plex Mono", monospace'; g.textAlign = 'center'; g.fillText(s, q[0], q[1]); };
+  lbl([0, 0, 1.2], '|0⟩  bright', ink); lbl([0, 0, -1.25], '|−1⟩  dim', ink);
+  // drive axis
+  const w = Math.hypot(S.Om, S.de), ax = [S.Om / w, 0, S.de / w], a1 = proj(ax.map(x => x * 1.15), R, cx, cy), a0 = proj(ax.map(x => -x * 1.15), R, cx, cy);
+  g.setLineDash([5, 5]); g.strokeStyle = mw; g.lineWidth = 1.2; g.beginPath(); g.moveTo(a0[0], a0[1]); g.lineTo(a1[0], a1[1]); g.stroke(); g.setLineDash([]); lbl(ax.map(x => x * 1.32), 'drive axis (Ω, 0, δ)', mw);
+  // trajectory so far, then the spin vector
+  g.strokeStyle = nv; g.globalAlpha = .55; g.lineWidth = 2; g.beginPath(); for (let i = 0; i <= 120; i++) { const q = proj(vec(S.t * i / 120), R, cx, cy); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); } g.stroke(); g.globalAlpha = 1;
+  const v = vec(S.t), tip = proj(v, R, cx, cy), o = proj([0, 0, 0], R, cx, cy);
+  const gl = g.createRadialGradient(tip[0], tip[1], 0, tip[0], tip[1], 26); gl.addColorStop(0, nv); gl.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gl; g.globalAlpha = .55; g.beginPath(); g.arc(tip[0], tip[1], 26, 0, 7); g.fill(); g.globalAlpha = 1;
+  g.strokeStyle = ink; g.lineWidth = 2.6; g.beginPath(); g.moveTo(o[0], o[1]); g.lineTo(tip[0], tip[1]); g.stroke();
+  g.fillStyle = nv; g.beginPath(); g.arc(tip[0], tip[1], 5.5, 0, 7); g.fill();
+}
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (S.playing && !S.frozen) { S.t += dt * .12; if (S.t > S.T) S.t = 0; panel(); }
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) yaw += dt * .08;
+  draw(); requestAnimationFrame(loop);
+}
+// controls
+const step = d => { S.playing = false; setPlay(); S.t = Math.min(S.T, Math.max(0, S.t + d)); panel(); };
+function setPlay() { $('playIcon').innerHTML = S.playing ? '<path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor"/>' : '<path d="M5 3l8 5-8 5z" fill="currentColor"/>'; }
+$('play').onclick = () => { S.playing = !S.playing; S.frozen = false; setPlay(); panel(); };
+$('back').onclick = () => step(-.005); $('fwd').onclick = () => step(.005);
+$('freeze').onclick = () => { S.frozen = !S.frozen; panel(); };
+['Om', 'de'].forEach(k => $(k).oninput = e => { S[k] = +e.target.value; S.sel = k; $(k + 'V').textContent = `${f(S[k], 1)} MHz`; panel(); });
+document.querySelectorAll('.eq .v').forEach(e => e.onclick = () => { S.sel = e.dataset.k; panel(); });
+const scrub = e => { const r = $('seq').getBoundingClientRect(), u = ((e.clientX - r.left) / r.width - .2) / .6; S.t = Math.min(S.T, Math.max(0, u * S.T)); S.playing = false; S.sel = 't'; setPlay(); panel(); };
+$('seq').onpointerdown = e => { scrub(e); $('seq').onpointermove = ev => ev.buttons && scrub(ev); };
+$('seq').onkeydown = e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); step(e.key === 'ArrowRight' ? .005 : -.005); } };
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' || e.target.id === 'seq') return; if (e.key === ' ') { e.preventDefault(); $('play').click(); } if (e.key === 'ArrowRight') step(.005); if (e.key === 'ArrowLeft') step(-.005); if (e.key.toLowerCase() === 'f') $('freeze').click(); });
+$('theme').onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark'; panel(); };
+const q = new URLSearchParams(location.search); if (q.has('t')) { S.t = +q.get('t'); S.playing = false; S.frozen = q.has('frozen'); } if (q.has('theme')) document.documentElement.dataset.theme = q.get('theme');
+if (q.has('sel')) S.sel = q.get('sel');
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) S.playing = false;   // no autoplay when the user asked for less motion
+setPlay(); panel(); requestAnimationFrame(loop);
+</script>
+</body>
+</html>
