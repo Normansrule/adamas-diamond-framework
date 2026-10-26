@@ -46,6 +46,8 @@ test('addressing: Airy spot, lines per NV axis, gradient shift and crosstalk mat
   for (const [b, th, ph, k, [lo, hi]] of G.lines) { const [a, c] = AD.linesOnAxis(b, th, ph, AD.NV_AXES[k]); assert.ok(close(a, lo, 1e-9, 1e-6) && close(c, hi, 1e-9, 1e-6), `lines ${b} ${th} ${ph} ${k}: ${a},${c} vs ${lo},${hi}`); }
   for (const [g, dx, v] of G.gradient) assert.ok(close(AD.gradientShift(g, dx), v));
   for (const [om, dl, v] of G.crosstalk) assert.ok(close(AD.crosstalk(om, dl), v));
+  for (const [b, th, ph, k, f, d] of G.best) { const r = AD.bestLine(b, th, ph); assert.ok(r.k === k && close(r.f, f, 1e-9, 1e-6) && close(r.delta, d, 1e-9, 1e-6), `best line ${b} ${th} ${ph}`); }
+  for (const [t, v] of G.linewidth) assert.ok(close(AD.linewidth(t), v));
   assert.ok(AD.spectralSeparation(5, 0, 0) < 1e-6, 'a field along [001] gives every axis the same lines');
   assert.ok(AD.spectralSeparation(5, 54.7356, 45) > 50, 'a field along one axis separates it from the others');
 });

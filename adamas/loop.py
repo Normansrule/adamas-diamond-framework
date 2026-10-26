@@ -73,11 +73,11 @@ PANELS = {
   "refs": ["pernot2010", "lagrange1998", "kawarada2014"], "derivation": ["E9.2", "docs/expert/E9_power_circuits_diamond_vs_gan_sic.md"]},
  "crosstalk": {
   "lab": "labs/addressing.html", "title": "Driving one NV without the other", "python": "adamas.addressing.crosstalk",
-  "html": f"<i>X</i> = {FR(S('Om', 'Ω') + '<sup>2</sup>', S('Om', 'Ω') + '<sup>2</sup> + ' + S('Dl', 'Δ') + '<sup>2</sup>')}, &nbsp; resolved if {S('Dl', 'Δ')} &gt; {FR('1', 'π' + S('t2s', 'T<sub>2</sub>*'))}",
+  "html": f"<i>X</i> = {FR(S('Om', 'Ω') + '<sup>2</sup>', S('Om', 'Ω') + '<sup>2</sup> + ' + S('Dl', 'Δ') + '<sup>2</sup>')}, &nbsp; resolved if {S('Dl', 'Δ')} &gt; {FR('2√ln 2', 'π' + S('t2s', 'T<sub>2</sub>*'))}",
   "result": {"sym": "X", "name": "peak excitation of the other NV (crosstalk)", "unit": "", "digits": 4},
   "vars": {"Om": {"sym": "Ω", "name": "Rabi frequency of the drive", "unit": "MHz", "min": 0.1, "max": 20, "digits": 2, "src": "microwave power"},
            "Dl": {"sym": "Δ", "name": "separation of the two NVs' lines", "unit": "MHz", "derived": True, "digits": 2, "src": "orientation (spectral route) or field gradient"},
-           "t2s": {"sym": "T₂*", "name": "dephasing time", "unit": "µs", "min": 0.2, "max": 50, "digits": 1, "src": "sets the line width 1/(πT₂*)"}},
+           "t2s": {"sym": "T₂*", "name": "dephasing time", "unit": "µs", "min": 0.2, "max": 50, "digits": 1, "src": "sets the line width 2√ln2/(πT₂*) of a Gaussian free-induction decay"}},
   "units": ["MHz² / MHz²: dimensionless", "1/(µs) = MHz"],
   "assumptions": [{"id": "resolved", "text": "lines resolved: Δ above the line width"}, {"id": "nohf", "text": "¹⁴N hyperfine ignored (2.15 MHz triplet)"}],
   "refs": ["rabi1937", "dolde2013", "grinolds2011"], "derivation": ["Chapter 7", "docs/07_nv_fabrication_and_placement.md"]},
@@ -117,6 +117,8 @@ def golden() -> dict:
     out["lines"] = [[b, th, ph, k, list(addressing.lines_on_axis(b, th, ph, axes[k]))] for b in (1.0, 5.0) for th, ph in ((0, 0), (54.7356, 45), (30, 10), (90, 0)) for k in range(4)]
     out["gradient"] = [[g, dx, addressing.gradient_shift_mhz(g, dx)] for g in (0.01, 0.1, 1.0) for dx in (10.0, 25.0)]
     out["crosstalk"] = [[om, dl, addressing.crosstalk(om, dl)] for om in (0.5, 5.0) for dl in (1.0, 30.0)]
+    out["best"] = [[b, th, ph, *addressing.best_line(b, th, ph)] for b in (1.0, 5.0) for th, ph in ((0, 0), (54.7356, 45), (30, 10), (55, 45))]
+    out["linewidth"] = [[t, addressing.linewidth_mhz(t)] for t in (0.3, 1.0, 10.0)]
     out["bias"] = [[k, eta, h, {str(q): v for q, v in gatebias.output_distribution(k, eta, h)["per_qubit"].items()},
                     gatebias.output_distribution(k, eta, h)["spread"]] for k in ("cz", "cnot") for eta in (0.5, 10.0, 100.0) for h in (0.002, 0.2)]
     out["propagate"] = [[q, p, gatebias.propagate({q: p}, [("CZ", (0, 1)), ("H", (1,))])] for q in (0, 1) for p in "XYZ"]

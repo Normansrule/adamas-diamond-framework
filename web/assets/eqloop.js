@@ -21,7 +21,7 @@ export function mountLoop(host, meta, opts = {}) {
   if (!model) throw new Error(`no model for panel ${opts.id || meta.id}`);
   const keys = Object.keys(meta.vars), hue = Object.fromEntries(keys.map((k, i) => [k, HUES[i % HUES.length]]));
   const S = { ...model.defaults, ...(opts.state || {}) };
-  let sel = opts.select || keys.find(k => !meta.vars[k].derived) || keys[0], pending = false, lastSpoken = 0;
+  let sel = opts.select || keys.find(k => !meta.vars[k].derived) || keys[0], pending = false, lastSpoken = 0, rendered = false;
   host.classList.add('eql');
   host.innerHTML = `
     <div class="eql-h"><h2>In the loop</h2><span class="eql-title">${esc(meta.title)}</span><span class="eql-state" data-state="live">live</span></div>
@@ -30,14 +30,14 @@ export function mountLoop(host, meta, opts = {}) {
     <div class="eql-res"><span class="eql-rs">${sym(meta.result.sym)}</span><span class="eql-eqs">=</span><b class="eql-rv"></b><span class="eql-ru">${esc(meta.result.unit || '')}</span><small>${esc(meta.result.name)}</small></div>
     <ul class="eql-chips" aria-label="Units and assumptions"></ul>
     ${opts.controls?.length ? '<div class="eql-ctl"></div>' : ''}
-    <dl class="eql-insp" aria-live="polite"></dl>
+    <div class="eql-insp"></div>
     <p class="eql-src">Reference implementation <code>${esc(meta.python)}</code>, tested against this panel. Derivation: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/${esc(meta.derivation[1])}" target="_blank" rel="noopener">${esc(meta.derivation[0])}</a> · ${meta.refs.map(r => `[${esc(r)}]`).join(' ')}</p>
     <p class="sr-only" aria-live="polite" data-k="speak"></p>`;
   const q = s => host.querySelector(s), eqEl = q('.eql-eq');
   // symbols: colour by variable, keyboard nudging, selection
   eqEl.querySelectorAll('.v').forEach(b => {
     const k = b.dataset.k, v = meta.vars[k]; if (!v) return;
-    b.dataset.hue = hue[k]; b.setAttribute('aria-label', `${v.name}${v.unit ? `, ${v.unit}` : ''}: inspect`);
+    b.dataset.hue = hue[k]; b.setAttribute('aria-label', `${v.name}${v.unit ? `, ${v.unit}` : ''}: inspect${v.derived ? '' : '; arrow keys change it'}`);
     b.onclick = () => select(k);
     b.onkeydown = e => { if (v.derived || !['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'].includes(e.key)) return; e.preventDefault();
       const up = e.key === 'ArrowUp' || e.key === 'ArrowRight', st = v.log ? 10 ** (Math.log10(v.max / v.min) / 50) : (v.max - v.min) / 50;
@@ -58,17 +58,19 @@ export function mountLoop(host, meta, opts = {}) {
     const d = (b - a) / (2 * h), out = v.log ? d * x * Math.LN10 : d; return Math.abs(out) < 1e-9 ? 0 : out;     // log variables: change per decade
   }
   function chips() {
-    const u = meta.units.map(t => `<li class="eql-chip ok"><i aria-hidden="true"></i>${esc(t)}</li>`);
-    const a = meta.assumptions.map(as => { const r = model.checks[as.id](S); return `<li class="eql-chip ${r.ok ? 'ok' : 'warn'}" title="${esc(r.note || '')}"><i aria-hidden="true"></i>${esc(as.text)}${r.note ? `<span>${esc(r.note)}</span>` : ''}</li>`; });
+    const u = meta.units.map(t => `<li class="eql-chip ok"><i aria-hidden="true"></i><b class="eql-st">units</b>${esc(t)}</li>`);
+    // state is spelled out in words (holds, outside, assumed), not carried by colour alone (WCAG 1.4.1)
+    const a = meta.assumptions.map(as => { const r = model.checks[as.id](S), st = r.assumed ? 'assumed' : r.ok ? 'ok' : 'warn', word = r.assumed ? 'assumed' : r.ok ? 'holds' : 'outside';
+      return `<li class="eql-chip ${st}"><i aria-hidden="true"></i><b class="eql-st">${word}</b>${esc(as.text)}${r.note ? `<span>${esc(r.note)}</span>` : ''}</li>`; });
     q('.eql-chips').innerHTML = u.concat(a).join('');
   }
   function inspector() {
-    const v = meta.vars[sel], d = derived(), x = v.derived ? d[sel] : S[sel], s = sens(sel);
-    q('.eql-insp').innerHTML = `<div class="eql-ib"><b data-hue="${hue[sel]}">${sym(v.sym)}</b><span>${fmt(x, v.digits ?? 3)} ${esc(v.unit || '')}</span></div>
+    const v = meta.vars[sel], d = derived(), labSet = v.derived && !(sel in d), x = v.derived && !labSet ? d[sel] : S[sel], s = sens(sel);
+    q('.eql-insp').innerHTML = `<div class="eql-ib"><b data-hue="${hue[sel]}">${sym(v.sym)}</b><span>${fmt(x, v.digits ?? 3)} ${esc(v.unit || '')}</span></div><dl>
       <dt>Quantity</dt><dd>${esc(v.name)}</dd>
-      ${v.derived ? '<dt>Status</dt><dd>computed from the other symbols</dd>' : `<dt>Range</dt><dd>${fmt(v.min, v.digits ?? 2)} to ${fmt(v.max, v.digits ?? 2)} ${esc(v.unit || '')}</dd>
+      ${v.derived ? `<dt>Status</dt><dd>${labSet ? 'set by the lab from its own controls; not adjustable here' : 'computed from the other symbols'}</dd>` : `<dt>Range</dt><dd>${fmt(v.min, v.digits ?? 2)} to ${fmt(v.max, v.digits ?? 2)} ${esc(v.unit || '')}</dd>
       <dt>${v.log ? `∂${sym(meta.result.sym)} per decade of ${sym(v.sym)}` : `∂${sym(meta.result.sym)}/∂${sym(v.sym)}`}</dt><dd>${fmt(s, 4)}${v.log || !v.unit ? '' : ` per ${esc(v.unit)}`}</dd>`}
-      <dt>Where it comes from</dt><dd class="eql-why">${esc(v.src)}</dd>${v.derived ? '' : `<canvas class="eql-spark" aria-label="${esc(meta.result.sym)} against ${esc(v.name)}" role="img"></canvas>`}`;
+      <dt>Where it comes from</dt><dd class="eql-why">${esc(v.src)}</dd></dl>${v.derived ? '' : `<canvas class="eql-spark" aria-label="${esc(meta.result.sym)} against ${esc(v.name)}" role="img"></canvas>`}`;
     if (!v.derived) spark();
   }
   function spark() {
@@ -91,10 +93,10 @@ export function mountLoop(host, meta, opts = {}) {
     pending = false; const y = value();
     q('.eql-sub').innerHTML = model.sub(S);
     q('.eql-rv').textContent = fmt(y, meta.result.digits ?? 3);
-    eqEl.querySelectorAll('.v').forEach(b => b.classList.toggle('sel', b.dataset.k === sel));
+    eqEl.querySelectorAll('.v').forEach(b => { const on = b.dataset.k === sel; b.classList.toggle('sel', on); b.setAttribute('aria-pressed', String(on)); });
     if (ctl) ctl.querySelectorAll('input').forEach(i => { const k = i.dataset.k, v = meta.vars[k]; i.nextElementSibling.textContent = `${fmt(S[k], v.digits ?? 2)} ${v.unit || ''}`; });
     chips(); inspector();
-    const now = performance.now(); if (now - lastSpoken > 1500) { lastSpoken = now; q('[data-k="speak"]').textContent = `${meta.result.sym} = ${fmt(y, meta.result.digits ?? 3)}`; }
+    if (rendered) { clearTimeout(lastSpoken); lastSpoken = setTimeout(() => { q('[data-k="speak"]').textContent = `${meta.result.name}: ${meta.result.sym} = ${fmt(value(), meta.result.digits ?? 3)} ${meta.result.unit || ''}`; }, 700); } rendered = true;
   }
   function schedule() { if (!pending) { pending = true; requestAnimationFrame(render); } }
   function set(partial, fromPanel = false) {

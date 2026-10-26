@@ -32,4 +32,4 @@ Tokens: `--teal`, `--cyan`, `--violet`, `--gold`, `--green`, `--red` on `--bg`. 
 
 ## Every number is traceable
 
-A lab's numbers come from a tested JavaScript module in `web/assets/sim/` that is checked against the Python package, and each lab lists its sources. A new equation panel is added to `adamas.loop` first; `tests/test_loop.py` fails until every symbol has a unit, range, and source and every assumption has a checker.
+A lab's numbers come from a tested JavaScript module in `web/assets/sim/` that is checked against the Python package, and each lab lists its sources. A new equation panel is added to `adamas.loop` first: `tests/test_loop.py` fails until every symbol has a unit, range, and source, and `web/tests/loop.test.mjs` (run by `tests/test_web.py`) fails until every assumption has a checker and the browser arithmetic matches the Python golden values.

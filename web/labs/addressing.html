@@ -24,8 +24,8 @@
   <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Two tiny magnets sit so close together that the flashlight we use to read them lights up both at once. To talk to just one, we tune our radio to a pitch only that one hears. If their pitches are too close, or we shout too loudly, both of them answer.</div>
-    <div class="lvl" data-l="s">The focus of a lens of numerical aperture NA is an Airy spot about 0.51 λ/NA wide, so NVs 25 nm apart are optically one object. Their microwave lines can still differ: NVs on different ⟨111⟩ axes see different field projections, and a field gradient G shifts one by γₑGr. A drive of Rabi frequency Ω tuned to NV A excites NV B, detuned by Δ, with peak probability Ω²/(Ω² + Δ²). Lines must also be narrower than their separation: a line is about 1/(πT₂*) wide. Faster pulses mean more crosstalk.</div>
-    <div class="lvl" data-l="r">Lines are exact spin-1 eigenvalues of D S_z² + γₑB·S per NV axis (<code>adamas.addressing</code>, golden-tested). A field along [001] projects equally on all four axes, so the spectral route vanishes; along one ⟨111⟩ axis it separates that axis from the other three by tens of MHz. Every room-temperature two-NV demonstration so far used the spectral route with joint optical readout [dolde2013] [joas2025]; field gradients have addressed NVs about 100 nm apart [grinolds2011] [zhang2017addr], and cryogenic strain or zero-phonon-line tuning has addressed three NVs in one spot [bersin2019]. Not modelled: hyperfine structure (a 2.15 MHz ¹⁴N triplet), microwave field inhomogeneity, shaped pulses (which beat this worst-case crosstalk), and readout, which stays joint in every route shown here.</div>
+    <div class="lvl" data-l="s">The focus of a lens of numerical aperture NA is an Airy spot about 0.51 λ/NA wide, so NVs 25 nm apart are optically one object. Their microwave lines can still differ: NVs on different ⟨111⟩ axes see different field projections, and a field gradient G shifts one by γₑGr. A drive of Rabi frequency Ω tuned to NV A excites NV B, detuned by Δ, with peak probability Ω²/(Ω² + Δ²). Lines must also be narrower than their separation: for the Gaussian dephasing used across this site a line is 2√ln2/(πT₂*) ≈ 0.53/T₂* wide. The drive uses whichever line of NV A lies farthest from NV B's lines. Faster pulses mean more crosstalk.</div>
+    <div class="lvl" data-l="r">Lines are exact spin-1 eigenvalues of D S_z² + γₑB·S per NV axis (<code>adamas.addressing</code>, golden-tested). A field along [001] projects equally on all four axes, so the spectral route vanishes; along one ⟨111⟩ axis it separates that axis from the other three by tens of MHz. The room-temperature two-NV demonstrations cited here used the spectral route with joint optical readout [dolde2013] [joas2025]; field gradients have addressed NVs about 100 nm apart [grinolds2011] [zhang2017addr], and cryogenic strain or zero-phonon-line tuning has addressed three NVs in one spot [bersin2019]. Not modelled: hyperfine structure (a 2.15 MHz ¹⁴N triplet), microwave field inhomogeneity, shaped pulses (which beat this worst-case crosstalk), and readout, which stays joint in every route shown here.</div>
     <p class="src">Sources: [born1999] [dolde2013] [joas2025] [grinolds2011] [zhang2017addr] [bersin2019] [rabi1937] [doherty2013]</p></div>
 </div></div></main>
 <script type="module">
@@ -42,10 +42,11 @@ function model() {
   const s = S();
   if (route === 'spectral') {
     const la = AD.linesOnAxis(s.b, s.th, s.ph, AX_A), lb = AD.linesOnAxis(s.b, s.th, s.ph, AX_B);
-    return { s, la, lb, sep: AD.spectralSeparation(s.b, s.th, s.ph, AX_A, AX_B) };
+    const best = AD.bestLine(s.b, s.th, s.ph, AX_A, AX_B);   // drive the line of A farthest from B's lines
+    return { s, la, lb, sep: best.delta, target: best.f, k: best.k };
   }
   const base = AD.linesOnAxis(s.b, 0, 0, [0, 0, 1]), sh = AD.gradientShift(s.g, s.r);   // both on one axis, field along it
-  return { s, la: base, lb: [base[0] - sh, base[1] + sh], sep: Math.abs(sh) * 1 };
+  return { s, la: base, lb: [base[0] - sh, base[1] + sh], sep: Math.abs(sh), target: base[0], k: 0 };
 }
 const COL = { a: '#2de2e6', b: '#ffc46b', drive: '#ff6f7d', ink: '#e8f1f8', mute: '#8ea3b5', line: 'rgba(148,190,220,.22)' };
 function labels(m) {
@@ -84,24 +85,24 @@ function drawSpot(m) {
   [[-1, COL.a, 'A', AX_A], [1, COL.b, 'B', route === 'spectral' ? AX_B : AX_A]].forEach(([sgn, c, l, ax]) => { const x = icx + sgn * s.r / 2 * z;
     g.fillStyle = c; g.beginPath(); g.arc(x, icy, 4, 0, 7); g.fill(); g.strokeStyle = c; g.lineWidth = 1.6; g.beginPath(); g.moveTo(x, icy); g.lineTo(x + 22 * ax[0], icy - 22 * ax[2]); g.stroke();
     g.font = '600 12px Inter'; g.fillText(l, x - 4, icy + 22); });
-  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText('×10: the pair and its NV axes', ix + 6, iy + 14);
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText('×10: the pair, NV axes', ix + 6, iy + 14);
   $('spotHud').textContent = `532 nm focus, NA ${s.na.toFixed(2)}: ${fw.toFixed(0)} nm wide · the pair is ${s.r} nm apart`;
 }
-function lor(f, f0, fw) { return (fw / 2) ** 2 / ((f - f0) ** 2 + (fw / 2) ** 2); }
+function gau(f, f0, fw) { return Math.exp(-4 * Math.LN2 * ((f - f0) / fw) ** 2); }   // Gaussian line, FWHM fw
 function drawSpec(m) {
   const { g, w, h } = fitCanvas($('spec'), 330); g.clearRect(0, 0, w, h); const s = m.s, lw = AD.linewidth(s.t2);
-  const target = m.la[0], span = Math.max(8 * lw, 3 * m.sep, 6 * s.om, 6), lo = target - span / 2, hi = target + span / 2;
+  const target = m.target, span = Math.max(8 * lw, 3 * m.sep, 6 * s.om, 6), lo = target - span / 2, hi = target + span / 2;
   const X = f => 40 + (w - 60) * (f - lo) / (hi - lo), Y = v => h - 36 - (h - 96) * v;
   g.strokeStyle = COL.line; for (let k = 0; k <= 4; k++) { g.beginPath(); g.moveTo(40, Y(k / 4)); g.lineTo(w - 20, Y(k / 4)); g.stroke(); }
   // drive: power-broadened response around the target line, width about 2 Omega
   g.fillStyle = 'rgba(255,111,125,.12)'; g.beginPath(); g.moveTo(X(lo), Y(0)); for (let i = 0; i <= 300; i++) { const f = lo + (hi - lo) * i / 300; g.lineTo(X(f), Y(AD.crosstalk(s.om, f - target))); } g.lineTo(X(hi), Y(0)); g.fill();
   [[m.la, COL.a], [m.lb, COL.b]].forEach(([ls, c]) => { g.strokeStyle = c; g.lineWidth = 2; g.beginPath();
-    for (let i = 0; i <= 600; i++) { const f = lo + (hi - lo) * i / 600, v = Math.min(1, ls.reduce((a, l) => a + lor(f, l, lw), 0)); i ? g.lineTo(X(f), Y(v)) : g.moveTo(X(f), Y(v)); } g.stroke(); });
+    for (let i = 0; i <= 600; i++) { const f = lo + (hi - lo) * i / 600, v = Math.min(1, ls.reduce((a, l) => a + gau(f, l, lw), 0)); i ? g.lineTo(X(f), Y(v)) : g.moveTo(X(f), Y(v)); } g.stroke(); });
   const nb = m.lb.reduce((a, l) => (Math.abs(l - target) < Math.abs(a - target) ? l : a), m.lb[0]);
   g.strokeStyle = COL.ink; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(target), Y(0.82)); g.lineTo(X(nb), Y(0.82)); g.stroke(); g.setLineDash([]);
   g.fillStyle = COL.ink; g.font = '600 12px "JetBrains Mono"'; g.textAlign = 'center'; g.fillText(`Δ = ${m.sep.toFixed(m.sep < 1 ? 3 : 2)} MHz`, (X(target) + X(nb)) / 2, Y(0.82) - 6); g.textAlign = 'left';
-  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText(`frequency (MHz), centred on NV A's lower line ${target.toFixed(1)} MHz`, 44, h - 10);
-  $('specHud').textContent = `line width 1/(πT₂*) = ${lw < 0.1 ? lw.toFixed(3) : lw.toFixed(2)} MHz · shaded: what the drive excites`;
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText(`frequency (MHz), centred on the driven line of NV A, ${target.toFixed(1)} MHz (${m.k ? 'upper' : 'lower'})`, 44, h - 10);
+  $('specHud').textContent = `line width 2√ln2/(πT₂*) = ${lw < 0.1 ? lw.toFixed(3) : lw.toFixed(2)} MHz · shaded: what the drive excites`;
 }
 function drawTime(m, now) {
   const { g, w, h } = fitCanvas($('time'), 200); g.clearRect(0, 0, w, h); const s = m.s, tpi = 1 / (2 * s.om), T = 2.2 * tpi;

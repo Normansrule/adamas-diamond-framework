@@ -203,7 +203,7 @@ def hot_switch(out: str | Path = "docs/img", frames: int = 44) -> Path:
     fion = [100 * converter.drift_ionized_fraction(d, 1200.0, t) for t in T]
     loss = {n: [converter.material_switch(n, 1200, 800, 300, 20e3, t_k=t).p_total_w for t in T] for n in ("4H-SiC", "GaN", "Diamond")}
     lab = {"4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond, bulk-doped drift"}
-    ceil = {"4H-SiC": converter.TJ_MAX_C["4H-SiC"] + 273.15, "GaN": converter.TJ_MAX_C["GaN"] + 273.15, "Diamond": 650}
+    ceil = {n: converter.TJ_MAX_C[n] + 273.15 for n in ("4H-SiC", "GaN", "Diamond")}            # junction-temperature limits
     fig, (a0, a1) = plt.subplots(1, 2, figsize=(10, 4.2), dpi=72); plt.subplots_adjust(wspace=.3, bottom=.16, top=.78)
     a0.semilogy(T, fion, color=COLORS["Diamond"], lw=2.2); a0.set_xlabel("junction temperature (K)", fontsize=9); a0.set_ylabel("boron ionized (%)", fontsize=9)
     a0.set_title("A 1.2 kV drift's boron wakes up with heat", fontsize=10.5, pad=26); m0, = a0.plot([], [], "o", color=RED, ms=8); t0 = a0.text(310, 30, "", fontsize=10)
@@ -213,8 +213,9 @@ def hot_switch(out: str | Path = "docs/img", frames: int = 44) -> Path:
     a1.set_xlabel("junction temperature (K)", fontsize=9); a1.set_ylabel("loss per switch (W), EV inverter", fontsize=9)
     a1.legend(fontsize=8, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False, handlelength=1.4, columnspacing=1)
     gap = np.array(loss["Diamond"]) - np.array(loss["4H-SiC"]); i = int(np.argmax(gap < 0))  # computed crossing, not typed in
+    assert gap[0] > 0 and gap[i] < 0, "diamond and SiC losses do not cross in 300-650 K; the title would be wrong"
     x_sic = T[i - 1] + (T[i] - T[i - 1]) * gap[i - 1] / (gap[i - 1] - gap[i])               # linear interpolation
-    a1.set_title(f"Diamond passes SiC at {x_sic:.0f} K and keeps going where GaN cannot\n(dotted: above the package limit)", fontsize=10, pad=26); m1 = a1.axvline(300, color=RED, lw=1.2)
+    a1.set_title(f"Diamond passes SiC at {x_sic:.0f} K and keeps going where GaN cannot\n(dotted: above that material's junction-temperature limit)", fontsize=10, pad=26); m1 = a1.axvline(300, color=RED, lw=1.2)
     t1 = a1.text(0.98, 0.04, "", transform=a1.transAxes, ha="right", fontsize=10, zorder=5,
                  bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="none", alpha=0.9))
     def draw(i):
@@ -239,7 +240,7 @@ def addressing_sweep(out: str | Path = "docs/img", frames: int = 46) -> Path:
     a0.set_xlabel("field angle from [001] toward [111] (degrees), 5 mT", fontsize=9); a0.set_ylabel("ODMR line (MHz)", fontsize=9); a0.legend(fontsize=8, loc="center left")
     a0.set_title("Same spot, different axes: the lines separate", fontsize=10.5); vl = a0.axvline(0, color=RED, lw=1.2)
     f = np.linspace(2700, 3040, 1600); sp, = a1.plot([], [], color=INK, lw=1.4); a1.set_xlim(2700, 3040); a1.set_ylim(.95, 1.003)
-    a1.set_xlabel("frequency (MHz)", fontsize=9); a1.set_ylabel("fluorescence", fontsize=9); txt = a1.text(2710, .955, "", fontsize=10)
+    a1.set_xlabel("frequency (MHz)", fontsize=9); a1.set_ylabel("fluorescence (illustrative dip depth and width)", fontsize=9); txt = a1.text(2710, .955, "", fontsize=10)
     a1.set_title("What the joint readout sees", fontsize=10.5)
     def draw(i):
         k = int(i * (len(th) - 1) / (frames - 1)); vl.set_xdata([th[k], th[k]])
@@ -272,6 +273,7 @@ def gate_bias(out: str | Path = "docs/img", frames: int = 50) -> Path:
         tok = ax.text(0.5, 0, "Z", ha="center", va="center", fontsize=12, fontweight="bold", color="white",
                       bbox=dict(boxstyle="circle,pad=0.3", fc=cols["Z"], ec="none"), zorder=5)
         tokens.append((kind, gates, tok))
+    fig.text(0.04, 0.005, "Gate positions are schematic, not to time scale (the CZ takes most of the gate time).", fontsize=8.5, color="#5a6878")
     def at(kind, gates, x):   # Pauli on the target after the gates left of x, for a Z injected just after the CZ
         passed = [(g, (1,) if g == "H" else (0, 1)) for g, gx in gates if 0.5 < gx < x]
         return G.propagate({1: "Z"}, passed)[1]

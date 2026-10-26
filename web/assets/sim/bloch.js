@@ -77,7 +77,7 @@ export const SEQUENCES = {
 export function sweep(p, kind, taus, eps = 0) {    // final P(ms=-1) versus tau for a sequence family
   return taus.map(tau => {
     const spins = makeEnsemble(p);
-    for (const st of SEQUENCES[kind](tau, eps)) st.op === 'wait' ? wait(spins, p, st.t) : pulse(spins, p, st.op, st.angle);
+    for (const st of SEQUENCES[kind](tau, Math.max(-tau, Math.min(tau, eps)))) st.op === 'wait' ? wait(spins, p, st.t) : pulse(spins, p, st.op, st.angle);
     return P_MINUS1(spins);
   });
 }

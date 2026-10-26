@@ -7,7 +7,7 @@
   <p>One NV center's spin, or an ensemble of them, on the Bloch sphere. Microwave pulses rotate it; free time lets it wander; an echo pulls it back.</p>
   <div class="ctl"><label>Sequence</label><div class="seg" id="seq"><button data-s="rabi" class="on">Rabi</button><button data-s="ramsey">Ramsey</button><button data-s="echo">Echo</button><button data-s="custom">Build</button></div></div>
   <div class="ctl" id="tauCtl"><label>Pulse angle / free time <b id="tauV"></b></label><input type="range" id="tau" min="0" max="100" value="50"></div>
-  <div class="ctl" id="epsCtl" hidden><label>π-pulse mistiming ε <b id="epsV"></b></label><input type="range" id="eps" min="-20" max="20" value="0"></div>
+  <div class="ctl" id="epsCtl" hidden><label>π-pulse mistiming ε <b id="epsV"></b></label><input type="range" id="eps" min="-20" max="20" value="0" aria-label="Pi-pulse mistiming epsilon, tenths of a microsecond; limited to plus or minus tau"></div>
   <div class="ctl" id="customCtl" style="display:none"><label>Your sequence</label>
     <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" data-add="x90">π/2ₓ</button><button class="btn small" data-add="x180">πₓ</button><button class="btn small" data-add="y90">π/2ᵧ</button><button class="btn small" data-add="w1">wait 1 µs</button><button class="btn small" data-add="clr">clear</button></div>
     <div id="custList" style="font:12px var(--mono);color:var(--mute);margin-top:8px"></div></div>
@@ -37,12 +37,12 @@ const $ = id => document.getElementById(id);
 let kind = 'rabi', custom = [];
 const P = () => ({ rabiMHz: +$('om').value, detuningMHz: +$('de').value / 10, t2starUs: +$('t2').value / 10, t1Us: 0, n: +$('n').value });
 const tau = () => kind === 'rabi' ? (+$('tau').value / 100) * 4 * Math.PI : (+$('tau').value / 100) * 6;
-const eps = () => +$('eps').value / 10;   // µs, echo only
+const epsRaw = () => +$('eps').value / 10, eps = () => Math.max(-tau(), Math.min(tau(), epsRaw()));   // µs, echo only; |ε| ≤ τ so both waits stay positive
 function labels() {
   $('omV').textContent = `${$('om').value} MHz`; $('deV').textContent = `${(+$('de').value / 10).toFixed(1)} MHz`;
   $('t2V').textContent = +$('t2').value ? `${(+$('t2').value / 10).toFixed(1)} µs` : 'off'; $('nV').textContent = $('n').value;
   $('tauV').textContent = kind === 'rabi' ? `${(tau() / Math.PI).toFixed(2)} π` : `${tau().toFixed(2)} µs`;
-  $('epsV').textContent = `${eps().toFixed(1)} µs`; $('epsCtl').hidden = kind !== 'echo';
+  $('epsV').textContent = `${eps().toFixed(1)} µs${Math.abs(epsRaw()) > tau() ? ' (limited to ±τ)' : ''}`; $('epsCtl').hidden = kind !== 'echo';
   syncLoop();
 }
 $('seq').onclick = e => { const b = e.target.closest('button'); if (!b) return; kind = b.dataset.s;

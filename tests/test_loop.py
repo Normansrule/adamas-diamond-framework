@@ -57,9 +57,9 @@ def test_spectral_route_depends_on_field_direction():
 
 @pytest.mark.parametrize("q", [0, 1])
 @pytest.mark.parametrize("p", "XYZ")
-def test_pauli_propagation_matches_stim(q, p):
+@pytest.mark.parametrize("circ", [[("H", (1,)), ("CZ", (0, 1)), ("H", (1,))], [("CX", (0, 1)), ("H", (0,)), ("CX", (1, 0))]])
+def test_pauli_propagation_matches_stim(q, p, circ):
     stim = pytest.importorskip("stim")
-    circ = [("H", (1,)), ("CZ", (0, 1)), ("H", (1,))]
     for start in range(len(circ) + 1):
         ps = stim.PauliString(2); ps[q] = p
         c = stim.Circuit("\n".join(f"{g} {' '.join(map(str, qs))}" for g, qs in circ[start:])) if start < len(circ) else stim.Circuit()
@@ -74,6 +74,8 @@ def test_cz_keeps_the_bias_and_the_hczh_cnot_inverts_it_on_the_target():
         assert b[0] == pytest.approx(eta) and b[1] == pytest.approx(eta)
         c = G.output_bias("cnot", eta)
         assert c[0] == pytest.approx(eta, rel=0.01)          # the control only sees CZ and idles
-        assert c[1] == pytest.approx(1 / eta, rel=0.2) or c[1] < 1 / eta * 1.2
+        short = G.output_bias("cnot", eta, h_frac=1e-9)[1]     # Hadamards of negligible length: Z <-> X, Y unchanged
+        assert short == pytest.approx(1 / (2 * eta + 1), rel=1e-6)
+        assert c[1] >= short                                     # errors after the last H stay Z, so finite H raises it
     assert G.output_distribution("cnot", 100, 0.2)["spread"] > G.output_distribution("cnot", 100, 0.002)["spread"]
     assert not math.isnan(G.output_distribution("cz", 0.5)["spread"])

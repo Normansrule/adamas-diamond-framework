@@ -19,13 +19,16 @@ export function linesOnAxis(bMt, thDeg, phDeg, axis) {
   const b = Math.hypot(par, perp); if (b < 1e-15) return odmrLines(0, 0);
   return odmrLines(b, Math.atan2(perp, par) * 180 / Math.PI);
 }
-export function spectralSeparation(bMt, thDeg, phDeg, axisA = NV_AXES[0], axisB = NV_AXES[1]) {
+// The line of NV A a selective drive uses: the one farthest from every line of NV B -> { k, f, delta } (MHz)
+export function bestLine(bMt, thDeg, phDeg, axisA = NV_AXES[0], axisB = NV_AXES[1]) {
   const la = linesOnAxis(bMt, thDeg, phDeg, axisA), lb = linesOnAxis(bMt, thDeg, phDeg, axisB);
-  return Math.min(...la.flatMap(x => lb.map(y => Math.abs(x - y))));
+  const d = la.map(x => Math.min(...lb.map(y => Math.abs(x - y)))), k = d[1] > d[0] + 1e-6 ? 1 : 0;   // ties (within 1 Hz) go to the lower line
+  return { k, f: la[k], delta: d[k] };
 }
+export const spectralSeparation = (bMt, thDeg, phDeg, axisA = NV_AXES[0], axisB = NV_AXES[1]) => bestLine(bMt, thDeg, phDeg, axisA, axisB).delta;
 export const gradientShift = (gGPerNm, dxNm) => GAMMA * gGPerNm * 0.1 * dxNm;          // 1 G = 0.1 mT
 export const crosstalk = (rabi, det) => rabi * rabi / (rabi * rabi + det * det);
-export const linewidth = t2sUs => 1 / (Math.PI * t2sUs);
+export const linewidth = t2sUs => 2 * Math.sqrt(Math.LN2) / (Math.PI * t2sUs);   // Gaussian decay exp(-(t/T2*)^2), as in nv.ramsey
 export const maxRabi = (det, eps = 0.01) => det * Math.sqrt(eps / (1 - eps));
 export function verdict(sep, t2s, rabi, eps = 0.01) {
   const lw = linewidth(t2s), xt = crosstalk(rabi, sep);

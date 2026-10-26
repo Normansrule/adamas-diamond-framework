@@ -343,7 +343,7 @@
   "lab": "labs/addressing.html",
   "title": "Driving one NV without the other",
   "python": "adamas.addressing.crosstalk",
-  "html": "<i>X</i> = <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup></span><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup> + <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button><sup>2</sup></span></span>, &nbsp; resolved if <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button> &gt; <span class=\"fr\"><span>1</span><span>π<button class=\"v\" type=\"button\" data-k=\"t2s\">T<sub>2</sub>*</button></span></span>",
+  "html": "<i>X</i> = <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup></span><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup> + <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button><sup>2</sup></span></span>, &nbsp; resolved if <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button> &gt; <span class=\"fr\"><span>2√ln 2</span><span>π<button class=\"v\" type=\"button\" data-k=\"t2s\">T<sub>2</sub>*</button></span></span>",
   "result": {
    "sym": "X",
    "name": "peak excitation of the other NV (crosstalk)",
@@ -375,7 +375,7 @@
     "min": 0.2,
     "max": 50,
     "digits": 1,
-    "src": "sets the line width 1/(πT₂*)"
+    "src": "sets the line width 2√ln2/(πT₂*) of a Gaussian free-induction decay"
    }
   },
   "units": [

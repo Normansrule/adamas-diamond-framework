@@ -11,7 +11,9 @@ Model (a teaching model of this repository): the gate is a list of segments, eac
 after each segment each qubit suffers an independent Pauli error with probability proportional to the segment's
 duration, biased with eta = p_Z / (p_X + p_Y). Errors are propagated to the end of the gate by Clifford conjugation (the
 symplectic rules below, checked against Stim's PauliString.after in the tests [gidney2021stim]). Output: the Pauli
-distribution on each qubit to first order in p, and its bias eta_out = P(Z) / (P(X) + P(Y)) per qubit.
+distribution on each qubit to first order in p, and its bias eta_out = P(Z) / (P(X) + P(Y)) per qubit. Errors sit at
+the end of each segment, so an X error partway through the CZ (which would also leave a Z on the other qubit) is not
+counted: the spread fraction is a lower bound.
 """
 from __future__ import annotations
 

@@ -54,10 +54,18 @@ def lines_on_axis(b_mt: float, b_theta_deg: float, b_phi_deg: float, axis) -> tu
     return nv.transition_frequencies_mhz((b_perp, 0.0, b_par))
 
 
-def spectral_separation_mhz(b_mt: float, b_theta_deg: float, b_phi_deg: float, axis_a=nv.NV_AXES[0], axis_b=nv.NV_AXES[1]) -> float:
-    """Smallest distance between any line of NV A and any line of NV B (MHz): the selectivity budget of the spectral route."""
+def best_line(b_mt: float, b_theta_deg: float, b_phi_deg: float, axis_a=nv.NV_AXES[0], axis_b=nv.NV_AXES[1]) -> tuple[int, float, float]:
+    """The line of NV A a selective drive should use: (index 0 or 1, its frequency in MHz, its distance Delta to the
+    nearest line of NV B in MHz). The drive picks A's line that is farthest from every B line."""
     la, lb = lines_on_axis(b_mt, b_theta_deg, b_phi_deg, axis_a), lines_on_axis(b_mt, b_theta_deg, b_phi_deg, axis_b)
-    return float(min(abs(x - y) for x in la for y in lb))
+    d = [min(abs(x - y) for y in lb) for x in la]
+    k = 1 if d[1] > d[0] + 1e-6 else 0          # ties (within 1 Hz) go to the lower line
+    return k, float(la[k]), float(d[k])
+
+
+def spectral_separation_mhz(b_mt: float, b_theta_deg: float, b_phi_deg: float, axis_a=nv.NV_AXES[0], axis_b=nv.NV_AXES[1]) -> float:
+    """Detuning Delta (MHz) of NV B from the best line of NV A (see best_line): the selectivity budget of the spectral route."""
+    return best_line(b_mt, b_theta_deg, b_phi_deg, axis_a, axis_b)[2]
 
 
 def gradient_shift_mhz(gradient_g_per_nm: float, dx_nm: float) -> float:
@@ -71,8 +79,10 @@ def crosstalk(rabi_mhz: float, detuning_mhz: float) -> float:
 
 
 def linewidth_mhz(t2star_us: float) -> float:
-    """Line width (full width at half maximum) for an exponential free-induction decay: 1 / (pi T2*)."""
-    return 1.0 / (math.pi * t2star_us)
+    """Line width (full width at half maximum) for the Gaussian free-induction decay exp(-(t/T2*)^2) used by nv.ramsey:
+    the spectrum is exp(-(pi f T2*)^2), so FWHM = 2 sqrt(ln 2) / (pi T2*) = 0.530 / T2* (an exponential decay would
+    give 1 / (pi T2*), 1.67 times narrower)."""
+    return 2.0 * math.sqrt(math.log(2.0)) / (math.pi * t2star_us)
 
 
 def max_rabi_for_crosstalk(detuning_mhz: float, eps: float = 0.01) -> float:

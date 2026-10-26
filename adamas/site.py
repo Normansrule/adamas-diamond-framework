@@ -162,18 +162,18 @@ def build_gallery(out: Path) -> None:
 <p class="lead">{n_fig} figures and {n_anim} animations, all regenerated from code by <code>make figures animations</code>. Click any tile to enlarge it; each caption names the model and sources.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="seg" id="kind"><button class="on" data-k="all">All</button><button data-k="figure">Figures</button><button data-k="animation">Animations</button></div>
 <input type="text" id="q" placeholder="Search: qubit, heat, wafer, surface code…" style="max-width:340px"></div></section>
-<div class="masonry" id="grid">{tiles}</div></main><div id="lb" role="dialog" aria-modal="true" aria-label="Enlarged figure" tabindex="-1"><img id="lbImg" alt=""><p id="lbCap"></p><p style="color:var(--mute);font-size:13px">Click anywhere or press Esc to close</p></div>
+<div class="masonry" id="grid">{tiles}</div></main><div id="lb" role="dialog" aria-modal="true" aria-label="Enlarged figure" tabindex="-1"><img id="lbImg" alt=""><p id="lbCap"></p><button class="btn small" id="lbClose" type="button">Close</button><p style="color:var(--mute);font-size:13px">Click anywhere or press Esc to close</p></div>
 <script type="module">import {{ boot }} from './assets/site.js'; boot('Gallery');
 const $ = id => document.getElementById(id); let kind = 'all';
 function filter() {{ const q = $('q').value.toLowerCase().trim(); document.querySelectorAll('.tile').forEach(t => t.hidden = !((kind === 'all' || t.dataset.kind === kind) && (!q || t.dataset.text.includes(q)))); }}
 $('kind').onclick = e => {{ const b = e.target.closest('button'); if (!b) return; kind = b.dataset.k; $('kind').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); filter(); }};
 $('q').oninput = filter;
 let opener = null;
-function openLb(t) {{ opener = t; $('lbImg').src = t.querySelector('img').src; $('lbImg').alt = t.querySelector('b').textContent; $('lbCap').textContent = t.querySelector('figcaption').innerText; $('lb').classList.add('on'); $('lb').focus(); }}
+function openLb(t) {{ opener = t; $('lbImg').src = t.querySelector('img').src; $('lbImg').alt = t.querySelector('b').textContent; $('lbCap').textContent = t.querySelector('figcaption').innerText; $('lb').classList.add('on'); $('lbClose').focus(); }}
 function closeLb() {{ if (!$('lb').classList.contains('on')) return; $('lb').classList.remove('on'); opener?.focus(); }}
 document.querySelectorAll('.tile').forEach(t => {{ t.onclick = () => openLb(t); t.onkeydown = e => {{ if (e.key === 'Enter' || e.key === ' ') {{ e.preventDefault(); openLb(t); }} }}; }});
 $('lb').onclick = closeLb;
-if (window.location && window.location.hash) {{ const t = document.getElementById(window.location.hash.slice(1)); if (t) {{ t.scrollIntoView({{ block: 'center' }}); t.click(); }} }} addEventListener('keydown', e => {{ if (e.key === 'Escape') closeLb(); }});
+if (window.location && window.location.hash) {{ const t = document.getElementById(window.location.hash.slice(1)); if (t) {{ t.scrollIntoView({{ block: 'center' }}); t.click(); }} }} addEventListener('keydown', e => {{ if (e.key === 'Escape') closeLb(); if (e.key === 'Tab' && $('lb').classList.contains('on')) {{ e.preventDefault(); $('lbClose').focus(); }} }});
 </script></body></html>''', encoding="utf-8")
 
 

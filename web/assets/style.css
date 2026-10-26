@@ -210,19 +210,21 @@ html{scrollbar-color:rgba(148,190,220,.35) var(--bg);caret-color:var(--teal);acc
 .eql-chip{display:flex;align-items:center;gap:7px;font:500 12px var(--mono);color:#b9c8d6;border:1px solid var(--line);border-radius:8px;padding:5px 9px}
 .eql-chip i{width:7px;height:7px;border-radius:50%;background:var(--green);flex:none}
 .eql-chip span{color:var(--mute);font-weight:400;margin-left:4px}
+.eql-chip .eql-st{font-weight:600;text-transform:none;color:var(--green)}.eql-chip.warn .eql-st{color:var(--gold)}.eql-chip.assumed .eql-st{color:var(--mute)}
+.eql-chip.assumed i{background:transparent;border:1.5px solid var(--mute)}
 .eql-chip.warn{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 55%,transparent)}.eql-chip.warn i{background:var(--gold)}.eql-chip.warn span{color:color-mix(in srgb,var(--gold) 75%,#fff)}
 .eql-ctl{display:grid;gap:8px}
 .eql-c{display:grid;grid-template-columns:44px 1fr 120px;gap:10px;align-items:center;font:500 13px var(--mono);color:var(--ink)}
 .eql-cs{font:italic 400 19px "STIX Two Text",Georgia,serif}
 .eql-c[data-hue=gold] .eql-cs{color:var(--gold)}.eql-c[data-hue=teal] .eql-cs{color:var(--teal)}.eql-c[data-hue=green] .eql-cs{color:var(--green)}.eql-c[data-hue=violet] .eql-cs{color:var(--violet)}.eql-c[data-hue=red] .eql-cs{color:var(--red)}
 .eql-c output{text-align:right}
-.eql-insp{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
-.eql-insp dt{color:var(--mute);font-size:12.5px}.eql-insp dd{margin:0;font:500 12.5px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.eql-insp{margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eql-insp dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}.eql-insp dt{color:var(--mute);font-size:12.5px}.eql-insp dd{margin:0;font:500 12.5px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
 .eql-insp dd.eql-why{font:400 13px/1.45 Inter;color:#b9c8d6}
-.eql-ib{grid-column:1/-1;display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.eql-ib{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
 .eql-ib b{font:italic 400 24px "STIX Two Text",Georgia,serif}.eql-ib b[data-hue=gold]{color:var(--gold)}.eql-ib b[data-hue=teal]{color:var(--teal)}.eql-ib b[data-hue=green]{color:var(--green)}.eql-ib b[data-hue=violet]{color:var(--violet)}.eql-ib b[data-hue=red]{color:var(--red)}
 .eql-ib span{font:600 18px var(--mono);font-variant-numeric:tabular-nums}
-.eql-spark{grid-column:1/-1;width:100%;height:84px;margin-top:6px}
+.eql-spark{display:block;width:100%;height:84px;margin-top:6px}
 .eql-src{margin:0;font-size:12px;color:var(--mute)}.eql-src code{font-size:11.5px;color:#b9c8d6}
 .lbl{font:600 12px var(--mono);color:var(--mute)}
 
