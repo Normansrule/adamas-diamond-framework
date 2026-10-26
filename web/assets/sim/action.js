@@ -96,7 +96,7 @@ export function bellFidelity(r, t2, q) { const w = Math.exp(-((gateTimeUs(r) / t
 // ---- 12. wafer yield (adamas.wafer) ----
 export const diesPerWafer = (d, a) => Math.max(0, Math.floor(Math.PI * (d / 2) ** 2 / a - Math.PI * d / Math.sqrt(2 * a)));
 export const poissonY = (a, d0) => Math.exp(-a * 1e-2 * d0);
-export const murphyY = (a, d0) => { const x = a * 1e-2 * d0; return x === 0 ? 1 : ((1 - Math.exp(-x)) / x) ** 2; };
+export const murphyY = (a, d0) => { const x = a * 1e-2 * d0; return x === 0 ? 1 : (-Math.expm1(-x) / x) ** 2; };   // expm1 keeps precision at tiny A·D0
 export const goodDies = (d, a, d0) => diesPerWafer(d, a) * murphyY(a, d0);
 
 // ---- 13. unipolar power-device limit (adamas.power.ron_sp_mohm_cm2) ----

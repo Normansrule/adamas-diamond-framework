@@ -36,6 +36,16 @@ def readout_contrast(beta: float = 1.0, window_us: float = 0.3) -> float:
     return float(1 - np.trapezoid(b, t) / np.trapezoid(a, t))
 
 
+def measured_contrast(beta: float = 1.0, window_us: float = 0.3, t_pol_us: float = 3.0) -> float:
+    """Contrast an experiment sees: start from the pumped, imperfectly polarized state (polarization P), compare a
+    readout with and without a pi pulse that swaps the mₛ = 0 and ±1 populations. readout_contrast() is the ideal
+    pure-state value; with P about 0.8 the measurable contrast is about 30 %, as observed (audit Q18)."""
+    t = np.linspace(0, window_us, 301)
+    i0, i1 = np.trapezoid(fluorescence(beta, "0", t), t), np.trapezoid(fluorescence(beta, "1", t), t)
+    p = polarization(beta, t_pol_us)
+    return float(1 - (p * i1 + (1 - p) * i0) / (p * i0 + (1 - p) * i1))
+
+
 def polarization(beta: float = 1.0, t_us: float = 3.0) -> float:
     """Population of ground mₛ=0 (plus singlet share that returns there) after pumping from a mixed state."""
     p = expm(generator(beta) * t_us) @ np.array([1 / 3, 2 / 3, 0, 0, 0])

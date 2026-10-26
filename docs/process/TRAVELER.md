@@ -10,11 +10,11 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 | Variant | Steps skipped | Note |
 |---|---|---|
-| Power switch (EV, grid, data center) | S06, S07, S18 | High-temperature ALD (option B) for 400 °C and kilovolt operation, or NO₂ + low-temperature ALD (option A) for the highest current. |
-| RF power amplifier (5G, radar, space) | S06, S07, S18 | NO₂ doping + thin low-temperature ALD (option A); gate length 0.1 to 1 µm by electron-beam lithography. |
+| Power switch (EV, grid, data center) | S06, S07, S11E, S18 | High-temperature ALD (option B) for 400 °C and kilovolt operation, or NO₂ + low-temperature ALD (option A) for the highest current. |
+| RF power amplifier (5G, radar, space) | S06, S07, S11E, S18 | NO₂ doping + thin low-temperature ALD (option A); gate length 0.1 to 1 µm by electron-beam lithography. |
 | High-temperature / radiation-hard logic | S06, S07, S12, S18 | No NO₂ (it desorbs when hot); high-temperature ALD (option B); E/D logic cells of PDK-0. |
-| NV quantum sensor (magnetometer) | S08, S09, S10, S11, S12, S13, S14, S15, S16, S17 | Material and NV steps only: dense ensemble implant, oxygen surface, optical and microwave test. |
-| Room-temperature qubit register chip | S12 | Full flow with ¹²C cap, aperture implant, photocurrent electrodes on the QELEC layer; no NO₂ near qubits. |
+| NV quantum sensor (magnetometer) | S08, S09, S10, S11, S11E, S12, S13, S14, S15, S16, S17 | Material and NV steps only: dense ensemble implant, oxygen surface, optical and microwave test. |
+| Room-temperature qubit register chip | S12 | Full flow with ¹²C cap, aperture implant, photocurrent electrodes on the QELEC layer; no NO₂ near qubits. S08 must use the low-temperature hydrogen option: a 600 to 800 °C hydrogen plasma would turn the NV centers made in S06 and S07 into dark NVH (proposed route, not yet qualified). |
 
 ![Thermal budget](../img/fig42_thermal_budget.png)
 
@@ -32,7 +32,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 |---|---|---|
 | Orientation | (100), miscut under 3° | [friel2009] |
 | Grade | Electronic-grade CVD (N < 5 ppb) for qubits; heteroepitaxial or HPHT acceptable for power | [friel2009] [schreck2017] |
-| Size | 3 × 3 mm plates up to 3-inch wafers | [e6orbray2026] |
+| Size | 3 × 3 mm plates; 2-inch heteroepitaxial wafers (3-inch announced by industry, no quality data yet) | [kim2021] [qu2024] [e6orbray2026] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
@@ -67,7 +67,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 | Water contact angle (oxygen-terminated: hydrophilic) | ≤ 30 ° | ADAMAS |
 | No residue under dark-field microscopy | pass / fail | ADAMAS |
 
-**Safety.** Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive. Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics.
+**Safety.** Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive. Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics. Never boil a perchloric mixture to dryness: hot sulfuric acid can dehydrate HClO₄ to explosive anhydrous perchloric acid; top up or stop well before the volume falls.
 
 | Symptom | Likely cause | Action |
 |---|---|---|
@@ -222,19 +222,22 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 | Parameter | Starting point | Source |
 |---|---|---|
-| Plasma | Pure H₂, about 600 to 800 °C, 5 to 30 min | [kawarada2023] |
+| Plasma | Pure H₂, about 600 to 800 °C, 5 to 30 min (wafers without NV centers) | [kawarada2023] |
 | Cool-down | In H₂ to below about 300 °C before venting | [kawarada2023] |
+| Wafers that already hold NV centers (qubit variant) | Do NOT run the hot plasma: hydrogen at 700 to 1000 °C passivates NV into dark NVH deep into the crystal, and annealing does not restore it. Use atomic hydrogen from a remote plasma or hot filament with the substrate below about 500 °C, keep the NV windows masked, and track a witness ensemble (proposed, not yet qualified) | [stacey2012] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
 | Water contact angle (hydrophobic) | ≥ 75 ° | ADAMAS |
 | Sheet resistance in air (Van der Pauw) | 3 to 30 kΩ/sq | ADAMAS |
+| Witness NV ensemble photoluminescence after S08, qubit variant (% of before) | ≥ 90 % | ADAMAS |
 
 **Safety.** As S03 (hydrogen plasma).
 
 | Symptom | Likely cause | Action |
 |---|---|---|
 | High sheet resistance | Incomplete termination or exposure to oxidizers | Repeat plasma; store in clean N₂; proceed to S09 within hours |
+| Witness ensemble goes dark | Hydrogen passivation of NV centers (too hot, or windows unmasked) | Lower the temperature; improve the window mask; consider forming NVs after the transistor module |
 
 **Silicon, for comparison.** No equivalent. Silicon channels form by inversion under the gate, not by surface chemistry.
 
@@ -298,7 +301,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 | Parameter | Starting point | Source |
 |---|---|---|
-| Gap | 2 µm (PDK-0 rule) for logic; 0.1 to 1 µm for RF | [kawarada2023] |
+| Gap | 2 µm (PDK-0 rule) for logic, by wet KI/I₂ etch; 0.1 to 1 µm for RF by electron-beam lift-off or argon ion milling, because a wet gold etch undercuts by about the film thickness | [kawarada2023] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
@@ -312,6 +315,31 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 | Undercut widens the gap | Over-etch | Time the etch; calibrate on test gaps |
 
 **Silicon, for comparison.** Silicon uses a self-aligned polysilicon or metal gate, with implants aligned to it.
+
+## S11E · Mask 3 (ENH): partial C–O channel for enhancement-mode FETs
+
+*Module: Transistor front end · peak temperature 120 °C*
+
+**Why.** Oxidizing part of the channel removes the hole gas there until the gate pulls it back, which makes a normally-off (enhancement-mode) transistor. Logic needs both flavors: depletion-mode loads and enhancement-mode drivers (E/D logic).
+
+**Equipment.** Mask aligner or electron-beam lithography (PDK-0 layer ENH); O₂ plasma asher or UV-ozone.
+
+| Parameter | Starting point | Source |
+|---|---|---|
+| Partial oxidation | Expose a fraction of the channel length to O₂ plasma or UV-ozone through resist openings; tune the oxidized fraction to set the threshold | [kitabayashi2017] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Enhancement FETs normally off (drain current at V_GS = 0 below 1% of on-current) | pass / fail | ADAMAS |
+| Depletion FETs still conduct at V_GS = 0 | pass / fail | ADAMAS |
+
+**Safety.** As S10 (plasma; resist solvents).
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| All FETs normally off | Mask misaligned or over-oxidized | Shorter exposure; check ENH alignment to the gap |
+
+**Silicon, for comparison.** Silicon sets thresholds with channel implants (one implant mask per threshold flavor).
 
 ## S12 · NO₂ exposure (option A, high-current devices)
 
@@ -365,7 +393,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 **Silicon, for comparison.** Silicon also uses ALD high-κ oxides (HfO₂) at advanced nodes, over a thin SiO₂ interface layer.
 
-## S14 · Mask 3 (GATE metal)
+## S14 · Mask 4 (GATE metal)
 
 *Module: Back end · peak temperature 120 °C*
 
@@ -390,7 +418,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 **Silicon, for comparison.** Similar: metal gate definition, but silicon uses gate-last replacement flows at advanced nodes.
 
-## S15 · Mask 4 (VIA): open Al₂O₃ over contacts
+## S15 · Mask 5 (VIA): open Al₂O₃ over contacts
 
 *Module: Back end · peak temperature 25 °C*
 
@@ -414,7 +442,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 **Silicon, for comparison.** Silicon opens contacts through a thick dielectric by plasma etch, then fills tungsten plugs.
 
-## S16 · Mask 5 (METAL2): interconnect and pads
+## S16 · Mask 6 (METAL2): interconnect and pads
 
 *Module: Back end · peak temperature 120 °C*
 

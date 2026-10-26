@@ -111,8 +111,10 @@ function set(k, raw, flash = true) {
   $('eq').querySelectorAll(`var[data-v="${k}"]`).forEach(el => { el.classList.add('hot'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('hot'), 650); });
   plug(flash);
 }
-let plugT = 0;
-function plug(flash) { const now = performance.now(); if (flash && now - plugT < 90) return; plugT = now; $('plug').innerHTML = SCENES[cur.id].plug(S, st, ctx); if (flash) { $('plug').classList.remove('flash'); void $('plug').offsetWidth; $('plug').classList.add('flash'); } }
+let plugT = 0, plugLate = 0;
+function plug(flash) { const now = performance.now(); clearTimeout(plugLate);
+  if (flash && now - plugT < 90) { plugLate = setTimeout(() => plug(false), 95); return; }   // throttle, but always land on the final value
+  plugT = now; $('plug').innerHTML = SCENES[cur.id].plug(S, st, ctx); if (flash) { $('plug').classList.remove('flash'); void $('plug').offsetWidth; $('plug').classList.add('flash'); } }
 
 // canvases: size once per resize, draw every frame
 const cv = { a: $('anim'), p: $('plot') }, gx = {};

@@ -83,7 +83,7 @@ talk:            ## 12-slide Beamer talk, numbers from the package (paper/talk.p
 poster:          ## A0 conference poster with QR code (paper/poster.pdf)
 	$(PY) -m adamas.paper && cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error poster.tex && latexmk -c poster.tex
 
-xzzx:            ## rerun the native XZZX study (about a minute) into docs/data/xzzx_native.json
+xzzx:            ## rerun the native XZZX study (about three minutes) into docs/data/xzzx_native.json
 	rm -f docs/data/xzzx_native.json && $(PY) -c "from adamas.xzzx_native import cached_study; cached_study()"
 
 docs:            ## regenerate traveler, experiments, glossary, validation, and the README key-findings block

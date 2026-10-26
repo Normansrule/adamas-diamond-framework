@@ -4,6 +4,8 @@
 
 Scope labels: **W** weekend (laptop only) · **C** course project (4 to 8 weeks) · **T** master's thesis (6 to 12 months) · **D** doctoral-scale · **G** multi-group program.
 
+IDs with a hyphen (B-3, C-1, D-1) are projects and roadmap items of the chapters. The hands-on experiments of [docs/experiments](../experiments/EXPERIMENTS.md) use IDs without a hyphen (A1 to D2) and are a separate list: experiment D1 is not project D-1.
+
 ```mermaid
 flowchart LR
     w[Wafer<br/>Ch. 2, L-1] --> l[Lithography<br/>E1] --> p[Process + PDK<br/>E2] --> d[Digital + CPU<br/>E3] --> a[Analog<br/>E4] --> q[NV qubits<br/>E5] --> s[Systems + QEC<br/>E6] --> b[Beyond<br/>E7]
@@ -11,7 +13,7 @@ flowchart LR
 
 | Stage | ID | Project | Scope | Needs | Where specified |
 |---|---|---|---|---|---|
-| Wafer | S-1 | Reproduce all 52 figures and the test suite | W | Laptop | README |
+| Wafer | S-1 | Reproduce all 53 figures (the list in `adamas/figures*.py`) and the test suite | W | Laptop | README |
 | Wafer | L-1 | Flatness and bow statistics of commercial diamond plates | C | Optical profiler | [E1](E1_lithography_from_euv_to_electron_beam.md) |
 | Wafer | F-3 | (111) ¹²C phosphorus-doped quantum epilayer on heteroepitaxial wafer | G | Growth partner | [Ch. 11](../11_proposed_experiments_and_roadmap.md) |
 | Lithography | L-2 | Electron-beam proximity function on diamond versus silicon | C/T | Electron-beam tool | E1 |
@@ -19,7 +21,7 @@ flowchart LR
 | Lithography | L-6 | Nanoimprint NV aperture arrays | T/D | Imprint tool | E1 |
 | Process | P-1 | PDK-0 monitor die layout | **done** | `make layout` | [E2](E2_process_integration_and_pdk.md) |
 | Process | P-3 | Compact-model fitting to published curves | C | ngspice, Python | E2 |
-| Process | P-4 / C-1 | Fabricate the 4-mask monitor die | T | Cleanroom, diamond plates | E2, Ch. 11 |
+| Process | P-4 / C-1 | Fabricate the six-mask monitor die (traveler T1) | T | Cleanroom, diamond plates | E2, Ch. 11 |
 | Digital | D-1 | Extend and re-synthesize DIA-4 | W/C | Yosys, Icarus Verilog | [E3](E3_digital_and_cpu_design.md) |
 | Digital | P-2 | Placement of DIA-4 on PDK-0 (done); OpenROAD route | **done** / C | `make place`; OpenROAD | E2 |
 | Digital | D-2, D-3 | Ring oscillators and logic to 400 °C | T | P-4 wafers, hot probe station | E3 |
@@ -31,13 +33,13 @@ flowchart LR
 | Qubits | B-1 to B-5 | Benchtop optically detected magnetic resonance laboratories | C | About 1k to 15k USD of parts | Ch. 11 |
 | Qubits | Q-1, Q-2 | Non-Markovian gate model; cluster-correlation $T_2$ | C/T | Laptop or cluster | [E5](E5_nv_qubit_engineering.md) |
 | Qubits | C-4, C-5 | Implant yield with co-doping; detect-and-repair arrays | D | Implanter, confocal microscope, femtosecond laser | Ch. 11 |
-| Qubits | C-8 | Nuclear–nuclear entanglement across two NVs at 300 K | D | Coupled-pair sample | Ch. 11 |
+| Qubits | C-8 | Direct Bell tomography of ¹⁴N memories across two NVs at 300 K (transfer of entanglement to two nuclear spins is already demonstrated [dolde2014]) | D | Coupled-pair sample | Ch. 11 |
 | Systems | X-1, X-2 | Three-rate surface-code simulator; pulse compiler | C/T | Laptop | [E6](E6_error_correction_and_system_architecture.md) |
 | Systems | X-3 | Architecture trade study with yield models | T | Laptop | E6 |
 | Systems | F-1 | 16-cell microscope-free chiplet on CMOS | G | Foundry access | Ch. 11 |
 | Power | W-1, W-2 | $R_{on}(T)$ and double-pulse switching of diamond vs SiC devices | T | Probe station, double-pulse rig | [E9](E9_power_circuits_diamond_vs_gan_sic.md) |
 | Power | W-3, W-4 | Hybrid half-bridge; uncooled 300 °C inverter | T/D | Power lab | E9 |
-| Power | W-5 | Vertical 3 kV diamond MOSFET at 1% of ideal | G | Thick-drift growth partner | E9 |
+| Power | W-5 | Vertical 3 kV diamond MOSFET below 1 mΩ·cm² (about 28× the ideal limit) | G | Thick-drift growth partner | E9 |
 | Systems | X-2 (done), X-3, X-4 | Resource estimate (done in v0.13.0); multiplexing study; platform comparison | T | Laptop | [E10](E10_scaling_a_room_temperature_quantum_computer.md) |
 | Beyond | M-3 | Chip-scale maser readout | D | Microwave laboratory | [E7](E7_beyond_the_framework.md) |
 | Beyond | M-4 | Self-diagnosing power transistor | T/D | Power device + NV layer | E7 |

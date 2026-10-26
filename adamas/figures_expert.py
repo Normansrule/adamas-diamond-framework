@@ -230,7 +230,7 @@ def fig_gate_budget(out: Path) -> Path:
     ax.set_ylim(0.0, 1.01)
     ax.set_xlabel("Distance between NV centers (nm)")
     ax.set_ylabel("Gate fidelity (perfect preparation and pulses)")
-    ax.set_title("Echoed gate: coherence is no longer the bottleneck", fontsize=11)
+    ax.set_title("Echoed gate: coherence limit versus distance (model)", fontsize=11)
     ax.legend(fontsize=8.5, loc="lower left")
     ax.grid(True, alpha=0.15)
     ax = axes[1]
@@ -240,11 +240,9 @@ def fig_gate_budget(out: Path) -> Path:
     im = ax.contourf(q, eps * 100, z, levels=np.linspace(0.25, 1.0, 16), cmap="viridis")
     cs = ax.contour(q, eps * 100, z, levels=[0.67, 0.82, 0.99], colors=["white", "white", GOLD], linewidths=2)
     ax.clabel(cs, fmt={0.67: "0.67 [dolde2013]", 0.82: "0.82 [dolde2014]", 0.99: "0.99"}, fontsize=8.5)
-    ax.axvspan(0.70, 0.75, color=RED, alpha=0.25)
-    ax.text(0.725, 4.6, "NV⁻ fraction under\ngreen light [aslam2013]", ha="center", va="top", fontsize=8.5, color="white")
-    ax.set_xlabel("Per-NV preparation probability q (charge state × spin polarization)")
+    ax.set_xlabel("Lumped preparation parameter q per NV (model; the 0.67 was charge-preselected)")
     ax.set_ylabel("Error per pulse (%)")
-    ax.set_title("At 25 nm: which imperfections give 0.67 and 0.82?", fontsize=11)
+    ax.set_title("At 25 nm: model fidelity vs preparation and pulse error (hypothesis)", fontsize=10.5)
     fig.colorbar(im, ax=ax, label="Gate fidelity")
     return _finish(fig, out, "fig26_gate_error_budget.png",
                    "[dolde2013] [dolde2014] [aslam2013] [mizuochi2009] [delange2010] [neumann2010natphys]; adamas.gate_budget model")

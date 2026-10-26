@@ -1,6 +1,6 @@
 // Service worker for the installable ADAMAS web app: works offline after the first visit.
-// Pages and data: network first (you always get the newest numbers when online), cached copy when offline.
-// Scripts, styles, images, and the CDN libraries (three.js, GSAP, Plotly, fonts): cache first, refreshed in the background.
+// Everything from this site (pages, scripts, styles, data, images): network first, cached copy when offline, so a
+// deploy never mixes new pages with old scripts. Version-pinned CDN libraries (three.js, GSAP, Plotly, fonts): cache first.
 const VERSION = '__ADAMAS_VERSION__';
 const CACHE = `adamas-${VERSION}`;
 const CORE = ['./', 'index.html', 'action.html', 'experiments.html', 'download.html', 'assets/style.css', 'assets/site.js', 'assets/action_scenes.js',
@@ -16,16 +16,13 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
   const url = new URL(req.url), same = url.origin === self.location.origin;
-  const page = req.mode === 'navigate' || (same && (url.pathname.endsWith('.html') || url.pathname.endsWith('.json')));
   const lib = /cdn\.jsdelivr\.net|cdn\.plot\.ly|fonts\.(googleapis|gstatic)\.com/.test(url.host);
   if (!same && !lib) return;                                            // leave GitHub API and other sites alone
-  if (page) {
+  if (same) {   // everything from this site: network first, so HTML, scripts and data always match after a deploy
     e.respondWith(fetch(req).then(r => { if (r.ok) { const c = r.clone(); caches.open(CACHE).then(k => k.put(req, c)); } return r; })
-      .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('index.html'))));
+      .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || (req.mode === 'navigate' ? caches.match('index.html') : Response.error()))));
     return;
   }
-  e.respondWith(caches.match(req).then(hit => {
-    const net = fetch(req).then(r => { if (r.ok || r.type === 'opaque') { const c = r.clone(); caches.open(CACHE).then(k => k.put(req, c)); } return r; }).catch(() => hit);
-    return hit || net;
-  }));
+  // CDN libraries have version-pinned URLs, so a cached copy never goes stale: cache first
+  e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => { if (r.ok || r.type === 'opaque') { const c = r.clone(); caches.open(CACHE).then(k => k.put(req, c)); } return r; })));
 });

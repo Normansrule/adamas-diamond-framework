@@ -2,14 +2,14 @@
 
 _Generated from `adamas/experiments.py` (`make experiments`). Interactive 3-D version: [experiments.html](https://normansrule.github.io/adamas-diamond-framework/experiments.html)._
 
-Ten experiments in four price tiers. Prices are approximate 2026 US-dollar street prices for generic parts and change with vendors and exchange rates; check before buying. Safety notes summarize hazards and never replace your institution's training.
+Ten experiments in four price tiers. Prices are approximate 2026 US-dollar street prices for generic parts and change with vendors and exchange rates; check before buying. Safety notes summarize hazards and never replace your institution's training. Experiment IDs here have no hyphen (A1 to D2); IDs with a hyphen (B-3, C-1, D-1) are projects and roadmap items of the chapters, a separate list.
 
 ![Cost versus capability](../img/fig47_experiment_ladder.png)
 
 | Tier | Budget | For |
 |---|---|---|
 | A · Kitchen table | US$100 to 500 | high school, outreach, first-year labs, home |
-| B · Teaching lab | US$1,000 to 10,000 | upper-division undergraduate and master's labs |
+| B · Teaching lab | US$1,000 to 12,000 | upper-division undergraduate and master's labs |
 | C · Research lab | US$10,000 to 100,000 | graduate research groups, shared facilities |
 | D · Facility | US$100,000 to tens of millions | national labs, companies, consortia |
 
@@ -25,20 +25,20 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 
 **Goal.** Watch NV centers glow red under green light, then sweep a microwave source through 2.87 GHz and see the glow dip: optically detected magnetic resonance.
 
-**You will learn.** Spin-dependent fluorescence (why mₛ = 0 is bright); The zero-field splitting D = 2.87 GHz; Lock-free signal averaging.
+**You will learn.** Spin-dependent fluorescence (why mₛ = ±1 is dimmer); The zero-field splitting D = 2.87 GHz; Lock-free signal averaging.
 
 | Part | Specification | Approx. cost (US$) |
 |---|---|---|
 | NV-rich diamond | Microdiamond powder or a small HPHT plate with high NV density (irradiated and annealed) | 50 to 250 |
-| Green source | High-power green LED (safer, visible) or a laser module under 1 mW at 532 nm | 10 to 60 |
-| Red filter | Longpass filter near 600 to 650 nm, or red filter foil | 5 to 80 |
+| Green source | High-power green LED (safer, visible) or a 532 nm laser module under 1 mW; inexpensive modules can leak invisible infrared pump light, so put a shortpass (infrared-block) filter right after the module | 10 to 60 |
+| Red filter | Longpass filter near 600 to 650 nm plus an infrared-block filter in front of the photodiode (red filter foil alone passes infrared and leaks green) | 5 to 80 |
 | Photodetector | Silicon photodiode with a JFET-input transimpedance amplifier (for example TL082) | 10 to 40 |
 | Microwave source | PLL synthesizer board covering 2.7 to 3.0 GHz (ADF4351-class) | 30 to 60 |
 | Antenna | Short microstrip line or a copper wire loop under the diamond | 5 to 20 |
 | Controller | Raspberry Pi Pico (or any microcontroller with SPI, ADC, and USB); ready-made firmware in hardware/a1_odmr | 5 to 40 |
 | Mechanics | 3-D printed cube mounts or a breadboard; neodymium magnet | 10 to 50 |
 
-**Safety.** Even a 1 mW green laser can damage eyes: never look into the beam; use a phone camera to align. The LED version avoids laser hazards. Microwave powers here are milliwatts; keep the antenna enclosed and away from the body anyway.
+**Safety.** Even a 1 mW green laser can damage eyes: never look into the beam; use a phone camera to align. Measure the module's output with a laser power meter (borrow one) before use, behind the shortpass filter, because labels on cheap modules are unreliable and leaked infrared is invisible. The LED version avoids laser hazards. Microwave powers here are milliwatts; keep the antenna enclosed and away from the body anyway.
 
 **Steps.**
 
@@ -113,7 +113,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 
 ## B1 · Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo
 
-*Tier B (Teaching lab) · about US$3,000 to 10,000 · two to four lab sessions · needs: RF, optics alignment, Python*
+*Tier B (Teaching lab) · about US$5,000 to 12,000 · two to four lab sessions (total price is a reviewer's estimate, not a vendor quote) · needs: RF, optics alignment, Python*
 
 **Goal.** Drive the NV spin with timed microwave pulses and read it out with timed laser pulses, turning the spin into a qubit you can rotate and measure.
 
@@ -221,7 +221,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 1. **Scan.** Raster-scan a 20 × 20 µm field; isolated bright spots are NV candidates.
 2. **Correlate.** Park on a spot; split fluorescence onto two detectors; histogram photon-pair delays.
 3. **Check g⁽²⁾(0).** A dip below 0.5 at zero delay proves a single emitter.
-4. **Resolve hyperfine.** Low-power ODMR on that NV shows three lines 2.16 MHz apart from the ¹⁴N nucleus.
+4. **Resolve hyperfine.** Low-power ODMR on that NV shows three lines about 2.15 MHz apart from the ¹⁴N nucleus [felton2009].
 
 **Analysis.** Fit g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁); background lifts g₀ above zero. The hyperfine triplet is the nuclear memory used in chapter E5. Fit your data with `python -m adamas.fit g2 data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 
@@ -259,9 +259,9 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 
 *Tier D (Facility) · about US$500,000 to 2,000,000 · one to three years · needs: research group*
 
-**Goal.** Implant NV pairs about 25 nm apart, find coupled pairs, and entangle them with echoed dipolar gates, reproducing and then improving on the 2013 result.
+**Goal.** Implant NV pairs 10 to 25 nm apart, find coupled pairs on different crystal axes, and entangle them with echoed dipolar gates, reproducing the 2013 result and approaching the 96% 2025 record.
 
-**You will learn.** Nanoscale implantation; Dipolar two-qubit gates; Why charge-state preparation limits fidelity.
+**You will learn.** Nanoscale implantation; Spectral addressing of two NVs inside one laser spot; Dipolar two-qubit gates; Charge-state pre-selection.
 
 | Part | Specification | Approx. cost (US$) |
 |---|---|---|
@@ -274,20 +274,21 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 
 **Steps.**
 
-1. **Place pairs.** Implant through 20 nm apertures; anneal; tri-acid clean (traveler S06, S07).
-2. **Find pairs.** Measure the dipolar splitting; keep pairs with 5 to 20 kHz coupling.
-3. **Entangle.** Echoed gate sequence; Bell-state tomography.
-4. **Beat the budget.** Add charge-state verification before the gate; compare with the adamas.gate_budget prediction.
+1. **Place pairs.** Implant ¹⁵N; the published pairs used MeV ions through nano-channels (about 2% pair success) rather than keV ions through thin apertures; anneal; tri-acid clean (traveler S06, S07).
+2. **Find pairs.** Both NVs sit inside one laser spot. Pick pairs on different ⟨111⟩ axes (lines about 30 MHz apart in the bias field), so each can be driven alone; measure the dipolar splitting and keep pairs with 5 to 120 kHz coupling.
+3. **Pre-select the charge state.** Before each run, check that both NVs are NV⁻ with a 594 nm readout and discard runs that fail, as in [joas2025]; [dolde2013] normalized its data to charge-preselected runs.
+4. **Entangle.** Echoed gate sequence; Bell-state tomography with joint readout of both NVs.
+5. **Beat the budget.** Compare with the adamas.gate_budget coherence limit; attribute the rest to dephasing, pulses and initialization.
 
-**Analysis.** Fidelity against preparation probability q follows the chapter E5 budget: 0.67 at q ≈ 0.75, rising toward 0.998 as q → 1.
+**Analysis.** With charge pre-selection the fidelity is set by coherence, pulse errors and initialization: the published pair measured 0.67 (2013) and 0.824 (2014), the record is 0.96 at 9.5 nm (2025). The adamas.gate_budget coherence limit for the 2013 pair is 0.784 to 0.998 (echo exponent 1 to 3, one or two gate applications, with and without T₁), above the measurement: a known discrepancy. Hypothesis to test (proposed here): in runs that are not pre-selected, charge-state preparation is the largest loss, because an unprepared fraction 1 − q² of runs drags the fidelity toward ¼ (curve). Test: measure the Bell fidelity of the same pair with and without 594 nm pre-selection, and the NV⁻ fraction of each NV, in one session.
 
-**Try it first in the browser:** [explorer.html#gate](https://normansrule.github.io/adamas-diamond-framework/explorer.html#gate). Sources: [dolde2013] [dolde2014] [aslam2013] [pezzagna2010].
+**Try it first in the browser:** [explorer.html#gate](https://normansrule.github.io/adamas-diamond-framework/explorer.html#gate). Sources: [dolde2013] [dolde2014] [joas2025] [aslam2013] [pezzagna2010].
 
 ## D2 · A diamond pilot line on 3-inch wafers
 
 *Tier D (Facility) · about US$5,000,000 to 50,000,000 · years · needs: company or consortium*
 
-**Goal.** Run PDK-0 on 3-inch heteroepitaxial wafers with statistical process control, and measure how many working dies each wafer yields.
+**Goal.** Run PDK-0 on 2- to 3-inch heteroepitaxial wafers with statistical process control, and measure how many working dies each wafer yields. Peer-reviewed heteroepitaxial wafers are 2-inch [kim2021]; 3-inch single-crystal wafers are an industry announcement without published quality data [e6orbray2026].
 
 **You will learn.** Yield and defect density; Statistical process control; Cost per good die.
 

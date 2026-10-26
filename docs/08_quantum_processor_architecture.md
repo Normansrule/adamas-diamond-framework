@@ -10,7 +10,7 @@ Criteria from [divincenzo2000]; general background in [nielsen2010], [ladd2010],
 |---|---|---|
 | 1. Well-defined, scalable qubits | Qubits: yes. Scalable placement: **not yet**. | [Chapter 7](07_nv_fabrication_and_placement.md) |
 | 2. Initialization | Electron by green light; nuclei by swap or level anticrossing polarization (> 95%) | [manson2006], [jacques2009], [dutt2007] |
-| 3. Coherence ≫ gate time | Gates 10 ns to 10 µs; $T_2$ ≈ 2 ms; nuclear memory > 1 s | [fuchs2009], [balasubramanian2009], [maurer2012] |
+| 3. Coherence ≫ gate time | Gates 10 ns to 10 µs; $T_2$ ≈ 2 ms; nuclear memory > 1 s. This holds for single-qubit and electron-nuclear gates. For NV-NV dipolar gates, $T_2/t_g$ is only about 12 to 190 at 25 to 10 nm spacing with $T_2$ = 1.8 ms (`adamas.coupling.gate_time_us`) | [fuchs2009], [balasubramanian2009], [maurer2012] |
 | 4. Universal gates | Single-qubit > 99.99% and two-qubit 99.2% (electron-nuclear), at room temperature | [rong2015]; see also [xie2023], [zu2014], [arroyo2014] |
 | 5. Qubit-specific readout | Single-shot for **nuclear** spins via repetitive readout; electron readout is averaged | [neumann2010science], [jiang2009], [steiner2010], [hopper2018] |
 
@@ -35,7 +35,7 @@ flowchart TB
 
 Demonstrations: two- and three-qubit electron-nuclear registers and entanglement ([dutt2007], [neumann2008], [jelezko2004b]); quantum error correction at room temperature on a three-nuclear-spin register [waldherr2014]; decoherence-protected electron-nuclear gates [vandersar2012]; programmable two-qubit processor [wu2019]; quantum Fourier transform for sensing [vorobyov2021]; coherent feedback and nuclear-assisted metrology ([hirose2016], [unden2016], [pfender2017]). Theory of register control: [cappellaro2009].
 
-**A worked example.** A conditional electron flip must address one hyperfine line (splitting $A = 2.16$ MHz for ¹⁴N [felton2009]) without disturbing its neighbors. Choosing the Rabi frequency $\Omega = A/\sqrt{3}$ makes the off-resonant line complete a full $2\pi$ rotation during the π pulse. `adamas.register.bell_fidelity` gives pulse-limited Bell fidelity 0.99999 at that setting against 0.87 at $\Omega = 2$ MHz.
+**A worked example.** A conditional electron flip must address one hyperfine line ($|A_\parallel| \approx 2.15$ MHz for ¹⁴N [felton2009]; the model uses 2.16 MHz) without disturbing its neighbors. In a two-line model, choosing the Rabi frequency $\Omega = A/\sqrt{3}$ makes the off-resonant line complete a full $2\pi$ rotation during the π pulse. `adamas.register.bell_fidelity` gives pulse-limited Bell fidelity 0.99999 at that setting against 0.87 at $\Omega = 2$ MHz. ¹⁴N has nuclear spin $I = 1$ and so three lines spaced by $A$. Targeting the middle line still works, since both neighbors sit $A$ away. Targeting an outer line leaves the line $2A$ away with about 2.6 percent excitation (Rabi formula of [Chapter 6](06_nv_center_physics.md)). ¹⁵N ($I = 1/2$) has only two lines, so the two-line model applies to it directly.
 
 ![Register fidelity versus Rabi frequency](img/fig15_register_fidelity.png)
 
@@ -45,15 +45,17 @@ At cryogenic temperature the same physics has reached a 10-qubit register [bradl
 
 | Link | Range | Temperature | Status | Sources |
 |---|---|---|---|---|
-| Direct magnetic dipole coupling | < 30 nm | room | Two NVs entangled | [neumann2010natphys], [dolde2013], [dolde2014] |
-| Dark-spin chain bus (implanted nitrogen "wires") | 10s to 100s of nm | room (proposed) | Theory; chains not yet built | [yao2012] |
+| Direct magnetic dipole coupling | < 30 nm | room | Coherent coupling at about 10 nm; entanglement at 25 nm; two-qubit fidelity 96 % at 9.5 nm. Every pair was told apart spectrally and read out jointly | [neumann2010natphys], [dolde2013], [dolde2014], [joas2025] |
+| Dark-spin chain bus (implanted nitrogen "wires") | 10s to 100s of nm | near room (proposed); assumes NV $T_1$ of 100 to 250 ms, cooling to about 250 K, a donut-shaped readout beam and a field gradient | Theory; chains not yet built | [yao2012] |
 | Photonic entanglement (emit, interfere, herald) | meters to kilometers | **cryogenic only**, about 4 K | Three-node network, teleportation, metropolitan links | [togan2010], [bernien2013], [hensen2015], [kalb2017], [humphreys2018], [pompili2021], [hermans2022], [stolk2024] |
 
 Modular photonic architectures with small cells are well analyzed ([nemoto2014], [nickerson2014], [choi2019], [barrett2005]) yet need cryogenics for indistinguishable photons. A room-temperature repeater proposal using optomechanics exists on paper [ji2022]. Hybrid coupling to superconducting circuits also requires millikelvin temperatures ([kubo2010], [zhu2011]).
 
+**Addressing inside a directly coupled cluster.** At 15 to 30 nm both NVs sit inside one laser spot (about 250 nm), so they cannot be addressed or read out optically one by one. Every room-temperature demonstration so far tells them apart spectrally, using NVs on different crystal axes whose lines sit about 30 MHz apart, and reads them out together ([dolde2013], [joas2025]). Field gradients, sub-diffraction optics, and the dark-spin bus below are the proposed routes to larger arrays. The comparison table is in [Chapter 7](07_nv_fabrication_and_placement.md).
+
 ### The Yao architecture, in brief [yao2012]
 
-Each plaquette holds one optically addressable NV whose nitrogen nuclear spin is the data qubit. NVs are spaced by optical-resolution distances (hundreds of nanometers), far beyond direct coupling, and are connected by chains of implanted dark nitrogen electron spins that carry quantum states by a globally driven, disorder-tolerant state transfer. The appeal is that optical addressing stays diffraction limited. The cost is that every chain must be complete, which returns to the yield problem of [Chapter 7](07_nv_fabrication_and_placement.md).
+Each plaquette holds one optically addressable NV whose nitrogen nuclear spin is the data qubit. NVs are spaced by optical-resolution distances (hundreds of nanometers), far beyond direct coupling, and are connected by chains of implanted dark nitrogen electron spins that carry quantum states by a globally driven, disorder-tolerant state transfer. The appeal is that optical addressing stays diffraction limited. The proposal assumes an NV $T_1$ of 100 to 250 ms (against about 6 ms at 300 K, [Chapter 6](06_nv_center_physics.md)), cooling to about 250 K, a donut-shaped readout beam, and a field gradient [yao2012], so "room temperature" is not yet established for it. The cost is that every chain must be complete, which returns to the yield problem of [Chapter 7](07_nv_fabrication_and_placement.md).
 
 ```mermaid
 flowchart LR
@@ -62,11 +64,11 @@ flowchart LR
 
 ## 8.4 Readout without a microscope: electrical detection
 
-Photoelectric Detection of Magnetic Resonance (PDMR) ionizes the NV with two photons and collects the carriers on electrodes. The photocurrent shows the spin resonance, works at room temperature, reaches single centers, and needs no objective lens or photon counter ([bourgeois2015], [siyushev2019]). Spin-to-charge conversion raises optical readout fidelity as well ([shields2015], [hopper2018]). For a wafer-scale processor, electrodes are manufacturable and microscope objectives are not, so ADAMAS treats electrical readout as the default long-term interface ([Chapter 9](09_cmos_control_integration.md)).
+Photoelectric Detection of Magnetic Resonance (PDMR) ionizes the NV with two photons and collects the carriers on electrodes. The photocurrent shows the spin resonance, works at room temperature, reaches single centers, and needs no photon counter ([bourgeois2015], [siyushev2019]). Single-NV PDMR still uses focused two-photon ionization, so it remains diffraction limited: the light must be focused or guided to each cell, and it does not by itself resolve NVs 15 to 30 nm apart. Spin-to-charge conversion raises optical readout fidelity as well ([shields2015], [hopper2018]). For a wafer-scale processor, electrodes are manufacturable and microscope objectives are not, so ADAMAS treats electrical readout as the default long-term interface ([Chapter 9](09_cmos_control_integration.md)).
 
 ## 8.5 Error-correction arithmetic
 
-The surface code tolerates physical error rates near 1 percent and becomes efficient near 0.1 percent [fowler2012]. Room-temperature electron-nuclear gates already meet this ([rong2015]). Inter-cell gates do not: the best room-temperature NV-NV entanglement fidelity is 0.82 [dolde2014], and the bound of Chapter 7 requires spacing below about 15 nm with $T_2 \ge 1.8$ ms to even permit 99 percent.
+The surface code tolerates physical error rates near 1 percent (circuit-level threshold) and becomes efficient near 0.1 percent [fowler2012]. Room-temperature electron-nuclear gates already meet this ([rong2015]). NV-NV gates do not yet: the best room-temperature NV-NV two-qubit fidelity is 96.0 ± 2.5 percent at 9.5 nm, with charge-state pre-selection [joas2025], an error about four times the threshold. The bound of Chapter 7 requires spacing below about 15 nm with $T_2 \ge 1.8$ ms to even permit 99 percent. The machine model of [E10](expert/E10_scaling_a_room_temperature_quantum_computer.md) assumes a 0.3 percent link error, which is proposed here, not demonstrated.
 
 ## 8.6 What room-temperature NV processors are good for in the near term
 

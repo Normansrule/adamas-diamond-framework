@@ -57,7 +57,7 @@ A self-referential use closes the loop: NV magnetic imaging [turner2020] is a na
 
 ## E7.4 Classical extremes
 
-- **Harsh-environment systems.** Silicon carbide circuits survived 60 days at Venus surface conditions ([neudeck2016], [neudeck2019]). Diamond logic ([E3](E3_digital_and_cpu_design.md)) targets the same missions plus reactor instrumentation [ookuma2026] and particle detectors [pernegger2005].
+- **Harsh-environment systems.** Silicon carbide circuits survived 60 days at Venus surface conditions ([neudeck2016], [neudeck2019]). Diamond logic ([E3](E3_digital_and_cpu_design.md)) would target the same missions plus reactor instrumentation [ookuma2026] and particle detectors [pernegger2005] (proposed here): single diamond field-effect transistors (FETs) have run at 400 °C for short periods [kawarada2014], but high-temperature diamond logic has not been demonstrated.
 - **Vacuum microelectronics and thermionic conversion.** Negative electron affinity gives efficient electron emission ([himpsel1979], [shih1997], [yater2000]); phosphorus-doped films show low-work-function thermionic emission [koeck2009].
 - **Deep-ultraviolet and single-photon emitters.** 235 nm excitonic emission from pn junctions [koizumi2001]; electrically driven single-photon sources ([mizuochi2012], [lohrmann2011]).
 - **Energy.** Betavoltaic cells [bormashov2018].

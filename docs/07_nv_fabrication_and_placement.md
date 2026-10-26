@@ -1,6 +1,6 @@
 # 07 · Making NV centers where you want them
 
-**Plain-language summary.** Two NV qubits can only "talk" directly if they sit closer than about 30 nanometers, roughly one ten-thousandth the width of a hair. Today's tools can aim nitrogen atoms to within about 10 to 20 nanometers, and only a few percent of them become working qubits. Closing that gap is the single most important manufacturing problem in this framework.
+**Plain-language summary.** Two NV qubits can only "talk" directly if they sit closer than about 30 nanometers, roughly one ten-thousandth the width of a hair. Today's tools can aim nitrogen atoms to within about 10 to 20 nanometers, and only a few percent of them become working qubits. Closing that gap is the single most important manufacturing problem in this framework. There is a second catch: at that spacing both qubits sit inside one laser spot, so they cannot be told apart by position and must be told apart by frequency (Section 7.2).
 
 ## 7.1 Methods
 
@@ -37,7 +37,7 @@ flowchart LR
 
 Review: [smith2019]. Ion range simulation: [ziegler2010]. Deterministic single-ion sources with detection of each ion, developed for silicon donor qubits and rare-earth ions, are transferable ([jamieson2005], [grootberning2019]).
 
-**Orientation.** Growth on (111) or (113) surfaces under the right conditions aligns nearly all NV centers along one axis, which removes a four-fold loss in addressability ([michl2014], [lesik2014], [fukui2014], [edmonds2012], [ozawa2017]).
+**Orientation.** Growth on (111) or (113) surfaces under the right conditions aligns nearly all NV centers along one axis ([michl2014], [lesik2014], [fukui2014], [edmonds2012], [ozawa2017]). This is a trade-off. Alignment helps sensing and ensemble readout, since every NV then responds to the same field component. It hurts closely spaced pairs: every room-temperature NV–NV pair so far was addressed by putting the two NVs on *different* axes ([neumann2010natphys], [dolde2013], [joas2025]). Alignment removes that route, so a coupled cluster needs another way to tell its NVs apart (Section 7.2).
 
 **Isotopes.** ¹²C enrichment to 99.99 percent removes the nuclear-spin bath ([balasubramanian2009], [ishikawa2012], [itoh2014], [teraji2015]).
 
@@ -58,7 +58,20 @@ A controlled-phase gate takes $t_g = 1/(2\nu_{dd})$. ADAMAS uses the simple uppe
 | 25 nm | 3.3 kHz | 150 µs | 0.960 |
 | 30 nm | 1.9 kHz | 260 µs | 0.933 |
 
-Experiments: about 10 nm pair with 40 kHz-class coupling [neumann2010natphys]; about 25 nm pair entangled at room temperature with fidelity 0.67 [dolde2013], improved to 0.82 with optimal control [dolde2014].
+Experiments: about 10 nm pair with 40 kHz-class coherent coupling [neumann2010natphys]; about 25 nm pair entangled at room temperature with fidelity 0.67 [dolde2013], improved to 0.82 with optimal control [dolde2014]; a 9.5 nm pair with two-qubit fidelity 96.0 ± 2.5 percent using 594 nm charge-state pre-selection [joas2025].
+
+### Addressing qubits 15 to 30 nm apart
+
+At 15 to 30 nm both NVs sit inside one diffraction-limited laser spot (about 250 nm), so they cannot be addressed or read out optically one by one. Every room-temperature demonstration so far tells them apart spectrally, using NVs on different crystal axes whose lines sit about 30 MHz apart, and reads them out together ([dolde2013], [joas2025]). Field gradients, sub-diffraction optics, and the dark-spin bus of [Chapter 8](08_quantum_processor_architecture.md) are the proposed routes to larger arrays.
+
+| Method | Best result | Individual coherent control of NVs < 30 nm apart at room temperature? |
+|---|---|---|
+| Spectral: different NV orientations, joint readout in one spot | 9.8 nm, coherent coupling [neumann2010natphys]; 25 nm, F = 0.67 [dolde2013]; F = 0.824 [dolde2014]; 9.5 nm, two-qubit fidelity 96.0 ± 2.5 % with 594 nm charge pre-selection [joas2025] | **Yes: the only route demonstrated** |
+| Spectral: optical zero-phonon line and strain | 3 NVs in one sub-diffraction cluster, crosstalk below 4 %, at 4 K [bersin2019] | Single-qubit only, cryogenic |
+| Magnetic-field gradient | About 1 G/nm, separate Rabi drive on NVs 135 nm apart [grinolds2011]; 0.11 G/nm microcoil, NVs 96 nm apart, fidelity above 97.4 % [zhang2017addr] | Not yet. A 0.1 G/nm gradient splits NVs 15 nm apart by about 4.2 MHz (with γₑ = 28.03 MHz/mT), but readout is still joint |
+| Sub-diffraction optics: stimulated emission depletion (STED), spin reversible saturable optical fluorescence transitions (spin-RESOLFT), charge-state depletion | Imaging well below the diffraction limit; spin control of NVs about 100 to 150 nm apart (unsourced here: references not yet in the bibliography) | Imaging yes; control at < 30 nm no |
+| Dark-spin chain bus | Theory: chain spins 16 to 20 nm apart, 5 to 20 per link; assumes NV $T_1$ of 100 to 250 ms, cooling to about 250 K, a donut-shaped readout beam and a field gradient [yao2012] | No (proposed) |
+| Photoelectric readout | Single NV [siyushev2019], still with focused light | No |
 
 ## 7.3 The placement-yield model
 
@@ -66,7 +79,7 @@ Experiments: about 10 nm pair with 40 kHz-class coupling [neumann2010natphys]; a
 
 ![Monte Carlo pair yield](img/fig11_pair_yield.png)
 
-With one ion per site the pair yield can never exceed $y^2$: 1 percent conversion gives 10⁻⁴. An array of $N$ coupled qubits scales as roughly $y^{N}$, which is hopeless at today's keV-implant yields and merely difficult at 50 to 75 percent. The three levers, in order of impact:
+With one ion per site the pair yield can never exceed $y^2$: 1 percent conversion, typical of keV implants, gives 10⁻⁴. The demonstrated room-temperature pairs were not made this way: they used MeV nitrogen ions, with reported yields of about 21 percent [neumann2010natphys] and about 2 percent [dolde2013]. An array of $N$ coupled qubits scales as roughly $y^{N}$, which is hopeless at today's keV-implant yields and merely difficult at 50 to 75 percent. The three levers, in order of impact:
 
 1. **Conversion yield** → donor co-doping [luhmann2019], laser writing with feedback [chen2019].
 2. **Detect, then repair**: image the array by super-resolution or optically detected magnetic resonance, and laser-write missing sites. Proposed experiment P-5 in [Chapter 11](11_proposed_experiments_and_roadmap.md).

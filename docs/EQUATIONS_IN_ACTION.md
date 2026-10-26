@@ -122,7 +122,7 @@ $$
 
 **Model details.** Two-level reduction of the spin-1 (mₛ = 0, −1 subspace), rotating-wave approximation, frequencies in MHz and times in µs so Ω is the Rabi frequency in cycles per µs. Same expression as adamas.nv.rabi without decay; the pulse diagram is the B1 sequence (3 µs initialize, τ, 300 ns readout).
 
-**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$3,000 to 10,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
+**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$5,000 to 12,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
 
 **Interactive:** [https://normansrule.github.io/adamas-diamond-framework/action.html#rabi](https://normansrule.github.io/adamas-diamond-framework/action.html#rabi) · related lab: [labs/qubit.html](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) · sources: [rabi1937] [jelezko2004a] [childress2006]
 
@@ -147,7 +147,7 @@ $$
 
 **Model details.** Quasi-static Gaussian detuning distribution with σ = √2/(2πT₂*) gives the Gaussian envelope (exponent p = 2); the animation draws spins sampled from that distribution, so the mean vector's length is the envelope. Same as adamas.nv.ramsey.
 
-**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$3,000 to 10,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
+**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$5,000 to 12,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
 
 **Interactive:** [https://normansrule.github.io/adamas-diamond-framework/action.html#ramsey](https://normansrule.github.io/adamas-diamond-framework/action.html#ramsey) · related lab: [labs/qubit.html](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) · sources: [ramsey1950] [childress2006] [degen2017]
 
@@ -172,7 +172,7 @@ $$
 
 **Model details.** Hahn echo with a slow (Ornstein–Uhlenbeck-like) bath gives exp(−(τ/T₂)³); fast or many-spin baths give smaller p. Room-temperature record 1.8 ms in ¹²C-enriched diamond [balasubramanian2009]. Same as adamas.nv.hahn_echo.
 
-**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$3,000 to 10,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
+**Measure it yourself:** experiment B1, *Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo* (tier B, about US$5,000 to 12,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#b1--pulsed-control-rabi-oscillations-ramsey-fringes-and-spin-echo).
 
 **Interactive:** [https://normansrule.github.io/adamas-diamond-framework/action.html#echo](https://normansrule.github.io/adamas-diamond-framework/action.html#echo) · related lab: [labs/qubit.html](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) · sources: [hahn1950] [delange2010] [balasubramanian2009]
 
@@ -280,7 +280,7 @@ $$
 
 ## 11. Two qubits talk: the dipolar gate and its error budget
 
-*Two NVs 25 nm apart feel each other's field; the gate is slow, so coherence and charge state decide the fidelity.*
+*Two NVs 25 nm apart feel each other's field; the gate is slow, so coherence, pulses and charge state all cost fidelity.*
 
 $$
 \nu = \frac{52\ \mathrm{MHz\,nm^3}}{r^3},\quad t_g = \frac{1}{2\nu},\quad F = q^2\left(\frac{1+e^{-(t_g/T_2)^3}}{2}\right)^2 + \frac{1-q^2}{4}
@@ -295,15 +295,15 @@ $$
 | q | probability that each NV is in the negative charge state and polarized |
 | F | Bell-state fidelity |
 
-**In plain words.** Two tiny magnets close together can feel each other, very gently. To make them work as a team they need to be close, stay calm long enough, and both be switched on. If one is 'off' a quarter of the time, the teamwork falls apart.
+**In plain words.** Two tiny magnets close together can feel each other, very gently. To make them work as a team they need to be close, stay calm long enough, and both be switched on. If one is 'off' a quarter of the time and nobody checks first, the teamwork falls apart.
 
-**How it works.** Magnetic dipole coupling falls as 1/r³: 3.3 kHz at 25 nm, so a gate takes about 150 µs. Echo coherence must survive that long. Even with perfect coherence, if each NV is in the right charge state only with probability q, the fidelity is capped near q²; at q ≈ 0.75 that explains the measured 0.67.
+**How it works.** Magnetic dipole coupling falls as 1/r³: 3.3 kHz at 25 nm, so a gate takes about 150 µs. Echo coherence must survive that long. Even with perfect coherence, if each NV is in the right charge state only with probability q and runs are not pre-selected, the fidelity is capped near q². The 2013 experiment's 0.67 was already normalized to charge-preselected runs, so it is not explained by q; the 2025 record of 96% pre-selects the charge state with a 594 nm laser [joas2025].
 
-**Model details.** Echoed controlled-phase gate, F_coh = (1 + w)²/4 with w = exp(−(t_g/T₂)³), unprepared runs modeled as fully mixed (fidelity ¼). Single-quantum coupling at θ = 90°; the published pair [dolde2013] used double-quantum encoding (4× coupling). Same as adamas.gate_budget.GateBudget.
+**Model details.** Echoed controlled-phase gate, F_coh = (1 + w)²/4 with w = exp(−(t_g/T₂)³), unprepared runs modeled as fully mixed (fidelity ¼). Single-quantum coupling at θ = 90°; the published pair [dolde2013] used double-quantum encoding (4× coupling). The echo exponent 3 assumes a slow ¹³C bath; with p = 1 or two gate applications the coherence limit for that pair drops to about 0.8 (adamas.gate_budget.coherence_limited_range). Addressing: both NVs sit in one laser spot and are told apart by their crystal orientation (audit Q4).
 
 **Measure it yourself:** experiment D1, *Two entangled qubits at room temperature* (tier D, about US$500,000 to 2,000,000); steps in [EXPERIMENTS.md](../experiments/EXPERIMENTS.md#d1--two-entangled-qubits-at-room-temperature).
 
-**Interactive:** [https://normansrule.github.io/adamas-diamond-framework/action.html#gate](https://normansrule.github.io/adamas-diamond-framework/action.html#gate) · related lab: [explorer.html#gate](https://normansrule.github.io/adamas-diamond-framework/explorer.html#gate) · sources: [dolde2013] [neumann2010natphys] [aslam2013]
+**Interactive:** [https://normansrule.github.io/adamas-diamond-framework/action.html#gate](https://normansrule.github.io/adamas-diamond-framework/action.html#gate) · related lab: [explorer.html#gate](https://normansrule.github.io/adamas-diamond-framework/explorer.html#gate) · sources: [dolde2013] [joas2025] [neumann2010natphys] [aslam2013]
 
 ## 12. Defects on a wafer: yield and good dies
 

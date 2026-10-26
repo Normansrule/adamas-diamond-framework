@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
+MARKER = ".adamas-site"
 
 
 def site_data() -> dict:
@@ -43,7 +44,7 @@ def site_data() -> dict:
     from . import resource
     data["resource"] = resource.table()
     data["resource_models"] = {m: resource.table_for(m) for m in resource.MODELS}
-    data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}
+    data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}; data["rsa_job"] = resource.RSA_JOB
     from . import traveler
     data["traveler"] = traveler.to_json()
     from . import experiments
@@ -74,7 +75,7 @@ def power_data(bv_table: float = 1200.0) -> dict:
     T = [float(t) for t in np.arange(300, 660, 10)]
     out = {}
     for key, name, measured in [("Si", "Silicon (ideal)", None), ("4H-SiC", "Silicon carbide (ideal)", None), ("GaN", "Gallium nitride (ideal)", None),
-                                ("Diamond", "Diamond (ideal, holes)", None), ("Diamond", "Diamond (measured 2022 device)", "saha2022")]:
+                                ("Diamond", "Diamond (bulk-doped drift)", None), ("Diamond", "Diamond (measured 2022 device)", "saha2022")]:
         m = materials.MATERIALS[key]
         if measured:
             pt = power.MEASURED_DIAMOND[measured]
@@ -177,7 +178,7 @@ PAGES = [  # (title, href, kind, description) for the search index; labs and too
     ("Equations in Action", "action.html", "page", "fourteen equations animated with live sliders, plugged-in numbers, experiments, play, tour"),
     ("Get the app", "download.html", "page", "desktop app download Windows macOS Linux, install offline web app, adamas app"),
     ("Gallery", "gallery.html", "page", "all figures and animations"), ("Glossary", "glossary.html", "page", "acronyms and terms"),
-    ("Process Traveler", "process.html", "page", "19 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
+    ("Process Traveler", "process.html", "page", "20 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
     ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
     ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
     ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado, Sobol, value of information, what to measure next"),
@@ -210,8 +211,9 @@ def findings() -> dict:
     """Headline numbers for the landing page, from the same generator as the preprint."""
     from . import paper
     N = paper.numbers()
-    return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven",
-                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "SobolMobility", "SobolReadout", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
+    return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven", "FcohLow", "FcohHigh",
+                              "PowerRatioRoom", "PowerRatioHot", "UncPowerHotPfifty", "FionDriftPct", "ThrXZZXUpper", "EtaCnot", "RSAStepsCal", "RSAYearsToffoli",
+                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "SobolMobility", "SobolField", "SobolReadout", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
 
 
 def build_glossary_page(out: Path) -> None:
@@ -301,6 +303,9 @@ def build(out: str | Path = "site", offline: bool = False) -> Path:
     from . import explorer
     out = Path(out)
     if out.exists():
+        safe = not any(out.iterdir()) or (out / MARKER).exists() or ((out / "index.html").exists() and (out / "data" / "site.json").exists())
+        if not safe:   # never delete a folder that is not an ADAMAS site build
+            raise SystemExit(f"refusing to replace {out}: it is not empty and is not an ADAMAS site build")
         shutil.rmtree(out)
     shutil.copytree(WEB, out, ignore=shutil.ignore_patterns("tests", "_head.txt", "node_modules"))
     head = (WEB / "labs" / "_head.txt").read_text(encoding="utf-8")
@@ -330,6 +335,7 @@ def build(out: str | Path = "site", offline: bool = False) -> Path:
     (out / "data" / "search.json").write_text(json.dumps(search_index()), encoding="utf-8")
     (out / "data" / "findings.json").write_text(json.dumps(findings()), encoding="utf-8")
     (out / ".nojekyll").write_text("")
+    (out / MARKER).write_text("built by adamas.site; safe to delete\n")
     add_app_meta(out)
     if offline:
         vendor(out)

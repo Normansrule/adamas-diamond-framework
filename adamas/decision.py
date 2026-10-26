@@ -95,13 +95,12 @@ def roadmap(n: int = 16000) -> list[dict]:
 
 
 # ---------------------------------------------------------------- the code decision under unknown gate-noise bias
-JOB = "RSA-2048 scale (6,000 logical, 3×10⁹ steps)"
 
 
 def payoff(t_read_us: float = 1000.0, t2_mem_ms: float = 1000.0) -> dict:
     """Physical qubits (millions) and runtime (years) for each code at each simulated bias, native circuits."""
     from . import resource as R
-    n, st = R.WORKLOADS[JOB]
+    n, st = R.WORKLOADS[R.RSA_JOB]
     out = {}
     for code in ("css", "xzzx"):
         for eta in R.BIAS_GRID:

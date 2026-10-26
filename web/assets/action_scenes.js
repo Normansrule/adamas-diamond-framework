@@ -4,6 +4,7 @@
 import * as A from './sim/action.js';
 import { colormap } from './site.js';
 
+const sat = x => Math.min(0.5, x);   // a logical error rate saturates at 1/2 (random guessing)
 export const C = { teal: '#2de2e6', cyan: '#6ff3ff', violet: '#9d7bff', pink: '#ff5d8f', gold: '#ffc46b', green: '#48e5a3', red: '#ff5d6c', ink: '#e8f1f8', mute: '#8ea3b5', line: 'rgba(148,190,220,.16)', orange: '#ff9a3c' };
 const TAU = Math.PI * 2;
 
@@ -69,6 +70,7 @@ function marker(g, x, y, c = C.red, label) { glow(g, x, y, 16, c, .5); dot(g, x,
 function legend(g, x, y, items) { items.forEach(([lab, c, dash], i) => { line(g, [[x, y + i * 17], [x + 20, y + i * 17]], c, 2.5, dash); txt(g, lab, x + 26, y + i * 17 + 4, { size: 11.5, c: '#c9d6e2' }); }); }
 const range = (a, b, n = 200, log = false) => [...Array(n)].map((_, i) => log ? 10 ** lerp(Math.log10(a), Math.log10(b), i / (n - 1)) : lerp(a, b, i / (n - 1)));
 const dataOf = (ctx, id) => ctx.experiments?.[id]?.result;
+const nd = S => Math.min(S.Nd, 0.95 * S.Na);   // compensation cannot exceed the boron density in a p-type layer
 
 // Bloch-sphere projection: physics z is up; yaw spins slowly
 function bloch(g, cx, cy, R, yaw) {
@@ -126,7 +128,7 @@ export const SCENES = {
       legend(g, ax.L + 12, ax.T + 14, [['with field B', C.red], ['zero field', 'rgba(148,190,220,.6)', [5, 4]]]);
     },
     plug(S) {
-      const L = A.odmrLines(S.B, S.theta), bp = S.B * Math.cos(S.theta * Math.PI / 180), first = [A.D_MHZ - A.GAMMA * bp, A.D_MHZ + A.GAMMA * bp];
+      const L = A.odmrLines(S.B, S.theta), bp0 = S.B * Math.cos(S.theta * Math.PI / 180), bp = Math.abs(bp0) < 1e-9 ? 0 : bp0, first = [A.D_MHZ - A.GAMMA * bp, A.D_MHZ + A.GAMMA * bp];
       return `B<sub>∥</sub> = ${b(num(S.B))} mT × cos ${b(S.theta + '°')} = ${b(num(bp))} mT<br>f<sub>±</sub> = 2870 ± 28.03 × ${num(bp)} = ${b(first[0].toFixed(1))} and ${b(first[1].toFixed(1))} MHz` +
         (S.theta > 0 && S.B > 0 ? `<br><small>exact diagonalization (adds the transverse-field shift): ${L[0].toFixed(1)} and ${L[1].toFixed(1)} MHz</small>` : '') +
         `<br>splitting Δf = ${b(num(L[1] - L[0]) + ' MHz', 'big')}`;
@@ -158,7 +160,7 @@ export const SCENES = {
       st.hud = `magnet ${S.r.toFixed(1)} cm away · halve the distance → 8× the field`;
     },
     plot(g, w, h, S, st, ctx) {
-      const rs = range(2, 12, 120), ax = axes(g, w, h, { x: [2, 12], y: [1, 3000], logx: true, logy: true, xlabel: 'Magnet distance r (cm, log scale)', ylabel: 'Splitting Δf (MHz, log scale)', xfmt: v => num(v) });
+      const rs = range(2, 12, 120), ax = axes(g, w, h, { x: [2, 12], y: [1, 6000], logx: true, logy: true, xlabel: 'Magnet distance r (cm, log scale)', ylabel: 'Splitting Δf (MHz, log scale)', xfmt: v => num(v) });
       ax.clip(); curve(g, ax, rs, r => A.splitMHz(A.dipoleMt(S.m, r)), C.violet, 2.6);
       const d = dataOf(ctx, 'A2'); if (d) d.x.forEach((x, i) => dot(g, ax.X(x), ax.Y(d.series.measured[i]), 4, C.gold));
       ax.unclip();
@@ -191,7 +193,7 @@ export const SCENES = {
       st.hud = `ΔT after ${S.t.toFixed(0)} s on ${Object.keys(A.SPREADERS).find(k => A.SPREADERS[k].k === S.kappa)}: ${A.heatRise(S.P, S.kappa, S.t).toFixed(2)} K`;
     },
     plot(g, w, h, S, st, ctx) {
-      const ts = range(0, 180, 181), ax = axes(g, w, h, { x: [0, 180], y: [0, 3 * 5.2], xlabel: 'Time (s)', ylabel: 'Heater temperature rise (K)' });
+      const ts = range(0, 180, 181), ax = axes(g, w, h, { x: [0, 180], y: [0, Math.max(8, 1.08 * S.P * A.rth(1.5))], xlabel: 'Time (s)', ylabel: 'Heater temperature rise (K)' });
       const col = { Diamond: C.cyan, Copper: C.orange, Aluminium: '#b7c8d6', Silicon: C.violet };
       const d = dataOf(ctx, 'A3'); ax.clip();
       if (d && Math.abs(S.P - 1.5) < 0.05) Object.entries(d.series).forEach(([k, ys]) => ys.forEach((y, i) => i % 6 === 0 && dot(g, ax.X(d.x[i]), ax.Y(y), 2.2, 'rgba(255,196,107,.7)')));
@@ -298,7 +300,7 @@ export const SCENES = {
       curve(g, ax, ts, t => A.echoC(t, S.t2, S.p), C.green, 2.6); ax.unclip(); marker(g, ax.X(S.tau), ax.Y(A.echoC(S.tau, S.t2, S.p)), C.red);
       legend(g, ax.L + ax.pw - 230, ax.T + 14, [['echo, your T₂ and p', C.green], ['p = 2 for comparison', 'rgba(148,190,220,.6)', [3, 4]], ['B1 data (T₂ = 300 µs, p = 1.5)', C.gold, [1, 3]]]);
     },
-    plug(S) { return `C = e<sup>−(${b(num(S.tau))}/${b(num(S.t2))})<sup>${b(num(S.p))}</sup></sup> = e<sup>−${((S.tau / S.t2) ** S.p).toFixed(3)}</sup> = ${b(A.echoC(S.tau, S.t2, S.p).toFixed(3), 'big')}<br><small>coherence falls to 1/e at τ = T₂ = ${num(S.t2)} µs, about ${num(S.t2 / 2)}× longer than a typical T₂* of 0.5 µs</small>`; },
+    plug(S) { return `C = e<sup>−(${b(num(S.tau))}/${b(num(S.t2))})<sup>${b(num(S.p))}</sup></sup> = e<sup>−${((S.tau / S.t2) ** S.p).toFixed(3)}</sup> = ${b(A.echoC(S.tau, S.t2, S.p).toFixed(3), 'big')}<br><small>coherence falls to 1/e at τ = T₂ = ${num(S.t2)} µs, about ${num(S.t2 / 0.5)}× longer than a typical T₂* of 0.5 µs</small>`; },
   },
 
   vector: {
@@ -330,7 +332,7 @@ export const SCENES = {
 
   arrhenius: {
     frame(g, w, h, t, S, st) {
-      const p = A.freeCarriers(S.Ea, S.Na, S.T, S.Nd), ion = (p + S.Nd) / S.Na, x0 = 30, x1 = w * 0.62, yv = h * 0.78, sc = (h * 0.5) / 0.65, ya = yv - S.Ea * sc;
+      const p = A.freeCarriers(S.Ea, S.Na, S.T, nd(S)), ion = Math.min(1, (p + nd(S)) / S.Na), x0 = 30, x1 = w * 0.62, yv = h * 0.78, sc = (h * 0.5) / 0.65, ya = yv - S.Ea * sc;
       g.fillStyle = 'rgba(157,123,255,.18)'; g.fillRect(x0, yv, x1 - x0, h - yv - 18); line(g, [[x0, yv], [x1, yv]], C.violet, 2.5); txt(g, 'valence band', x0 + 6, h - 24, { c: C.violet, size: 12 });
       g.fillStyle = 'rgba(45,226,230,.10)'; g.fillRect(x0, 14, x1 - x0, 26); line(g, [[x0, 40], [x1, 40]], C.teal, 2); txt(g, 'conduction band, 5.47 eV up (not to scale)', x0 + 6, 32, { c: C.teal, size: 11.5 });
       line(g, [[x0 + 8, 46], [x0 + 18, 52], [x0 + 8, 58]], C.mute, 1.4);
@@ -350,18 +352,18 @@ export const SCENES = {
       const Ts = range(250, 800, 160), ax = axes(g, w, h, { x: [1000 / 800, 1000 / 250], y: [1e-3, 1e9], logy: true, xlabel: '1000 / T (1/K): hotter to the left', ylabel: 'Resistivity ρ (Ω·cm, log)' });
       const d = dataOf(ctx, 'B3'); ax.clip();
       if (d) d.x.forEach((x, i) => dot(g, ax.X(x), ax.Y(d.series['resistivity (Ω·cm)'][i]), 3, 'rgba(255,196,107,.85)'));
-      line(g, Ts.map(T => [ax.X(1000 / T), ax.Y(A.resistivity(A.freeCarriers(0.045, S.Na, T, S.Nd), T))]), 'rgba(148,190,220,.6)', 1.6, [5, 4]);
-      line(g, Ts.map(T => [ax.X(1000 / T), ax.Y(A.resistivity(A.freeCarriers(S.Ea, S.Na, T, S.Nd), T))]), C.pink, 2.6); ax.unclip();
-      const r = A.resistivity(A.freeCarriers(S.Ea, S.Na, S.T, S.Nd), S.T); marker(g, ax.X(1000 / S.T), ax.Y(r), C.red, `${num(r)} Ω·cm`);
+      line(g, Ts.map(T => [ax.X(1000 / T), ax.Y(A.resistivity(A.freeCarriers(0.045, S.Na, T, nd(S)), T))]), 'rgba(148,190,220,.6)', 1.6, [5, 4]);
+      line(g, Ts.map(T => [ax.X(1000 / T), ax.Y(A.resistivity(A.freeCarriers(S.Ea, S.Na, T, nd(S)), T))]), C.pink, 2.6); ax.unclip();
+      const r = A.resistivity(A.freeCarriers(S.Ea, S.Na, S.T, nd(S)), S.T); marker(g, ax.X(1000 / S.T), ax.Y(r), C.red, `${num(r)} Ω·cm`);
       legend(g, ax.L + 12, ax.T + 14, [['your E_A and doping', C.pink], ['silicon-like dopant (0.045 eV)', 'rgba(148,190,220,.7)', [5, 4]], ['B3 data (0.37 eV, 3×10¹⁷)', C.gold, [1, 3]]]);
     },
-    plug(S) { const p = A.freeCarriers(S.Ea, S.Na, S.T, S.Nd), r = A.resistivity(p, S.T); return `N<sub>A</sub> = ${b(num(S.Na))}, N<sub>D</sub> = ${b(num(S.Nd))} cm⁻³, T = ${b(S.T.toFixed(0) + ' K')}, e<sup>−E<sub>A</sub>/kT</sup> = ${num(Math.exp(-S.Ea / (A.KB_EV * S.T)))}<br>p = ${b(num(p) + ' cm⁻³')} (${(100 * p / S.Na).toPrecision(2)}% of boron), μ = ${num(A.holeMobility(S.T))} cm²/V·s<br>ρ = 1/(q p μ) = ${b(num(r) + ' Ω·cm', 'big')}`; },
+    plug(S) { const p = A.freeCarriers(S.Ea, S.Na, S.T, nd(S)), r = A.resistivity(p, S.T); return `${S.Nd > nd(S) ? '<small class=\"no\">N_D above N_A would make the layer n-type; capped at 0.95 N_A</small><br>' : ''}N<sub>A</sub> = ${b(num(S.Na))}, N<sub>D</sub> = ${b(num(S.Nd))} cm⁻³, T = ${b(S.T.toFixed(0) + ' K')}, e<sup>−E<sub>A</sub>/kT</sup> = ${num(Math.exp(-S.Ea / (A.KB_EV * S.T)))}<br>p = ${b(num(p) + ' cm⁻³')} (${(100 * p / S.Na).toPrecision(2)}% of boron), μ = ${num(A.holeMobility(S.T))} cm²/V·s<br>ρ = 1/(q p μ) = ${b(num(r) + ' Ω·cm', 'big')}`; },
   },
 
   g2: {
     init(st) { st.hist = new Float64Array(81); st.na = 0; st.nb = 0; st.T = 0; st.rng = A.mulberry(11); st.vis = []; st.next = 0; },
     frame(g, w, h, t, S, st, dt) {
-      if (!st.hist || st.key !== `${S.rho}|${S.tau1}`) { this.init(st); st.key = `${S.rho}|${S.tau1}`; }
+      const gk = `${Math.round(S.rho * 20)}|${S.tau1}`; if (!st.hist || st.key !== gk) { this.init(st); st.key = gk; }   // rho in steps of 0.05, so Play builds a histogram
       // fast background simulation (ns): renewal emitter with two exponential stages (rates sum to 1/tau1) plus Poisson background
       const r = st.rng, k = 1 / (2 * S.tau1), sig = 1 / (4 * S.tau1), bg = sig * (1 - S.rho) / S.rho, eta = 1;
       let te = st.T, tb = st.T, A1 = [], B1 = [];
@@ -423,7 +425,7 @@ export const SCENES = {
       st.hud = 'pink: holes in the channel · thinner channel near the drain as V_DS grows';
     },
     plot(g, w, h, S) {
-      const vs = range(0, 20, 200), ax = axes(g, w, h, { x: [0, 20], y: [0, A.fetI(10, 20, 300) * 1e3 * 0.42], xlabel: '|V_DS| (V)', ylabel: '|I_D| (mA), W = 100 µm, L = 2 µm' });
+      const vs = range(0, 20, 200), ax = axes(g, w, h, { x: [0, 20], y: [0, Math.max(10, A.fetI(10, 20, S.mu) * 1e3 * 1.08)], xlabel: '|V_DS| (V)', ylabel: '|I_D| (mA), W = 100 µm, L = 2 µm' });
       ax.clip(); for (const v of [3, 5, 7, 9]) curve(g, ax, vs, x => A.fetI(v, x, S.mu) * 1e3, 'rgba(148,190,220,.45)', 1.3);
       curve(g, ax, range(0, 8.5, 80), x => A.fetI(x + 1.5, x, S.mu) * 1e3, 'rgba(255,196,107,.7)', 1.4, [5, 4]);
       curve(g, ax, vs, x => A.fetI(S.vgs, x, S.mu) * 1e3, C.pink, 2.8); ax.unclip();
@@ -465,8 +467,9 @@ export const SCENES = {
 
   yield: {
     frame(g, w, h, t, S, st, dt) {
-      const side = Math.sqrt(S.A), key = `${S.A}|${S.d}|${S.D0}`;
-      if (!st.L || st.key !== key || st.age > 6) { st.L = layoutDies(S.d, side); st.key = key; st.age = 0; st.pts = []; st.rng = A.mulberry(st.seed = (st.seed || 1) + 1); st.target = Math.round(S.D0 * Math.PI * (st.L.r / 10) ** 2); }
+      const side = Math.sqrt(S.A), key = `${S.A}|${S.d}`;   // D0 is swept by Play, so it is not part of the reset key
+      if (!st.L || st.key !== key || st.age > 6) { st.L = layoutDies(S.d, side); st.key = key; st.age = 0; st.pts = []; st.rng = A.mulberry(st.seed = (st.seed || 1) + 1); }
+      st.target = Math.round(S.D0 * Math.PI * (st.L.r / 10) ** 2); if (st.pts.length > st.target * 1.2 + 3) { st.L = layoutDies(S.d, side); st.pts = []; st.age = 0; }
       st.age += dt; const R = Math.min(h * 0.44, w * 0.27), cx = w * 0.3, cy = h * 0.5, sc = R / (S.d / 2);
       const want = Math.min(st.target, Math.round(st.target * Math.min(1, st.age / 3.5)));
       while (st.pts.length < want) { const rr = st.L.r * Math.sqrt(st.rng()), a = TAU * st.rng(), x = rr * Math.cos(a), y = rr * Math.sin(a); st.pts.push([x, y, st.age]); const die = st.L.dies.find(q => x >= q.x && x < q.x + side && y >= q.y && y < q.y + side); if (die) die.bad = true; }
@@ -531,18 +534,18 @@ export const SCENES = {
       for (let i = 0; i < d; i++) for (let j = 0; j < d; j++) { const e = st.err[i * d + j], x = x0 + (j + 0.5) * cell, y = y0 + (i + 0.5) * cell; if (e > 0) glow(g, x, y, cell * 0.9, C.red, e); dot(g, x, y, Math.max(1.6, cell * 0.16), e > 0 ? C.red : C.ink); }
       const xr = x0 + size + 26; txt(g, `distance-${d} surface code`, xr, 50, { c: C.ink, size: 14, weight: 700 }); txt(g, `${A.surfaceQubits(d)} physical qubits`, xr, 74, { size: 12.5 }); txt(g, 'per logical qubit', xr, 92, { size: 12.5 });
       txt(g, 'red: a physical error', xr, 120, { size: 12, c: C.red }); txt(g, 'gold: checks that light up', xr, 138, { size: 12, c: C.gold }); txt(g, `errors shown ${Math.round(visRate / S.p)}× more often than p`, xr, 156, { size: 11 });
-      const pl = A.logicalError(S.p, d); txt(g, `p_L = ${num(pl)} per round`, xr, 194, { c: S.p < 1e-2 ? C.green : C.red, size: 14, weight: 700 });
+      const pl = sat(A.logicalError(S.p, d)); txt(g, `p_L = ${pl >= 0.5 ? '0.5 (saturated)' : num(pl)} per round`, xr, 194, { c: S.p < 1e-2 ? C.green : C.red, size: 14, weight: 700 });
       txt(g, S.p < 1e-2 ? `d + 2 → ${num(1e-2 / S.p)}× safer` : 'above threshold: bigger is worse', xr, 216, { size: 12.5, c: S.p < 1e-2 ? C.green : C.red });
       st.hud = 'each dot is a data qubit; the shaded squares are the parity checks between them';
     },
     plot(g, w, h, S) {
       const ps = range(1e-4, 2e-2, 120, true), ax = axes(g, w, h, { x: [1e-4, 2e-2], y: [1e-25, 1], logx: true, logy: true, xlabel: 'Physical error rate p (log)', ylabel: 'Logical error p_L (log)' });
-      ax.clip(); for (let d = 3; d <= 25; d += 2) curve(g, ax, ps, p => A.logicalError(p, d), d === S.d ? C.teal : `rgba(148,190,220,${0.15 + 0.4 * (1 - d / 25)})`, d === S.d ? 3 : 1.2);
+      ax.clip(); for (let d = 3; d <= 25; d += 2) curve(g, ax, ps, p => sat(A.logicalError(p, d)), d === S.d ? C.teal : `rgba(148,190,220,${0.15 + 0.4 * (1 - d / 25)})`, d === S.d ? 3 : 1.2);
       line(g, [[ax.X(1e-2), ax.Y(1e-25)], [ax.X(1e-2), ax.Y(1)]], C.red, 1.4, [6, 4]); ax.unclip(); txt(g, 'threshold', ax.X(1e-2) - 6, ax.T + 30, { align: 'right', c: C.red, size: 11.5 });
-      marker(g, ax.X(S.p), ax.Y(A.logicalError(S.p, S.d)), C.red, `d = ${S.d}`);
+      marker(g, ax.X(S.p), ax.Y(sat(A.logicalError(S.p, S.d))), C.red, `d = ${S.d}`);
       legend(g, ax.L + 12, ax.T + ax.ph - 30, [[`your distance d = ${S.d}`, C.teal], ['d = 3, 5, …, 25', 'rgba(148,190,220,.6)']]);
     },
-    plug(S) { const pl = A.logicalError(S.p, S.d); let dn = 3; while (dn < 101 && A.logicalError(S.p, dn) > 1e-12) dn += 2; return `p<sub>L</sub> = 0.1 × (${b(num(S.p))}/0.01)<sup>(${b(S.d)} + 1)/2</sup> = ${b(num(pl), 'big')}, n = 2 × ${S.d}² − 1 = ${b(A.surfaceQubits(S.d))}<br><small>${S.p < 1e-2 ? `for 10⁻¹² per round you need d = ${dn < 101 ? dn : '> 100'} (${dn < 101 ? A.surfaceQubits(dn).toLocaleString('en-US') : 'too many'} qubits)` : 'above threshold no distance helps'}</small>`; },
+    plug(S) { const pl = sat(A.logicalError(S.p, S.d)); let dn = 3; while (dn < 101 && A.logicalError(S.p, dn) > 1e-12) dn += 2; return `p<sub>L</sub> = 0.1 × (${b(num(S.p))}/0.01)<sup>(${b(S.d)} + 1)/2</sup> = ${b(num(pl), 'big')}, n = 2 × ${S.d}² − 1 = ${b(A.surfaceQubits(S.d))}<br><small>${S.p < 1e-2 ? `for 10⁻¹² per round you need d = ${dn < 101 ? dn : '> 100'} (${dn < 101 ? A.surfaceQubits(dn).toLocaleString('en-US') : 'too many'} qubits)` : 'above threshold no distance helps'}</small>`; },
   },
 };
 

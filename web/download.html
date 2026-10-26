@@ -63,9 +63,12 @@ import { boot } from './assets/site.js';
 boot('App');
 const $ = id => document.getElementById(id), REPO = 'Normansrule/adamas-diamond-framework', BASEURL = `https://github.com/${REPO}/releases/latest/download/`;
 document.querySelectorAll('[data-f]').forEach(a => a.href = BASEURL + a.dataset.f);
-const ua = (navigator.userAgent || '') + ' ' + (navigator.platform || ''), os = /Win/i.test(ua) ? 'win' : /Mac/i.test(ua) ? 'mac' : /Linux|X11/i.test(ua) ? 'linux' : null;
+const ua = (navigator.userAgent || '') + ' ' + (navigator.platform || ''), mobile = /Android|iPhone|iPad|iPod/i.test(ua);
+const os = mobile ? null : /Win/i.test(ua) ? 'win' : /Mac/i.test(ua) ? 'mac' : /Linux|X11/i.test(ua) ? 'linux' : null;
 if (os) { const card = document.querySelector(`.card[data-os="${os}"]`); card.classList.add('mine'); const first = card.querySelector('[data-f]');
-  $('primary').href = first.href; $('primary').textContent = `⬇ Download for ${{ win: 'Windows', mac: 'macOS', linux: 'Linux' }[os]}`; }
+  $('primary').href = first.href; $('primary').textContent = `⬇ Download for ${{ win: 'Windows', mac: 'macOS', linux: 'Linux' }[os]}`;
+  if (os === 'mac' && navigator.userAgentData?.getHighEntropyValues) navigator.userAgentData.getHighEntropyValues(['architecture']).then(v => { if (v.architecture === 'x86') { const intel = card.querySelector('[data-f="ADAMAS-mac-x64.dmg"]'); $('primary').href = intel.href; $('primary').textContent = '⬇ Download for macOS (Intel)'; } }).catch(() => {}); }
+if (mobile) { $('primary').href = '#all'; $('primary').textContent = 'Desktop downloads ↓'; }
 if (window.adamasDesktop) { $('inapp').hidden = false; $('inapp').textContent = `You are running the ADAMAS desktop app ${window.adamasDesktop.version} on ${window.adamasDesktop.platform}. Newer builds appear here when they are released.`; }
 // latest release: version, date, and file sizes (skipped quietly when offline)
 fetch(`https://api.github.com/repos/${REPO}/releases/latest`).then(r => r.ok ? r.json() : null).then(rel => {

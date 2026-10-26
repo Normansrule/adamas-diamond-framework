@@ -111,11 +111,15 @@ test('fit.js recovers the parameters of the example datasets', () => {
   assert.ok(r.hist.length > 2);
 });
 import * as UN from '../assets/sim/uncertainty.js';
-test('uncertainty: power ratio baseline 6.67 and permittivity-free; LHS covers every stratum', () => {
-  const P = { 'Diamond critical field': [10, 5, 10, 'lin'], 'Diamond hole mobility': [3800, 1000, 3800, 'log'], 'SiC critical field': [3, 2.5, 3.5, 'lin'], 'SiC electron mobility': [950, 700, 1000, 'lin'] };
-  assert.ok(Math.abs(UN.powerRatio(UN.baseline(P)) - 6.667) < 0.01);
-  const s = UN.lhs(P, 100), f = s.map(x => x['Diamond critical field']);
-  for (let k = 0; k < 100; k++) assert.equal(f.filter(v => v >= 5 + 0.05 * k && v < 5 + 0.05 * (k + 1)).length, 1);
+test('uncertainty: bulk-doped diamond loses at 300 K, wins at 523 K; LHS covers every stratum', () => {
+  const P = { 'Diamond critical field': [10, 5, 10, 'lin'], 'Diamond hole mobility': [2000, 1000, 3800, 'log'], 'Diamond permittivity': [5.7, 5.6, 5.8, 'lin'],
+    'SiC critical field': [2.5, 2.2, 3.0, 'lin'], 'SiC electron mobility': [1000, 700, 1000, 'lin'] };
+  const b = UN.baseline(P), f = UN.ionizedFraction(5.7, 10);
+  assert.ok(f > 0.003 && f < 0.008, `f_ion ${f}`);
+  assert.ok(Math.abs(UN.powerRatio(b) - Math.sqrt(2000 * 100 * f / (1000 * 6.25))) < 1e-9);
+  assert.ok(UN.powerRatio(b) < 1 && UN.powerRatioHot(b) > 1);
+  const s = UN.lhs(P, 100), fc = s.map(x => x['Diamond critical field']);
+  for (let k = 0; k < 100; k++) assert.equal(fc.filter(v => v >= 5 + 0.05 * k && v < 5 + 0.05 * (k + 1)).length, 1);
 });
 import { search, score } from '../assets/search.js';
 test('search palette ranks title matches first and tolerates partial words', () => {
@@ -144,7 +148,7 @@ test('equations in action: every JavaScript model matches its Python twin (golde
   for (const [d, a, d0, n, yp, ym, good] of G.yield) {
     assert.equal(act.diesPerWafer(d, a), n); assert.ok(close(act.poissonY(a, d0), yp, 1e-12)); assert.ok(close(act.murphyY(a, d0), ym, 1e-12)); assert.ok(close(act.goodDies(d, a, d0), good, 1e-9));
   }
-  const M = { Si: { eps_r: 11.7, mu: 1400, ec_mv_cm: 0.3 }, '4H-SiC': { eps_r: 9.7, mu: 1000, ec_mv_cm: 2.5 }, Diamond: { eps_r: 5.7, mu: 3800, ec_mv_cm: 10 } };
+  const M = { Si: { eps_r: 11.7, mu: 1400, ec_mv_cm: 0.3 }, '4H-SiC': { eps_r: 9.7, mu: 1000, ec_mv_cm: 2.5 }, Diamond: { eps_r: 5.7, mu: 2000, ec_mv_cm: 10 } };   // mobility baseline 2000 (3800 is an unreproduced record, audit G8)
   for (const [k, vb, v] of G.bfom) assert.ok(close(act.ronSp(M[k], vb), v, 1e-9), `bfom ${k} ${vb}`);
   for (const [p, d, pl, n] of G.surface) { assert.ok(close(act.logicalError(p, d), pl, 1e-12)); assert.equal(act.surfaceQubits(d), n); }
 });

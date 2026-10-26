@@ -1,6 +1,6 @@
 // ADAMAS desktop: the website, bundled with its libraries, served from inside the app over a private app:// scheme
 // (so ES modules, fetch of data/*.json, and the import map behave exactly as on the web), in a sandboxed window.
-const { app, BrowserWindow, Menu, protocol, shell } = require('electron');
+const { app, BrowserWindow, Menu, protocol, shell, session } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -73,7 +73,10 @@ if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => { const w = BrowserWindow.getAllWindows()[0]; if (w) { if (w.isMinimized()) w.restore(); w.focus(); } });
   app.whenReady().then(() => {
-    serve(); menu(); if (process.argv.includes('--check')) return;
+    serve(); menu();
+    session.defaultSession.setPermissionRequestHandler((_wc, _perm, cb) => cb(false));   // no camera, microphone, location, notifications
+    session.defaultSession.setPermissionCheckHandler(() => false);
+    if (process.argv.includes('--check')) return;
     createWindow(process.env.ADAMAS_PAGE ? `app://adamas/${process.env.ADAMAS_PAGE}` : HOME);
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
   });

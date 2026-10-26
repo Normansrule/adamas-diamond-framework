@@ -10,7 +10,13 @@ Chain of reasoning (each step a model of this repository unless cited):
    factories multiply this by an overhead factor (about 2 for compact lattice-surgery layouts [litinski2019]).
 4. Cycle time of one syndrome round on NV hardware = ancilla preparation + four entangling gates + readout. The gate
    time comes from the dipolar coupling at the cell spacing [dolde2013] (chapter E5); readout from chapter E4.
-The illustrative workloads below are order-of-magnitude, not the published algorithm counts.
+5. Inter-cell link (E5 of the audit): cells sit on a 1 um pitch, set by optical addressing and wiring, but a dipolar
+   gate at 1 um takes about 10 s (coupling about 0.05 Hz), far beyond the electron coherence time. The four gates per round are therefore an assumed mediated link
+   between neighbouring cells (a spin-chain bus or a photonic link, proposed here, not demonstrated) with the time and
+   error of a 25 nm double-quantum dipolar gate: 25 us [dolde2013] (chapter E5) and 0.3 % (LINK below).
+The chemistry and materials workloads are order-of-magnitude illustrations. The RSA-2048 workload is calibrated: its
+logical step count is chosen so that the published parameters of [gidney2021] (distance 27, 1 us cycle) give their
+published 8 hours; 3e9 is the Toffoli count [gidney2021], which overstates the serial steps (RSA_STEPS_TOFFOLI).
 """
 from __future__ import annotations
 import json
@@ -24,10 +30,19 @@ DATA = Path(__file__).resolve().parents[1] / "docs" / "data" / "resource_fit.jso
 READOUT_US = [30.0, 100.0, 300.0, 1000.0, 3000.0, 10000.0]
 T2_MEM_MS = [1000.0, 100.0]
 
-WORKLOADS = {  # (logical qubits, logical time steps); illustrative scales
+LINK = {"kind": "mediated inter-cell link (spin-chain bus or photonic), proposed here, not demonstrated",
+        "time_us": 25.0, "error": 3e-3, "pitch_um": 1.0,
+        "basis": "time of a 25 nm double-quantum dipolar gate [dolde2013]; error is the target of chapter E6"}
+
+GE2021 = {"hours": 8.0, "distance": 27, "cycle_us": 1.0, "logical": 6189, "toffoli": 2.7e9}   # [gidney2021], 3n + 0.002 n lg n logical
+RSA_STEPS = GE2021["hours"] * 3.6e9 / (GE2021["distance"] * GE2021["cycle_us"])           # 1.07e9 logical steps of d rounds
+RSA_STEPS_TOFFOLI = 3e9                     # upper bound: the Toffoli count (about 2.7e9 [gidney2021], rounded up) treated as serial steps
+RSA_JOB = "RSA-2048, calibrated (6,000 logical, 1.07×10⁹ steps)"
+
+WORKLOADS = {  # (logical qubits, logical time steps)
     "Chemistry demo (100 logical, 10⁶ steps)": (100, 1e6),
     "Materials simulation (1,000 logical, 10⁹ steps)": (1000, 1e9),
-    "RSA-2048 scale (6,000 logical, 3×10⁹ steps)": (6000, 3e9),
+    RSA_JOB: (6000, RSA_STEPS),
 }
 
 
@@ -60,8 +75,8 @@ def build_table(shots: int = 200000) -> dict:
 
 MODELS = {  # resource tables: (file stem, description)
     "standard": ("resource_fit", "standard code, depolarizing gate and idle noise (chapter E10)"),
-    "css_biased": ("resource_fit_css_biased", "standard code, biased NV noise (gates at bias 100, dephasing idle)"),
-    "xzzx_biased": ("resource_fit_xzzx_biased", "native XZZX code, biased NV noise (gates at bias 100, dephasing idle)"),
+    "css_biased": ("resource_fit_css_biased", "standard code, biased NV noise (CZ at bias 100, CNOT at 5, dephasing idle)"),
+    "xzzx_biased": ("resource_fit_xzzx_biased", "native XZZX code, biased NV noise (CZ at bias 100, CNOT at 5, dephasing idle)"),
 }
 
 
@@ -132,8 +147,8 @@ class Estimate:
 
 
 def estimate(n_logical: float, steps: float, t_read_us: float = 1000.0, t2_mem_ms: float = 1000.0, eps: float = 0.01,
-             gate_us: float = 25.0, prep_us: float = 5.0, overhead: float = 2.0, qubits_per_cell: int = 4,
-             pitch_um: float = 1.0, fill: float = 0.6, t: dict | None = None, model: str = "standard") -> Estimate | None:
+             gate_us: float = LINK["time_us"], prep_us: float = 5.0, overhead: float = 2.0, qubits_per_cell: int = 4,
+             pitch_um: float = LINK["pitch_um"], fill: float = 0.6, t: dict | None = None, model: str = "standard") -> Estimate | None:
     t = t or table_for(model)
     A, lam = interp_fit(t, t_read_us, t2_mem_ms)
     if lam <= 1.0:

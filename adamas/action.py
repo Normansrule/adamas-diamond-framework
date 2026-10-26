@@ -165,7 +165,7 @@ SCENES = [
   "refs": ["kawarada2023", "kasu2012", "sze2006"], "lab": "labs/transistor.html"},
 
  {"id": "gate", "group": "Scale", "exp": "D1", "title": "Two qubits talk: the dipolar gate and its error budget",
-  "tagline": "Two NVs 25 nm apart feel each other's field; the gate is slow, so coherence and charge state decide the fidelity.",
+  "tagline": "Two NVs 25 nm apart feel each other's field; the gate is slow, so coherence, pulses and charge state all cost fidelity.",
   "tex": r"\nu = \frac{52\ \mathrm{MHz\,nm^3}}{r^3},\quad t_g = \frac{1}{2\nu},\quad F = q^2\left(\frac{1+e^{-(t_g/T_2)^3}}{2}\right)^2 + \frac{1-q^2}{4}",
   "html": f"ν = {FR('<span class=k>52 MHz·nm³</span>', V('r', 'r') + '<sup>3</sup>')}, t<sub>g</sub> = {FR('1', '2ν')}, F = {V('q', 'q')}<sup>2</sup>({FR('1 + e<sup>−(t<sub>g</sub>/' + V('t2', 'T<sub>2</sub>') + ')<sup>3</sup></sup>', '2')})<sup>2</sup> + {FR('1 − ' + V('q', 'q') + '<sup>2</sup>', '4')}",
   "symbols": [("ν", "dipolar coupling (perpendicular geometry)"), ("r", "NV–NV distance"), ("t_g", "controlled-phase gate time"), ("T₂", "echo coherence time of each spin"),
@@ -174,10 +174,10 @@ SCENES = [
            {"key": "t2", "label": "Echo T₂", "unit": "µs", "min": 100, "max": 3000, "step": 10, "value": 600},
            {"key": "q", "label": "Preparation q", "unit": "", "min": 0.5, "max": 1, "step": 0.01, "value": 0.75}],
   "auto": "q",
-  "levels": {"k": "Two tiny magnets close together can feel each other, very gently. To make them work as a team they need to be close, stay calm long enough, and both be switched on. If one is 'off' a quarter of the time, the teamwork falls apart.",
-             "s": "Magnetic dipole coupling falls as 1/r³: 3.3 kHz at 25 nm, so a gate takes about 150 µs. Echo coherence must survive that long. Even with perfect coherence, if each NV is in the right charge state only with probability q, the fidelity is capped near q²; at q ≈ 0.75 that explains the measured 0.67.",
-             "r": "Echoed controlled-phase gate, F_coh = (1 + w)²/4 with w = exp(−(t_g/T₂)³), unprepared runs modeled as fully mixed (fidelity ¼). Single-quantum coupling at θ = 90°; the published pair [dolde2013] used double-quantum encoding (4× coupling). Same as adamas.gate_budget.GateBudget."},
-  "refs": ["dolde2013", "neumann2010natphys", "aslam2013"], "lab": "explorer.html#gate"},
+  "levels": {"k": "Two tiny magnets close together can feel each other, very gently. To make them work as a team they need to be close, stay calm long enough, and both be switched on. If one is 'off' a quarter of the time and nobody checks first, the teamwork falls apart.",
+             "s": "Magnetic dipole coupling falls as 1/r³: 3.3 kHz at 25 nm, so a gate takes about 150 µs. Echo coherence must survive that long. Even with perfect coherence, if each NV is in the right charge state only with probability q and runs are not pre-selected, the fidelity is capped near q². The 2013 experiment's 0.67 was already normalized to charge-preselected runs, so it is not explained by q; the 2025 record of 96% pre-selects the charge state with a 594 nm laser [joas2025].",
+             "r": "Echoed controlled-phase gate, F_coh = (1 + w)²/4 with w = exp(−(t_g/T₂)³), unprepared runs modeled as fully mixed (fidelity ¼). Single-quantum coupling at θ = 90°; the published pair [dolde2013] used double-quantum encoding (4× coupling). The echo exponent 3 assumes a slow ¹³C bath; with p = 1 or two gate applications the coherence limit for that pair drops to about 0.8 (adamas.gate_budget.coherence_limited_range). Addressing: both NVs sit in one laser spot and are told apart by their crystal orientation (audit Q4)."},
+  "refs": ["dolde2013", "joas2025", "neumann2010natphys", "aslam2013"], "lab": "explorer.html#gate"},
 
  {"id": "yield", "group": "Scale", "exp": "D2", "title": "Defects on a wafer: yield and good dies",
   "tagline": "Every killer defect ruins the die it lands on. Bigger dies catch more of them.",

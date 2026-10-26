@@ -6,22 +6,28 @@
 
 Process basis: hydrogen-terminated diamond MOSFET flow of [Chapter 3](../03_process_flow_vs_cmos.md) ([kawarada2014], [kitabayashi2017], [saha2021]), two threshold flavors as in [liu2017].
 
-| Mask | Layer | Purpose | Minimum feature (proposed) | Tool ([E1](E1_lithography_from_euv_to_electron_beam.md)) |
+The mask list below is the one the traveler uses ([docs/process/TRAVELER.md](../process/TRAVELER.md), generated from `adamas.traveler`): **six transistor masks**, including the enhancement-mode (ENH) step, plus an alignment-mark level and one optional qubit level. The PDK-0 layer names are those of `adamas.pdk0`.
+
+| Mask (traveler step) | PDK-0 layer | Purpose | Minimum feature (proposed) | Tool ([E1](E1_lithography_from_euv_to_electron_beam.md)) |
 |---|---|---|---|---|
-| 1 | `OHMIC` | Gold source/drain; also protects the hydrogen termination | 2 µm | i-line |
-| 2 | `ISO` | Oxygen-plasma isolation outside active areas | 2 µm | i-line |
-| 3 | `ENH` | Partial oxidation of the channel for enhancement-mode devices [kitabayashi2017] | 2 µm | i-line |
-| 4 | `GATE` | Gate metal on atomic-layer-deposited Al₂O₃ | 2 µm (0.5 µm option) | i-line / electron beam |
-| 5 | `VIA` | Openings in Al₂O₃ | 3 µm | i-line |
-| 6 | `METAL2` | Interconnect and pads | 3 µm | i-line |
-| Q1 (optional) | `QIMPLANT` | Nitrogen implant apertures in oxygen-terminated regions | 20 nm | electron beam |
-| Q2 (optional) | `QELEC` | Photocurrent electrodes and microwave line | 1 µm | i-line |
+| Marks (S05) | — | Alignment marks etched into the diamond under a hard mask | — | i-line or electron beam |
+| Q (S06, optional) | `QIMPLANT` | Nitrogen implant apertures, before hydrogen termination | 20 nm | electron beam |
+| 1 (S10) | `OHMIC` + `ISO` | Gold pattern; the uncovered C–H is oxidized by an oxygen plasma, which isolates every device | 2 µm | i-line |
+| 2 (S11) | gate opening | Gap in the gold that sets the channel length; source and drain self-aligned | 2 µm (0.1 to 1 µm by electron beam for RF) | i-line / electron beam |
+| 3 (S11E) | `ENH` | Partial oxidation of the channel for enhancement-mode devices [kitabayashi2017] | 2 µm | i-line / electron beam |
+| 4 (S14) | `GATE` | Gate metal on atomic-layer-deposited Al₂O₃ | 2 µm (0.5 µm option) | i-line / electron beam |
+| 5 (S15) | `VIA` | Openings in Al₂O₃ | 3 µm | i-line |
+| 6 (S16) | `METAL2` (+ `QELEC`) | Interconnect and pads; photocurrent electrodes and microwave line for qubits are drawn on the same mask | 3 µm | i-line |
 
 ```mermaid
 flowchart LR
-    m1[OHMIC] --> m2[ISO] --> m3[ENH] --> ald[ALD Al₂O₃] --> m4[GATE] --> m5[VIA] --> m6[METAL2]
-    m2 -. quantum option .-> q1[QIMPLANT + anneal] --> q2[QELEC]
+    mk[Marks S05] -. qubit option .-> q1[QIMPLANT S06 + anneal S07]
+    mk --> h[H termination S08 + gold S09]
+    q1 -.-> h
+    h --> m1[1 OHMIC + ISO] --> m2[2 gate opening] --> m3[3 ENH] --> ald[ALD Al₂O₃] --> m4[4 GATE] --> m5[5 VIA] --> m6[6 METAL2 + QELEC]
 ```
+
+In the qubit variant, hydrogen termination (S08) must use the low-temperature option: a hydrogen plasma at 700 to 1000 °C passivates NV centers into dark NVH deep into the crystal [stacey2012], which would erase the NVs made in S06 and S07 (the traveler's route is proposed, not yet qualified).
 
 Design rules follow the scalable lambda convention of [meadconway1980] with λ = 1 µm: minimum width 2λ, spacing 2λ, gate overlap of active 2λ, via enclosure 1λ. Conservative rules trade density for yield, which is the right trade at this maturity ([Chapter 2](../02_wafer_manufacturing.md), yield model).
 
@@ -104,7 +110,7 @@ The first run in v0.8.0 stopped at LEF parsing (a cut layer declared without its
 
 ## E2.4e The full run sheet
 
-The mask sequence above is expanded into a 19-step cleanroom traveler with parameters, checks, safety, and failure modes in [docs/process](../process/README.md), with an [interactive version](https://normansrule.github.io/adamas-diamond-framework/process.html).
+The mask sequence above is expanded into a 20-step cleanroom traveler with parameters, checks, safety, and failure modes in [docs/process](../process/README.md), with an [interactive version](https://normansrule.github.io/adamas-diamond-framework/process.html).
 
 ## E2.5 Projects
 
@@ -113,4 +119,4 @@ The mask sequence above is expanded into a 19-step cleanroom traveler with param
 | P-1 | Draw the PDK-0 monitor die with the rules above | **Done in v0.6.0**: `circuits/layout/pdk0_monitor.gds`, `.lyp`, `.lydrc` |
 | P-2 | LEF, timed Liberty, placement of DIA-4; OpenROAD configuration | **Done in v0.7.0** (Section E2.4c); a routed result with OpenROAD is the remaining step |
 | P-3 | Fit level-0 and EKV parameters to digitized curves of [liu2017] and [kawarada2014] | Model cards with fit error |
-| P-4 | Fabricate the monitor die (4 masks) on a 3 to 5 mm plate | Measured parameter table that replaces every placeholder in this repository |
+| P-4 | Fabricate the monitor die (the six transistor masks plus marks; the qubit level optional) on a 3 to 5 mm plate | Measured parameter table that replaces every placeholder in this repository |

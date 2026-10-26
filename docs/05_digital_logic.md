@@ -10,8 +10,8 @@
 | NOR and NAND gates from hydrogenated-diamond transistors | [liu2017] |
 | Normally-off operation through partial oxygen termination of the channel | [kitabayashi2017] |
 | Inversion-channel p-MOSFET | [matsumoto2016] |
-| First n-channel MOSFET, the missing half of diamond CMOS | [liao2024] |
-| p-channel MOSFET on a phosphorus-doped n-type body | [zhao2024] |
+| First n-channel MOSFET (first per the authors; phosphorus-doped channel), the missing half of diamond CMOS | [liao2024] |
+| p-channel MOSFET on a phosphorus-doped n-type body (same structure class as [matsumoto2016]) | [zhao2024] |
 
 ## 5.2 Inverter model
 
@@ -46,7 +46,7 @@ flowchart TB
     s3 --> d1
 ```
 
-1. **High-temperature and radiation-hard control logic** (hundreds to thousands of gates), following the silicon carbide precedent of [neudeck2016].
+1. **High-temperature and radiation-hard control logic** (hundreds to thousands of gates), following the silicon carbide precedent of [neudeck2016]. High-temperature diamond logic has not been demonstrated; the 400 °C result is a single transistor, short-term ([kawarada2014]).
 2. **Heterogeneous integration**: diamond chiplets bonded on silicon CMOS, already demonstrated for quantum devices ([li2024], [wan2020], [kim2019cmos], [ibrahim2021]). See [Chapter 9](09_cmos_control_integration.md).
 3. **Future complementary logic** once n-channel mobility, threshold control, and p/n integration on one wafer mature ([liao2024], [zhao2024]). Both orientations matter here: phosphorus incorporates best on (111) ([koizumi1997]), while large wafers are (001) ([kato2005], [kim2021]).
 

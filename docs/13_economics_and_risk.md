@@ -4,7 +4,7 @@
 
 ## 13.1 The silicon carbide precedent
 
-Silicon carbide wafers went from 25 mm in the early 1990s to 200 mm in the 2020s ([kimoto2014], `adamas.wafer.WAFER_HISTORY`). At each step the dominant products were small-die discretes, because yield falls exponentially with die area when defect density is high ([murphy1964], [stapper1983]; Figure 16 in [Chapter 2](02_wafer_manufacturing.md)). Diamond's 2026 status, reproducible 76 mm wafers with 100 mm in development [e6orbray2026], corresponds to silicon carbide around 2001 or silicon around 1972.
+Silicon carbide wafers went from 25 mm in the early 1990s to 200 mm in the 2020s ([kimoto2014], `adamas.wafer.WAFER_HISTORY`). At each step the dominant products were small-die discretes, because yield falls exponentially with die area when defect density is high ([murphy1964], [stapper1983]; Figure 16 in [Chapter 2](02_wafer_manufacturing.md)). Diamond's 2026 status is 51 mm (2-inch) heteroepitaxial wafers in the peer-reviewed literature ([kim2021], [qu2024]), plus an industry announcement of a reproducible 76 mm process with 100 mm in development that is reported, not peer-reviewed [e6orbray2026]. By diameter alone this resembles silicon carbide around 1997 to 2001 or silicon around 1964 to 1972 (`adamas.wafer.WAFER_HISTORY`). By defect density diamond is far behind: wafer-scale heteroepitaxial material carries about 2×10⁷ dislocations per cm² ([stehl2013], [Chapter 2](02_wafer_manufacturing.md)).
 
 ## 13.2 Product sequence ADAMAS expects
 
@@ -18,7 +18,7 @@ Silicon carbide wafers went from 25 mm in the early 1990s to 200 mm in the 2020s
 
 ## 13.3 Cost logic for quantum chiplets
 
-A quantum chiplet needs very little diamond. A 1 mm² chiplet from a 76 mm wafer yields about 4,400 gross dies by `adamas.wafer.dies_per_wafer(76, 1.0)`. Only the top few micrometers need quantum-grade ¹²C material ([Chapter 2](02_wafer_manufacturing.md)), so isotope cost per die is negligible. The dominant costs are characterization (every NV site must be mapped) and bonding. This is why detect-and-repair (experiment C-5) and electrical readout (C-6, F-1) are the economically decisive experiments: they convert a microscopy-limited craft into a wafer-probe-style test flow.
+A quantum chiplet needs very little diamond. A 1 mm² chiplet from a 51 mm (2-inch) wafer yields about 1,900 gross dies by `adamas.wafer.dies_per_wafer(51, 1.0)`; the announced 76 mm process would give about 4,400, if it delivers usable quality. Only the top few micrometers need quantum-grade ¹²C material ([Chapter 2](02_wafer_manufacturing.md)), so isotope cost per die is negligible. The dominant costs are characterization (every NV site must be mapped) and bonding. This is why detect-and-repair (experiment C-5) and electrical readout (C-6, F-1) are the economically decisive experiments: they convert a microscopy-limited craft into a wafer-probe-style test flow.
 
 ## 13.4 Risk register
 
@@ -26,9 +26,9 @@ A quantum chiplet needs very little diamond. A 1 mm² chiplet from a 76 mm wafer
 |---|---|---|---|---|
 | n-type doping stays impractical | High | Blocks monolithic complementary logic | Heterogeneous integration with silicon; p-only logic for interface roles | [kalish1999], [liao2024], [li2024] |
 | NV placement yield stalls below 50 percent | Medium | Blocks direct-coupled arrays | Detect-and-repair; clusters plus bus; laser writing | [chen2019], [luhmann2019], [yao2012] |
-| Inter-cell gate fidelity stays below 0.95 at room temperature | Medium | Limits processors to few-qubit cells | ¹²C material, optimal control, closer spacing; accept accelerator niche | [dolde2014], [herbschleb2019] |
-| Wafer scaling stalls at 3 to 4 inch | Medium | Cost floor stays high | Small-die products remain viable | [e6orbray2026], [schreck2017] |
-| Dislocations limit breakdown and coherence on heteroepitaxial wafers | Medium | Performance gap between HPHT and wafer-scale material | Thick buffer growth, dislocation filtering, offcut substrates | [kim2021], [gaukroger2008], [friel2009] |
+| NV-NV gate fidelity stays below 0.99 at room temperature (gate G-2) | Medium | Limits processors to few-qubit cells | ¹²C material, optimal control, closer spacing, charge pre-selection; accept accelerator niche | [dolde2014], [joas2025], [herbschleb2019] |
+| Wafer scaling stalls at 2 to 3 inch | Medium | Cost floor stays high | Small-die products remain viable | [schreck2017], [kim2021], [e6orbray2026] (reported) |
+| Dislocations limit breakdown and coherence on heteroepitaxial wafers | **High** | Measured breakdown field falls from ≥ 7.7 MV/cm on small-area homoepitaxial diamond to about 1.1 to 1.5 MV/cm on wafer-scale heteroepitaxial material (about 10⁷ cm⁻²) ([volpe2010], [kwak2021], [weippert2022]); single-NV $T_2$ is about 5 µs on heteroepitaxial diamond [nelz2019]. Roadmap target F-3 is therefore restated as a $T_2$ distribution against etch-pit density | Thick buffer growth (density falls with thickness [stehl2013]), dislocation filtering, offcut substrates; small dies; homoepitaxial layers for qubits | [kim2021], [gaukroger2008], [friel2009], [stehl2013], [kwak2021], [weippert2022], [nelz2019] |
 | Hole-gas surface instability | Low to medium | Reliability | ALD passivation, oxide acceptors, boron nitride gates | [kawarada2017], [crawford2021], [sasama2022] |
 | Competing platforms (superconducting, trapped-ion, neutral-atom, silicon spin) reach fault tolerance first | High | Reduces the general-purpose computing case | Focus on what only room-temperature operation offers: embedded, mobile, and sensing-coupled processing | [preskill2018], [ladd2010], [kane1998] |
 | Vendor claims outrun peer review | Present | Credibility of the field | This repository's evidence labels | [saxonq2026], [tqi2026] |

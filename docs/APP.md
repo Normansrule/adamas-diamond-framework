@@ -61,8 +61,9 @@ Windows installers need a Windows machine (or the workflow) because the installe
 ## The installable web app
 
 Every page links `manifest.webmanifest` and registers `sw.js`, a service worker that keeps working offline after the
-first visit: pages and data come from the network when you are online (so numbers stay fresh) and from the cache when
-you are not; scripts, images, and the CDN libraries are served from the cache and refreshed in the background. The cache
+first visit. Everything from the site itself (pages, scripts, styles, data, images) comes from the network when you are
+online, so pages and scripts always match after a deploy, and from the cache when you are not. The version-pinned CDN
+libraries are served from the cache. The cache
 name carries the package version, so a new release replaces the old cache.
 
 ## `adamas app`

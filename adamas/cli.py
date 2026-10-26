@@ -58,9 +58,9 @@ def cmd_info(a) -> int:
     try:
         from .site import findings
         F = findings()
-        print(f"  power: ideal figure of merit {F['BFOMratio']}× silicon; inverter advantage over SiC median {F['UncPowerPfifty']}× ({F['UncPowerPten']}–{F['UncPowerPninety']}×)")
-        print(f"  qubits: coherence-limited Bell fidelity {F['FcohPublished']}; measured 0.67 implies preparation q = {F['qForSixtySeven']}")
-        print(f"  error correction: native XZZX threshold {F['ThrXZZXBias']}% vs standard {F['ThrCSSBias']}% at bias 100")
+        print(f"  power: ideal figure of merit {F['BFOMratio']}× silicon; SiC ÷ diamond inverter loss {F['PowerRatioRoom']}× at 300 K (bulk-doped drift), {F['PowerRatioHot']}× at 523 K")
+        print(f"  qubits: coherence-limited Bell fidelity {F['FcohLow']} to {F['FcohHigh']}; measured 0.67 is below it (known discrepancy)")
+        print(f"  error correction: native XZZX threshold {F['ThrXZZXBias']}% vs standard {F['ThrCSSBias']}% at bias 100 on CZ (CNOT ≤ {F['EtaCnot']})")
         print(f"  validation: {F['ValPass']} of {F['ValChecks']} checks pass")
     except Exception as e:     # noqa: BLE001
         print(f"  (findings unavailable: {e})")
@@ -142,11 +142,16 @@ def cmd_app(a) -> int:
     out = Path(a.out) if a.out else ROOT / "site"
     stamp = out / "data" / "app_version.txt"
     if a.rebuild or not (out / "index.html").exists() or not stamp.exists() or stamp.read_text().strip() != __version__:
-        offline = (ROOT / "web" / "node_modules" / "three").exists() and not a.online
+        from .site import VENDOR
+        offline = not a.online and all((ROOT / "web" / "node_modules" / src).exists() for _, src, _, _ in VENDOR)
+        if not a.online and not offline:
+            print("web libraries not installed (cd web && npm ci); building with CDN links instead")
         print(f"building the site into {out}{' (offline libraries)' if offline else ''} ...", flush=True)
         build(out, offline=offline); stamp.write_text(__version__)
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(out))
-    handler.log_message = lambda *args: None
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *args):        # keep the terminal clean
+            pass
+    handler = functools.partial(Quiet, directory=str(out))
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", a.port), handler)
     url = f"http://127.0.0.1:{srv.server_address[1]}/{a.page}"
     threading.Thread(target=srv.serve_forever, daemon=True).start()

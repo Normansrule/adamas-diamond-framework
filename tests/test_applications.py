@@ -6,7 +6,9 @@ from adamas import converter, scaling
 def test_ron_temperature_trends():
     for n in ("Si", "4H-SiC", "GaN"):
         assert converter.ron_temperature_factor(n, 500) > converter.ron_temperature_factor(n, 400) > 1.0
-    assert converter.ron_temperature_factor("Diamond", 500) < converter.ron_temperature_factor("Diamond", 400) < 1.0   # ionization gain
+    d = [converter.ron_temperature_factor("Diamond", t) for t in (300, 400, 500)]
+    assert d[0] > d[1] > d[2] > 1.0           # bulk-doped drift: ionization gain with T, but still far above ideal (f_ion << 1), audit G6
+    assert 150 < d[0] < 250                   # 1 / f_ion at 300 K for the 1.2 kV drift (about 0.5 % ionized)
     assert converter.ron_temperature_factor("Diamond", 500, bulk_doped=False) > 1.0                                    # hole gas has none
     assert math.isclose(converter.ron_temperature_factor("Si", 300), 1.0)
 
@@ -23,7 +25,9 @@ def test_switch_optimum_is_a_minimum_and_matches_closed_form():
 
 def test_material_ordering_matches_figures_of_merit():
     losses = {n: converter.material_switch(n, 1200, 800, 300, 20e3).p_total_w for n in ("Si", "4H-SiC", "GaN", "Diamond")}
-    assert losses["Diamond"] < losses["GaN"] < losses["4H-SiC"] < losses["Si"]
+    assert losses["GaN"] < losses["4H-SiC"] < losses["Diamond"] < losses["Si"]   # 300 K: a bulk-doped diamond drift loses to SiC
+    hot = {n: converter.material_switch(n, 1200, 800, 300, 20e3, t_k=523.0).p_total_w for n in ("4H-SiC", "Diamond")}
+    assert hot["Diamond"] < hot["4H-SiC"]                                            # and wins when hot
     meas = converter.material_switch("Diamond", 1200, 800, 300, 20e3, measured="saha2022").p_total_w
     assert losses["4H-SiC"] < meas < losses["Si"]                              # today's diamond: better than ideal Si, worse than ideal SiC
     assert 0.99 < converter.converter_efficiency("4H-SiC", 1200, 800, 300, 20e3) < 1.0

@@ -1,10 +1,10 @@
 # References
 
-**556 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**579 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
-## Materials physics and figures of merit (32)
+## Materials physics and figures of merit (41)
 
 - ✅ **`[clark1964]`** Clark, C. D.; Dean, P. J.; Harris, P. V. (1964). Intrinsic edge absorption in diamond. *Proceedings of the Royal Society A*, 277, 312. [doi:10.1098/rspa.1964.0025](https://doi.org/10.1098/rspa.1964.0025)
 - 📚 **`[johnson1965]`** Johnson, E. O. (1965). Physical limitations on frequency and power parameters of transistors. *RCA Review*, 26, 163.
@@ -22,6 +22,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[hudgins2003]`** Hudgins, J. L.; Simin, G. S.; Santi, E.; Khan, M. A. (2003). An assessment of wide bandgap semiconductors for power devices. *IEEE Transactions on Power Electronics*, 18, 907. [doi:10.1109/tpel.2003.810840](https://doi.org/10.1109/tpel.2003.810840)
 - ✅ **`[huang2004]`** Huang, A. Q. (2004). New unipolar switching power device figures of merit. *IEEE Electron Device Letters*, 25, 298. [doi:10.1109/led.2004.826533](https://doi.org/10.1109/led.2004.826533)
 - 📚 **`[sze2006]`** Sze, S. M.; Ng, K. K. (2006). Physics of Semiconductor Devices (3rd ed.). *Wiley*.
+- 📚 **`[klein2007]`** Klein, T.; Achatz, P.; Kacmarcik, J.; et al. (2007). Metal-insulator transition and superconductivity in boron-doped diamond. *Physical Review B*, 75(16), 165313.
 - ✅ **`[mishra2008]`** Mishra, U. K.; Shen, L.; Kazior, T. E.; Wu, Y.-F. (2008). GaN-based RF power devices and amplifiers. *Proceedings of the IEEE*, 96, 287. [doi:10.1109/jproc.2007.911060](https://doi.org/10.1109/jproc.2007.911060)
 - ✅ **`[pernot2008]`** Pernot, J.; Koizumi, S. (2008). Electron mobility in phosphorous doped {111} homoepitaxial diamond. *Applied Physics Letters*, 93, 052105. [doi:10.1063/1.2969066](https://doi.org/10.1063/1.2969066)
 - ✅ **`[wort2008]`** Wort, C. J. H.; Balmer, R. S. (2008). Diamond as an electronic material. *Materials Today*, 11(1-2), 22. [doi:10.1016/s1369-7021(07)70349-8](https://doi.org/10.1016/s1369-7021(07)70349-8)
@@ -30,14 +31,22 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[volpe2010]`** Volpe, P.-N.; Muret, P.; Pernot, J.; et al. (2010). Extreme dielectric strength in boron doped homoepitaxial diamond. *Applied Physics Letters*, 97, 223501. [doi:10.1063/1.3520140](https://doi.org/10.1063/1.3520140)
 - ✅ **`[field2012]`** Field, J. E. (2012). The mechanical and strength properties of diamond. *Reports on Progress in Physics*, 75, 126505. [doi:10.1088/0034-4885/75/12/126505](https://doi.org/10.1088/0034-4885/75/12/126505)
 - ✅ **`[higashiwaki2012]`** Higashiwaki, M.; Sasaki, K.; Kuramata, A.; Masui, T.; Yamakoshi, S. (2012). Gallium oxide (Ga2O3) metal-semiconductor field-effect transistors on single-crystal beta-Ga2O3 (010) substrates. *Applied Physics Letters*, 100, 013504. [doi:10.1063/1.3674287](https://doi.org/10.1063/1.3674287)
+- 📚 **`[stehl2013]`** Stehl, C.; Fischer, M.; Gsell, S.; et al. (2013). Efficiency of dislocation density reduction during heteroepitaxial growth of diamond for detector applications. *Applied Physics Letters*, 103(15), 151905.
 - ✅ **`[akimoto2014]`** Akimoto, I.; Handa, Y.; Fukai, K.; Naka, N. (2014). High carrier mobility in ultrapure diamond measured by time-resolved cyclotron resonance. *Applied Physics Letters*, 105, 032102. [doi:10.1063/1.4891039](https://doi.org/10.1063/1.4891039)
+- 📚 **`[alvarez2014]`** Alvarez, J.; Boutchich, M.; Kleider, J. P.; et al. (2014). Direct observation of the leakage current in epitaxial diamond Schottky barrier devices by conductive-probe atomic force microscopy and Raman imaging. *Journal of Physics D: Applied Physics*, 47(35), 355102.
 - 📚 **`[kimoto2014]`** Kimoto, T.; Cooper, J. A. (2014). Fundamentals of Silicon Carbide Technology. *Wiley*.
 - ✅ **`[millan2014]`** Millan, J.; Godignon, P.; Perpina, X.; Perez-Tomas, A.; Rebollo, J. (2014). A survey of wide bandgap power semiconductor devices. *IEEE Transactions on Power Electronics*, 29, 2155. [doi:10.1109/cde.2013.6481400](https://doi.org/10.1109/cde.2013.6481400)
 - ✅ **`[inyushkin2018]`** Inyushkin, A. V.; Taldenkov, A. N.; Ralchenko, V. G.; et al. (2018). Thermal conductivity of high purity synthetic single crystal diamonds. *Physical Review B*, 97, 144305. [doi:10.1103/physrevb.97.144305](https://doi.org/10.1103/physrevb.97.144305)
 - ✅ **`[pearton2018]`** Pearton, S. J.; Yang, J.; Cary, P. H.; et al. (2018). A review of Ga2O3 materials, processing, and devices. *Applied Physics Reviews*, 5, 011301. [doi:10.1063/1.5006941](https://doi.org/10.1063/1.5006941)
 - ✅ **`[tsao2018]`** Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. (2018). Ultrawide-bandgap semiconductors: research opportunities and challenges. *Advanced Electronic Materials*, 4, 1600501. [doi:10.1002/aelm.201600501](https://doi.org/10.1002/aelm.201600501)
+- 📚 **`[nelz2019]`** Nelz, R.; Görlitz, J.; Herrmann, D.; et al. (2019). Toward wafer-scale diamond nano- and quantum technologies. *APL Materials*, 7(1), 011108.
 - ✅ **`[donato2020]`** Donato, N.; Rouger, N.; Pernot, J.; Longobardi, G.; Udrea, F. (2020). Diamond power devices: state of the art, modelling, figures of merit and future perspective. *Journal of Physics D: Applied Physics*, 53, 093001. [doi:10.1088/1361-6463/ab4eab](https://doi.org/10.1088/1361-6463/ab4eab)
+- 📚 **`[kwak2021]`** Kwak, T.; Lee, J.; Choi, U.; et al. (2021). Diamond Schottky barrier diodes fabricated on sapphire-based freestanding heteroepitaxial diamond substrate. *Diamond and Related Materials*, 114, 108335.
+- 📚 **`[sanders2021]`** Sanders, N.; Kioupakis, E. (2021). Phonon- and defect-limited electron and hole mobility of diamond and cubic boron nitride: a critical comparison. *Applied Physics Letters*, 119(6), 062101.
+- 📚 **`[weippert2022]`** Weippert, J.; Reinke, P.; Benkhelifa, F.; et al. (2022). Pseudovertical Schottky Diodes on Heteroepitaxially Grown Diamond. *Crystals*, 12(11), 1626.
+- 📚 **`[blinder2024]`** Blinder, R.; Mindarava, Y.; Tran, T. H.; et al. (2024). Reducing inhomogeneous broadening of spin and optical transitions of nitrogen-vacancy centers in high-pressure, high-temperature diamond. *Communications Materials*, 5(1), 224.
 - 📚 **`[kageura2024]`** Kageura, T.; Sasama, Y.; Yamada, K.; Kimura, K.; Onoda, S.; Yamaguchi, T. (2024). Surface transfer doping of hydrogen-terminated diamond probed by shallow nitrogen-vacancy centers. *Carbon*, 229, 119404.
+- 📚 **`[oshnik2025]`** Oshnik, N.; Westrich, S.; Burmeister, N.; et al. (2025). Nitrogen-vacancy centers in epitaxial laterally overgrown diamond: towards up-scaling of color center-based quantum technologies. *Materials for Quantum Technology*, 5(2), 025201.
 
 ## Diamond growth and wafers (35)
 
@@ -193,7 +202,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[aller2025]`** Aller, H. T.; Pfeifer, T. W.; Mamun, A.; et al. (2025). Low thermal resistance of diamond-AlGaN interfaces achieved using carbide interlayers. *Advanced Materials Interfaces*, 12(3), 2400575.
 - 📚 **`[xu2025]`** Xu, B.; Mu, F.; Liu, Y.; Guo, R.; Hu, S.; Shiomi, J. (2025). Record-low thermal boundary resistance at bonded GaN/diamond interface by controlling ultrathin heterogeneous amorphous layer. *Acta Materialia*, 282, 120458.
 
-## Nitrogen-vacancy (NV) center physics (50)
+## Nitrogen-vacancy (NV) center physics (59)
 
 - ✅ **`[davies1976]`** Davies, G.; Hamer, M. F. (1976). Optical studies of the 1.945 eV vibronic band in diamond. *Proceedings of the Royal Society A*, 348, 285. [doi:10.1098/rspa.1976.0039](https://doi.org/10.1098/rspa.1976.0039)
 - ✅ **`[loubser1978]`** Loubser, J. H. N.; van Wyk, J. A. (1978). Electron spin resonance in the study of diamond. *Reports on Progress in Physics*, 41, 1201. [doi:10.1088/0034-4885/41/8/002](https://doi.org/10.1088/0034-4885/41/8/002)
@@ -210,10 +219,13 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[fuchs2009]`** Fuchs, G. D.; Dobrovitski, V. V.; Toyli, D. M.; Heremans, F. J.; Awschalom, D. D. (2009). Gigahertz dynamics of a strongly driven single quantum spin. *Science*, 326, 1520. [doi:10.1126/science.1181193](https://doi.org/10.1126/science.1181193)
 - ✅ **`[jacques2009]`** Jacques, V.; Neumann, P.; Beck, J.; et al. (2009). Dynamic polarization of single nuclear spins by optical pumping of nitrogen-vacancy color centers in diamond at room temperature. *Physical Review Letters*, 102, 057403. [doi:10.1103/physrevlett.102.057403](https://doi.org/10.1103/physrevlett.102.057403)
 - ✅ **`[mizuochi2009]`** Mizuochi, N.; Neumann, P.; Rempp, F.; et al. (2009). Coherence of single spins coupled to a nuclear spin bath of varying density. *Physical Review B*, 80, 041201. [doi:10.1103/physrevb.80.041201](https://doi.org/10.1103/physrevb.80.041201)
+- 📚 **`[rittweger2009]`** Rittweger, E.; Han, K. Y.; Irvine, S. E.; et al. (2009). STED microscopy reveals crystal colour centres with nanometric resolution. *Nature Photonics*, 3(3), 144-147.
 - ✅ **`[acosta2010]`** Acosta, V. M.; Bauch, E.; Ledbetter, M. P.; et al. (2010). Temperature dependence of the nitrogen-vacancy magnetic resonance in diamond. *Physical Review Letters*, 104, 070801. [doi:10.1103/physrevlett.104.070801](https://doi.org/10.1103/physrevlett.104.070801)
 - ✅ **`[delange2010]`** de Lange, G.; Wang, Z. H.; Riste, D.; Dobrovitski, V. V.; Hanson, R. (2010). Universal dynamical decoupling of a single solid-state spin from a spin bath. *Science*, 330, 60. [doi:10.1126/science.1192739](https://doi.org/10.1126/science.1192739)
+- 📚 **`[maurer2010]`** Maurer, P. C.; Maze, J. R.; Stanwix, P. L.; et al. (2010). Far-field optical imaging and manipulation of individual spins with nanoscale resolution. *Nature Physics*, 6(11), 912-918.
 - ✅ **`[doherty2011]`** Doherty, M. W.; Manson, N. B.; Delaney, P.; Hollenberg, L. C. L. (2011). The negatively charged nitrogen-vacancy centre in diamond: the electronic solution. *New Journal of Physics*, 13, 025019. [doi:10.1088/1367-2630/13/2/025019](https://doi.org/10.1088/1367-2630/13/2/025019)
 - ✅ **`[dreau2011]`** Dreau, A.; Lesik, M.; Rondin, L.; et al. (2011). Avoiding power broadening in optically detected magnetic resonance of single NV defects for enhanced dc magnetic field sensitivity. *Physical Review B*, 84, 195204. [doi:10.1103/physrevb.84.195204](https://doi.org/10.1103/physrevb.84.195204)
+- 📚 **`[grinolds2011]`** Grinolds, M. S.; Maletinsky, P.; Hong, S.; et al. (2011). Quantum control of proximal spins using nanoscale magnetic resonance imaging. *Nature Physics*, 7(9), 687-692.
 - ✅ **`[hauf2011]`** Hauf, M. V.; Grotz, B.; Naydenov, B.; et al. (2011). Chemical control of the charge state of nitrogen-vacancy centers in diamond. *Physical Review B*, 83, 081304. [doi:10.1103/physrevb.83.081304](https://doi.org/10.1103/physrevb.83.081304)
 - ✅ **`[maze2011]`** Maze, J. R.; Gali, A.; Togan, E.; et al. (2011). Properties of nitrogen-vacancy centers in diamond: the group theoretic approach. *New Journal of Physics*, 13, 025025. [doi:10.1088/1367-2630/13/2/025025](https://doi.org/10.1088/1367-2630/13/2/025025)
 - ✅ **`[robledo2011njp]`** Robledo, L.; Bernien, H.; van der Sar, T.; Hanson, R. (2011). Spin dynamics in the optical cycle of single nitrogen-vacancy centres in diamond. *New Journal of Physics*, 13, 025013. [doi:10.1088/1367-2630/13/2/025013](https://doi.org/10.1088/1367-2630/13/2/025013)
@@ -230,20 +242,26 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[doherty2013]`** Doherty, M. W.; Manson, N. B.; Delaney, P.; Jelezko, F.; Wrachtrup, J.; Hollenberg, L. C. L. (2013). The nitrogen-vacancy colour centre in diamond. *Physics Reports*, 528, 1. [doi:10.1016/j.physrep.2013.02.001](https://doi.org/10.1016/j.physrep.2013.02.001)
 - ✅ **`[doi2014]`** Doi, Y.; Makino, T.; Kato, H.; et al. (2014). Deterministic electrical charge-state initialization of single nitrogen-vacancy center in diamond. *Physical Review X*, 4, 011057. [doi:10.1103/physrevx.4.011057](https://doi.org/10.1103/physrevx.4.011057)
 - ✅ **`[myers2014]`** Myers, B. A.; Das, A.; Dartiailh, M. C.; et al. (2014). Probing surface noise with depth-calibrated spins in diamond. *Physical Review Letters*, 113, 027602. [doi:10.1103/physrevlett.113.027602](https://doi.org/10.1103/physrevlett.113.027602)
+- 📚 **`[pfender2014]`** Pfender, M.; Aslam, N.; Waldherr, G.; et al. (2014). Single-spin stochastic optical reconstruction microscopy. *Proceedings of the National Academy of Sciences*, 111(41), 14669-14674.
 - ✅ **`[rosskopf2014]`** Rosskopf, T.; Dussaux, A.; Ohashi, K.; et al. (2014). Investigation of surface magnetic noise by shallow spins in diamond. *Physical Review Letters*, 112, 147602. [doi:10.1103/physrevlett.112.147602](https://doi.org/10.1103/physrevlett.112.147602)
+- 📚 **`[chen2015csd]`** Chen, X.; Zou, C.; Gong, Z.; et al. (2015). Subdiffraction optical manipulation of the charge state of nitrogen vacancy center in diamond. *Light: Science & Applications*, 4(1), e230.
 - ✅ **`[goldman2015]`** Goldman, M. L.; Sipahigil, A.; Doherty, M. W.; et al. (2015). Phonon-induced population dynamics and intersystem crossing in nitrogen-vacancy centers. *Physical Review Letters*, 114, 145502. [doi:10.1103/physrevlett.114.145502](https://doi.org/10.1103/physrevlett.114.145502)
 - ✅ **`[romach2015]`** Romach, Y.; Mueller, C.; Unden, T.; et al. (2015). Spectroscopy of surface-induced noise using shallow spins in diamond. *Physical Review Letters*, 114, 017601. [doi:10.1103/physrevlett.114.017601](https://doi.org/10.1103/physrevlett.114.017601)
+- 📚 **`[zhang2017addr]`** Zhang, H.; Arai, K.; Belthangady, C.; et al. (2017). Selective addressing of solid-state spins at the nanoscale via magnetic resonance frequency encoding. *npj Quantum Information*, 3(1), 31.
 - ✅ **`[abobeih2018]`** Abobeih, M. H.; Cramer, J.; Bakker, M. A.; et al. (2018). One-second coherence for a single electron spin coupled to a multi-qubit nuclear-spin environment. *Nature Communications*, 9, 2552. [doi:10.1038/s41467-018-04916-z](https://doi.org/10.1038/s41467-018-04916-z)
 - ✅ **`[bauch2018]`** Bauch, E.; Hart, C. A.; Schloss, J. M.; et al. (2018). Ultralong dephasing times in solid-state spin ensembles via quantum control. *Physical Review X*, 8, 031025. [doi:10.1103/physrevx.8.031025](https://doi.org/10.1103/physrevx.8.031025)
+- 📚 **`[bersin2019]`** Bersin, E.; Walsh, M.; Mouradian, S. L.; et al. (2019). Individual control and readout of qubits in a sub-diffraction volume. *npj Quantum Information*, 5(1), 38.
 - ✅ **`[gali2019]`** Gali, A. (2019). Ab initio theory of the nitrogen-vacancy center in diamond. *Nanophotonics*, 8, 1907. [doi:10.1515/nanoph-2019-0154](https://doi.org/10.1515/nanoph-2019-0154)
 - ✅ **`[herbschleb2019]`** Herbschleb, E. D.; Kato, H.; Maruyama, Y.; et al. (2019). Ultra-long coherence times amongst room-temperature solid-state spins. *Nature Communications*, 10, 3766. [doi:10.1038/s41467-019-11776-8](https://doi.org/10.1038/s41467-019-11776-8)
 - ✅ **`[sangtawesin2019]`** Sangtawesin, S.; Dwyer, B. L.; Srinivasan, S.; et al. (2019). Origins of diamond surface noise probed by correlating single-spin measurements with surface spectroscopy. *Physical Review X*, 9, 031052. [doi:10.1103/physrevx.9.031052](https://doi.org/10.1103/physrevx.9.031052)
 - ✅ **`[bauch2020]`** Bauch, E.; Singh, S.; Lee, J.; et al. (2020). Decoherence of ensembles of nitrogen-vacancy centers in diamond. *Physical Review B*, 102, 134210. [doi:10.1103/physrevb.102.134210](https://doi.org/10.1103/physrevb.102.134210)
+- 📚 **`[marshall2022]`** Marshall, M. C.; Ebadi, R.; Hart, C.; et al. (2022). High-precision mapping of diamond crystal strain using quantum interferometry. *Physical Review Applied*, 17(2), 024041.
 - 📚 **`[arunkumar2023]`** Arunkumar, N.; Olsson, K. S.; Oon, J. T.; et al. (2023). Quantum logic enhanced sensing in solid-state spin ensembles. *Physical Review Letters*, 131(10), 100801.
 - ✅ **`[cambria2023]`** Cambria, M. C.; Norambuena, A.; Dinani, H. T.; et al. (2023). Temperature-dependent spin-lattice relaxation of the nitrogen-vacancy spin triplet in diamond. *Physical Review Letters*, 130, 256903. [doi:10.1103/physrevlett.130.256903](https://doi.org/10.1103/physrevlett.130.256903)
 - 📚 **`[giri2023]`** Giri, R.; Jensen, R. H.; Khurana, D.; et al. (2023). Charge stability and charge-state-based spin readout of shallow nitrogen-vacancy centers in diamond. *ACS Applied Electronic Materials*, 5(12), 6603-6610.
 - ✅ **`[stegemann2023]`** Stegemann, J.; et al. (2023). Modular low-cost 3D printed setup for experiments with NV centers in diamond. *European Journal of Physics*, 44, 035402. [doi:10.1088/1361-6404/acbe7c](https://doi.org/10.1088/1361-6404/acbe7c)
 - 📚 **`[wirtitsch2023]`** Wirtitsch, D.; Wachter, G.; Reisenbauer, S.; et al. (2023). Exploiting ionization dynamics in the nitrogen vacancy center for rapid, high-contrast spin, and charge state initialization. *Physical Review Research*, 5(1), 013014.
+- 📚 **`[joliffe2024]`** Joliffe, M.; Vorobyov, V.; Wrachtrup, J. (2024). Readout of strongly coupled NV center-pair spin states with deep neural networks. *arXiv*, 2412.19581.
 - ✅ **`[williams2026]`** Williams, H.; Newman, A.; Graham, S.; Stephen, C.; Morley, G. (2026). A portable LED-based diamond magnetometer for outreach and teaching labs. *American Journal of Physics*, 94, 489. [doi:10.1119/5.0295777](https://doi.org/10.1119/5.0295777)
 
 ## Quantum sensing (17)
@@ -266,7 +284,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (36)
+## NV center fabrication and placement (37)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -281,6 +299,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[ishikawa2012]`** Ishikawa, T.; Fu, K.-M. C.; Santori, C.; et al. (2012). Optical and spin coherence properties of nitrogen-vacancy centers placed in a 100 nm thick isotopically purified diamond layer. *Nano Letters*, 12, 2083. [doi:10.1021/nl300350r](https://doi.org/10.1021/nl300350r)
 - ✅ **`[kasu2012]`** Kasu, M.; Sato, H.; Hirama, K. (2012). Thermal stabilization of hole channel on H-terminated diamond surface by using atomic-layer-deposited Al2O3 overlayer and its electric properties. *Applied Physics Express*, 5, 025701. [doi:10.1143/apex.5.025701](https://doi.org/10.1143/apex.5.025701)
 - ✅ **`[ohno2012]`** Ohno, K.; Heremans, F. J.; Bassett, L. C.; et al. (2012). Engineering shallow spins in diamond with nitrogen delta-doping. *Applied Physics Letters*, 101, 082413. [doi:10.1063/1.4748280](https://doi.org/10.1063/1.4748280)
+- 📚 **`[stacey2012]`** Stacey, A.; Karle, T. J.; McGuinness, L. P.; et al. (2012). Depletion of nitrogen-vacancy color centers in diamond via hydrogen passivation. *Applied Physics Letters*, 100(7), 071902.
 - ✅ **`[yamamoto2013]`** Yamamoto, T.; Umeda, T.; Watanabe, K.; et al. (2013). Extending spin coherence times of diamond qubits by high-temperature annealing. *Physical Review B*, 88, 075206. [doi:10.1103/physrevb.88.075206](https://doi.org/10.1103/physrevb.88.075206)
 - ✅ **`[chu2014]`** Chu, Y.; de Leon, N. P.; Shields, B. J.; et al. (2014). Coherent optical transitions in implanted nitrogen vacancy centers. *Nano Letters*, 14, 1982. [doi:10.1021/nl404836p](https://doi.org/10.1021/nl404836p)
 - ✅ **`[deak2014]`** Deak, P.; Aradi, B.; Kaviani, M.; Frauenheim, T.; Gali, A. (2014). Formation of NV centers in diamond: a theoretical study based on calculated transitions and migration of nitrogen and vacancy related defects. *Physical Review B*, 89, 075203. [doi:10.1103/physrevb.89.075203](https://doi.org/10.1103/physrevb.89.075203)
@@ -305,7 +324,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
 
-## Quantum computing with diamond spins (73)
+## Quantum computing with diamond spins (77)
 
 - ✅ **`[kane1998]`** Kane, B. E. (1998). A silicon-based nuclear spin quantum computer. *Nature*, 393, 133. [doi:10.1038/30156](https://doi.org/10.1038/30156)
 - ✅ **`[divincenzo2000]`** DiVincenzo, D. P. (2000). The physical implementation of quantum computation. *Fortschritte der Physik*, 48, 771. [doi:10.1002/3527603182.ch1](https://doi.org/10.1002/3527603182.ch1)
@@ -353,18 +372,21 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[atature2018]`** Atature, M.; Englund, D.; Vamivakas, N.; Lee, S.-Y.; Wrachtrup, J. (2018). Material platforms for spin-based photonic quantum technologies. *Nature Reviews Materials*, 3, 38. [doi:10.1038/s41578-018-0008-9](https://doi.org/10.1038/s41578-018-0008-9)
 - ✅ **`[awschalom2018]`** Awschalom, D. D.; Hanson, R.; Wrachtrup, J.; Zhou, B. B. (2018). Quantum technologies with optically interfaced solid-state spins. *Nature Photonics*, 12, 516. [doi:10.1038/s41566-018-0232-2](https://doi.org/10.1038/s41566-018-0232-2)
 - ✅ **`[babbush2018]`** Babbush, R.; Gidney, C.; Berry, D. W.; et al. (2018). Encoding electronic spectra in quantum circuits with linear T complexity. *Physical Review X*, 8, 041015. [doi:10.1103/physrevx.8.041015](https://doi.org/10.1103/physrevx.8.041015)
+- 📚 **`[fowlergidney2018]`** Fowler, A. G.; Gidney, C. (2018). Low overhead quantum computation using lattice surgery. *arXiv*, 1808.06709.
 - ✅ **`[hopper2018]`** Hopper, D. A.; Shulevitz, H. J.; Bassett, L. C. (2018). Spin readout techniques of the nitrogen-vacancy center in diamond. *Micromachines*, 9, 437. [doi:10.3390/mi9090437](https://doi.org/10.3390/mi9090437)
 - ✅ **`[preskill2018]`** Preskill, J. (2018). Quantum computing in the NISQ era and beyond. *Quantum*, 2, 79. [doi:10.22331/q-2018-08-06-79](https://doi.org/10.22331/q-2018-08-06-79)
 - ✅ **`[abobeih2019]`** Abobeih, M. H.; Randall, J.; Bradley, C. E.; et al. (2019). Atomic-scale imaging of a 27-nuclear-spin cluster using a quantum sensor. *Nature*, 576, 411. [doi:10.1038/s41586-019-1834-7](https://doi.org/10.1038/s41586-019-1834-7)
 - ✅ **`[arute2019]`** Arute, F.; Arya, K.; Babbush, R.; et al. (2019). Quantum supremacy using a programmable superconducting processor. *Nature*, 574, 505. [doi:10.1038/s41586-019-1666-5](https://doi.org/10.1038/s41586-019-1666-5)
 - ✅ **`[bradley2019]`** Bradley, C. E.; Randall, J.; Abobeih, M. H.; et al. (2019). A ten-qubit solid-state spin register with quantum memory up to one minute. *Physical Review X*, 9, 031045. [doi:10.1103/physrevx.9.031045](https://doi.org/10.1103/physrevx.9.031045)
 - ✅ **`[choi2019]`** Choi, H.; Pant, M.; Guha, S.; Englund, D. (2019). Percolation-based architecture for cluster state creation using photon-mediated entanglement between atomic memories. *npj Quantum Information*, 5, 104. [doi:10.1038/s41534-019-0215-2](https://doi.org/10.1038/s41534-019-0215-2)
+- 📚 **`[guillaud2019]`** Guillaud, J.; Mirrahimi, M. (2019). Repetition Cat Qubits for Fault-Tolerant Quantum Computation. *Physical Review X*, 9(4), 041053.
 - ✅ **`[krinner2019]`** Krinner, S.; Storz, S.; Kurpiers, P.; et al. (2019). Engineering cryogenic setups for 100-qubit scale superconducting circuit systems. *EPJ Quantum Technology*, 6, 2. [doi:10.1140/epjqt/s40507-019-0072-0](https://doi.org/10.1140/epjqt/s40507-019-0072-0)
 - ✅ **`[litinski2019]`** Litinski, D. (2019). A game of surface codes: large-scale quantum computing with lattice surgery. *Quantum*, 3, 128. [doi:10.22331/q-2019-03-05-128](https://doi.org/10.22331/q-2019-03-05-128)
 - ✅ **`[siyushev2019]`** Siyushev, P.; Nesladek, M.; Bourgeois, E.; et al. (2019). Photoelectrical imaging and coherent spin-state readout of single nitrogen-vacancy centers in diamond. *Science*, 363, 728. [doi:10.1126/science.aav2789](https://doi.org/10.1126/science.aav2789)
 - ✅ **`[vandijk2019]`** van Dijk, J. P. G.; Kawakami, E.; Schouten, R. N.; et al. (2019). Impact of classical control electronics on qubit fidelity. *Physical Review Applied*, 12, 044054. [doi:10.1103/physrevapplied.12.044054](https://doi.org/10.1103/physrevapplied.12.044054)
 - ✅ **`[wu2019]`** Wu, Y.; Wang, Y.; Qin, X.; Rong, X.; Du, J. (2019). A programmable two-qubit solid-state quantum processor under ambient conditions. *npj Quantum Information*, 5, 9. [doi:10.1038/s41534-019-0129-z](https://doi.org/10.1038/s41534-019-0129-z)
 - ✅ **`[kjaergaard2020]`** Kjaergaard, M.; Schwartz, M. E.; Braumueller, J.; et al. (2020). Superconducting qubits: current state of play. *Annual Review of Condensed Matter Physics*, 11, 369. [doi:10.1146/annurev-conmatphys-031119-050605](https://doi.org/10.1146/annurev-conmatphys-031119-050605)
+- 📚 **`[puri2020]`** Puri, S.; St-Jean, L.; Gross, J. A.; et al. (2020). Bias-preserving gates with stabilized cat qubits. *Science Advances*, 6(34), eaay5901.
 - ✅ **`[gidney2021]`** Gidney, C.; Ekera, M. (2021). How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits. *Quantum*, 5, 433. [doi:10.22331/q-2021-04-15-433](https://doi.org/10.22331/q-2021-04-15-433)
 - ✅ **`[pezzagna2021]`** Pezzagna, S.; Meijer, J. (2021). Quantum computer based on color centers in diamond. *Applied Physics Reviews*, 8, 011308. [doi:10.1063/5.0007444](https://doi.org/10.1063/5.0007444)
 - ✅ **`[randall2021]`** Randall, J.; Bradley, C. E.; van der Gronden, F. V.; et al. (2021). Many-body-localized discrete time crystal with a programmable spin-based quantum simulator. *Science*, 374, 1474. [doi:10.1126/science.abk0603](https://doi.org/10.1126/science.abk0603)
@@ -379,6 +401,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[gidney2025]`** Gidney, C. (2025). How to factor 2048 bit RSA integers with less than a million noisy qubits. *arXiv*, 2505.15917.
 - ✅ **`[google2025]`** Google Quantum AI and Collaborators (2025). Quantum error correction below the surface code threshold. *Nature*, 638, 920. [doi:10.1038/s41586-024-08449-y](https://doi.org/10.1038/s41586-024-08449-y)
 - 📚 **`[joas2025]`** Joas, T.; Ferlemann, F.; Sailer, R.; et al. (2025). High-fidelity electron spin gates for scaling diamond quantum registers. *Physical Review X*, 15(2), 021069.
+- 📚 **`[etxezarreta2025]`** Etxezarreta Martinez, J.; Schnabl, P.; Oliva del Moral, J.; et al. (2026). Leveraging biased noise for more efficient quantum error correction at the circuit level with two-level qubits. *Physical Review Applied*, 25(1), 014021.
 - 📚 **`[jager2026]`** Jäger, T.; Kwon, M.; Keller, M.; et al. (2026). Modeling quantum volume using randomized benchmarking of room-temperature NV center quantum registers. *npj Quantum Information*, 12(1), 6.
 
 ## Photonics, other color centers, and quantum networks (37)

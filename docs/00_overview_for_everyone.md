@@ -4,7 +4,7 @@
 
 ## The one-paragraph version
 
-Almost every computer chip is carved into a thin, mirror-flat disk of silicon called a **wafer**. ADAMAS asks a simple question with a complicated answer: *what would it take to carve chips into a disk of diamond instead?* Diamond carries heat five times better than copper, withstands electric fields roughly thirty times stronger than silicon can, and keeps working at temperatures that destroy silicon chips ([wort2008], [isberg2002]). Diamond also hosts a tiny flaw, the **nitrogen-vacancy (NV) center**, that behaves as a quantum bit (qubit) at ordinary room temperature, with no refrigerator ([doherty2013], [balasubramanian2009]). The same wafer could therefore carry power electronics, logic, and quantum processors.
+Almost every computer chip is carved into a thin, mirror-flat disk of silicon called a **wafer**. ADAMAS asks a simple question with a complicated answer: *what would it take to carve chips into a disk of diamond instead?* Diamond carries heat about 5.5 times better than copper. In small, high-quality crystals it withstands electric fields about 25 times stronger than silicon can, but only about 3 to 7 times stronger on today's large wafers. It keeps working at temperatures that destroy silicon chips ([wort2008], [volpe2010], [kwak2021], [weippert2022]). Diamond also hosts a tiny flaw, the **nitrogen-vacancy (NV) center**, that behaves as a quantum bit (qubit) at ordinary room temperature, with no refrigerator ([doherty2013], [balasubramanian2009]). The same wafer could therefore carry power electronics, logic, and quantum processors.
 
 ## Silicon and diamond are cousins
 
@@ -16,7 +16,7 @@ Shorter, stiffer bonds explain nearly every headline property:
 
 | Stronger bonds cause... | Which gives diamond... | Which matters because... |
 |---|---|---|
-| Electrons need 5.47 electron-volts to break free (silicon: 1.12) | A very wide **bandgap** | Devices hold kilovolts and survive 500 °C ([wort2008], [kawarada2014]) |
+| Electrons need 5.47 electron-volts to break free (silicon: 1.12) | A very wide **bandgap** | Devices hold kilovolts, and one transistor has run at 400 °C for a short time ([saha2021], [kawarada2014]) |
 | Atoms vibrate fast and in step | Thermal conductivity of 22 W/(cm·K), 15 times silicon | Heat leaves hot spots quickly ([wei1993], [olson1993]) |
 | A rigid, quiet, mostly spin-free crystal | Defect spins stay coherent for milliseconds at room temperature | Qubits and sensors without cryogenics ([balasubramanian2009], [herbschleb2019]) |
 
@@ -28,7 +28,7 @@ Remove two neighboring carbon atoms. Put a nitrogen atom in one empty spot and l
 
 1. **Green light resets it.** A green laser pumps the spin into a known starting state ([manson2006]).
 2. **Microwaves steer it.** A 2.87 gigahertz signal, close to the Wi-Fi and microwave-oven band, rotates the spin. This is the quantum logic gate ([jelezko2004a]).
-3. **Red light reads it.** The center glows red, and it glows about 30 percent brighter in one spin state than the other ([gruber1997], [hopper2018]).
+3. **Red light reads it.** The center glows red, and it glows about 30 percent dimmer in the spin states $m_s = \pm 1$ than in $m_s = 0$ ([gruber1997], [hopper2018]).
 
 ![Energy-level diagram of the nitrogen-vacancy center](img/fig07_nv_levels.png)
 
@@ -40,13 +40,13 @@ ADAMAS keeps a strict separation between what has been demonstrated and what is 
 
 | Topic | Status in 2026 | Chapter |
 |---|---|---|
-| Single-crystal diamond wafers | Reproducible 3-inch (76 mm) wafers reported; 4-inch in development ([e6orbray2026]). Silicon uses 300 mm. | [02](02_wafer_manufacturing.md) |
-| p-type (boron) doping | Works, yet fewer than 1 percent of boron atoms are active at room temperature ([lagrange1998]) | [03](03_process_flow_vs_cmos.md) |
-| n-type (phosphorus) doping | Works only weakly; first n-channel transistor shown in 2024 ([liao2024]) | [03](03_process_flow_vs_cmos.md), [05](05_digital_logic.md) |
-| Power transistors | 2608 V blocking demonstrated on a heteroepitaxial wafer ([saha2021]) | [04](04_analog_power_rf_devices.md) |
+| Single-crystal diamond wafers | Peer-reviewed: 2-inch (51 mm) heteroepitaxial wafers and one 92 mm plate ([kim2021], [qu2024], [schreck2017]). A 3-inch (76 mm) process was announced by industry in 2026; this is reported, not peer-reviewed, and no quality data are published ([e6orbray2026]). Silicon uses 300 mm. | [02](02_wafer_manufacturing.md) |
+| p-type (boron) doping | Works, yet only about 0.6 percent of boron atoms are active at room temperature in a 10¹⁷ cm⁻³ layer, and a few percent in lighter-doped layers ([lagrange1998], `adamas.doping`) | [03](03_process_flow_vs_cmos.md) |
+| n-type (phosphorus) doping | Works only weakly; the first n-channel transistor, per its authors, was shown in 2024 ([liao2024]) | [03](03_process_flow_vs_cmos.md), [05](05_digital_logic.md) |
+| Power transistors | 2608 V blocking demonstrated in a lateral transistor on a heteroepitaxial wafer ([saha2021]). In this repository's model a bulk-doped diamond switch loses to silicon carbide at room temperature and wins only when hot | [04](04_analog_power_rf_devices.md) |
 | Logic gates | Inverters, NOR, and NAND from p-channel transistors only ([liu2017]) | [05](05_digital_logic.md) |
 | Room-temperature qubits | Millisecond coherence, high-fidelity gates, small registers ([rong2015], [waldherr2014]) | [06](06_nv_center_physics.md), [08](08_quantum_processor_architecture.md) |
-| Connecting many qubits | Two NV centers entangled at about 25 nm spacing ([dolde2013]). Placing pairs that close, reliably, is the central manufacturing problem. | [07](07_nv_fabrication_and_placement.md) |
+| Connecting many qubits | Two NV centers entangled at about 25 nm spacing ([dolde2013]); 96 percent two-qubit fidelity at 9.5 nm ([joas2025]). At that spacing both sit inside one laser spot, so they are told apart by frequency, not position. Placing pairs that close, reliably, is the central manufacturing problem. | [07](07_nv_fabrication_and_placement.md) |
 | Reading a qubit in one try at room temperature | Possible for nuclear spins ([neumann2010science]); not yet for the electron spin directly | [08](08_quantum_processor_architecture.md) |
 
 ## The roadmap in one picture
