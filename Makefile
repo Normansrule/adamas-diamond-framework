@@ -35,7 +35,7 @@ layout:          ## write the PDK-0 monitor die GDS
 place:           ## LEF, timed Liberty, and a placed DIA-4 (GDS + DEF) on PDK-0
 	$(PY) circuits/digital/place.py
 
-animations:      ## the two GIFs (about 15 s)
+animations:      ## every animated GIF in docs/img (about a minute)
 	$(PY) -c "from adamas.animations import make_all; make_all('docs/img')"
 
 explorer:        ## rebuild docs/index.html (interactive explorer) and the poster
@@ -44,7 +44,7 @@ explorer:        ## rebuild docs/index.html (interactive explorer) and the poste
 orfs:            ## install the PDK-0 platform + DIA-4 into ~/orfs and run OpenROAD in Docker (host shell, not inside a container)
 	bash circuits/digital/openroad/run_orfs.sh
 
-site:            ## build the website (landing page, six labs, explorer) into site/
+site:            ## build the website (landing page, every lab, explorer) into site/
 	$(PY) -m adamas.site site
 
 serve: site      ## build and serve the website at http://localhost:8000

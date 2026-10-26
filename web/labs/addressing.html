@@ -1,0 +1,127 @@
+<!doctype html><html lang="en" data-base=".."><head>
+<!--HEAD-->
+<title>Addressing Lab · ADAMAS</title></head><body>
+<main class="wrap"><div class="lab">
+<aside class="panel">
+  <h1>Addressing Lab</h1>
+  <p>A coupled pair of NV centers sits 10 to 30 nm apart, but the laser focus is about 300 nm wide. Both qubits see the same light and the same microwave. Can you drive one without the other?</p>
+  <div class="ctl"><label>How the two are told apart</label><div class="seg" id="route" role="group" aria-label="Addressing route"><button class="on" data-r="spectral">Different crystal axes</button><button data-r="gradient">Field gradient</button></div></div>
+  <div class="ctl"><label>Spacing r <b id="rV"></b></label><input type="range" id="r" min="5" max="60" value="25" aria-label="Spacing between the two NV centers, nm"></div>
+  <div class="ctl"><label>Field B <b id="bV"></b></label><input type="range" id="b" min="0" max="100" value="50" aria-label="Field magnitude, tenths of a millitesla"></div>
+  <div class="ctl" id="dirCtl"><label>Field direction θ, φ <b id="dirV"></b></label><input type="range" id="th" min="0" max="90" value="55" aria-label="Polar angle of the field"><input type="range" id="ph" min="0" max="90" value="45" aria-label="Azimuth of the field" style="margin-top:6px"></div>
+  <div class="ctl" id="gCtl" hidden><label>Gradient G <b id="gV"></b></label><input type="range" id="g" min="-3" max="0.5" step="0.05" value="-1" aria-label="Field gradient, log scale, gauss per nanometre"></div>
+  <div class="ctl"><label>Drive Rabi frequency Ω <b id="omV"></b></label><input type="range" id="om" min="-1" max="1.3" step="0.02" value="0.3" aria-label="Rabi frequency, log scale, MHz"></div>
+  <div class="ctl"><label>Dephasing T₂* <b id="t2V"></b></label><input type="range" id="t2" min="-0.7" max="1.7" step="0.02" value="0" aria-label="Dephasing time, log scale, microseconds"></div>
+  <div class="ctl"><label>Objective NA <b id="naV"></b></label><input type="range" id="na" min="50" max="140" value="95" aria-label="Numerical aperture"></div>
+  <div class="kpis" id="kpis"></div>
+</aside>
+<div>
+  <div class="ad-top">
+    <div class="stage" style="min-height:0"><canvas id="spot" style="height:330px" role="img" aria-label="The laser focus with both NV centers inside it, to scale"></canvas><div class="hud" id="spotHud"></div></div>
+    <div class="stage" style="min-height:0"><canvas id="spec" style="height:330px" role="img" aria-label="Microwave spectrum of both NV centers and the drive"></canvas><div class="hud" id="specHud"></div></div>
+  </div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="time" style="height:200px" role="img" aria-label="Both spins under a pulse tuned to NV A"></canvas><div class="hud" id="timeHud">A pulse tuned to NV A: A flips, B should not</div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
+  <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+    <div class="lvl" data-l="k">Two tiny magnets sit so close together that the flashlight we use to read them lights up both at once. To talk to just one, we tune our radio to a pitch only that one hears. If their pitches are too close, or we shout too loudly, both of them answer.</div>
+    <div class="lvl" data-l="s">The focus of a lens of numerical aperture NA is an Airy spot about 0.51 λ/NA wide, so NVs 25 nm apart are optically one object. Their microwave lines can still differ: NVs on different ⟨111⟩ axes see different field projections, and a field gradient G shifts one by γₑGr. A drive of Rabi frequency Ω tuned to NV A excites NV B, detuned by Δ, with peak probability Ω²/(Ω² + Δ²). Lines must also be narrower than their separation: for the Gaussian dephasing used across this site a line is 2√ln2/(πT₂*) ≈ 0.53/T₂* wide. The drive uses whichever line of NV A lies farthest from NV B's lines. Faster pulses mean more crosstalk.</div>
+    <div class="lvl" data-l="r">Lines are exact spin-1 eigenvalues of D S_z² + γₑB·S per NV axis (<code>adamas.addressing</code>, golden-tested). A field along [001] projects equally on all four axes, so the spectral route vanishes; along one ⟨111⟩ axis it separates that axis from the other three by tens of MHz. The room-temperature two-NV demonstrations cited here used the spectral route with joint optical readout [dolde2013] [joas2025]; field gradients have addressed NVs about 100 nm apart [grinolds2011] [zhang2017addr], and cryogenic strain or zero-phonon-line tuning has addressed three NVs in one spot [bersin2019]. Not modelled: hyperfine structure (a 2.15 MHz ¹⁴N triplet), microwave field inhomogeneity, shaped pulses (which beat this worst-case crosstalk), and readout, which stays joint in every route shown here.</div>
+    <p class="src">Sources: [born1999] [dolde2013] [joas2025] [grinolds2011] [zhang2017addr] [bersin2019] [rabi1937] [doherty2013]</p></div>
+</div></div></main>
+<script type="module">
+import { boot, fitCanvas } from '../assets/site.js';
+import * as AD from '../assets/sim/addressing.js';
+import { couplingKHz as dipolarCouplingKHz } from '../assets/sim/action.js';
+import { loop } from '../assets/eqloop.js';
+boot('Addressing');
+const $ = id => document.getElementById(id);
+let route = 'spectral', EQ = null, t0 = performance.now();
+const AXES = AD.NV_AXES, AX_A = AXES[0], AX_B = AXES[1];
+const S = () => ({ r: +$('r').value, b: +$('b').value / 10, th: +$('th').value, ph: +$('ph').value, g: 10 ** +$('g').value, om: 10 ** +$('om').value, t2: 10 ** +$('t2').value, na: +$('na').value / 100 });
+function model() {
+  const s = S();
+  if (route === 'spectral') {
+    const la = AD.linesOnAxis(s.b, s.th, s.ph, AX_A), lb = AD.linesOnAxis(s.b, s.th, s.ph, AX_B);
+    const best = AD.bestLine(s.b, s.th, s.ph, AX_A, AX_B);   // drive the line of A farthest from B's lines
+    return { s, la, lb, sep: best.delta, target: best.f, k: best.k };
+  }
+  const base = AD.linesOnAxis(s.b, 0, 0, [0, 0, 1]), sh = AD.gradientShift(s.g, s.r);   // both on one axis, field along it
+  return { s, la: base, lb: [base[0] - sh, base[1] + sh], sep: Math.abs(sh), target: base[0], k: 0 };
+}
+const COL = { a: '#2de2e6', b: '#ffc46b', drive: '#ff6f7d', ink: '#e8f1f8', mute: '#8ea3b5', line: 'rgba(148,190,220,.22)' };
+function labels(m) {
+  const s = m.s;
+  $('rV').textContent = `${s.r} nm`; $('bV').textContent = `${s.b.toFixed(1)} mT`; $('dirV').textContent = `${s.th}°, ${s.ph}°`;
+  $('gV').textContent = `${s.g < 0.1 ? s.g.toFixed(3) : s.g.toFixed(2)} G/nm`; $('omV').textContent = `${s.om < 1 ? s.om.toFixed(2) : s.om.toFixed(1)} MHz`;
+  $('t2V').textContent = `${s.t2 < 1 ? s.t2.toFixed(2) : s.t2.toFixed(1)} µs`; $('naV').textContent = s.na.toFixed(2);
+  $('dirCtl').hidden = route !== 'spectral'; $('gCtl').hidden = route !== 'gradient';
+}
+function kpis(m) {
+  const s = m.s, v = AD.verdict(m.sep, s.t2, s.om), fw = AD.spotFwhm(532, s.na), J = dipolarCouplingKHz(s.r);
+  const verdict = v.selective ? 'Selective' : v.resolved ? 'Resolved, too fast' : 'Not resolved';
+  $('kpis').innerHTML = [[`${fw.toFixed(0)} nm`, 'laser spot (full width at half maximum)'], [`${m.sep.toFixed(m.sep < 1 ? 3 : 1)} MHz`, 'line separation Δ'],
+    [`${(100 * v.crosstalk).toFixed(v.crosstalk < 0.01 ? 2 : 0)}%`, 'crosstalk onto B'], [verdict, `π pulse ${v.piNs.toFixed(0)} ns; for 1% crosstalk Ω ≤ ${v.maxRabi.toFixed(2)} MHz`],
+    [`${J < 1 ? J.toFixed(2) : J.toFixed(1)} kHz`, `dipolar coupling at ${s.r} nm (gate ${(1e3 / (2 * J)).toFixed(0)} µs)`]]
+    .map(([b, t]) => `<div class="kpi"><b>${b}</b><span>${t}</span></div>`).join('');
+}
+function drawSpot(m) {
+  const { g, w, h } = fitCanvas($('spot'), 330); g.clearRect(0, 0, w, h); const s = m.s, fw = AD.spotFwhm(532, s.na);
+  const view = 900, sc = Math.min(w, h - 30) / view, cx = w / 2, cy = (h - 10) / 2;           // 900 nm field of view
+  const img = g.createImageData(Math.round(view * sc), Math.round(view * sc)), W = img.width;
+  for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) { const rr = Math.hypot(x - W / 2, y - W / 2) / sc, I = AD.airy(rr, 532, s.na), k = 4 * (y * W + x);
+    img.data[k] = 60 + 40 * I; img.data[k + 1] = 140 + 115 * I; img.data[k + 2] = 90 + 60 * I; img.data[k + 3] = Math.round(235 * Math.sqrt(I)); }
+  g.putImageData(img, Math.round(cx - W / 2), Math.round(cy - W / 2));
+  g.strokeStyle = 'rgba(232,241,248,.55)'; g.setLineDash([4, 4]); g.beginPath(); g.arc(cx, cy, fw / 2 * sc, 0, 7); g.stroke(); g.setLineDash([]);
+  const half = s.r / 2 * sc, ya = cy, xa = cx - half, xb = cx + half;
+  [[xa, COL.a, 'A', AX_A], [xb, COL.b, 'B', route === 'spectral' ? AX_B : AX_A]].forEach(([x, c, l, ax]) => {
+    g.fillStyle = c; g.beginPath(); g.arc(x, ya, 3.2, 0, 7); g.fill();
+    g.strokeStyle = c; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x, ya); g.lineTo(x + 26 * ax[0], ya - 26 * ax[2]); g.stroke();
+    g.fillStyle = c; g.font = '600 12px Inter'; g.fillText(l, x - 4, ya + (l === 'A' ? -10 : 20));
+  });
+  g.fillStyle = COL.ink; g.fillRect(16, h - 22, 100 * sc, 2); g.font = '11px "JetBrains Mono"'; g.fillStyle = COL.mute; g.fillText('100 nm', 16, h - 28);
+  // magnified inset of the pair (×10), so the two centers and their axes are visible
+  const iw = 130, ix = w - iw - 12, iy = h - iw - 12, z = 10 * sc, icx = ix + iw / 2, icy = iy + iw / 2;
+  g.fillStyle = 'rgba(5,7,13,.85)'; g.fillRect(ix, iy, iw, iw); g.strokeStyle = COL.line; g.strokeRect(ix, iy, iw, iw);
+  [[-1, COL.a, 'A', AX_A], [1, COL.b, 'B', route === 'spectral' ? AX_B : AX_A]].forEach(([sgn, c, l, ax]) => { const x = icx + sgn * s.r / 2 * z;
+    g.fillStyle = c; g.beginPath(); g.arc(x, icy, 4, 0, 7); g.fill(); g.strokeStyle = c; g.lineWidth = 1.6; g.beginPath(); g.moveTo(x, icy); g.lineTo(x + 22 * ax[0], icy - 22 * ax[2]); g.stroke();
+    g.font = '600 12px Inter'; g.fillText(l, x - 4, icy + 22); });
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText('×10: the pair, NV axes', ix + 6, iy + 14);
+  $('spotHud').textContent = `532 nm focus, NA ${s.na.toFixed(2)}: ${fw.toFixed(0)} nm wide · the pair is ${s.r} nm apart`;
+}
+function gau(f, f0, fw) { return Math.exp(-4 * Math.LN2 * ((f - f0) / fw) ** 2); }   // Gaussian line, FWHM fw
+function drawSpec(m) {
+  const { g, w, h } = fitCanvas($('spec'), 330); g.clearRect(0, 0, w, h); const s = m.s, lw = AD.linewidth(s.t2);
+  const target = m.target, span = Math.max(8 * lw, 3 * m.sep, 6 * s.om, 6), lo = target - span / 2, hi = target + span / 2;
+  const X = f => 40 + (w - 60) * (f - lo) / (hi - lo), Y = v => h - 36 - (h - 96) * v;
+  g.strokeStyle = COL.line; for (let k = 0; k <= 4; k++) { g.beginPath(); g.moveTo(40, Y(k / 4)); g.lineTo(w - 20, Y(k / 4)); g.stroke(); }
+  // drive: power-broadened response around the target line, width about 2 Omega
+  g.fillStyle = 'rgba(255,111,125,.12)'; g.beginPath(); g.moveTo(X(lo), Y(0)); for (let i = 0; i <= 300; i++) { const f = lo + (hi - lo) * i / 300; g.lineTo(X(f), Y(AD.crosstalk(s.om, f - target))); } g.lineTo(X(hi), Y(0)); g.fill();
+  [[m.la, COL.a], [m.lb, COL.b]].forEach(([ls, c]) => { g.strokeStyle = c; g.lineWidth = 2; g.beginPath();
+    for (let i = 0; i <= 600; i++) { const f = lo + (hi - lo) * i / 600, v = Math.min(1, ls.reduce((a, l) => a + gau(f, l, lw), 0)); i ? g.lineTo(X(f), Y(v)) : g.moveTo(X(f), Y(v)); } g.stroke(); });
+  const nb = m.lb.reduce((a, l) => (Math.abs(l - target) < Math.abs(a - target) ? l : a), m.lb[0]);
+  g.strokeStyle = COL.ink; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(target), Y(0.82)); g.lineTo(X(nb), Y(0.82)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = COL.ink; g.font = '600 12px "JetBrains Mono"'; g.textAlign = 'center'; g.fillText(`Δ = ${m.sep.toFixed(m.sep < 1 ? 3 : 2)} MHz`, (X(target) + X(nb)) / 2, Y(0.82) - 6); g.textAlign = 'left';
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText(`frequency (MHz), centred on the driven line of NV A, ${target.toFixed(1)} MHz (${m.k ? 'upper' : 'lower'})`, 44, h - 10);
+  $('specHud').textContent = `line width 2√ln2/(πT₂*) = ${lw < 0.1 ? lw.toFixed(3) : lw.toFixed(2)} MHz · shaded: what the drive excites`;
+}
+function drawTime(m, now) {
+  const { g, w, h } = fitCanvas($('time'), 200); g.clearRect(0, 0, w, h); const s = m.s, tpi = 1 / (2 * s.om), T = 2.2 * tpi;
+  const X = t => 40 + (w - 60) * t / T, Y = v => h - 28 - (h - 62) * v;
+  g.strokeStyle = COL.line; [0, 0.5, 1].forEach(v => { g.beginPath(); g.moveTo(40, Y(v)); g.lineTo(w - 20, Y(v)); g.stroke(); });
+  [[0, COL.a, 'NV A (driven)'], [m.sep, COL.b, 'NV B (detuned by Δ)']].forEach(([d, c, l], k) => { g.strokeStyle = c; g.lineWidth = 2; g.beginPath();
+    for (let i = 0; i <= 400; i++) { const t = T * i / 400, v = AD.rabiP(t, s.om, d); i ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v)); } g.stroke();
+    g.fillStyle = c; g.font = '12px Inter'; g.fillText(l, w - 300 + k * 140, 18); });
+  g.strokeStyle = COL.mute; g.setLineDash([2, 4]); g.beginPath(); g.moveTo(X(tpi), Y(0)); g.lineTo(X(tpi), Y(1.02)); g.stroke(); g.setLineDash([]);
+  const reduce = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, t = reduce ? tpi : ((now - t0) / 2600 % 1) * T;
+  [[0, COL.a], [m.sep, COL.b]].forEach(([d, c]) => { g.fillStyle = c; g.beginPath(); g.arc(X(t), Y(AD.rabiP(t, s.om, d)), 4.5, 0, 7); g.fill(); });
+  g.fillStyle = COL.mute; g.font = '11px Inter'; g.fillText(`time (π pulse at ${(tpi * 1000).toFixed(0)} ns, dashed) · vertical: probability of mₛ = −1`, 44, h - 8);
+}
+let M = null;
+function update() { M = model(); labels(M); kpis(M); drawSpot(M); drawSpec(M); EQ?.set({ Om: M.s.om, Dl: M.sep, t2s: M.s.t2 }); }
+$('route').onclick = e => { const b = e.target.closest('button'); if (!b) return; route = b.dataset.r; $('route').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
+['r', 'b', 'th', 'ph', 'g', 'om', 't2', 'na'].forEach(i => $(i).oninput = update); addEventListener('resize', update);
+update();
+(function anim(now) { if (M) drawTime(M, now); requestAnimationFrame(anim); })(performance.now());
+EQ = await loop($('loop'), 'crosstalk', { state: { Om: M.s.om, Dl: M.sep, t2s: M.s.t2 }, select: 'Om',
+  onChange: (st, ks) => { if (ks.includes('Om')) $('om').value = Math.log10(st.Om).toFixed(2); if (ks.includes('t2s')) $('t2').value = Math.log10(st.t2s).toFixed(2); update(); } });
+</script></body></html>

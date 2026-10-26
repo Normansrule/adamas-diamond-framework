@@ -18,10 +18,9 @@
 </style></head><body>
 <main class="wrap">
 <section class="dl">
-  <div><span class="eyebrow">Get the app</span>
-    <h1 style="font-size:clamp(34px,5vw,62px)">ADAMAS on your <span class="grad">desktop, offline</span></h1>
+  <div><h1 style="font-size:clamp(34px,5vw,62px)">ADAMAS on your <span class="grad">desktop, offline</span></h1>
     <p class="lead">Every lab, the fourteen equations in action, the 3-D experiments, the process traveler, and the course, in one app that runs without an internet connection. Free and open source (MIT license).</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><a class="btn primary" id="primary" href="#all">⬇ Download</a><button class="btn" id="install" hidden>＋ Install as a web app</button><a class="btn" href="#python">Run from Python</a></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><a class="btn primary" id="primary" href="#all" data-icon="download">Download</a><button class="btn" id="install" hidden data-icon="plus">Install as a web app</button><a class="btn" href="#python">Run from Python</a></div>
     <p class="src" id="rel">Builds are attached to every GitHub release by the desktop workflow.</p>
     <p class="src" id="inapp" hidden></p>
   </div>
@@ -33,17 +32,17 @@
   <div><b>Fourteen equations</b><span>Animated, with live sliders, for every experiment from US$100 to a pilot line.</span></div>
   <div><b>Open source</b><span>Built in public by GitHub Actions from the tagged source; checksums in SHA256SUMS.txt.</span></div>
 </div>
-<section class="block" id="all" style="padding-top:50px"><span class="eyebrow">Downloads</span><h2>Pick your system</h2>
+<section class="block" id="all" style="padding-top:50px"><h2>Pick your system</h2>
 <div class="oscards">
-  <div class="card" data-os="win"><h3><i>⊞</i> Windows 10 and 11</h3><div class="files">
+  <div class="card" data-os="win"><h3>Windows 10 and 11</h3><div class="files">
     <a data-f="ADAMAS-Setup-x64.exe">Installer (recommended) <small>.exe · x64</small></a>
     <a data-f="ADAMAS-Portable-x64.exe">Portable, no install <small>.exe · x64</small></a></div>
     <p class="note">The app is not code-signed yet, so SmartScreen may say "Windows protected your PC". Choose <b>More info → Run anyway</b>. Works from WSL too: run the installer from Windows.</p></div>
-  <div class="card" data-os="mac"><h3><i></i> macOS 12 and newer</h3><div class="files">
+  <div class="card" data-os="mac"><h3>macOS 12 and newer</h3><div class="files">
     <a data-f="ADAMAS-mac-arm64.dmg">Apple silicon (M1 to M4) <small>.dmg · arm64</small></a>
     <a data-f="ADAMAS-mac-x64.dmg">Intel Mac <small>.dmg · x64</small></a></div>
     <p class="note">Not notarized yet: the first time, right-click the app in Applications and choose <b>Open</b>, then <b>Open</b> again.</p></div>
-  <div class="card" data-os="linux"><h3><i>🐧</i> Linux</h3><div class="files">
+  <div class="card" data-os="linux"><h3>Linux</h3><div class="files">
     <a data-f="ADAMAS-linux-x86_64.AppImage">AppImage, any distribution <small>.AppImage · x86_64</small></a>
     <a data-f="ADAMAS-linux-amd64.deb">Debian and Ubuntu <small>.deb · amd64</small></a></div>
     <p class="note">AppImage: <code>chmod +x ADAMAS-linux-x86_64.AppImage</code> then run it. Ubuntu 24.04 and newer may also need <code>sudo apt install libfuse2t64</code>. Deb: <code>sudo apt install ./ADAMAS-linux-amd64.deb</code>.</p></div>
@@ -59,16 +58,16 @@
 </div></section>
 </main>
 <script type="module">
-import { boot } from './assets/site.js';
+import { boot, label } from './assets/site.js';
 boot('App');
 const $ = id => document.getElementById(id), REPO = 'Normansrule/adamas-diamond-framework', BASEURL = `https://github.com/${REPO}/releases/latest/download/`;
 document.querySelectorAll('[data-f]').forEach(a => a.href = BASEURL + a.dataset.f);
 const ua = (navigator.userAgent || '') + ' ' + (navigator.platform || ''), mobile = /Android|iPhone|iPad|iPod/i.test(ua);
 const os = mobile ? null : /Win/i.test(ua) ? 'win' : /Mac/i.test(ua) ? 'mac' : /Linux|X11/i.test(ua) ? 'linux' : null;
 if (os) { const card = document.querySelector(`.card[data-os="${os}"]`); card.classList.add('mine'); const first = card.querySelector('[data-f]');
-  $('primary').href = first.href; $('primary').textContent = `⬇ Download for ${{ win: 'Windows', mac: 'macOS', linux: 'Linux' }[os]}`;
-  if (os === 'mac' && navigator.userAgentData?.getHighEntropyValues) navigator.userAgentData.getHighEntropyValues(['architecture']).then(v => { if (v.architecture === 'x86') { const intel = card.querySelector('[data-f="ADAMAS-mac-x64.dmg"]'); $('primary').href = intel.href; $('primary').textContent = '⬇ Download for macOS (Intel)'; } }).catch(() => {}); }
-if (mobile) { $('primary').href = '#all'; $('primary').textContent = 'Desktop downloads ↓'; }
+  $('primary').href = first.href; label($('primary'), 'download', `Download for ${{ win: 'Windows', mac: 'macOS', linux: 'Linux' }[os]}`);
+  if (os === 'mac' && navigator.userAgentData?.getHighEntropyValues) navigator.userAgentData.getHighEntropyValues(['architecture']).then(v => { if (v.architecture === 'x86') { const intel = card.querySelector('[data-f="ADAMAS-mac-x64.dmg"]'); $('primary').href = intel.href; label($('primary'), 'download', 'Download for macOS (Intel)'); } }).catch(() => {}); }
+if (mobile) { $('primary').href = '#all'; label($('primary'), 'download', 'Desktop downloads'); }
 if (window.adamasDesktop) { $('inapp').hidden = false; $('inapp').textContent = `You are running the ADAMAS desktop app ${window.adamasDesktop.version} on ${window.adamasDesktop.platform}. Newer builds appear here when they are released.`; }
 // latest release: version, date, and file sizes (skipped quietly when offline)
 fetch(`https://api.github.com/repos/${REPO}/releases/latest`).then(r => r.ok ? r.json() : null).then(rel => {

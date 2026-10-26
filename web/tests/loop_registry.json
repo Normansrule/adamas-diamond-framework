@@ -1,0 +1,470 @@
+{
+ "rabi": {
+  "lab": "labs/qubit.html",
+  "title": "Rabi oscillation",
+  "python": "adamas.nv.rabi",
+  "html": "<i>P</i><sub>−1</sub> = <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup></span><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup> + <button class=\"v\" type=\"button\" data-k=\"de\">δ</button><sup>2</sup></span></span> sin<sup>2</sup>(π√(<button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup> + <button class=\"v\" type=\"button\" data-k=\"de\">δ</button><sup>2</sup>) <button class=\"v\" type=\"button\" data-k=\"t\">t</button>)",
+  "result": {
+   "sym": "P₋₁",
+   "name": "probability of mₛ = −1 after the pulse",
+   "unit": "",
+   "digits": 3
+  },
+  "vars": {
+   "Om": {
+    "sym": "Ω",
+    "name": "Rabi frequency",
+    "unit": "MHz",
+    "min": 1,
+    "max": 20,
+    "digits": 1,
+    "src": "set by microwave power; the π pulse lasts 1/(2Ω)"
+   },
+   "de": {
+    "sym": "δ",
+    "name": "detuning",
+    "unit": "MHz",
+    "min": -4,
+    "max": 4,
+    "digits": 2,
+    "src": "microwave frequency minus the ODMR line (experiment A1)"
+   },
+   "t": {
+    "sym": "t",
+    "name": "pulse length",
+    "unit": "µs",
+    "min": 0,
+    "max": 2,
+    "digits": 3,
+    "src": "pulse generator (experiment B1)"
+   }
+  },
+  "units": [
+   "MHz × µs = 1: the phase is dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "rwa",
+    "text": "rotating wave: Ω ≪ D = 2870 MHz"
+   },
+   {
+    "id": "nodecay",
+    "text": "no decay: t ≪ T₂*"
+   },
+   {
+    "id": "twolevel",
+    "text": "two levels: mₛ = 0 and −1 only"
+   }
+  ],
+  "refs": [
+   "rabi1937",
+   "jelezko2004a"
+  ],
+  "derivation": [
+   "Chapter 6",
+   "docs/06_nv_center_physics.md"
+  ]
+ },
+ "ramsey": {
+  "lab": "labs/qubit.html",
+  "title": "Ramsey fringes",
+  "python": "adamas.nv.ramsey",
+  "html": "<i>P</i><sub>−1</sub> = ½[1 + cos(2π<button class=\"v\" type=\"button\" data-k=\"de\">δ</button><button class=\"v\" type=\"button\" data-k=\"tau\">τ</button>) e<sup>−(<button class=\"v\" type=\"button\" data-k=\"tau\">τ</button>/<button class=\"v\" type=\"button\" data-k=\"t2s\">T<sub>2</sub>*</button>)<sup>2</sup></sup>]",
+  "result": {
+   "sym": "P₋₁",
+   "name": "probability of mₛ = −1 after π/2 – τ – π/2",
+   "unit": "",
+   "digits": 3
+  },
+  "vars": {
+   "de": {
+    "sym": "δ",
+    "name": "detuning",
+    "unit": "MHz",
+    "min": -4,
+    "max": 4,
+    "digits": 2,
+    "src": "microwave frequency minus the ODMR line"
+   },
+   "tau": {
+    "sym": "τ",
+    "name": "free time",
+    "unit": "µs",
+    "min": 0,
+    "max": 6,
+    "digits": 2,
+    "src": "pulse generator"
+   },
+   "t2s": {
+    "sym": "T₂*",
+    "name": "dephasing time",
+    "unit": "µs",
+    "min": 0.1,
+    "max": 6,
+    "digits": 2,
+    "src": "spread of static detunings; 1 to 100 µs in real diamond [balasubramanian2009]"
+   }
+  },
+  "units": [
+   "MHz × µs = 1",
+   "τ / T₂* is dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "hard",
+    "text": "hard pulses: π/(2Ω) ≪ τ"
+   },
+   {
+    "id": "gauss",
+    "text": "quasi-static Gaussian detunings"
+   }
+  ],
+  "refs": [
+   "ramsey1950",
+   "degen2017"
+  ],
+  "derivation": [
+   "Chapter 6",
+   "docs/06_nv_center_physics.md"
+  ]
+ },
+ "echo": {
+  "lab": "labs/qubit.html",
+  "title": "Hahn echo with a mistimed π pulse",
+  "python": "adamas.nv.echo_mistimed",
+  "html": "<i>P</i><sub>−1</sub> = ½[1 − cos(2π<button class=\"v\" type=\"button\" data-k=\"de\">δ</button><button class=\"v\" type=\"button\" data-k=\"eps\">ε</button>) e<sup>−(<button class=\"v\" type=\"button\" data-k=\"eps\">ε</button>/<button class=\"v\" type=\"button\" data-k=\"t2s\">T<sub>2</sub>*</button>)<sup>2</sup></sup>], &nbsp; ε = τ<sub>2</sub> − τ<sub>1</sub>",
+  "result": {
+   "sym": "P₋₁",
+   "name": "probability of mₛ = −1 after π/2 – τ₁ – π – τ₂ – π/2",
+   "unit": "",
+   "digits": 3
+  },
+  "vars": {
+   "de": {
+    "sym": "δ",
+    "name": "detuning",
+    "unit": "MHz",
+    "min": -4,
+    "max": 4,
+    "digits": 2,
+    "src": "microwave frequency minus the ODMR line"
+   },
+   "eps": {
+    "sym": "ε",
+    "name": "π-pulse mistiming τ₂ − τ₁",
+    "unit": "µs",
+    "min": -2,
+    "max": 2,
+    "digits": 2,
+    "src": "pulse placement; 0 for a centred echo"
+   },
+   "t2s": {
+    "sym": "T₂*",
+    "name": "dephasing time",
+    "unit": "µs",
+    "min": 0.1,
+    "max": 6,
+    "digits": 2,
+    "src": "spread of static detunings"
+   }
+  },
+  "units": [
+   "MHz × µs = 1"
+  ],
+  "assumptions": [
+   {
+    "id": "static",
+    "text": "static noise only: real spins also lose T₂ (not modelled here)"
+   },
+   {
+    "id": "hard",
+    "text": "hard pulses"
+   }
+  ],
+  "refs": [
+   "hahn1950",
+   "delange2010"
+  ],
+  "derivation": [
+   "Chapter 6",
+   "docs/06_nv_center_physics.md"
+  ]
+ },
+ "contrast": {
+  "lab": "labs/photon.html",
+  "title": "Readout contrast you can measure",
+  "python": "adamas.photophysics.measured_contrast",
+  "html": "<i>C</i> = 1 − <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"P\"><i>P</i></button> <i>I</i><sub>1</sub> + (1 − <button class=\"v\" type=\"button\" data-k=\"P\"><i>P</i></button>) <i>I</i><sub>0</sub></span><span><button class=\"v\" type=\"button\" data-k=\"P\"><i>P</i></button> <i>I</i><sub>0</sub> + (1 − <button class=\"v\" type=\"button\" data-k=\"P\"><i>P</i></button>) <i>I</i><sub>1</sub></span></span>, &nbsp; <i>I</i><sub>m</sub> = ∫<sub>0</sub><sup><button class=\"v\" type=\"button\" data-k=\"win\">t<sub>w</sub></button></sup> photons(mₛ = m), &nbsp; <button class=\"v\" type=\"button\" data-k=\"P\"><i>P</i></button>(<button class=\"v\" type=\"button\" data-k=\"beta\">β</button>, <button class=\"v\" type=\"button\" data-k=\"tpol\">t<sub>pol</sub></button>)",
+  "result": {
+   "sym": "C",
+   "name": "contrast with and without a π pulse, from the pumped state",
+   "unit": "",
+   "digits": 3
+  },
+  "vars": {
+   "beta": {
+    "sym": "β",
+    "name": "pump rate over the radiative rate",
+    "unit": "",
+    "min": 0.1,
+    "max": 3,
+    "digits": 2,
+    "src": "laser power; saturation near 1 [tetienne2012]"
+   },
+   "win": {
+    "sym": "t_w",
+    "name": "counting window",
+    "unit": "µs",
+    "min": 0.1,
+    "max": 1,
+    "digits": 2,
+    "src": "photon-counter gate"
+   },
+   "tpol": {
+    "sym": "t_pol",
+    "name": "pumping time before the pulse",
+    "unit": "µs",
+    "min": 0.3,
+    "max": 5,
+    "digits": 1,
+    "src": "laser pulse length"
+   },
+   "P": {
+    "sym": "P",
+    "name": "spin polarization (population of mₛ = 0)",
+    "unit": "",
+    "derived": true,
+    "digits": 3,
+    "src": "computed from the rate model after t_pol"
+   }
+  },
+  "units": [
+   "rates in 1/µs × times in µs: dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "zerofield",
+    "text": "zero field: mₛ = ±1 lumped"
+   },
+   {
+    "id": "perfectpi",
+    "text": "perfect π pulse"
+   },
+   {
+    "id": "window",
+    "text": "window shorter than the singlet lifetime (≈ 0.5 µs)"
+   }
+  ],
+  "refs": [
+   "tetienne2012",
+   "gruber1997"
+  ],
+  "derivation": [
+   "Chapter 6",
+   "docs/06_nv_center_physics.md"
+  ]
+ },
+ "hot_switch": {
+  "lab": "labs/power.html",
+  "title": "Why diamond wins only when hot",
+  "python": "adamas.converter.ron_temperature_factor",
+  "html": "<span class=\"fr\"><span><i>R</i><sub>on</sub>(<button class=\"v\" type=\"button\" data-k=\"T\">T</button>)</span><span><i>R</i><sub>ideal</sub></span></span> = (<span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"T\">T</button></span><span>300 K</span></span>)<sup><button class=\"v\" type=\"button\" data-k=\"alpha\">α</button></sup> · <span class=\"fr\"><span>1</span><span><button class=\"v\" type=\"button\" data-k=\"fion\"><i>f</i><sub>ion</sub></button>(<button class=\"v\" type=\"button\" data-k=\"T\">T</button>, <button class=\"v\" type=\"button\" data-k=\"N\">N</button>)</span></span>",
+  "result": {
+   "sym": "R_on/R_ideal",
+   "name": "on-resistance of a bulk boron-doped drift relative to its ideal limit",
+   "unit": "×",
+   "digits": 1
+  },
+  "vars": {
+   "T": {
+    "sym": "T",
+    "name": "junction temperature",
+    "unit": "K",
+    "min": 300,
+    "max": 650,
+    "digits": 0,
+    "src": "set by losses, cooling and ambient"
+   },
+   "alpha": {
+    "sym": "α",
+    "name": "lattice-mobility exponent",
+    "unit": "",
+    "min": 2.0,
+    "max": 3.2,
+    "digits": 1,
+    "src": "about 2.8 for holes in diamond [pernot2010]"
+   },
+   "N": {
+    "sym": "N",
+    "name": "boron in the drift layer",
+    "unit": "cm⁻³",
+    "derived": true,
+    "digits": 2,
+    "src": "unipolar-limit design for the blocking voltage: ε E_c² / (2 q BV)"
+   },
+   "fion": {
+    "sym": "f_ion",
+    "name": "ionized fraction of the boron",
+    "unit": "",
+    "derived": true,
+    "digits": 4,
+    "src": "charge neutrality with E_A = 0.37 eV [lagrange1998]"
+   }
+  },
+  "units": [
+   "(K / K)^α is dimensionless",
+   "f_ion is a fraction"
+  ],
+  "assumptions": [
+   {
+    "id": "uncomp",
+    "text": "uncompensated boron (compensation lowers f_ion)"
+   },
+   {
+    "id": "nofield",
+    "text": "no field-assisted ionization"
+   },
+   {
+    "id": "sicceil",
+    "text": "SiC package ceiling ≈ 523 K"
+   }
+  ],
+  "refs": [
+   "pernot2010",
+   "lagrange1998",
+   "kawarada2014"
+  ],
+  "derivation": [
+   "E9.2",
+   "docs/expert/E9_power_circuits_diamond_vs_gan_sic.md"
+  ]
+ },
+ "crosstalk": {
+  "lab": "labs/addressing.html",
+  "title": "Driving one NV without the other",
+  "python": "adamas.addressing.crosstalk",
+  "html": "<i>X</i> = <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup></span><span><button class=\"v\" type=\"button\" data-k=\"Om\">Ω</button><sup>2</sup> + <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button><sup>2</sup></span></span>, &nbsp; resolved if <button class=\"v\" type=\"button\" data-k=\"Dl\">Δ</button> &gt; <span class=\"fr\"><span>2√ln 2</span><span>π<button class=\"v\" type=\"button\" data-k=\"t2s\">T<sub>2</sub>*</button></span></span>",
+  "result": {
+   "sym": "X",
+   "name": "peak excitation of the other NV (crosstalk)",
+   "unit": "",
+   "digits": 4
+  },
+  "vars": {
+   "Om": {
+    "sym": "Ω",
+    "name": "Rabi frequency of the drive",
+    "unit": "MHz",
+    "min": 0.1,
+    "max": 20,
+    "digits": 2,
+    "src": "microwave power"
+   },
+   "Dl": {
+    "sym": "Δ",
+    "name": "separation of the two NVs' lines",
+    "unit": "MHz",
+    "derived": true,
+    "digits": 2,
+    "src": "orientation (spectral route) or field gradient"
+   },
+   "t2s": {
+    "sym": "T₂*",
+    "name": "dephasing time",
+    "unit": "µs",
+    "min": 0.2,
+    "max": 50,
+    "digits": 1,
+    "src": "sets the line width 2√ln2/(πT₂*) of a Gaussian free-induction decay"
+   }
+  },
+  "units": [
+   "MHz² / MHz²: dimensionless",
+   "1/(µs) = MHz"
+  ],
+  "assumptions": [
+   {
+    "id": "resolved",
+    "text": "lines resolved: Δ above the line width"
+   },
+   {
+    "id": "nohf",
+    "text": "¹⁴N hyperfine ignored (2.15 MHz triplet)"
+   }
+  ],
+  "refs": [
+   "rabi1937",
+   "dolde2013",
+   "grinolds2011"
+  ],
+  "derivation": [
+   "Chapter 7",
+   "docs/07_nv_fabrication_and_placement.md"
+  ]
+ },
+ "crystal": {
+  "lab": "labs/wafer.html",
+  "title": "Crystal quality sets the breakdown field",
+  "python": "adamas.power.critical_field_mv_cm",
+  "html": "<i>E</i><sub>c</sub> = 7.7 − 1.88 log<sub>10</sub>(<span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"D\">D</button></span><span>10<sup>4</sup> cm<sup>−2</sup></span></span>) MV/cm, &nbsp; <button class=\"v\" type=\"button\" data-k=\"t2\"><i>T</i><sub>2</sub>*</button> ≤ <span class=\"fr\"><span>1</span><span>π <i>k</i><sub>s</sub> <button class=\"v\" type=\"button\" data-k=\"eps\">ε</button>(<button class=\"v\" type=\"button\" data-k=\"D\">D</button>)</span></span>",
+  "result": {
+   "sym": "E_c",
+   "name": "effective breakdown field (proposed fit, floored at 1 MV/cm)",
+   "unit": "MV/cm",
+   "digits": 2
+  },
+  "vars": {
+   "D": {
+    "sym": "D",
+    "name": "threading-dislocation density",
+    "unit": "cm⁻²",
+    "min": 10,
+    "max": 1000000000.0,
+    "log": true,
+    "digits": 2,
+    "src": "substrate class: HPHT ~10², CVD on HPHT ~10⁴, heteroepitaxial ~2×10⁷ [stehl2013]"
+   },
+   "eps": {
+    "sym": "ε",
+    "name": "strain at the mean dislocation distance, b/(2πr)",
+    "unit": "",
+    "derived": true,
+    "digits": 2,
+    "src": "Burgers vector 0.252 nm, r = 1/(2√D)"
+   },
+   "t2": {
+    "sym": "T₂*",
+    "name": "strain-limited dephasing time (upper bound)",
+    "unit": "µs",
+    "derived": true,
+    "digits": 3,
+    "src": "spin–strain coupling 10.9 GHz per unit strain [marshall2022]"
+   }
+  },
+  "units": [
+   "log of a ratio of densities",
+   "GHz × strain × µs: dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "fit",
+    "text": "E_c(D) is an engineering fit, not a law"
+   },
+   {
+    "id": "range",
+    "text": "fit range 10⁴ to 10⁸ cm⁻²"
+   }
+  ],
+  "refs": [
+   "volpe2010",
+   "kwak2021",
+   "weippert2022",
+   "marshall2022",
+   "stehl2013"
+  ],
+  "derivation": [
+   "Chapter 2",
+   "docs/02_wafer_manufacturing.md"
+  ]
+ }
+}

@@ -7,7 +7,7 @@ export const NAV = [
     ['Gallery', 'gallery.html', 'All figures and animations'], ['Glossary', 'glossary.html', 'Every acronym, spelled out']]],
   ['Labs', [['Lattice', 'labs/lattice.html', 'Materials · crystal and NV center'], ['Heat', 'labs/heat.html', 'Materials · heat race'], ['Wafer', 'labs/wafer.html', 'Manufacturing · yield'],
     ['Fab', 'labs/fab.html', 'Manufacturing · process walkthrough'], ['Transistor', 'labs/transistor.html', 'Devices · I–V and ring oscillator'], ['Power', 'labs/power.html', 'Devices · EV inverter'],
-    ['Chip', 'labs/cpu.html', 'Logic · program DIA-4'], ['Qubit', 'labs/qubit.html', 'Quantum · Bloch sphere'], ['Photon', 'labs/photon.html', 'Quantum · optical cycle'],
+    ['Chip', 'labs/cpu.html', 'Logic · program DIA-4'], ['Qubit', 'labs/qubit.html', 'Quantum · Bloch sphere'], ['Photon', 'labs/photon.html', 'Quantum · optical cycle'], ['Addressing', 'labs/addressing.html', 'Quantum · two qubits in one laser spot'], ['Gate bias', 'labs/bias.html', 'Quantum · why only CZ keeps the bias'],
     ['Error correction', 'labs/qec.html', 'Quantum · break the code'], ['Machine', 'labs/machine.html', 'Architecture · size a computer'], ['Stack', 'labs/stack.html', 'Architecture · chip stack'],
     ['Globe', 'labs/globe.html', 'Landscape · who is building it']]],
   ['Build', [['Process', 'process.html', '20-step cleanroom traveler'], ['Experiments', 'experiments.html', 'Ten experiments, US$100 and up'], ['Data Lab', 'datalab.html', 'Fit your own measurements']]],
@@ -17,14 +17,35 @@ export const NAV = [
 export const LINKS = [['Home', 'index.html'], ...NAV.flatMap(([, items]) => items.map(([t, h]) => [t, h]))];
 const LOGO = '<svg viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ff3ff"/><stop offset="1" stop-color="#9d7bff"/></linearGradient></defs><path d="M8 4h16l6 8-14 17L2 12z" fill="url(#lg)"/><path d="M8 4l4 8 4-8 4 8 4-8M2 12h28M12 12l4 17 4-17" stroke="#05070d" stroke-width="1.2" fill="none" opacity=".5"/></svg>';
 
+// Inline SVG icons (stroke drawings on a 24-unit grid, drawn for this site) instead of emoji and dingbat glyphs, which
+// render differently on every platform and are read aloud by screen readers. Static markup uses data-icon="name"
+// (before the label) or data-icon-end="name" (after it); boot() upgrades them. Scripts that relabel a button call label().
+const ICONS = {
+  play: '<path d="M7.5 5.5v13l10-6.5z" fill="currentColor"/>', pause: '<path d="M8.5 5.5v13M15.5 5.5v13" stroke-width="2.8"/>',
+  stop: '<rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/>', prev: '<path d="M14.5 6l-6 6 6 6"/>', next: '<path d="M9.5 6l6 6-6 6"/>',
+  down: '<path d="M6 9.5l6 6 6-6"/>', download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', plus: '<path d="M12 5v14M5 12h14"/>',
+  print: '<path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M7 14h10v6H7z"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', bolt: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+  star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.1 1 5.8L12 16.9l-5.25 2.7 1-5.8L3.5 9.7l5.9-.9z"/>',
+};
+export const icon = n => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[n] || ''}</svg>`;
+export function label(el, name, text, end = false) {
+  if (!el) return; const t = String(text).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  el.innerHTML = end ? `${t} ${icon(name)}` : `${icon(name)} ${t}`;
+}
+function upgradeIcons(root = document) {
+  root.querySelectorAll('[data-icon],[data-icon-end]').forEach(e => { if (e.querySelector('svg.icon')) return;
+    const end = e.hasAttribute('data-icon-end'); label(e, end ? e.dataset.iconEnd : e.dataset.icon, e.textContent.trim(), end); });
+}
+
 export function mountNav(active) {
   const nav = document.createElement('nav'); nav.className = 'top'; nav.setAttribute('aria-label', 'Main');
   const group = NAV.find(([, items]) => items.some(([t]) => t === active));
   nav.innerHTML = `<a class="brand" href="${BASE}/index.html">${LOGO}ADAMAS</a>
     <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    <div class="links">` + NAV.map(([g, items]) => `<div class="dd${group && group[0] === g ? ' on' : ''}"><button class="ddb" aria-expanded="false">${g} <i>▾</i></button>
+    <div class="links">` + NAV.map(([g, items]) => `<div class="dd${group && group[0] === g ? ' on' : ''}"><button class="ddb" aria-expanded="false">${g} <i>${icon('down')}</i></button>
       <div class="ddm${items.length > 6 ? ' wide' : ''}">${items.map(([t, h, d]) => `<a href="${BASE}/${h}" class="${t === active ? 'on' : ''}"><b>${t === 'Chip' ? 'Diamond CPU' : t}</b><small>${d}</small></a>`).join('')}</div></div>`).join('') +
-    `<button class="kbtn" id="openSearch" aria-label="Search">⌕ Search <kbd>Ctrl K</kbd></button><a class="gh app" href="${BASE}/download.html">⬇ App</a><a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">★ GitHub</a></div>`;
+    `<button class="kbtn" id="openSearch" aria-label="Search (Ctrl K)">${icon('search')} Search <kbd>Ctrl K</kbd></button><a class="gh app" href="${BASE}/download.html">${icon('download')} App</a><a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">${icon('star')} GitHub</a></div>`;
   document.body.prepend(nav);
   const close = () => nav.querySelectorAll('.dd').forEach(d => { d.classList.remove('open'); d.querySelector('.ddb').setAttribute('aria-expanded', 'false'); });
   nav.querySelectorAll('.ddb').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const d = b.parentElement, was = d.classList.contains('open'); close(); if (!was) { d.classList.add('open'); b.setAttribute('aria-expanded', 'true'); } }));
@@ -111,7 +132,7 @@ export function pwa() {
   navigator.serviceWorker.register(`${BASE}/sw.js`).catch(() => {});
   addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; document.dispatchEvent(new Event('adamas-installable')); });
 }
-export function boot(active) { mountNav(active); spotlight(); levels(); copyButtons(); reveal(); scrollProgress(); pwa(); document.body.classList.add('ready');
+export function boot(active) { mountNav(active); upgradeIcons(); spotlight(); levels(); copyButtons(); reveal(); scrollProgress(); pwa(); document.body.classList.add('ready');
   import('./glossary.js').then(m => { m.glossary(BASE); setTimeout(() => m.glossary(BASE), 1200); }).catch(() => {}); }
 
 // small canvas helpers shared by labs

@@ -20,6 +20,22 @@ export function evolve(beta, start, tEnd, dt = 1e-4) {      // returns { t, phot
   return { t, photonRate: photon, pops };
 }
 
+export function evolveFrom(beta, p0, tEnd, dt = 1e-4) {   // final populations from any start vector (RK2, like evolve)
+  const R = rates(beta), p = p0.slice(), n = Math.max(1, Math.round(tEnd / dt)), h = tEnd / n;
+  const d = q => { const o = [0, 0, 0, 0, 0]; for (const [a, b, k] of R) { o[a] -= k * q[a]; o[b] += k * q[a]; } return o; };
+  for (let s = 0; s < n; s++) { const k1 = d(p), mid = p.map((v, i) => v + k1[i] * h / 2), k2 = d(mid); for (let i = 0; i < 5; i++) p[i] += k2[i] * h; }
+  return p;
+}
+export function polarization(beta = 1, tUs = 3) {             // mirrors adamas.photophysics.polarization
+  const p = evolveFrom(beta, [1 / 3, 2 / 3, 0, 0, 0], tUs);
+  return p[0] + p[2] + p[4] * K.sg0 / (K.sg0 + K.sg1);
+}
+const integral = x => x.photonRate.reduce((s, v, i) => i ? s + (v + x.photonRate[i - 1]) / 2 * (x.t[i] - x.t[i - 1]) : 0, 0);
+export function counts(beta = 1, windowUs = 0.3) { return { i0: integral(evolve(beta, '0', windowUs)), i1: integral(evolve(beta, '1', windowUs)) }; }
+export function measuredContrast(beta = 1, windowUs = 0.3, tPolUs = 3) {   // mirrors adamas.photophysics.measured_contrast
+  const { i0, i1 } = counts(beta, windowUs), P = polarization(beta, tPolUs);
+  return 1 - (P * i1 + (1 - P) * i0) / (P * i0 + (1 - P) * i1);
+}
 export function contrast(beta = 1, windowUs = 0.3) {
   const a = evolve(beta, '0', windowUs), b = evolve(beta, '1', windowUs), I = x => x.photonRate.reduce((s, v, i) => i ? s + (v + x.photonRate[i - 1]) / 2 * (x.t[i] - x.t[i - 1]) : 0, 0);
   return 1 - I(b) / I(a);

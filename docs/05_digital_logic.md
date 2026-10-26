@@ -11,7 +11,7 @@
 | Normally-off operation through partial oxygen termination of the channel | [kitabayashi2017] |
 | Inversion-channel p-MOSFET | [matsumoto2016] |
 | First n-channel MOSFET (first per the authors; phosphorus-doped channel), the missing half of diamond CMOS | [liao2024] |
-| p-channel MOSFET on a phosphorus-doped n-type body (same structure class as [matsumoto2016]) | [zhao2024] |
+| p-channel MOSFET on a phosphorus-doped n-type body: hydrogen-terminated surface channel, normally on, on/off ratio 10⁷ (the 2016 device was a normally-off inversion channel [matsumoto2016]) | [zhao2024] |
 
 ## 5.2 Inverter model
 

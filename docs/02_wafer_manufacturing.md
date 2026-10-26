@@ -27,7 +27,7 @@ Silicon sources: [czochralski1918], [teal1950], [plummer2000]. Diamond sources f
 
 ### High pressure, high temperature (HPHT)
 
-The first reproducible synthesis dissolved graphite in molten metal at about 5 to 6 gigapascals and 1300 to 1600 °C, mimicking the Earth's mantle [bundy1955]. Modern temperature-gradient presses produce type IIa crystals with very low dislocation density, about 10¹ to 10³ cm⁻² ([sumiya2012], [burns2009]), in plates of order 10 mm across (plate size unsourced). These are the best seeds available, and they are small.
+The first reproducible synthesis dissolved graphite in molten metal at about 5 to 6 gigapascals and 1300 to 1600 °C, mimicking the Earth's mantle [bundy1955]. Modern temperature-gradient presses produce type IIa crystals with very low dislocation density, about 10¹ to 10³ cm⁻² ([sumiya2012], [burns2009]), in plates of order 10 mm across: a 1 mm (111) plate of about 10 × 10 mm² with a nearly defect-free 3 × 7 mm² region has been reported [stoupin2016] (preprint). These are the best seeds available, and they are small.
 
 ### Chemical vapor deposition (CVD)
 
@@ -53,7 +53,7 @@ Heteroepitaxy is the route that resembles a real wafer industry, since sapphire 
 |---|---|---|---|---|---|---|
 | HPHT plate | about 10² (10¹ to 10³) | — | $T_2^*$ = 1.28 µs in a low-strain plate, limited by strain and local charges | 7.7 MV/cm | about 0.36 ms (strain alone; other noise dominates) | [sumiya2012], [blinder2024] |
 | CVD on HPHT (homoepitaxial) | about 10⁴ (10³ to 10⁵) | ≥ 7.7 MV/cm, small area | $T_2$ 1.8 to 2.4 ms in ¹²C-enriched layers | 7.7 MV/cm | about 36 µs | [friel2009], [gaukroger2008], [volpe2010], [balasubramanian2009], [herbschleb2019] |
-| Heteroepitaxial wafer (Ir/YSZ/Si, sapphire) | about 2×10⁷ at the growth surface | about 1.1 MV/cm (freestanding, sapphire route); 1.5 MV/cm (pseudovertical diode) | single-NV $T_2$ = 5 µs | 1.5 MV/cm | about 0.8 µs | [kim2021], [qu2024], [stehl2013], [kwak2021], [weippert2022], [nelz2019] |
+| Heteroepitaxial wafer (Ir/YSZ/Si, sapphire) | about 2×10⁷ at the growth surface | about 1.1 MV/cm (freestanding, sapphire route); 1.5 MV/cm (pseudovertical diode) | single-NV $T_2$ = 5 µs [nelz2019]; over laterally overgrown regions $T_2^*$ 1.1–4.8 µs and $T_2$ 98–539 µs [oshnik2025] | 1.5 MV/cm | about 0.8 µs | [kim2021], [qu2024], [stehl2013], [kwak2021], [weippert2022], [nelz2019] |
 
 The two model columns are fits and estimates of this repository (proposed here). The coherence model takes the static strain of a dislocation at the mean dislocation spacing, with a spin-strain coupling of about 10.9 GHz per unit strain [marshall2022]. A Hahn echo removes static strain, so the model bounds $T_2^*$, not $T_2$.
 

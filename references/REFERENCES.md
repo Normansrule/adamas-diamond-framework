@@ -1,10 +1,10 @@
 # References
 
-**579 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**582 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
-## Materials physics and figures of merit (41)
+## Materials physics and figures of merit (42)
 
 - ✅ **`[clark1964]`** Clark, C. D.; Dean, P. J.; Harris, P. V. (1964). Intrinsic edge absorption in diamond. *Proceedings of the Royal Society A*, 277, 312. [doi:10.1098/rspa.1964.0025](https://doi.org/10.1098/rspa.1964.0025)
 - 📚 **`[johnson1965]`** Johnson, E. O. (1965). Physical limitations on frequency and power parameters of transistors. *RCA Review*, 26, 163.
@@ -36,6 +36,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[alvarez2014]`** Alvarez, J.; Boutchich, M.; Kleider, J. P.; et al. (2014). Direct observation of the leakage current in epitaxial diamond Schottky barrier devices by conductive-probe atomic force microscopy and Raman imaging. *Journal of Physics D: Applied Physics*, 47(35), 355102.
 - 📚 **`[kimoto2014]`** Kimoto, T.; Cooper, J. A. (2014). Fundamentals of Silicon Carbide Technology. *Wiley*.
 - ✅ **`[millan2014]`** Millan, J.; Godignon, P.; Perpina, X.; Perez-Tomas, A.; Rebollo, J. (2014). A survey of wide bandgap power semiconductor devices. *IEEE Transactions on Power Electronics*, 29, 2155. [doi:10.1109/cde.2013.6481400](https://doi.org/10.1109/cde.2013.6481400)
+- 📚 **`[stoupin2016]`** Stoupin, S.; Antipov, S.; Butler, J. E.; et al. (2016). Large-surface-area diamond (111) crystal plates for applications in high-heat-load wavefront-preserving x-ray crystal optics. *arXiv*, 1605.03977.
 - ✅ **`[inyushkin2018]`** Inyushkin, A. V.; Taldenkov, A. N.; Ralchenko, V. G.; et al. (2018). Thermal conductivity of high purity synthetic single crystal diamonds. *Physical Review B*, 97, 144305. [doi:10.1103/physrevb.97.144305](https://doi.org/10.1103/physrevb.97.144305)
 - ✅ **`[pearton2018]`** Pearton, S. J.; Yang, J.; Cary, P. H.; et al. (2018). A review of Ga2O3 materials, processing, and devices. *Applied Physics Reviews*, 5, 011301. [doi:10.1063/1.5006941](https://doi.org/10.1063/1.5006941)
 - ✅ **`[tsao2018]`** Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. (2018). Ultrawide-bandgap semiconductors: research opportunities and challenges. *Advanced Electronic Materials*, 4, 1600501. [doi:10.1002/aelm.201600501](https://doi.org/10.1002/aelm.201600501)
@@ -185,10 +186,11 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[kawai2025]`** Kawai, S.; Oi, N.; Isobe, T.; Ota, K.; Amazutsumi, K.; Fujishima, T.; Kawarada, H. (2025). Fast power switching with cascode diamond MOSFET-SiC MOSFET/GaN HEMT complementary half-bridge inverter. *APL Electronic Devices*, 1, 046103. [doi:10.1063/5.0290094](https://doi.org/10.1063/5.0290094)
 - 📚 **`[sasama2025]`** Sasama, Y.; Iwasaki, T.; Imura, M.; Watanabe, K.; Taniguchi, T.; Yamaguchi, T. (2025). Enhanced channel mobility of hexagonal boron nitride/hydrogen-terminated diamond heterojunction field-effect transistor. *Applied Physics Letters*, 127(14), 143502.
 
-## Thermal management and diamond-on-chip integration (14)
+## Thermal management and diamond-on-chip integration (15)
 
 - 📚 **`[carslaw1959]`** Carslaw, H. S.; Jaeger, J. C. (1959). Conduction of Heat in Solids (2nd ed.). *Oxford University Press*.
 - ✅ **`[glassbrenner1964]`** Glassbrenner, C. J.; Slack, G. A. (1964). Thermal conductivity of silicon and germanium from 3 K to the melting point. *Physical Review*, 134, A1058. [doi:10.1103/physrev.134.a1058](https://doi.org/10.1103/physrev.134.a1058)
+- 📚 **`[ho1972]`** Ho, C. Y.; Powell, R. W.; Liley, P. E. (1972). Thermal Conductivity of the Elements. *Journal of Physical and Chemical Reference Data*, 1(2), 279-421.
 - ✅ **`[francis2010]`** Francis, D.; Faili, F.; Babic, D.; et al. (2010). Formation and characterization of 4-inch GaN-on-diamond substrates. *Diamond and Related Materials*, 19, 229. [doi:10.1016/j.diamond.2009.08.017](https://doi.org/10.1016/j.diamond.2009.08.017)
 - ✅ **`[cho2014]`** Cho, J.; Li, Y.; Hoke, W. E.; et al. (2014). Phonon scattering in strained transition layers for GaN heteroepitaxy. *Physical Review B*, 89, 115301. [doi:10.1103/physrevb.89.115301](https://doi.org/10.1103/physrevb.89.115301)
 - ✅ **`[moore2014]`** Moore, A. L.; Shi, L. (2014). Emerging challenges and materials for thermal management of electronics. *Materials Today*, 17, 163. [doi:10.1016/j.mattod.2014.04.003](https://doi.org/10.1016/j.mattod.2014.04.003)
@@ -264,8 +266,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[joliffe2024]`** Joliffe, M.; Vorobyov, V.; Wrachtrup, J. (2024). Readout of strongly coupled NV center-pair spin states with deep neural networks. *arXiv*, 2412.19581.
 - ✅ **`[williams2026]`** Williams, H.; Newman, A.; Graham, S.; Stephen, C.; Morley, G. (2026). A portable LED-based diamond magnetometer for outreach and teaching labs. *American Journal of Physics*, 94, 489. [doi:10.1119/5.0295777](https://doi.org/10.1119/5.0295777)
 
-## Quantum sensing (17)
+## Quantum sensing (18)
 
+- 📚 **`[born1999]`** Born, M.; Wolf, E. (1999). Principles of Optics: Electromagnetic Theory of Propagation, Interference and Diffraction of Light (7th expanded ed.). *Cambridge University Press*.
 - ✅ **`[balasubramanian2008]`** Balasubramanian, G.; Chan, I. Y.; Kolesov, R.; et al. (2008). Nanoscale imaging magnetometry with diamond spins under ambient conditions. *Nature*, 455, 648. [doi:10.1038/nature07278](https://doi.org/10.1038/nature07278)
 - ✅ **`[maze2008]`** Maze, J. R.; Stanwix, P. L.; Hodges, J. S.; et al. (2008). Nanoscale magnetic sensing with an individual electronic spin in diamond. *Nature*, 455, 644. [doi:10.1038/nature07279](https://doi.org/10.1038/nature07279)
 - ✅ **`[taylor2008]`** Taylor, J. M.; Cappellaro, P.; Childress, L.; et al. (2008). High-sensitivity diamond magnetometer with nanoscale resolution. *Nature Physics*, 4, 810. [doi:10.1038/nphys1075](https://doi.org/10.1038/nphys1075)

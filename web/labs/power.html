@@ -3,7 +3,7 @@
 <title>Power Lab · ADAMAS</title></head><body>
 <main class="wrap"><div class="lab">
 <aside class="panel">
-  <span class="eyebrow">Power · Lab 10</span><h1>Power Lab</h1>
+  <h1>Power Lab</h1>
   <p>A three-phase inverter, like the one between an electric car's battery and its motor. Pick the application, the switch material, and how hot it runs. The die size is chosen for minimum loss.</p>
   <div class="ctl"><label>Application</label><select id="app"><option value="ev">EV traction inverter · 800 V bus, 300 A</option><option value="dc">Data-center supply · 400 V bus, 20 A</option><option value="solar">Solar inverter · 1000 V, 50 A</option><option value="grid">Grid converter · 6.5 kV, 100 A</option></select></div>
   <div class="ctl"><label>Switching frequency <b id="fV"></b></label><input type="range" id="f" min="30" max="65" value="43"></div>
@@ -12,8 +12,9 @@
   <div class="kpis" id="kpis"></div>
 </aside>
 <div>
-  <div class="stage" style="min-height:0"><svg id="bridge" viewBox="0 0 900 240" style="width:100%;display:block"></svg><div class="hud">One phase leg switching (slowed down about a million times)</div></div>
-  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="bars" style="height:300px"></canvas><div class="hud" id="barHud"></div></div>
+  <div class="stage" style="min-height:0"><svg id="bridge" viewBox="0 0 900 240" style="width:100%;display:block;margin-top:44px"></svg><div class="hud">One phase leg switching (slowed down about a million times)</div></div>
+  <div class="stage" style="margin-top:14px;min-height:0"><canvas id="bars" style="height:320px"></canvas><div class="hud" id="barHud"></div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Electric cars flip their power switches on and off thousands of times a second. Every flip wastes a little energy as heat, and so does the switch's resistance while it is on. A better material wastes less, so the car goes farther and needs a smaller radiator. Diamond has a catch: at room temperature its boron atoms hold on to almost all their charges, so a diamond switch wastes <i>more</i> than silicon carbide. Heat sets the charges free, and diamond is the only one that gets <i>better</i> when it is hot.</div>
     <div class="lvl" data-l="s">Per switch, P = I²R<sub>on,sp</sub>/A + ½C<sub>oss,sp</sub>AV²f. Choosing the die area A to minimize P gives P = 2IV√(fR<sub>on,sp</sub>C<sub>oss,sp</sub>/2): conduction and switching losses come out equal, and the material's merit is √(R·C). The required heat-sink thermal resistance is (T<sub>j,max</sub> − T<sub>ambient</sub>)/P.</div>
@@ -23,6 +24,7 @@
 <script type="module">
 import { boot, fitCanvas, data } from '../assets/site.js';
 import * as C from '../assets/sim/converter.js';
+import { loop } from '../assets/eqloop.js';
 boot('Power');
 const $ = id => document.getElementById(id), D = (await data()).power, NAMES = Object.keys(D);
 const COL = { 'Silicon (ideal)': '#8b98a5', 'Silicon carbide (ideal)': '#e0a030', 'Gallium nitride (ideal)': '#9d7bff', 'Diamond (bulk-doped drift)': '#2de2e6', 'Diamond (measured 2022 device)': '#ff5d6c' };
@@ -32,18 +34,22 @@ function update() {
   const c = cfg(), amb = +$('amb').value; $('fV').textContent = c.f >= 1e6 ? `${(c.f / 1e6).toFixed(2)} MHz` : `${(c.f / 1e3).toFixed(1)} kHz`;
   $('tV').textContent = `${(c.tK - 273.15).toFixed(0)} °C`; $('aV').textContent = `${amb} °C`;
   const rows = NAMES.map(n => { const m = D[n], s = C.switchLoss(m, c), over = c.tK - 273.15 > m.tjmax_c; return { n, s, eff: C.efficiency(m, c), over, rth: (m.tjmax_c - amb) / s.pTotal }; });
-  const { g, w, h } = fitCanvas($('bars'), 300); g.clearRect(0, 0, w, h);
+  const { g, w, h } = fitCanvas($('bars'), 320); g.clearRect(0, 0, w, h);
   const mx = Math.max(...rows.map(r => r.s.pTotal)), X = v => 250 + (w - 290) * Math.log10(1 + 9 * v / mx);
-  rows.forEach((r, k) => { const y = 24 + k * 52;
+  rows.forEach((r, k) => { const y = 50 + k * 50;
     g.fillStyle = '#c7d6e3'; g.font = '13px Inter'; g.fillText(r.n, 10, y + 16);
     g.fillStyle = COL[r.n]; g.globalAlpha = r.over ? .3 : .9; const xc = X(r.s.pCond); g.fillRect(250, y, xc - 250, 22); g.globalAlpha = r.over ? .2 : .55; g.fillRect(xc, y, X(r.s.pTotal) - xc, 22); g.globalAlpha = 1;
-    g.fillStyle = '#e8f1f8'; g.font = '600 12px JetBrains Mono'; g.fillText(`${r.s.pTotal.toFixed(r.s.pTotal < 10 ? 2 : 0)} W · ${(100 * r.eff).toFixed(3)}%${r.over ? ' · above its T_j limit' : ''}`, Math.min(X(r.s.pTotal) + 8, w - 250), y + 16);
+    const lx = Math.min(X(r.s.pTotal) + 8, w - 250), inside = lx < X(r.s.pTotal);   // label over its own bar: dark ink for contrast
+    g.fillStyle = inside ? '#05070d' : '#e8f1f8'; g.font = '600 12px JetBrains Mono'; g.fillText(`${r.s.pTotal.toFixed(r.s.pTotal < 10 ? 2 : 0)} W · ${(100 * r.eff).toFixed(3)}%${r.over ? ' · above its T_j limit' : ''}`, lx, y + 16);
     g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(`die ${(r.s.area * 100).toFixed(2)} mm² · heat sink ≤ ${r.rth > 0 ? r.rth.toFixed(2) + ' K/W' : 'impossible'}`, 250, y + 36); });
   $('barHud').textContent = 'Loss per switch at the optimum die area (solid: conduction, light: switching, log scale)';
   const best = rows.filter(r => !r.over).sort((a, b) => a.s.pTotal - b.s.pTotal)[0];
   $('kpis').innerHTML = `<div class="kpi"><b>${best ? best.n.split(' (')[0] : '–'}</b><span>Lowest loss within its temperature limit</span></div><div class="kpi"><b>${(rows[0].s.pTotal / rows[3].s.pTotal).toFixed(0)}×</b><span>Silicon loss ÷ bulk-doped diamond loss</span></div>`;
 }
-['app', 'f', 't', 'amb'].forEach(i => $(i).oninput = update); addEventListener('resize', update); update();
+let EQ = null;
+['app', 'f', 't', 'amb'].forEach(i => $(i).oninput = () => { update(); EQ?.set({ T: cfg().tK, bv: cfg().bv }); }); addEventListener('resize', update); update();
+EQ = await loop($('loop'), 'hot_switch', { state: { T: cfg().tK, bv: cfg().bv }, controls: ['alpha'], select: 'T',
+  onChange: (st, ks) => { if (ks.includes('T')) { $('t').value = Math.round(st.T / 10) * 10; update(); } } });
 // animated half bridge
 const svg = $('bridge'), NS = 'http://www.w3.org/2000/svg';
 svg.innerHTML = `<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2de2e6"/></marker></defs>

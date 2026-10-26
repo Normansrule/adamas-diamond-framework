@@ -21,12 +21,11 @@ details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:
 #printAll{display:none}
 </style></head><body>
 <main class="wrap">
-<section class="block" style="padding:50px 0 0"><span class="eyebrow">Process engineering</span>
-<h1 style="font-size:clamp(32px,4.6vw,58px)">From a diamond plate <span class="grad">to a working chip</span></h1>
+<section class="block" style="padding:50px 0 0"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a diamond plate <span class="grad">to a working chip</span></h1>
 <p class="lead">Traveler T1, step by step: hydrogen-terminated diamond transistors with optional NV-qubit windows. Each step shows the cross-section, starting-point parameters with sources, the checks to run and their pass windows, safety, and what to do when it fails. Log your measurements as you go; the run log stays in this browser and exports to CSV.</p>
 <p class="src">Parameters are starting points from the literature, not a qualified recipe. Safety notes summarize hazards and never replace your facility's training. Markdown version: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/process/TRAVELER.md">docs/process/TRAVELER.md</a>.</p></section>
 <div class="ptop"><div class="seg" id="variants"></div>
-  <button class="btn small" id="exportB">⬇ Export run log (CSV)</button><button class="btn small" id="printB">🖨 Print traveler</button><button class="btn small" id="resetB">Reset log</button></div>
+  <button class="btn small" id="exportB" data-icon="download">Export run log (CSV)</button><button class="btn small" id="printB" data-icon="print">Print traveler</button><button class="btn small" id="resetB">Reset log</button></div>
 <div id="vnote" class="card" style="margin-bottom:14px;padding:12px 16px"></div>
 <div id="prog" style="margin-bottom:16px"></div>
 <div class="pgrid">
@@ -35,7 +34,7 @@ details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:
     <div class="stage" id="xsWrap" style="min-height:0"><svg id="xs" viewBox="0 0 900 360" style="width:100%;display:block;background:linear-gradient(#0b1320,#07101a)"></svg><div class="hud" id="xsHud"></div></div>
     <div class="legend" id="legend"></div>
     <div class="card" id="stepCard" style="margin-top:14px"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:14px" class="noprint"><button class="btn" id="prevB">◀ Previous step</button><button class="btn primary" id="nextB">Next step ▶</button></div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px" class="noprint"><button class="btn" id="prevB" data-icon="prev">Previous step</button><button class="btn primary" id="nextB" data-icon-end="next">Next step</button></div>
   </div>
 </div>
 <div id="printAll"></div>

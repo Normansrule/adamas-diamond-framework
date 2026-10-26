@@ -7,7 +7,7 @@
 .pass{background:rgba(72,229,163,.18);color:var(--green)}.disc{background:rgba(255,196,107,.18);color:var(--gold)}.fail{background:rgba(255,93,108,.18);color:var(--red)}
 .pgrid{display:grid;grid-template-columns:320px 1fr;gap:18px}@media(max-width:1000px){.pgrid{grid-template-columns:1fr}}</style></head><body>
 <main class="wrap">
-<section class="block" style="padding:50px 0 10px"><span class="eyebrow">Rigor</span><h1 style="font-size:clamp(32px,4.6vw,58px)">How much should you <span class="grad">trust these numbers?</span></h1>
+<section class="block" style="padding:50px 0 10px"><h1 style="font-size:clamp(32px,4.6vw,58px)">How much should you <span class="grad">trust these numbers?</span></h1>
 <p class="lead">Three answers. The validation matrix shows how each model is checked: against published results, against an independent tool, or against a known answer. The uncertainty lab propagates honest parameter ranges through the headline results, live in your browser. A value-of-information analysis says which measurement would shrink that uncertainty most per dollar.</p></section>
 <section class="block" style="padding-top:10px"><h2 style="font-size:30px">1 · Validation matrix</h2><div class="seg" id="kinds"><button class="on" data-k="all">All</button><button data-k="literature">Literature</button><button data-k="cross-tool">Cross-tool</button><button data-k="analytic">Analytic</button></div>
 <p id="vsum" style="color:var(--mute)"></p><div class="card" id="vtable"></div>
@@ -16,7 +16,7 @@
 <div class="seg" id="studies"><button class="on" data-s="power">Power: SiC ÷ diamond loss, 300 K</button><button data-s="power_hot">Power, hot: 523 K junction</button><button data-s="quantum">Quantum: RSA-scale runtime</button></div>
 <div class="pgrid" style="margin-top:14px"><aside class="panel" style="position:static"><h3 style="margin-top:0">Parameter ranges</h3><div id="ranges"></div>
   <div class="ctl"><label>Samples <b id="nV"></b></label><input type="range" id="n" min="200" max="5000" step="100" value="2000"></div>
-  <button class="btn primary" id="run">▶ Run Monte Carlo</button><div class="kpis" id="kpis"></div></aside>
+  <button class="btn primary" id="run" data-icon="play">Run Monte Carlo</button><div class="kpis" id="kpis"></div></aside>
 <div><div class="stage" style="min-height:0"><canvas id="hist" style="height:300px"></canvas><div class="hud" id="hud"></div></div>
 <div class="stage" style="margin-top:14px;min-height:0"><canvas id="torn" style="height:260px"></canvas><div class="hud">Tornado: each input alone at its low (gold) and high (teal) value</div></div></div></div>
 <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>

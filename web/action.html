@@ -34,15 +34,14 @@ table.sym{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}ta
 .hero2 h1{font-size:clamp(30px,4vw,48px)}.hero2 .lead{font-size:16.5px;max-width:860px}
 </style></head><body>
 <main class="wrap">
-<section class="block hero2" style="padding:34px 0 0"><span class="eyebrow">Equations in action</span>
-<h1>Every experiment, <span class="grad">every equation, live</span></h1>
+<section class="block hero2" style="padding:34px 0 0"><h1>Every experiment, <span class="grad">every equation, live</span></h1>
 <p class="lead">Fourteen equations that run the framework, each paired with the experiment that measures it. Move a slider and its symbol lights up in the equation, the numbers are plugged in, the animation changes, and the curve the experiment should measure redraws. Press <b>Play</b> to let the equation sweep itself, or <b>Tour</b> to watch all fourteen.</p>
 <div class="chips" id="chips"></div>
 </section>
 <div class="act">
   <div>
     <div class="stage"><canvas id="anim" style="height:430px"></canvas><div class="caption" id="animHud"></div>
-      <div class="ctlbar"><button class="btn primary" id="play">▶ Play</button><button class="btn" id="tour">Tour all</button><button class="btn" id="copyTex" title="Copy the equation as LaTeX">Copy LaTeX</button>
+      <div class="ctlbar"><button class="btn primary" id="play" data-icon="play">Play</button><button class="btn" id="tour">Tour all</button><button class="btn" id="copyTex" title="Copy the equation as LaTeX">Copy LaTeX</button>
         <span id="counter"></span><button class="btn" id="prev" aria-label="Previous scene">←</button><button class="btn" id="next" aria-label="Next scene">→</button></div></div>
     <div class="card" style="margin-top:14px"><h3 id="plotTitle">What the experiment should measure</h3><canvas id="plot" style="height:300px"></canvas><p class="src" id="plotNote">Gold dots: the simulated data of the matching experiment (adamas.experiments). Red marker: your slider values.</p></div>
   </div>
@@ -61,7 +60,7 @@ table.sym{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}ta
 </div>
 </main>
 <script type="module">
-import { boot, data } from './assets/site.js';
+import { boot, data, label } from './assets/site.js';
 import { SCENES } from './assets/action_scenes.js';
 boot('Equations');
 const $ = id => document.getElementById(id);
@@ -121,10 +120,10 @@ const cv = { a: $('anim'), p: $('plot') }, gx = {};
 function size() { for (const k of ['a', 'p']) { const c = cv[k], dpr = Math.min(2, devicePixelRatio || 1), w = c.clientWidth, h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); gx[k] = { g, w, h }; } }
 addEventListener('resize', size);
 
-function setPlay(on) { playing = on; $('play').textContent = on ? '❚❚ Pause' : '▶ Play'; }
+function setPlay(on) { playing = on; label($('play'), on ? 'pause' : 'play', on ? 'Pause' : 'Play'); }
 function stopTour() { touring = false; $('tour').textContent = 'Tour all'; }
 $('play').onclick = () => setPlay(!playing);
-$('tour').onclick = () => { touring = !touring; $('tour').textContent = touring ? '■ Stop tour' : 'Tour all'; tourT = 0; setPlay(touring); };
+$('tour').onclick = () => { touring = !touring; touring ? label($('tour'), 'stop', 'Stop tour') : ($('tour').textContent = 'Tour all'); tourT = 0; setPlay(touring); };
 $('next').onclick = () => { stopTour(); step(1); }; $('prev').onclick = () => { stopTour(); step(-1); };
 function step(d) { const i = (meta.indexOf(cur) + d + meta.length) % meta.length; open(meta[i].id); if (touring) setPlay(true); }
 $('copyTex').onclick = async () => { try { await navigator.clipboard.writeText(cur.tex); $('copyTex').textContent = 'Copied'; } catch { $('copyTex').textContent = 'Select it in the docs'; } setTimeout(() => $('copyTex').textContent = 'Copy LaTeX', 1400); };
