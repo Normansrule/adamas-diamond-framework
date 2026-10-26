@@ -7,7 +7,7 @@ from adamas import resource as R
 
 def test_estimates_behave_physically():
     t = R.table()
-    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    n, st = R.WORKLOADS[R.RSA_JOB]
     fast, slow = R.estimate(n, st, 100.0, 1000.0, t=t), R.estimate(n, st, 3000.0, 1000.0, t=t)
     assert fast.distance <= slow.distance and fast.runtime_hours < slow.runtime_hours
     assert R.estimate(n, st, 1000.0, 100.0, t=t).distance > R.estimate(n, st, 1000.0, 1000.0, t=t).distance   # shorter memory, larger code

@@ -71,7 +71,7 @@ Gate counts marked "about" are recalled from the papers and should be re-verifie
 | "Diamond-4004" class | 770 | 2.4 MHz | 0.31 W |
 | Bit-serial RISC-V class (Flex-RV scale) | 12,600 | 2.4 MHz | 5.1 W |
 
-A diamond 4004-class processor would therefore run about three times faster than the original at one-fifth the feature size, on a process with six masks. Its reason to exist is the environment: 400 °C, radiation, or co-location with NV qubits as a sequencer ([Chapter 9](../09_cmos_control_integration.md)).
+A diamond 4004-class processor would therefore run about three times faster than the original at one-fifth the feature size, on a process with six transistor masks ([E2](E2_process_integration_and_pdk.md)). Its reason to exist is the environment: high temperature, radiation, or co-location with NV qubits as a sequencer ([Chapter 9](../09_cmos_control_integration.md)). The temperature case is a proposal: single hydrogen-terminated field-effect transistors (FETs) have run at 400 °C for short periods [kawarada2014], but diamond logic at that temperature has not been demonstrated.
 
 ### DIA-4 with subroutines (project D-1, done)
 

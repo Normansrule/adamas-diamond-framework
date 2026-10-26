@@ -53,7 +53,7 @@ def test_surface_code_arithmetic():
     assert qec.surface_code_qubits(3) == 17
     assert qec.distance_for_target(2e-2, 1e-9) is None
     out = qec.nv_cells_needed(1, 1e-3, 1e-9)
-    assert out["distance"] == 17 and out["physical_qubits"] == 577
+    assert out["distance"] == 15 and out["physical_qubits"] == 449     # exact boundary case, audit E14
     assert math.isclose(qec.repetition_logical_error(0.01), 2.98e-4, rel_tol=1e-9)
 
 

@@ -1,7 +1,7 @@
 """ADAMAS experiments: ten hands-on experiments in four price tiers, from a kitchen table to a pilot line.
 
 Tier A, about US$100 to 500: see NV fluorescence, record an ODMR spectrum, weigh a magnet with light, race heat
-spreaders. Tier B, about US$1,000 to 10,000: pulsed spin control (Rabi, Ramsey, echo), vector magnetometry, dopant
+spreaders. Tier B, about US$1,000 to 12,000: pulsed spin control (Rabi, Ramsey, echo), vector magnetometry, dopant
 activation. Tier C, about US$10,000 to 100,000: single NV centers and photon antibunching; making and testing a diamond
 transistor with a university cleanroom. Tier D, above US$100,000 up to tens of millions: a two-qubit register at room
 temperature and a diamond pilot line.
@@ -19,7 +19,7 @@ import numpy as np
 
 TIERS = {
     "A": {"name": "Kitchen table", "range": "US$100 to 500", "color": "#48e5a3", "who": "high school, outreach, first-year labs, home"},
-    "B": {"name": "Teaching lab", "range": "US$1,000 to 10,000", "color": "#2de2e6", "who": "upper-division undergraduate and master's labs"},
+    "B": {"name": "Teaching lab", "range": "US$1,000 to 12,000", "color": "#2de2e6", "who": "upper-division undergraduate and master's labs"},
     "C": {"name": "Research lab", "range": "US$10,000 to 100,000", "color": "#9d7bff", "who": "graduate research groups, shared facilities"},
     "D": {"name": "Facility", "range": "US$100,000 to tens of millions", "color": "#ff5d6c", "who": "national labs, companies, consortia"},
 }
@@ -28,16 +28,16 @@ TIERS = {
 EXPERIMENTS = [
  {"id": "A1", "tier": "A", "title": "See the qubit glow, then hear it resonate (ODMR)", "cost": (150, 400), "time": "one afternoon", "skill": "soldering, basic Python",
   "goal": "Watch NV centers glow red under green light, then sweep a microwave source through 2.87 GHz and see the glow dip: optically detected magnetic resonance.",
-  "learn": ["Spin-dependent fluorescence (why mₛ = 0 is bright)", "The zero-field splitting D = 2.87 GHz", "Lock-free signal averaging"],
+  "learn": ["Spin-dependent fluorescence (why mₛ = ±1 is dimmer)", "The zero-field splitting D = 2.87 GHz", "Lock-free signal averaging"],
   "parts": [("NV-rich diamond", "Microdiamond powder or a small HPHT plate with high NV density (irradiated and annealed)", 50, 250),
-            ("Green source", "High-power green LED (safer, visible) or a laser module under 1 mW at 532 nm", 10, 60),
-            ("Red filter", "Longpass filter near 600 to 650 nm, or red filter foil", 5, 80),
+            ("Green source", "High-power green LED (safer, visible) or a 532 nm laser module under 1 mW; inexpensive modules can leak invisible infrared pump light, so put a shortpass (infrared-block) filter right after the module", 10, 60),
+            ("Red filter", "Longpass filter near 600 to 650 nm plus an infrared-block filter in front of the photodiode (red filter foil alone passes infrared and leaks green)", 5, 80),
             ("Photodetector", "Silicon photodiode with a JFET-input transimpedance amplifier (for example TL082)", 10, 40),
             ("Microwave source", "PLL synthesizer board covering 2.7 to 3.0 GHz (ADF4351-class)", 30, 60),
             ("Antenna", "Short microstrip line or a copper wire loop under the diamond", 5, 20),
             ("Controller", "Raspberry Pi Pico (or any microcontroller with SPI, ADC, and USB); ready-made firmware in hardware/a1_odmr", 5, 40),
             ("Mechanics", "3-D printed cube mounts or a breadboard; neodymium magnet", 10, 50)],
-  "safety": ["Even a 1 mW green laser can damage eyes: never look into the beam; use a phone camera to align. The LED version avoids laser hazards.",
+  "safety": ["Even a 1 mW green laser can damage eyes: never look into the beam; use a phone camera to align. Measure the module's output with a laser power meter (borrow one) before use, behind the shortpass filter, because labels on cheap modules are unreliable and leaked infrared is invisible. The LED version avoids laser hazards.",
              "Microwave powers here are milliwatts; keep the antenna enclosed and away from the body anyway."],
   "steps": [("Mount the diamond on the antenna", "Glue the diamond (or a spot of powder) onto the microstrip or inside the loop; the microwave field must reach it.", ["diamond", "antenna"]),
             ("Illuminate", "Point the green source at the diamond from a few millimeters. Through the red filter you see red fluorescence: NV centers emitting.", ["source", "diamond", "filter"]),
@@ -83,7 +83,7 @@ EXPERIMENTS = [
   "scene": [("sink", "block", [0, -1, 0], 10, "#9aa6b2"), ("plate", "plate", [0, 0.1, 0], 4, "#6ff3ff"), ("heater", "box", [0, 0.5, 0], 0.8, "#ff9a3c"),
             ("sensor", "probe", [2, 1.5, 0], 0.3, "#ffd166"), ("supply", "box", [-8, 1, -5], 3, "#3b4656")],
   "beams": {}},
- {"id": "B1", "tier": "B", "title": "Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo", "cost": (3000, 10000), "time": "two to four lab sessions", "skill": "RF, optics alignment, Python",
+ {"id": "B1", "tier": "B", "title": "Pulsed control: Rabi oscillations, Ramsey fringes, and spin echo", "cost": (5000, 12000), "time": "two to four lab sessions (total price is a reviewer's estimate, not a vendor quote)", "skill": "RF, optics alignment, Python",
   "goal": "Drive the NV spin with timed microwave pulses and read it out with timed laser pulses, turning the spin into a qubit you can rotate and measure.",
   "learn": ["Rabi frequency and π pulses", "T₂* from Ramsey fringes", "T₂ from spin echo"],
   "parts": [("NV ensemble plate", "CVD or HPHT, 1 to 10 ppm NV", 300, 1500), ("532 nm laser", "Tens of mW, with an acousto-optic modulator or direct modulation", 500, 2500),
@@ -142,7 +142,7 @@ EXPERIMENTS = [
   "steps": [("Scan", "Raster-scan a 20 × 20 µm field; isolated bright spots are NV candidates.", ["galvo", "objective"]),
             ("Correlate", "Park on a spot; split fluorescence onto two detectors; histogram photon-pair delays.", ["spad1", "spad2", "tagger"]),
             ("Check g⁽²⁾(0)", "A dip below 0.5 at zero delay proves a single emitter.", ["tagger"]),
-            ("Resolve hyperfine", "Low-power ODMR on that NV shows three lines 2.16 MHz apart from the ¹⁴N nucleus.", ["mw"])],
+            ("Resolve hyperfine", "Low-power ODMR on that NV shows three lines about 2.15 MHz apart from the ¹⁴N nucleus [felton2009].", ["mw"])],
   "analysis": "Fit g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁); background lifts g₀ above zero. The hyperfine triplet is the nuclear memory used in chapter E5.",
   "expected": "single_nv", "lab": "labs/photon.html", "refs": ["kurtsiefer2000", "gruber1997", "jelezko2004a", "doherty2013"],
   "scene": [("laser", "laser", [-14, 4, 0], 1.4, "#2d2d2d"), ("galvo", "box", [-7, 4, 0], 1.4, "#6b7c8f"), ("dichroic", "dichroic", [-10, 4, 0], 1.6, "#9fd8ff"),
@@ -164,21 +164,22 @@ EXPERIMENTS = [
   "scene": [("fab", "reactor", [-6, 2, 0], 4, "#9aa6b2"), ("plate", "plate", [4, 0.5, 0], 2, "#6ff3ff"), ("prober", "prober", [4, 1.5, 0], 3, "#c9ced6")],
   "beams": {}},
  {"id": "D1", "tier": "D", "title": "Two entangled qubits at room temperature", "cost": (500000, 2000000), "time": "one to three years", "skill": "research group",
-  "goal": "Implant NV pairs about 25 nm apart, find coupled pairs, and entangle them with echoed dipolar gates, reproducing and then improving on the 2013 result.",
-  "learn": ["Nanoscale implantation", "Dipolar two-qubit gates", "Why charge-state preparation limits fidelity"],
+  "goal": "Implant NV pairs 10 to 25 nm apart, find coupled pairs on different crystal axes, and entangle them with echoed dipolar gates, reproducing the 2013 result and approaching the 96% 2025 record.",
+  "learn": ["Nanoscale implantation", "Spectral addressing of two NVs inside one laser spot", "Dipolar two-qubit gates", "Charge-state pre-selection"],
   "parts": [("Implantation", "Aperture implantation or scanning-probe implantation of ¹⁵N", 100000, 800000), ("Confocal setups", "Two-color, with charge-state readout", 150000, 400000),
             ("Control electronics", "Multi-channel arbitrary waveform generators, amplifiers", 100000, 300000), ("Materials", "Isotopically purified ¹²C diamond", 20000, 100000)],
   "safety": ["Institutional laser, radiation (implanter), and high-voltage programs."],
-  "steps": [("Place pairs", "Implant through 20 nm apertures; anneal; tri-acid clean (traveler S06, S07).", ["implanter"]),
-            ("Find pairs", "Measure the dipolar splitting; keep pairs with 5 to 20 kHz coupling.", ["confocal"]),
-            ("Entangle", "Echoed gate sequence; Bell-state tomography.", ["awg"]),
-            ("Beat the budget", "Add charge-state verification before the gate; compare with the adamas.gate_budget prediction.", ["confocal"])],
-  "analysis": "Fidelity against preparation probability q follows the chapter E5 budget: 0.67 at q ≈ 0.75, rising toward 0.998 as q → 1.",
-  "expected": "bell_q", "lab": "explorer.html#gate", "refs": ["dolde2013", "dolde2014", "aslam2013", "pezzagna2010"],
+  "steps": [("Place pairs", "Implant ¹⁵N; the published pairs used MeV ions through nano-channels (about 2% pair success) rather than keV ions through thin apertures; anneal; tri-acid clean (traveler S06, S07).", ["implanter"]),
+            ("Find pairs", "Both NVs sit inside one laser spot. Pick pairs on different ⟨111⟩ axes (lines about 30 MHz apart in the bias field), so each can be driven alone; measure the dipolar splitting and keep pairs with 5 to 120 kHz coupling.", ["confocal"]),
+            ("Pre-select the charge state", "Before each run, check that both NVs are NV⁻ with a 594 nm readout and discard runs that fail, as in [joas2025]; [dolde2013] normalized its data to charge-preselected runs.", ["confocal"]),
+            ("Entangle", "Echoed gate sequence; Bell-state tomography with joint readout of both NVs.", ["awg"]),
+            ("Beat the budget", "Compare with the adamas.gate_budget coherence limit; attribute the rest to dephasing, pulses and initialization.", ["confocal"])],
+  "analysis": "With charge pre-selection the fidelity is set by coherence, pulse errors and initialization: the published pair measured 0.67 (2013) and 0.824 (2014), the record is 0.96 at 9.5 nm (2025). The adamas.gate_budget coherence limit for the 2013 pair is 0.784 to 0.998 (echo exponent 1 to 3, one or two gate applications, with and without T₁), above the measurement: a known discrepancy. Hypothesis to test (proposed here): in runs that are not pre-selected, charge-state preparation is the largest loss, because an unprepared fraction 1 − q² of runs drags the fidelity toward ¼ (curve). Test: measure the Bell fidelity of the same pair with and without 594 nm pre-selection, and the NV⁻ fraction of each NV, in one session.",
+  "expected": "bell_q", "lab": "explorer.html#gate", "refs": ["dolde2013", "dolde2014", "joas2025", "aslam2013", "pezzagna2010"],
   "scene": [("implanter", "implanter", [-8, 2, 0], 6, "#6b7c8f"), ("confocal", "prober", [5, 1.5, 0], 3, "#c9ced6"), ("awg", "rack", [10, 3, -5], 4, "#2a3446")],
   "beams": {}},
  {"id": "D2", "tier": "D", "title": "A diamond pilot line on 3-inch wafers", "cost": (5000000, 50000000), "time": "years", "skill": "company or consortium",
-  "goal": "Run PDK-0 on 3-inch heteroepitaxial wafers with statistical process control, and measure how many working dies each wafer yields.",
+  "goal": "Run PDK-0 on 2- to 3-inch heteroepitaxial wafers with statistical process control, and measure how many working dies each wafer yields. Peer-reviewed heteroepitaxial wafers are 2-inch [kim2021]; 3-inch single-crystal wafers are an industry announcement without published quality data [e6orbray2026].",
   "learn": ["Yield and defect density", "Statistical process control", "Cost per good die"],
   "parts": [("MPCVD reactors", "Wafer-scale growth", 1000000, 10000000), ("Lithography and deposition", "Steppers, e-beam, evaporators, ALD, etchers", 2000000, 20000000),
             ("Metrology", "Defect inspection, Raman mapping, probe cards", 1000000, 10000000), ("Wafers", "3-inch single-crystal, per year", 500000, 5000000)],
@@ -256,8 +257,9 @@ def expected(kind: str) -> dict:
         return {"x": vds.tolist(), "series": {f"|V_GS| = {v} V": [fet.current(v, x) * 1e3 for x in vds] for v in (3, 5, 7, 9)}, "xlabel": "|V_DS| (V), W = 100 µm, L = 2 µm", "ylabel": "|I_D| (mA)"}
     if kind == "bell_q":
         q = np.linspace(0.5, 1.0, 51)
-        return {"x": q.tolist(), "series": {"model (published pair)": [gate_budget.published_check(x).fidelity for x in q]}, "xlabel": "Charge-state preparation probability q",
-                "ylabel": "Bell-state fidelity", "marks": [[0.75, 0.67, "2013"], [0.87, 0.82, "2014"]]}
+        return {"x": q.tolist(), "series": {"model, published pair, no pre-selection": [gate_budget.published_check(x).fidelity for x in q]},
+                "xlabel": "Charge-state preparation probability q (runs not pre-selected)", "ylabel": "Bell-state fidelity",
+                "marks": [[1.0, 0.67, "2013 (charge-normalized)"], [1.0, 0.824, "2014"], [1.0, 0.96, "2025 record"]]}
     if kind == "good_dies":
         d0 = np.logspace(-1, 1.3, 40)
         return {"x": d0.tolist(), "series": {f"{a} mm² die": [wafer.good_dies(76, a, x) for x in d0] for a in (4, 25, 100)}, "xlabel": "Killer defects per cm²", "ylabel": "Good dies per 3-inch wafer", "log": True}
@@ -276,7 +278,8 @@ def to_markdown() -> str:
          "_Generated from `adamas/experiments.py` (`make experiments`). Interactive 3-D version: "
          "[experiments.html](https://normansrule.github.io/adamas-diamond-framework/experiments.html)._", "",
          "Ten experiments in four price tiers. Prices are approximate 2026 US-dollar street prices for generic parts and change with "
-         "vendors and exchange rates; check before buying. Safety notes summarize hazards and never replace your institution's training.", "",
+         "vendors and exchange rates; check before buying. Safety notes summarize hazards and never replace your institution's training. "
+         "Experiment IDs here have no hyphen (A1 to D2); IDs with a hyphen (B-3, C-1, D-1) are projects and roadmap items of the chapters, a separate list.", "",
          "![Cost versus capability](../img/fig47_experiment_ladder.png)", "", "| Tier | Budget | For |", "|---|---|---|"]
     L += [f"| {k} · {t['name']} | {t['range']} | {t['who']} |" for k, t in TIERS.items()]
     L += ["", "![Expected results, tier A](../img/fig44_expected_tier_a.png)", "", "![Expected results, tier B](../img/fig45_expected_tier_b.png)", "",

@@ -1,9 +1,12 @@
 """Room-temperature semiconductor property database and classic figures of merit.
 
 Property values are the commonly quoted 300 K numbers from [sze2006], [wort2008], [tsao2018],
-[donato2020], [kimoto2014], [mishra2008], and [pearton2018]. Diamond mobilities are the record
-time-of-flight values of [isberg2002]; real doped layers are lower ([pernot2010], [pernot2008]).
-Treat every entry as "best reported bulk value", not as a guaranteed device parameter.
+[donato2020], [kimoto2014], [mishra2008], and [pearton2018]. Diamond's hole mobility is 2000 cm^2/(V s), the
+phonon-limited value [sanders2021] close to the best Hall measurement in low-doped layers [volpe2009]; the 3800
+time-of-flight record [isberg2002] has not been reproduced (DIAMOND_HOLE_MOBILITY_RECORD) and doped drift layers are
+lower still ([pernot2010], [pernot2008]). Diamond's 10 MV/cm critical field is the theoretical value; small-area
+homoepitaxial devices measure 7.7 MV/cm or more [volpe2010] and wafer-scale heteroepitaxial material 1 to 2 MV/cm
+(adamas.power.critical_field_mv_cm). Treat every entry as "best value for ideal material", not as a device parameter.
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -23,7 +26,7 @@ class Material:
     kappa_w_cmk: float    # thermal conductivity, W/(cm K)
     lattice: str
     a_angstrom: float     # lattice constant a, angstrom
-    max_wafer_mm: float   # largest single-crystal wafer in production or reproducible pilot, mm
+    max_wafer_mm: float   # largest single-crystal wafer reported peer-reviewed as a wafer series, mm (diamond: 2-inch)
     refs: tuple[str, ...]
 
 
@@ -36,9 +39,12 @@ MATERIALS: dict[str, Material] = {
                     ("mishra2008", "tsao2018")),
     "Ga2O3": Material("Gallium oxide (beta-Ga2O3)", 4.85, 8.0, 250, 0.0, 10.0, 1.5e7, 0.2, "monoclinic", 12.23, 150,
                       ("pearton2018", "higashiwaki2012")),
-    "Diamond": Material("Diamond (C)", 5.47, 10.0, 4500, 3800, 5.7, 1.5e7, 22.0, "diamond cubic", 3.567, 76,
-                        ("isberg2002", "wort2008", "donato2020", "e6orbray2026")),
+    "Diamond": Material("Diamond (C)", 5.47, 10.0, 4500, 2000, 5.7, 1.5e7, 22.0, "diamond cubic", 3.567, 51,
+                        ("isberg2002", "sanders2021", "volpe2009", "wort2008", "donato2020", "kim2021")),
 }
+
+
+DIAMOND_HOLE_MOBILITY_RECORD = 3800.0    # time-of-flight, single sample [isberg2002]; not reproduced
 
 
 def _mu(m: Material, carrier: str) -> float:

@@ -3,7 +3,7 @@
 Ground-state spin Hamiltonian (frequency units) [doherty2013], [maze2011]:
     H/h = D Sz^2 + E (Sx^2 - Sy^2) + gamma_e B . S   (+ hyperfine terms)
 with D = 2870 MHz at 300 K, dD/dT = -74.2 kHz/K [acosta2010], gamma_e = 28.03 GHz/T.
-Nitrogen-14 hyperfine splitting along the axis: 2.16 MHz [felton2009].
+Nitrogen-14 hyperfine splitting along the axis: |A_par| = 2.147 MHz (A_par = -2.147 MHz, quadrupole P = -5.016 MHz) [felton2009].
 Optically detected magnetic resonance (ODMR) lines are modeled as Lorentzians [dreau2011].
 """
 from __future__ import annotations
@@ -12,7 +12,7 @@ from .constants import GAMMA_E_HZ_PER_T, H, G_E, MU_B
 
 D_300K_MHZ = 2870.0
 DDDT_MHZ_PER_K = -0.0742          # [acosta2010]
-A_PAR_14N_MHZ = 2.16              # [felton2009]
+A_PAR_14N_MHZ = 2.147             # |A_par| of 14N [felton2009]
 ZPL_NM = 637.0                    # zero-phonon line [davies1976], [doherty2013]
 GAMMA_MHZ_PER_MT = GAMMA_E_HZ_PER_T * 1e-9   # 28.03 MHz/mT
 
@@ -85,8 +85,30 @@ def cw_odmr_sensitivity_t_rthz(linewidth_mhz: float, contrast: float, count_rate
 # Record room-temperature coherence numbers, seconds. Every entry cites its source.
 ROOM_TEMP_COHERENCE = [
     ("Electron T2* (12C-enriched)", 100e-6, "balasubramanian2009"),   # order of magnitude; see [bauch2018]
+    ("Electron T2*, record (phosphorus-doped, 12C)", 1.5e-3, "herbschleb2019"),
     ("Electron T2, Hahn echo (12C-enriched)", 1.8e-3, "balasubramanian2009"),
     ("Electron T2, Hahn echo (phosphorus-doped)", 2.4e-3, "herbschleb2019"),
     ("Electron T1", 6e-3, "jarmola2012"),
     ("Carbon-13 nuclear memory", 1.0, "maurer2012"),
 ]
+
+
+# ---------------- strain from dislocations and the NV dephasing time (audit G5; order-of-magnitude model, proposed here) ----
+# A straight dislocation strains the lattice as eps ~ b / (2 pi r); at density D the typical distance to the nearest one is
+# r = 1 / (2 sqrt(D)). The NV spin-strain coupling of about 10.9 GHz per unit strain [marshall2022] turns the strain
+# spread into a line spread df, and T2* ~ 1 / (pi df) for an ensemble. Measured anchors: heteroepitaxial single NV
+# T2 = 5 us [nelz2019]; laterally overgrown heteroepitaxial T2* 1.1 to 4.8 us [oshnik2025]; low-strain HPHT
+# T2* = 1.28 us, limited by strain and local charges [blinder2024]. An echo removes static strain, so T2 is set by
+# noise along the dislocations and is not modeled here.
+BURGERS_NM = 0.252                # diamond, a / sqrt(2)
+SPIN_STRAIN_HZ = 10.9e9           # per unit strain [marshall2022]
+
+
+def dislocation_strain(dislocations_cm2: float) -> float:
+    r_m = 1.0 / (2.0 * np.sqrt(dislocations_cm2)) * 1e-2
+    return BURGERS_NM * 1e-9 / (2 * np.pi * r_m)
+
+
+def t2star_from_dislocations_us(dislocations_cm2: float) -> float:
+    """Ensemble dephasing time limited by dislocation strain alone (upper bound; other noise lowers it)."""
+    return float(1e6 / (np.pi * SPIN_STRAIN_HZ * dislocation_strain(dislocations_cm2)))

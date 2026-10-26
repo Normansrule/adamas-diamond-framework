@@ -7,7 +7,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import os from 'node:os';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const [,, siteDir, page, actions] = process.argv;
-const file = path.join(siteDir, page), html = fs.readFileSync(file, 'utf8');
+const file = path.join(siteDir, page.split('#')[0]), html = fs.readFileSync(file, 'utf8');
 const dom = new JSDOM(html, { url: `http://localhost/${page}`, pretendToBeVisual: true });
 const W = dom.window;
 const ctx = new Proxy({}, { get: (t, k) => k === 'createImageData' ? (w, h) => ({ data: new Uint8ClampedArray(w * h * 4) }) :
@@ -42,5 +42,5 @@ for (const a of (actions || '').split(',').filter(Boolean)) {
   if (a === 'quizall') { W.document.querySelectorAll('[data-q] button[data-k="1"]').forEach(b => b.click()); continue; } const [id, n] = a.split('*'); for (let i = 0; i < (+n || 1); i++) $(id).click(); await new Promise(r => setTimeout(r, 60)); }
 await new Promise(r => setTimeout(r, 300));
 if (errors.length) { console.error(JSON.stringify({ page, errors })); process.exit(1); }
-console.log(JSON.stringify({ page, errors, gl: W.document.querySelectorAll('abbr.gl').length, probe: Object.assign(Object.fromEntries(['fcards', 'vsum', 'kpis', 'notes', 'plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])), extra) }));
+console.log(JSON.stringify({ page, errors, gl: W.document.querySelectorAll('abbr.gl').length, probe: Object.assign(Object.fromEntries(['plug', 'counter', 'rel', 'evpi', 'fcards', 'vsum', 'kpis', 'notes', 'plotNote', 'xsHud', 'prog', 'kC', 'kN', 'score', 'progress', 'chipHud', 'kpis', 'barHud', 'kNM', 'kP', 'kT', 'hud', 'n0', 'refHead', 'kRatio', 'kTime', 'verdict', 'regs', 'dTitle', 'stepHud', 'chipHud', 'err', 'mcHud'].filter(i => $(i)).map(i => [i, $(i).textContent.slice(0, 140)])), extra) }));
 process.exit(0);

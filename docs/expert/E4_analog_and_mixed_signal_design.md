@@ -14,13 +14,13 @@ The $g_m/I_D$ methodology sizes transistors by transconductance efficiency, from
 
 ![Analog design curves](../img/fig21_analog_design.png)
 
-| Parameter | Silicon (typical) | Diamond hole-gas FET | Note |
+| Parameter | Silicon (typical) | Diamond hole-gas field-effect transistor (FET) | Note |
 |---|---|---|---|
 | $\mu C_{ox}$ | 100 to 300 µA/V² | 40 µA/V² (150 cm²/V·s, 30 nm Al₂O₃) | [kawarada2014]; boron-nitride gates reach higher mobility [sasama2018] |
 | Channel-length modulation $\lambda$ | 0.05 to 0.2 V⁻¹ | **unreported**; 0.02 V⁻¹ assumed | Experiment A-1 |
 | Mismatch $A_{VT}$ | 2 to 5 mV·µm [pelgrom1989] | **unreported** | Surface-acceptor randomness suggests it will be large; A-1 |
 | Flicker noise | Hooge parameter 10⁻⁵ to 10⁻³ [hooge1994] | **unreported** | Surface conduction suggests high; A-2 |
-| Temperature range | −55 to 175 °C | to 400 °C [kawarada2014] | Diamond's advantage |
+| Temperature range | −55 to 175 °C | 400 °C shown for a single FET, short-term [kawarada2014]; circuits not demonstrated | Potential advantage; A-2, A-3 test it to 300 °C |
 
 ## E4.2 Building blocks
 

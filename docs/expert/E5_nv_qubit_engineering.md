@@ -21,7 +21,9 @@ Two electron-spin qubits with $H = 2\pi\nu_{dd}|11\rangle\langle 11|$, $\nu_{dd}
 
 ![Lindblad gate simulation](../img/fig22_lindblad_gate.png)
 
-**Reading the result.** Both spins dephase, so the true ceiling is lower than the earlier bound. The measured 0.67 [dolde2013] and 0.82 [dolde2014] at 25 nm lie below even this curve; plausible contributors that this model omits are the shorter coherence of that sample, imperfect charge-state and spin initialization ([aslam2013]), and accumulated pulse error over a long sequence. Under this memoryless-noise assumption, 99 percent needs spacing at or below about 12 nm in ¹²C material. Section E5.1b shows that assumption is pessimistic for an echoed gate. Coherence inputs: [balasubramanian2009], [herbschleb2019], [jarmola2012].
+**Reading the result.** Both spins dephase, so the true ceiling is lower than the earlier bound. The measured 0.67 [dolde2013] and 0.824 [dolde2014] at 25 nm lie below even this curve; plausible contributors that this model omits are the shorter coherence of that sample, imperfect spin initialization, and accumulated pulse error over a long sequence. Charge-state errors are not among them for the 2013 value, which was normalized to charge-preselected runs (Section E5.1c). Under this memoryless-noise assumption, 99 percent needs spacing at or below about 12 nm in ¹²C material. Section E5.1b shows that assumption is pessimistic for an echoed gate. Coherence inputs: [balasubramanian2009], [herbschleb2019], [jarmola2012]. The current room-temperature record is a two-qubit fidelity of 96.0 ± 2.5 % for NVs 9.5 nm apart, with 594 nm charge-state pre-selection [joas2025] (demonstrated).
+
+**Addressing.** At these spacings both NVs sit inside one diffraction-limited laser spot (about 250 nm), so they cannot be driven or read out optically one by one. Every room-temperature pair so far was told apart spectrally, using NVs on different crystal axes whose lines sit about 30 MHz apart, and read out jointly ([dolde2013], [joas2025]). Field gradients ([grinolds2011], [zhang2017addr]) and the dark-spin bus of [Chapter 8](../08_quantum_processor_architecture.md) are proposed routes to larger arrays; none yet gives individual coherent control below 30 nm at room temperature.
 
 ### E5.1b Beyond the Markov approximation: an error budget (project Q-1, done)
 
@@ -33,15 +35,21 @@ The master equation above assumes memoryless noise, which gives exponential deca
 
 $$F_{coh} = \frac{(1+w_1)(1+w_2)}{4}$$
 
-(the test suite checks this against the Lindblad solver to six digits). Adding per-NV preparation probability $q$ (negative charge state times spin polarization; a failed preparation is taken as a fully mixed state) and an error $\epsilon$ on each of $n$ pulses:
+(the test suite checks this against the Lindblad solver to six digits). Each spin's factor over the total entangling time $t = N_g t_g$ ($N_g$ = 1 or 2 gate applications) is
+
+$$w = e^{-t/T_1}\, e^{-(t/T_2)^p}$$
+
+with echo exponent $p = 3$ for a slow ¹³C bath and $p \approx 1$ for fast noise ([delange2010], [dobrovitski2008]). Assumptions: independent, diagonal noise on the two spins; the $T_1$ factor is optional. Adding a per-NV preparation probability $q$ and an error $\epsilon$ on each of $n$ pulses:
 
 $$F = q^2 (1-\epsilon)^n F_{coh} + \frac{1-q^2}{4}$$
+
+Here $q$ is the probability that an NV enters the gate in the state the tomography assumes, after any post-selection; a failed preparation is taken as a fully mixed state. It is a lumped parameter of this model (proposed here), not the product of the NV⁻ fraction and the spin polarization. That product, 0.70 to 0.75 [aslam2013] times the package's own 82 % polarization (`adamas.photophysics.polarization()`), is 0.57 to 0.61 and would give $F$ = 0.50 to 0.53 for the published pair, below the measured 0.67. For charge-preselected data, $q$ = 1 for the charge part.
 
 **Double-quantum encoding.** Using $|{+1}\rangle, |{-1}\rangle$ as the qubit on both centers quadruples the coupling and doubles the magnetic-noise sensitivity, a technique used in NV–NV coupling experiments ([neumann2010natphys], [dolde2013]).
 
 ![Gate error budget](../img/fig26_gate_error_budget.png)
 
-| Echo $T_2$ needed for fidelity | 0.90 | 0.99 | 0.999 |
+| Echo $T_2$ needed for fidelity ($p$ = 3, one gate application, no $T_1$) | 0.90 | 0.99 | 0.999 |
 |---|---|---|---|
 | 10 nm spacing | 20 µs | 44 µs | 96 µs |
 | 15 nm | 68 µs | 150 µs | 324 µs |
@@ -50,26 +58,24 @@ $$F = q^2 (1-\epsilon)^n F_{coh} + \frac{1-q^2}{4}$$
 
 **What this changes.**
 
-1. The Markov model is a pessimistic bound. With an echoed gate, natural-abundance coherence (0.6 ms [mizuochi2009]) already permits 0.98 at 25 nm, and ¹²C material (1.8 ms [balasubramanian2009]) permits 0.999. The spacing rule relaxes from "12 nm" to "**25 nm is enough for coherence**," which is a large relief for the placement problem of [Chapter 7](../07_nv_fabrication_and_placement.md).
-2. The bottleneck moves to **preparation and pulses**. Under green illumination the NV⁻ fraction is about 0.70 to 0.75 [aslam2013]. Without charge-state post-selection, $q \le 0.75$ caps the fidelity near 0.67 by itself, even with perfect coherence and pulses. The right panel shows every $(q, \epsilon)$ pair consistent with the reported 0.67 [dolde2013] and 0.82 [dolde2014].
-3. This is a consistency map, not an explanation of those experiments: their actual sample parameters and post-selection procedures must be read from the papers before drawing conclusions (follow-up Q-1b).
-4. Engineering priority therefore shifts toward **charge-state initialization and verification** ([hopper2018], [shields2015], [doi2014]) and robust pulses ([khaneja2005], [rong2015]).
+1. The Markov model is a pessimistic bound if the bath is slow. With an echoed gate and $p$ = 3, natural-abundance coherence (0.6 ms [mizuochi2009]) permits 0.98 at 25 nm, and ¹²C material (1.8 ms [balasubramanian2009]) permits 0.999. Under that assumption the spacing rule relaxes from "12 nm" to "25 nm is enough for coherence." The relief depends on $p$: with $p$ = 1 or two gate applications the limit falls well below these values (Section E5.1c), so the exponent must be measured on the sample (proposed here).
+2. **Preparation is a hypothesis, not a finding.** Under green illumination the NV⁻ fraction is about 0.70 to 0.75 [aslam2013]. In runs that are *not* pre-selected, $q$ = 0.75 would by itself cap this model near 0.67. The published 0.67, however, was already normalized to charge-preselected runs [dolde2013], so this does not explain it (Section E5.1c). The right panel maps $(q, \epsilon)$ pairs for un-preselected data only.
+3. Engineering priority: **charge-state pre-selection or deterministic initialization** ([hopper2018], [shields2015], [doi2014], [joas2025]), robust pulses ([khaneja2005], [dolde2014]), and a measured dephasing model for the gate sequence.
 
 ### E5.1c Check against the published pair (project Q-1b, done)
 
-The entanglement experiment of [dolde2013] reports what the budget needs: two NV centers 25 ± 2 nm apart with different orientations, a single-quantum dipolar coupling of 4.93 ± 0.05 kHz (the isotropic 52/r³ rule gives 3.3 kHz; the angular factor supplies the rest), double-quantum echo times of 150 ± 18 µs and 514 ± 50 µs, a spin echo on both spins during the gate, and a Bell fidelity of 0.67 ± 0.04, raised to 0.82 on the same pair with optimal-control pulses [dolde2014]. `adamas.gate_budget.DOLDE2013` stores these numbers; `published_check()` evaluates the model with them.
+The entanglement experiment of [dolde2013] reports what the budget needs: two NV centers 25 ± 2 nm apart with different orientations, a single-quantum dipolar coupling of 4.93 ± 0.05 kHz (the isotropic 52/r³ rule gives 3.3 kHz; the angular factor supplies the rest), double-quantum echo times of 150 ± 18 µs and 514 ± 50 µs, a spin echo on both spins during the gate, and a Bell fidelity of 0.67 ± 0.04, raised to 0.824 on the same pair with optimal-control pulses [dolde2014], and $T_1$ = 1.12 ms. `adamas.gate_budget.DOLDE2013` stores these numbers; `published_check()` evaluates the model with them.
 
 ![Published-pair check](../img/fig36_published_gate_check.png)
 
-| Quantity | Model with published parameters |
+| Quantity | Value |
 |---|---|
-| Gate time (double quantum, 19.7 kHz) | 25 µs |
-| Coherence-limited fidelity $F_{coh}$ | **0.998** |
-| Preparation probability $q$ that alone gives 0.67 | 0.75 |
-| $q$ that alone gives 0.82 | 0.87 |
-| Breakdown at $q$ = 0.85, 1% pulse error | dephasing 0.002, pulses 0.077, preparation 0.186 |
+| Gate time (double quantum, 19.7 kHz) | 25 µs (model) |
+| Coherence-limited fidelity at $q$ = 1 | **0.784 to 0.998** over $p$ = 1 to 3, one or two gate applications, with and without $T_1$ = 1.12 ms (`adamas.gate_budget.coherence_limited_range()`; 0.998 is $p$ = 3, one application, no $T_1$) |
+| Measured, normalized to charge-preselected runs | 0.67 ± 0.04 [dolde2013]; 0.824 with optimal control [dolde2014] (demonstrated) |
+| Status | **Known discrepancy**: the measurement lies below the whole model range |
 
-**Reading.** With the actual sample coherence, dephasing accounts for 0.2 percent of the missing fidelity. The measured 0.67 sits exactly where a 0.70 to 0.75 NV⁻ charge-state fraction under green light ([aslam2013]) would put it, and 0.82 needs $q \approx 0.87$ or a combination of preparation and pulse error; optimal control removed the pulse part [dolde2014]. The model is consistent with both numbers with no free parameter beyond $q$, which the papers do not report directly. The claim of E5.1b stands, and the experimental priority is charge-state initialization and verification. Caveats: the tomography pulse count (taken as 8) is an estimate, and the model treats a failed preparation as a fully mixed state.
+**Reading.** The supplement of [dolde2013] states that the tomography was normalized "to a charge state preselected scheme" and that "a NV initialization close to unity is assumed." Charge-state errors are therefore already removed from the 0.67, and the earlier reading of this section (the charge state ready only 0.75 of the time, so preparation rather than coherence is the bottleneck) is **withdrawn**. The model compares the measurement at $q$ = 1. Its coherence limit spans 0.784 to 0.998 depending on the echo exponent, on whether the gate is applied once or twice (create, then map back for readout), and on $T_1$; the measured value lies below all of it. [dolde2014] names coherence time and imperfect initialization as the limits. Closing the gap needs a full error model of the published sequence (dephasing in both gate applications, pulse errors, spin initialization), which is follow-up Q-1c. Caveat: the tomography pulse count (taken as 8) is an estimate.
 
 ## E5.2 The carbon-13 bath
 
@@ -101,9 +107,9 @@ where $y = \pm1$ flips at each pulse [cywinski2008]. With the bath parameters me
 
 | Tool | Purpose | Source |
 |---|---|---|
-| Gradient-ascent pulse engineering | Numerically optimized pulses; raised NV–NV entanglement from 0.67 to 0.82 | [khaneja2005], [dolde2014] |
+| Gradient-ascent pulse engineering | Numerically optimized pulses; raised NV–NV entanglement from 0.67 to 0.824 | [khaneja2005], [dolde2014] |
 | Derivative-removal shaping | Suppresses leakage to neighboring hyperfine lines | [motzoi2009] |
-| Noise-filtering composite gates | 99.92 percent two-qubit gate | [xie2023], [rong2015] |
+| Noise-filtering composite gates | 99.92 percent two-qubit gate (electron–nuclear) | [xie2023], [rong2015] |
 | Geometric and holonomic gates | Robustness to amplitude error | [zu2014], [arroyo2014] |
 | Randomized benchmarking | Gate error independent of preparation and readout | [knill2008], [magesan2011] |
 | Quantum volume | System-level benchmark | [cross2019] |
@@ -114,7 +120,8 @@ where $y = \pm1$ flips at each pulse [cywinski2008]. With the bath parameters me
 | ID | Item | Success metric |
 |---|---|---|
 | Q-1 | Non-Markovian error budget for the echoed gate | **Done in v0.3.0** (`adamas.gate_budget`, Section E5.1b) |
-| Q-1b | Test the budget with the published pair's parameters | **Done in v0.6.0** (Section E5.1c): consistent with 0.67 and 0.82 for $q$ = 0.75 and 0.87 |
+| Q-1b | Test the budget with the published pair's parameters | **Done in v0.6.0, revised after the audit** (Section E5.1c): at $q$ = 1 the coherence limit is 0.784 to 0.998, above the charge-normalized 0.67; known discrepancy |
+| Q-1c | Full error model of the published sequence: dephasing in both gate applications, pulse errors, spin initialization, measured echo exponent | Reproduces 0.67 [dolde2013] and 0.824 [dolde2014] with parameters read from the papers |
 | Q-2 | Cluster-correlation-expansion $T_2$ (pairs, then triples) | 0.6 ms natural, 1.8 ms at 0.3% within a factor of two ([mizuochi2009], [balasubramanian2009]) |
 | Q-3 | Pulse optimization for the ¹⁴N-selective π pulse of `adamas.register` under 1 percent amplitude noise | Fidelity above 0.999 with amplitude robustness |
 | Q-4 | Randomized benchmarking on a benchtop ensemble ([Chapter 11](../11_proposed_experiments_and_roadmap.md), B-5) | Error per Clifford gate with uncertainty |

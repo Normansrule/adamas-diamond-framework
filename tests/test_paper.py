@@ -19,8 +19,9 @@ def test_every_macro_in_the_documents_is_generated(doc):
 
 def test_headline_numbers_match_the_models():
     n = paper.numbers()
-    assert n["FcohPublished"] == "0.998" and n["qForSixtySeven"] == "0.75"
-    assert float(n["LossDiamond"]) < float(n["LossGaN"]) < float(n["LossSiC"]) < float(n["LossSi"])
+    assert n["FcohPublished"] == "0.998" and float(n["FcohLow"]) < 0.67 + 0.2 and float(n["FcohLow"]) > 0.67   # 0.67 is below the range
+    assert float(n["LossGaN"]) < float(n["LossSiC"]) < float(n["LossDiamond"]) < float(n["LossSi"])
+    assert float(n["LossDiamondHot"]) < float(n["LossSiCHot"]) and float(n["PowerRatioRoom"]) < 1 < float(n["PowerRatioHot"])
     assert int(n["RSADistance"]) > 40
 
 

@@ -23,7 +23,7 @@ export async function open(base = '.') {
   box.classList.add('on'); const inp = box.querySelector('#pq'); inp.value = ''; sel = 0; render(base); setTimeout(() => inp.focus(), 10);
 }
 function close() { box?.classList.remove('on'); }
-const ICON = { page: '◆', lab: '⚗', term: 'Aa', figure: '▦', experiment: '🔬', step: '⚙', lesson: '🎓' };
+const ICON = { page: '◆', lab: '⚗', term: 'Aa', figure: '▦', experiment: '🔬', step: '⚙', lesson: '🎓', equation: '∑' };
 function render(base, recompute = true) {
   const q = box.querySelector('#pq').value;
   if (recompute) hits = q ? search(idx, q) : idx.filter(i => i.kind === 'page' || i.kind === 'lab').slice(0, 10);

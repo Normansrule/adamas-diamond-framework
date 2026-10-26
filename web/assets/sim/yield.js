@@ -2,7 +2,7 @@
 // defects on a wafer and marks every die hit as bad, which is exactly the Poisson model.
 export const diesPerWafer = (dMm, aMm2) => Math.max(0, Math.floor(Math.PI * (dMm / 2) ** 2 / aMm2 - Math.PI * dMm / Math.sqrt(2 * aMm2)));
 export const poisson = (aMm2, d0) => Math.exp(-aMm2 * 1e-2 * d0);
-export const murphy = (aMm2, d0) => { const x = aMm2 * 1e-2 * d0; return x === 0 ? 1 : ((1 - Math.exp(-x)) / x) ** 2; };
+export const murphy = (aMm2, d0) => { const x = aMm2 * 1e-2 * d0; return x === 0 ? 1 : (-Math.expm1(-x) / x) ** 2; };
 
 export function layout(dMm, sideMm, edgeMm = 3) {       // die grid: squares fully inside the usable radius
   const r = dMm / 2 - edgeMm, n = Math.ceil(dMm / sideMm), dies = [];

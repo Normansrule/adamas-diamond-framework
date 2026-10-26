@@ -1,6 +1,6 @@
 # E1 · Patterning diamond wafers: from extreme ultraviolet (EUV) lithography to electron beams
 
-**Plain-language summary.** Lithography is the printing press of chipmaking. The most advanced presses use 13.5 nm extreme ultraviolet light and cost about as much as a passenger jet. They only accept 300 mm silicon-sized wafers, and diamond wafers are 76 mm at best. This chapter works out which printing tools diamond can use now, what physics changes when the substrate is diamond, and what would have to be true for diamond to ride in an EUV scanner.
+**Plain-language summary.** Lithography is the printing press of chipmaking. The most advanced presses use 13.5 nm extreme ultraviolet light and cost about as much as a passenger jet. They only accept 300 mm silicon-sized wafers, and single-crystal diamond wafers are 2-inch (about 50 mm) in peer-reviewed work [kim2021], with 76 mm announced by industry without published quality data [e6orbray2026] (reported). This chapter works out which printing tools diamond can use now, what physics changes when the substrate is diamond, and what would have to be true for diamond to ride in an EUV scanner.
 
 Prerequisites: [Chapter 2](../02_wafer_manufacturing.md), [Chapter 3](../03_process_flow_vs_cmos.md). Code: `adamas.litho`.
 
@@ -40,7 +40,7 @@ These points are this repository's analysis, assembled from cited physics. Items
 | Issue | Physics | Consequence | Status |
 |---|---|---|---|
 | Wafer diameter | EUV, immersion, and most KrF tools handle 300 mm only | Diamond needs a **carrier**: a 300 mm silicon wafer with a pocket or bonded diamond tile, co-planar to within the depth of focus | Engineering; chiplet-style handling shown in [li2024] |
-| Flatness versus depth of focus | DOF is 124 nm (EUV) and 45 nm (high-NA); diamond polishing is slow and heteroepitaxial wafers bow ([schuelke2013], [schreck2017]) | Local thickness variation must fall below about 50 nm over a 26 × 33 mm field (smaller fields relax this) | **Hypothesis**: achievable for ≤ 10 mm tiles; experiment L-1 |
+| Flatness versus depth of focus | DOF is 124 nm (EUV) and 45 nm (high-NA); diamond polishing is slow and heteroepitaxial wafers bow ([schuelke2013], [schreck2017]) | Local thickness variation must fall below about 50 nm over the 26 × 33 mm EUV field, or the 26 × 16.5 mm half field of high-NA EUV [vanschoot2017] (smaller fields relax this) | **Hypothesis**: achievable for ≤ 10 mm tiles; experiment L-1 |
 | Transparency | Diamond absorbs only below about 225 nm [clark1964]; index about 2.4 to 2.7 in the near ultraviolet [zaitsev2001] | At 365 and 248 nm, light enters the wafer and reflects from the back face; front-face reflectance is about 17 percent (`fresnel_reflectance(2.42)`). Needs a bottom anti-reflective coating or a roughened, absorbing backside. At 193 nm and 13.5 nm diamond is opaque, so the problem vanishes. | Known optics |
 | Charging | Undoped diamond is an insulator | Electron-beam writing needs a conductive discharge layer, or use of the hydrogen-terminated surface's own hole gas [maier2000] as the ground plane | Practice in [toyli2010], [hausmann2010]; hole-gas grounding is a **hypothesis** (L-3) |
 | Secondary electrons from the substrate | Hydrogen-terminated diamond has negative electron affinity [himpsel1979] and very high secondary-electron yield ([shih1997], [yater2000]) | Extra low-energy electrons injected into the resist from below could raise effective EUV sensitivity and add blur at the interface | **Hypothesis** (L-4) |
@@ -69,9 +69,9 @@ flowchart TB
 | Power devices | 1 to 10 µm | Mask aligner |
 | p-channel logic, 10³ to 10⁴ gates ([E3](E3_digital_and_cpu_design.md)) | 0.25 to 2 µm | i-line or KrF |
 | RF transistors | 50 to 200 nm gates | Electron beam or KrF |
-| NV implant apertures | 10 to 30 nm holes on a 15 to 50 nm pitch ([Chapter 7](../07_nv_fabrication_and_placement.md)) | Electron beam now; **EUV or nanoimprint for volume** |
+| NV implant apertures | 10 to 30 nm holes, 15 to 50 nm apart within a pair or cluster ([Chapter 7](../07_nv_fabrication_and_placement.md)) | Electron beam now; **EUV or nanoimprint for volume** |
 
-The only layer in this framework that approaches EUV territory is the **qubit implant mask**. A dense array of 15 nm apertures on a 30 nm pitch is squarely a high-NA EUV pattern, and a 1 cm² quantum layer would take an electron-beam tool days to write. So the realistic long-term split is: EUV or nanoimprint for the qubit-defining layer, relaxed optical lithography for everything else, on a 300 mm carrier.
+The only layer in this framework that approaches EUV territory is the **qubit implant mask**. Two distances must be kept apart. Inside a cell, the NVs of a pair sit 15 to 30 nm apart, because the dipolar gate needs it; a 15 nm aperture next to another 30 nm away is a high-NA EUV feature. Between cells, the machine of [E10](E10_scaling_a_room_temperature_quantum_computer.md) uses a micrometer-scale pitch, where dipolar coupling is negligible, and the link between cells (a spin bus or a photonic link, with its own time and error) is not yet defined (audit E5). The mask is therefore sparse: dense nanometer pairs repeated on a micrometer grid. Both NVs of a pair also sit inside one laser spot (about 250 nm), so the pair layout must allow spectral addressing, with the two NVs on different crystal axes ([dolde2013], [joas2025]). The realistic long-term split is: electron beam, EUV or nanoimprint for the qubit-defining layer, relaxed optical lithography for everything else, on a 300 mm carrier (proposed here).
 
 ![Length scales](../img/fig25_length_scales.png)
 

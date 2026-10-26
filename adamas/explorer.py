@@ -92,7 +92,7 @@ const TOUR=[['fom','Start here. Diamond wins almost every scorecard engineers us
  ['ron','Even so, real diamond switches already beat silicon\'s theoretical limit. The stars are measured devices.'],
  ['conv','Put those switches in a real inverter and compare with silicon carbide and gallium nitride.'],
  ['odmr','Now the quantum side: one defect, the NV center, is a qubit you can read with light at room temperature.'],
- ['gate','Two qubits couple magnetically. Slide coherence and preparation: which one really limits the gate?'],
+ ['gate','Two qubits couple magnetically. Slide coherence and preparation, and compare with the measured 0.67.'],
  ['qec','Many qubits correct each other\'s errors, but only if the links between cells are good enough.'],
  ['qsize','Finally, how big and how slow would a whole room-temperature quantum computer be?']];
 let tourI=-1;function tour(step){tourI=Math.max(0,Math.min(TOUR.length-1,tourI+step));const [id,msg]=TOUR[tourI];
@@ -196,15 +196,15 @@ def build_html() -> str:
         "odmrPlot",
         "The NV center glows red. When a microwave hits exactly its note (2.87 GHz), the glow dims a little. A magnet splits that note into two, and the crystal has four kinds of NV pointing different ways, so you can see up to eight dips.",
         "H/h = D(S<sub>z</sub>² − 2/3) + γ<sub>e</sub><b>B</b>·<b>S</b> with D = 2.870 GHz and γ<sub>e</sub> = 28 MHz/mT. Each of the four ⟨111⟩ orientations sees a different projection B<sub>∥</sub>, giving lines at D ± γ<sub>e</sub>B<sub>∥</sub>.",
-        "Second-order perpendicular shift 3γ²B<sub>⊥</sub>²/(2D) included; hyperfine structure (2.16 MHz for ¹⁴N) omitted at these line widths. Contrast fixed at 7.5% per orientation for an ensemble. The Python package includes the hyperfine term.",
+        "Second-order perpendicular shift 3γ²B<sub>⊥</sub>²/(2D) included; hyperfine structure (2.15 MHz for ¹⁴N) omitted at these line widths. Contrast fixed at 7.5% per orientation for an ensemble. The Python package includes the hyperfine term.",
         "[gruber1997] [doherty2013] [rondin2014] [barry2020]"))
-    s.append(_section("gate", "5 · Two qubits talking: distance, coherence, and the real bottleneck", "Magnetic coupling fades as 1/r³. Slide coherence and preparation probability and see which one actually limits the gate.",
+    s.append(_section("gate", "5 · Two qubits talking: distance, coherence, and an open discrepancy", "Magnetic coupling fades as 1/r³. Slide coherence and preparation probability and compare the model with the measured fidelity.",
         '<label>Echo T₂ (µs) <input type="range" id="gT2" min="20" max="3000" step="10" value="600"></label><label>Preparation probability q <input type="range" id="gQ" min="0.5" max="1" step="0.01" value="1"></label><label>Double-quantum encoding (4× coupling) <input type="checkbox" id="gDQ"></label>',
         "gatePlot",
-        "Two qubits feel each other through magnetism, but only when very close. The surprise: even with perfect memory, the gate fails if the qubit was not set up right at the start (that is the q slider).",
+        "Two qubits feel each other through magnetism, but only when very close, closer than a laser spot, so the experiment tells them apart by their microwave frequencies. The measured result is worse than this simple model predicts, and nobody has fully explained why yet.",
         "ν = 52 MHz·nm³/r³; gate time 1/(2ν); with a spin echo the coherence factor is w = exp(−(t/T₂)³) and the Bell fidelity is q²(1+w)²/4 + (1−q²)/4.",
-        "With the published pair's parameters (25 nm, 19.7 kHz double-quantum coupling, T₂ 150 and 514 µs) the coherence-limited fidelity is 0.998; the measured 0.67 corresponds to q ≈ 0.75, the NV⁻ charge fraction under green light. See chapter E5, sections E5.1b and E5.1c.",
-        "[neumann2010natphys] [dolde2013] [dolde2014] [delange2010] [aslam2013]"))
+        "With the published pair's parameters (25 nm, 19.7 kHz double-quantum coupling, T₂ 150 and 514 µs) the coherence-limited fidelity is 0.78 to 0.998 over echo exponents 1 to 3, one or two gate applications, and T₁. The measured 0.67 was already charge-preselected, so it is a known discrepancy, not a preparation probability (audit Q1). See chapter E5, sections E5.1b and E5.1c.",
+        "[neumann2010natphys] [dolde2013] [dolde2014] [delange2010] [joas2025]"))
     s.append(_section("conv", "6 · A real converter: diamond against silicon carbide and gallium nitride", "Pick an application. Loss per switch at the optimum die area scales as √(R·C·f).",
         '<label>Application <select id="convApp"><option value="ev">EV traction inverter (800 V, 300 A)</option><option value="dc">Data-center supply (400 V, 20 A)</option><option value="grid">Medium-voltage grid (6.5 kV, 100 A)</option></select></label>',
         "convPlot",

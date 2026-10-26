@@ -24,19 +24,30 @@ def numbers() -> dict:
     N["BestBV"] = f"{max(v['bv_v'] for v in power.MEASURED_DIAMOND.values()):.0f}"
     for key, name in [("Si", "LossSi"), ("4H-SiC", "LossSiC"), ("GaN", "LossGaN"), ("Diamond", "LossDiamond")]:
         N[name] = f"{converter.material_switch(key, 1200, 800, 300, 20e3).p_total_w:.1f}"
+    for key, name in [("4H-SiC", "LossSiCHot"), ("Diamond", "LossDiamondHot")]:
+        N[name] = f"{converter.material_switch(key, 1200, 800, 300, 20e3, t_k=523.0).p_total_w:.1f}"
+    N["FionDriftPct"] = f"{100 * converter.drift_ionized_fraction(materials.MATERIALS['Diamond'], 1200.0, 300.0):.2f}"
+    N["FionDriftHotPct"] = f"{100 * converter.drift_ionized_fraction(materials.MATERIALS['Diamond'], 1200.0, 523.0):.1f}"
+    from . import uncertainty
+    pb = uncertainty.baseline(uncertainty.POWER)
+    N["PowerRatioRoom"] = f"{uncertainty.power_ratio(pb):.2f}"; N["PowerRatioHot"] = f"{uncertainty.power_ratio_hot(pb):.1f}"
+    N["UncPowerHotPfifty"] = f"{uncertainty.monte_carlo('power_hot', 4000)['p50']:.1f}"
     N["LossDiamondMeasured"] = f"{converter.material_switch('Diamond', 1200, 800, 300, 20e3, measured='saha2022').p_total_w:.0f}"
     g = gate_budget.published_check()
     N["GateTimeUs"] = f"{g.t_gate_us:.0f}"; N["FcohPublished"] = f"{g.f_coherent:.3f}"
     N["qForSixtySeven"] = f"{brentq(lambda q: gate_budget.published_check(q).fidelity - 0.67, 0.5, 1.0):.2f}"
+    lo, hi = gate_budget.coherence_limited_range(); N["FcohLow"] = f"{lo:.2f}"; N["FcohHigh"] = f"{hi:.3f}"
     N["qForEightyTwo"] = f"{brentq(lambda q: gate_budget.published_check(q).fidelity - 0.82, 0.5, 1.0):.2f}"
-    N["ReadoutContrast"] = f"{100 * photophysics.readout_contrast():.0f}"; N["Polarization"] = f"{100 * photophysics.polarization():.0f}"
+    N["ReadoutContrast"] = f"{100 * photophysics.readout_contrast():.0f}"; N["MeasuredContrast"] = f"{100 * photophysics.measured_contrast():.0f}"; N["Polarization"] = f"{100 * photophysics.polarization():.0f}"
     t = resource.table()
     lam = {int(tr): r["Lambda"] for tr, r in zip(t["readout_us"], t["fits"]["1000"])}
     N["LambdaFast"] = f"{lam[100]:.2f}"; N["LambdaMs"] = f"{lam[1000]:.2f}"; N["LambdaTenMs"] = f"{lam[10000]:.2f}"
-    n, st = resource.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    n, st = resource.WORKLOADS[resource.RSA_JOB]
     e1 = resource.estimate(n, st, 1000.0, 1000.0, t=t); e2 = resource.estimate(n, st, 100.0, 1000.0, t=t); sc = resource.superconducting_reference(n, st)
     N["RSADistance"] = str(e1.distance); N["RSAQubitsM"] = f"{e1.physical_qubits / 1e6:.0f}"; N["RSADieMm"] = f"{e1.die_side_mm:.1f}"
-    N["RSAYears"] = f"{e1.runtime_hours / 8766:.1f}"; N["RSAYearsFast"] = f"{e2.runtime_hours / 8766:.1f}"; N["RSADaysSC"] = f"{sc.runtime_hours / 24:.0f}"
+    N["RSAYears"] = f"{e1.runtime_hours / 8766:.1f}"; N["RSAYearsFast"] = f"{e2.runtime_hours / 8766:.1f}"; N["RSADaysSC"] = f"{sc.runtime_hours / 24:.1f}"; N["RSAHoursSC"] = f"{sc.runtime_hours:.0f}"
+    eu = resource.estimate(n, resource.RSA_STEPS_TOFFOLI, 1000.0, 1000.0, t=t)
+    N["RSAStepsCal"] = f"{resource.RSA_STEPS / 1e9:.2f}"; N["RSAYearsToffoli"] = f"{eu.runtime_hours / 8766:.1f}"; N["LinkUs"] = f"{resource.LINK['time_us']:.0f}"
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     N["DiaCells"] = str(len(re.findall(r"^\s*(BUF|INV|NAND2|NOR2|NOR3|DFF)\s", net.read_text(), re.M))) if net.exists() else "about 320"
     import sys
@@ -49,17 +60,22 @@ def numbers() -> dict:
     N["NumFigures"] = str(len(names))
     from . import uncertainty
     mp, mq = uncertainty.monte_carlo("power", 4000), uncertainty.monte_carlo("quantum", 4000)
-    N["UncPowerPten"], N["UncPowerPfifty"], N["UncPowerPninety"] = (f"{mp[k]:.1f}" for k in ("p10", "p50", "p90"))
+    N["UncPowerPten"], N["UncPowerPfifty"], N["UncPowerPninety"] = (f"{mp[k]:.2f}" for k in ("p10", "p50", "p90"))
     N["UncQPten"], N["UncQPfifty"], N["UncQPninety"] = (f"{mq[k]:.1f}" for k in ("p10", "p50", "p90"))
     from . import validation
     sv = validation.summary(); N["ValChecks"] = str(sum(sv.values())); N["ValPass"] = str(sv["pass"])
     from . import xzzx_native
     S = xzzx_native.cached_study(); i = S["etas"].index(100); j = S["t_read_us"].index(1000)
-    N["ThrCSSBias"] = f"{100 * S['thr']['css'][i]:.2f}"; N["ThrXZZXBias"] = f"{100 * S['thr']['xzzx'][i]:.2f}"; N["ThrDepol"] = f"{100 * S['thr']['css'][0]:.2f}"
+    N["ThrCSSBias"] = f"{100 * S['thr']['css'][i]:.2f}"; N["ThrXZZXBias"] = f"{100 * S['thr']['xzzx'][i]:.2f}"; N["ThrDepol"] = f"{100 * S['thr']['css'][0]:.2f}"; N["ThrXZZXUpper"] = f"{100 * S['thr_upper']['xzzx'][i]:.2f}"; N["EtaCnot"] = f"{S['eta_cnot']:g}"
     N["NativeGain"] = f"{S['nv']['css'][7][j] / S['nv']['xzzx'][7][j]:.0f}"
     eb = resource.estimate(n, st, 1000.0, 1000.0, model="css_biased"); ex = resource.estimate(n, st, 1000.0, 1000.0, model="xzzx_biased")
     N["RSADistanceCSSBiased"] = str(eb.distance); N["RSAQubitsMCSSBiased"] = f"{eb.physical_qubits / 1e6:.0f}"; N["RSAYearsCSSBiased"] = f"{eb.runtime_hours / 8766:.1f}"
     N["RSADistanceXZZX"] = str(ex.distance); N["RSAQubitsMXZZX"] = f"{ex.physical_qubits / 1e6:.0f}"; N["RSAYearsXZZX"] = f"{ex.runtime_hours / 8766:.1f}"
+    from . import decision
+    S = {s: {r["name"]: r["S1"] for r in decision.sobol(s)} for s in ("power", "quantum")}
+    N["SobolMobility"] = f"{S['power']['Diamond hole mobility']:.2f}"; N["SobolField"] = f"{S['power']['Diamond critical field']:.2f}"
+    N["SobolReadout"] = f"{S['quantum']['Readout time']:.2f}"
+    dd = decision.code_decision(); N["XZZXDepolQubitsM"] = f"{dd['payoff'][('xzzx', 0.5)][0]:.0f}"; N["CSSDepolQubitsM"] = f"{dd['payoff'][('css', 0.5)][0]:.0f}"; N["EVPIQubitsM"] = f"{dd['evpi']:.1f}"
     N["BreakevenStdMs"] = "100"; N["BreakevenXZZXMs"] = "1000"          # chapter E6, sections E6.1c and E6.1d
     return N
 

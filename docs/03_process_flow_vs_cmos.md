@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | Lithography | Optical, extreme ultraviolet | Identical tools; small, sometimes non-round substrates need carriers | Low | [plummer2000] |
 | Gate dielectric | Thermal SiO₂, then high-κ | Atomic layer deposition (ALD) of Al₂O₃; hexagonal boron nitride | Medium | [dealgrove1965], [kawarada2014], [sasama2018] |
-| p-type doping | Boron implant + anneal | Boron added **during growth**; implantation is poor | Medium | [kalish1999], [prins1988] |
+| p-type doping | Boron implant + anneal | Boron added **during growth**; implantation is immature (an all-implanted Schottky diode has blocked 1651 V) | Medium | [kalish1999], [prins1988], [saha2023sbd] |
 | n-type doping | Phosphorus or arsenic implant | Phosphorus during growth, best on (111); 0.57 eV deep | **High** | [koizumi1997], [kato2005], [katagiri2004] |
 | Implant damage repair | Anneal recrystallizes silicon | Above about 10²² vacancies/cm³, diamond turns to graphite on annealing | **High** | [uzansaguy1995], [kalish1999] |
 | Etching | Fluorine and chlorine plasmas | Oxygen-based inductively coupled plasma; metal or oxide hard masks | Low | [hwang2004], [lee2008], [hausmann2010] |
@@ -33,7 +33,7 @@ flowchart LR
 | Atmospheric adsorbates | The original discovery; unstable | [maier2000] |
 | Nitrogen dioxide (NO₂) + Al₂O₃ cap | Highest hole density; used in the 2608 V device | [kubovic2010], [saha2021] |
 | Molybdenum trioxide (MoO₃), vanadium pentoxide (V₂O₅) | Stable to several hundred °C | [russell2013], [tordjman2014], [crawford2016], [verona2016], [ren2017] |
-| ALD Al₂O₃ alone | Stabilizes the hole gas to 400 °C and beyond | [kawarada2014], [kawarada2017] |
+| ALD Al₂O₃ alone | Stabilizes the hole gas; one FET operated at 400 °C, short-term | [kawarada2014], [kawarada2017] |
 
 Review: [crawford2021]. Hexagonal boron nitride gates reach Hall mobilities above 300 to 600 cm²/(V·s) by removing charged surface acceptors ([sasama2018], [sasama2022]).
 
@@ -51,7 +51,7 @@ flowchart TB
     p8 --> p9["9. Pad opening, test"]
 ```
 
-Sources for the flow: [kawarada1994], [kasu2005], [russell2012], [kawarada2014], [kitabayashi2017], [saha2021]. Mask count is roughly 4 to 6, against 40 or more for an advanced CMOS node ([irds2023]), which makes it realistic for a university cleanroom ([Chapter 11](11_proposed_experiments_and_roadmap.md)).
+Sources for the flow: [kawarada1994], [kasu2005], [russell2012], [kawarada2014], [kitabayashi2017], [saha2021]. This flow uses 4 masks (mesa isolation, gate gap, gate metal, pad opening). The full PDK-0 process traveler ([process/TRAVELER.md](process/TRAVELER.md)) uses 6: it adds an enhancement-mode (ENH) mask that partially oxidizes the channel for enhancement/depletion logic ([kitabayashi2017]) and a second metal layer. Both counts are far below the 40 or more masks of an advanced CMOS node ([irds2023]), which makes the flow realistic for a university cleanroom ([Chapter 11](11_proposed_experiments_and_roadmap.md)).
 
 ## 3.4 Inversion-channel and bulk-doped devices
 
@@ -59,4 +59,4 @@ An inversion-channel MOSFET on phosphorus-doped n-type diamond with a wet-anneal
 
 ## 3.5 What this means for qubits
 
-Nitrogen implantation for NV centers operates **far below** the graphitization threshold of [uzansaguy1995], with doses of 10⁸ to 10¹² ions/cm², so the implant-damage problem that blocks transistor doping does not block qubit fabrication. Surface termination still matters: NV centers within about 10 nm of a hydrogen-terminated surface lose their electron and go dark, so qubit regions need oxygen (or fluorine or nitrogen) termination ([hauf2011], [grotz2012]). A combined chip therefore patterns **C-H where it wants transistors and C-O where it wants qubits**, which is a lithography step that silicon has no analog for.
+Nitrogen implantation for NV centers operates **far below** the graphitization threshold of [uzansaguy1995], with doses of 10⁸ to 10¹² ions/cm², so the implant-damage problem that blocks transistor doping does not block qubit fabrication. Surface termination still matters: NV centers within about 10 nm of a hydrogen-terminated surface lose their electron and go dark, so qubit regions need oxygen (or fluorine or nitrogen) termination ([hauf2011], [grotz2012]). A combined chip therefore patterns **C-H where it wants transistors and C-O where it wants qubits**, which is a lithography step that silicon has no analog for. The order of steps matters too: hydrogen plasma at 700 to 1000 °C passivates NV centers into dark NVH deep into the crystal, and annealing does not restore them [stacey2012]. The process traveler therefore allows no hydrogen plasma above 500 °C after NV creation (a rule of this repository).

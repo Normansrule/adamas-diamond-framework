@@ -1,10 +1,23 @@
 // Live uncertainty analysis for the Confidence page, mirroring adamas.uncertainty: Latin-hypercube Monte Carlo and
-// one-at-a-time tornado swings. Power: SiC/diamond loss ratio = sqrt(mu_D Ec_D^2 / (mu_S Ec_S^2)) at the area optimum
-// (permittivity and blocking voltage cancel). Quantum: runtime from the circuit-level resource model (resource.js).
+// one-at-a-time tornado swings. Power: SiC/diamond loss ratio = sqrt(R_SiC C_SiC / (R_D C_D)) at the area optimum, with
+// R C proportional to (T/300)^alpha / (mu Ec^2), and the bulk boron-doped diamond drift divided by its ionized fraction
+// (adamas.converter.ron_temperature_factor, audit G6). Quantum: runtime from the circuit-level resource model (resource.js).
 import { estimate } from './resource.js';
+import { freeCarriers, EPS0_F_CM, Q } from './action.js';
 
-export const powerRatio = p => Math.sqrt(p['Diamond hole mobility'] * p['Diamond critical field'] ** 2 / (p['SiC electron mobility'] * p['SiC critical field'] ** 2));
-export const quantumYears = (p, table, job = [6000, 3e9]) => {
+export const ALPHA = { sic: 2.4, diamond: 2.8 };                        // lattice-mobility exponents, adamas.converter
+export const BORON_EA = 0.37, BV = 1200;                                  // eV [collins1971]; design blocking voltage, V
+export const driftDoping = (epsR, ecMV, bv = BV) => EPS0_F_CM * epsR * (ecMV * 1e6) ** 2 / (2 * Q * bv);
+export const ionizedFraction = (epsR, ecMV, tK = 300) => { const n = driftDoping(epsR, ecMV); return freeCarriers(BORON_EA, n, tK) / n; };
+export const powerRatioAt = (p, tK) => {
+  const dia = p['Diamond hole mobility'] * p['Diamond critical field'] ** 2 * ionizedFraction(p['Diamond permittivity'], p['Diamond critical field'], tK) / (tK / 300) ** ALPHA.diamond;
+  const sic = p['SiC electron mobility'] * p['SiC critical field'] ** 2 / (tK / 300) ** ALPHA.sic;
+  return Math.sqrt(dia / sic);
+};
+export const powerRatio = p => powerRatioAt(p, 300);          // one argument, so .map(powerRatio) is safe
+export const powerRatioHot = p => powerRatioAt(p, 523);
+export const RSA_STEPS = 8 * 3.6e9 / 27;                                  // calibrated to [gidney2021]: d = 27, 1 us cycle, 8 h
+export const quantumYears = (p, table, job = [6000, RSA_STEPS]) => {
   const e = estimate(table, { nLogical: job[0], steps: job[1], tReadUs: p['Readout time'], t2MemMs: p['Nuclear memory T₂'], gateUs: p['Two-qubit gate time'],
     prepUs: p['Ancilla preparation'], overhead: p['Layout overhead'] });
   return e ? e.runtimeHours / 8766 : Infinity;

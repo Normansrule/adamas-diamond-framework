@@ -6,7 +6,7 @@ from adamas import doping, logic, materials, power, thermal, wafer
 def test_foms_relative_to_silicon():
     f = materials.normalized_foms()
     assert f["Si"]["BFOM"] == 1.0
-    assert 4.0e4 < f["Diamond"]["BFOM"] < 6.0e4
+    assert 2.0e4 < f["Diamond"]["BFOM"] < 3.0e4        # holes at 2000 cm²/V·s, 10 MV/cm (audit G8, G10)
     assert f["Diamond"]["KFOM"] > f["4H-SiC"]["KFOM"] > 1 > f["Ga2O3"]["KFOM"]
     assert math.isclose(f["Diamond"]["JFOM"], 2500, rel_tol=1e-6)
 

@@ -157,4 +157,36 @@ def crystal_spin(out: Path, frames: int = 48) -> Path:
 
 
 def make_all_v15(out: str | Path = "docs/img") -> list[Path]:
-    out = Path(out); return [heat_race(out), surface_decode(out), ring_oscillator(out), crystal_spin(out)]
+    out = Path(out); return [heat_race(out), surface_decode(out), ring_oscillator(out), crystal_spin(out), equations_montage(out)]
+
+
+# ---------------- v0.26: equations in action, four at once ----------------
+def equations_montage(out: str | Path = "docs/img", frames: int = 48) -> Path:
+    """Four equations sweeping their main variable: ODMR splitting with B, a Rabi pulse, Ramsey dephasing, and wafer yield.
+    The same models as the interactive page (adamas.action); [doherty2013] [jelezko2004a] [ramsey1950] [murphy1964]."""
+    from . import wafer
+    from .figures import GREEN
+    out = Path(out)
+    fig, axs = plt.subplots(2, 2, figsize=(10, 6.2), dpi=72); plt.subplots_adjust(hspace=.62, wspace=.28)
+    f = np.linspace(2700, 3040, 700); t = np.linspace(0, 1, 300); tau = np.linspace(0, 3, 300); d0 = np.logspace(-1, 1.3, 120)
+    a0, a1, a2, a3 = axs.flat
+    l0, = a0.plot([], [], color=COLORS["Diamond"], lw=2); a0.set_xlim(2700, 3040); a0.set_ylim(.986, 1.002); a0.set_xlabel("frequency (MHz)", fontsize=9)
+    a1.plot(t, nv.rabi(t, 5), color="#7b5cd6", lw=2); d1, = a1.plot([], [], "o", color=RED, ms=9); a1.set_xlabel("pulse length τ (µs)", fontsize=9)
+    a2.plot(tau, .5 * (1 + np.exp(-tau ** 2)), ":", color="#9aa6b2"); a2.plot(tau, .5 * (1 - np.exp(-tau ** 2)), ":", color="#9aa6b2")
+    a2.plot(tau, nv.ramsey(tau, 2, 1), color="#d6457a", lw=1.8); d2, = a2.plot([], [], "o", color=RED, ms=9); a2.set_xlabel("free time τ (µs)", fontsize=9)
+    a3.semilogx(d0, [wafer.good_dies(76, 25, x) for x in d0], color=GREEN, lw=2); d3, = a3.plot([], [], "o", color=RED, ms=9); a3.set_xlabel("killer defects D₀ (/cm²)", fontsize=9)
+    T = [a.set_title("", fontsize=10.5, loc="left") for a in axs.flat]
+    for a in axs.flat:
+        a.tick_params(labelsize=8)
+    fig.suptitle("Equations in action: every symbol is a slider at normansrule.github.io/adamas-diamond-framework/action.html", fontsize=10, color=INK, y=.995)
+    def draw(i):
+        u = 0.5 - 0.5 * np.cos(2 * np.pi * i / frames)
+        B = 6 * u; lo, hi = nv.transition_frequencies_mhz((0, 0, B))
+        l0.set_data(f, 1 - sum(.012 * 9 / ((f - x) ** 2 + 9) for x in ((lo, hi) if B > .05 else (2870,))))
+        T[0].set_text(f"$f_\\pm = D \\pm \\gamma_e B$:  B = {B:.1f} mT → {lo:.0f}, {hi:.0f} MHz")
+        x = u; d1.set_data([x], [nv.rabi(x, 5)]); T[1].set_text(f"Rabi: Ω = 5 MHz, τ = {1000 * x:.0f} ns → P = {float(nv.rabi(x, 5)):.2f}")
+        x = 3 * u; d2.set_data([x], [nv.ramsey(x, 2, 1)]); T[2].set_text(f"Ramsey: τ = {x:.2f} µs, envelope $e^{{-(\\tau/T_2^*)^2}}$ = {np.exp(-x * x):.2f}")
+        x = 10 ** (-1 + 2.3 * u); g = wafer.good_dies(76, 25, x); d3.set_data([x], [g]); T[3].set_text(f"Yield: D₀ = {x:.2g}/cm² → {g:.0f} good 25 mm² dies")
+        return l0, d1, d2, d3
+    ani = FuncAnimation(fig, draw, frames=frames, interval=90)
+    out.mkdir(parents=True, exist_ok=True); p = out / "anim_equations.gif"; ani.save(p, writer=PillowWriter(fps=11)); plt.close(fig); return p

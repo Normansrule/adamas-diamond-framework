@@ -25,7 +25,7 @@
 ```mermaid
 flowchart TB
     L5["Layer 5 · Optical delivery: grating-coupled green light or flood illumination"]
-    L4["Layer 4 · Diamond quantum layer: ¹²C epilayer, (111) or aligned NV arrays, oxygen-terminated"]
+    L4["Layer 4 · Diamond quantum layer: ¹²C epilayer, oxygen-terminated; NVs of each coupled cluster on different axes (aligned (111) layers for sensing cells)"]
     L3["Layer 3 · Diamond device layer: photocurrent electrodes, microwave striplines, p-channel multiplexers"]
     L2["Layer 2 · Bond interface: micro-bumps or direct bond; also the heat path"]
     L1["Layer 1 · Silicon CMOS: synthesizers, amplifiers, converters, sequencer, decoder"]
@@ -37,7 +37,8 @@ Design rationale:
 1. **Keep silicon for what silicon is best at.** Billions of cheap, low-power transistors ([irds2023]).
 2. **Use diamond's own transistors only at the interface**, for multiplexing picoampere photocurrents and switching microwave lines next to the qubits, where a p-channel-only technology is sufficient ([Chapter 5](05_digital_logic.md)).
 3. **Heat.** Microwave drive dissipates milliwatts per site. Temperature shifts the resonance by −74.2 kHz/K [acosta2010], so a 1 K gradient across an array detunes qubits by many linewidths. Diamond's thermal conductivity flattens gradients ([Chapter 1](01_materials_physics.md)); `adamas.thermal` quantifies it.
-4. **Crosstalk.** At 15 nm spacing, two NVs cannot be distinguished optically or by microwave position. They are distinguished **spectrally**: different crystal orientations, a magnetic field gradient, or different nitrogen isotopes ([neumann2010natphys], [dolde2013]). This limits directly coupled clusters to a few NVs, and sets the natural unit of the architecture: a small cluster (2 to 4 NVs, each with nuclear memories) per optical spot.
+4. **Crosstalk.** At 15 nm spacing, two NVs cannot be distinguished optically or by microwave position. They are distinguished **spectrally**. Every room-temperature pair so far used different crystal orientations and joint readout ([neumann2010natphys], [dolde2013], [joas2025]). A magnetic field gradient ([grinolds2011], [zhang2017addr]) or different nitrogen isotopes are proposed additions, not yet shown at this spacing ([Chapter 7](07_nv_fabrication_and_placement.md)). This limits directly coupled clusters to a few NVs, and sets the natural unit of the architecture: a small cluster (2 to 4 NVs, each with nuclear memories) per optical spot.
+5. **The link between clusters (proposed here, not demonstrated).** Clusters sit about 1 µm apart in the machine model of [E10](expert/E10_scaling_a_room_temperature_quantum_computer.md), where direct dipolar coupling is only about 0.05 Hz (`adamas.coupling.dipolar_coupling_khz(1000)`), far too weak for a gate. The model therefore assumes a mediated link, either a dark-spin chain bus ([Chapter 8](08_quantum_processor_architecture.md), [yao2012]) or a photonic link, with a 25 µs link time and a 0.3 percent error. Both numbers are proposed here. Neither link has been demonstrated between NV centers at room temperature, and the best demonstrated NV-NV gate error is about 4 percent, inside one cluster [joas2025].
 
 ## 9.4 Control software
 

@@ -4,11 +4,11 @@ from __future__ import annotations
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
-from . import converter, gate_budget, materials, pdk0, scaling, thermal
+from . import converter, gate_budget, materials, nv, pdk0, scaling, thermal
 from .figures import COLORS, GOLD, GREEN, INK, RED, _finish
 
 NAMES = ["Si", "4H-SiC", "GaN", "Diamond"]
-LABEL = {"Si": "Silicon", "4H-SiC": "Silicon carbide", "GaN": "Gallium nitride", "Diamond": "Diamond (ideal, holes)"}
+LABEL = {"Si": "Silicon", "4H-SiC": "Silicon carbide", "GaN": "Gallium nitride", "Diamond": "Diamond (bulk-doped drift)"}
 
 
 def fig_ron_temperature(out: Path) -> Path:
@@ -16,18 +16,18 @@ def fig_ron_temperature(out: Path) -> Path:
     fig, ax = plt.subplots(figsize=(8.6, 4.8))
     for n in NAMES:
         ax.plot(t - 273.15, [converter.ron_temperature_factor(n, x) for x in t], color=COLORS[n], lw=2.4,
-                label=LABEL[n].replace(" (ideal, holes)", ", bulk boron-doped drift"))
+                label=LABEL[n])
     ax.plot(t - 273.15, [converter.ron_temperature_factor("Diamond", x, bulk_doped=False) for x in t], color=COLORS["Diamond"],
             lw=2, ls="--", label="Diamond hole-gas channel (no ionization gain)")
     for n in NAMES:
         ax.axvline(converter.TJ_MAX_C[n], color=COLORS[n], ls=":", lw=1)
-    ax.text(170, 0.1, "Si ceiling", fontsize=8, rotation=90, color=COLORS["Si"])
-    ax.text(395, 0.1, "diamond demonstrated", fontsize=8, rotation=90, color=COLORS["Diamond"])
-    ax.set_yscale("log"); ax.set_ylim(0.08, 10)
+    ax.text(170, 1.2, "Si ceiling", fontsize=8, rotation=90, color=COLORS["Si"])
+    ax.text(395, 1.2, "diamond, short-term, one device", fontsize=8, rotation=90, color=COLORS["Diamond"])
+    ax.set_yscale("log"); ax.set_ylim(0.8, 400)
     ax.set_xlabel("Junction temperature (°C)")
-    ax.set_ylabel("On-resistance relative to 27 °C")
-    ax.set_title("Heat makes every other switch worse; bulk-doped diamond gets better")
-    ax.legend(fontsize=8.5, loc="lower right")
+    ax.set_ylabel("On-resistance ÷ ideal limit at 27 °C")
+    ax.set_title("A bulk-doped diamond drift starts about 200× above its ideal limit\n(0.5% of the boron ionized at 27 °C) and improves when hot; everything else gets worse", fontsize=11)
+    ax.legend(fontsize=8.5, loc="upper right")
     ax.grid(True, which="both", alpha=0.15)
     return _finish(fig, out, "fig28_ron_vs_temperature.png",
                    "[jacoboni1977] [arora1982] [kimoto2014] [mishra2008] [pernot2010] [lagrange1998] [kawarada2014] [lutz2018]; ceilings are package and reliability limits")
@@ -213,11 +213,13 @@ def fig_published_gate_check(out: Path) -> Path:
                 color=c, lw=2.3, label=f"pulse error {eps:.0%}")
     ax.axhspan(0.63, 0.71, color=INK, alpha=0.12); ax.text(0.51, 0.715, "measured 0.67 ± 0.04 [dolde2013]", fontsize=8.5)
     ax.axhline(0.82, color=INK, ls=":"); ax.text(0.51, 0.83, "0.82 after optimal control [dolde2014]", fontsize=8.5)
-    ax.axvspan(0.70, 0.75, color=RED, alpha=0.15); ax.text(0.725, 0.36, "NV⁻ fraction\n[aslam2013]", ha="center", fontsize=8)
-    ax.set_xlabel("Per-NV preparation probability q"); ax.set_ylabel("Predicted Bell-state fidelity")
-    ax.set_title("Q-1b: published pair (4.93 kHz, T₂ᴰᵠ 150 and 514 µs, 25 nm) puts coherence at 0.998", fontsize=10.5)
+    lo, hi = gate_budget.coherence_limited_range()
+    ax.annotate("", xy=(1.0, lo), xytext=(1.0, hi), arrowprops=dict(arrowstyle="<->", color=INK, lw=1.2))
+    ax.text(0.51, 0.97, f"coherence-only limit at q = 1 (arrow): {lo:.2f} to {hi:.3f} over noise model, gate count, T₁", ha="left", va="top", fontsize=8)
+    ax.set_xlabel("Lumped per-NV preparation parameter q (model; the 0.67 was already charge-preselected)"); ax.set_ylabel("Predicted Bell-state fidelity")
+    ax.set_title("Q-1b: published 25 nm pair: the measured 0.67 lies below the coherence limit (known discrepancy)", fontsize=10.5)
     ax.legend(fontsize=8.5, loc="lower right"); ax.grid(True, alpha=0.15); ax.set_ylim(0.3, 1.0)
-    return _finish(fig, out, "fig36_published_gate_check.png", "[dolde2013] [dolde2014] [aslam2013]; adamas.gate_budget model")
+    return _finish(fig, out, "fig36_published_gate_check.png", "[dolde2013] [dolde2014]; adamas.gate_budget model (cubic echo exponent, one gate application for the curves)")
 
 
 def fig_placed_dia4(out: Path) -> Path:
@@ -263,7 +265,7 @@ def fig_resource_estimate(out: Path) -> Path:
     ax.set_xlabel("Ancilla readout time (ms)"); ax.set_ylabel("Runtime (hours)")
     ax.set_title("Runtime (solid 1 s memory, dashed 0.1 s;\ndotted: superconducting at measured Λ = 2.14)", fontsize=10); ax.legend(fontsize=8); ax.grid(True, which="both", alpha=.12)
     ax = axes[1]
-    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    n, st = R.WORKLOADS[R.RSA_JOB]
     for t2, ls in [(1000.0, "-"), (100.0, "--")]:
         es = [R.estimate(n, st, x, t2, t=t) for x in tr]
         ax.semilogx(tr / 1e3, [e.distance if e else np.nan for e in es], ls, color=COLORS["Diamond"], lw=2.2, label=f"distance, T₂ mem {t2 / 1e3:g} s")
@@ -314,7 +316,7 @@ def fig_process_flow(out: Path) -> Path:
         ax.text((min(ks) + max(ks)) / 2, -2.65, name, ha="center", va="center", fontsize=9.5, fontweight="bold", color=INK)
     ax.text(5.5, 2.0, "quantum branch: NV windows", fontsize=9, color=RED, ha="center")
     ax.text(11, -2.2, "option A: NO₂ doping", fontsize=9, color="#0b8a93", ha="center")
-    ax.set_title("Process traveler T1: hydrogen-terminated diamond transistors with optional NV qubit windows (19 steps)", fontsize=12)
+    ax.set_title("Process traveler T1: hydrogen-terminated diamond transistors with optional NV qubit windows (20 steps)", fontsize=12)
     return _finish(fig, out, "fig41_process_flow.png", "[kawarada2023] [kasu2012] [pezzagna2010] [hauf2011] [lu2013]; adamas.traveler")
 
 
@@ -435,17 +437,17 @@ def fig_expected_tier_cd(out: Path) -> Path:
     ax.set_xlabel("Delay τ (ns)"); ax.set_ylabel("g⁽²⁾(τ)"); ax.set_title("C1 · Antibunching proves one emitter", fontsize=10.5); ax.grid(True, alpha=.12)
     ax = axes[0, 2]; f, s_ = map(np.array, P["hyperfine"]); ax.plot(f, s_, color=COLORS["Diamond"], lw=1.2)
     for k in (-1, 0, 1):
-        ax.axvline(2870 + 2.16 * k, color=RED, ls=":", lw=1)
-    ax.set_xlabel("Frequency (MHz)"); ax.set_ylabel("Fluorescence"); ax.set_title("C1 · ¹⁴N hyperfine triplet, 2.16 MHz apart", fontsize=10.5)
+        ax.axvline(2870 + nv.A_PAR_14N_MHZ * k, color=RED, ls=":", lw=1)
+    ax.set_xlabel("Frequency (MHz)"); ax.set_ylabel("Fluorescence"); ax.set_title(f"C1 · ¹⁴N hyperfine triplet, {nv.A_PAR_14N_MHZ:.2f} MHz apart", fontsize=10.5)
     r = X.expected("fet_curves"); ax = axes[1, 0]
     for (name, y), c in zip(r["series"].items(), [COLORS["Si"], GOLD, COLORS["4H-SiC"], COLORS["Diamond"]]):
         ax.plot(r["x"], y, color=c, lw=2, label=name)
     ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("C2 · Output curves of a hole-gas transistor (model)", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, alpha=.12)
-    r = X.expected("bell_q"); ax = axes[1, 1]; ax.plot(r["x"], r["series"]["model (published pair)"], color=COLORS["Diamond"], lw=2.5, label="ADAMAS budget, published pair")
-    for q, F, lab in r["marks"]:
-        ax.plot(q, F, "*", ms=14, color=RED); ax.annotate(f"{lab}: {F}", (q, F), xytext=(q - 0.13, F + 0.06), fontsize=9, arrowprops=dict(arrowstyle="->", lw=.8))
+    r = X.expected("bell_q"); ax = axes[1, 1]; ax.plot(r["x"], r["series"]["model, published pair, no pre-selection"], color=COLORS["Diamond"], lw=2.5, label="ADAMAS budget, coherence-limited, no pre-selection")
+    for k, (q, F, lab) in enumerate(r["marks"]):
+        ax.plot(q, F, "*", ms=14, color=RED); ax.annotate(f"{lab}: {F}", (q, F), xytext=(0.6, 0.30 + 0.09 * k), fontsize=8.5, arrowprops=dict(arrowstyle="->", lw=.8))
     ax.axhline(0.5, color=INK, ls=":", lw=1); ax.text(0.51, 0.52, "entanglement threshold", fontsize=8.5)
-    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("D1 · Two-qubit fidelity is set by charge-state preparation", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, alpha=.12)
+    ax.set_xlabel(r["xlabel"]); ax.set_ylabel(r["ylabel"]); ax.set_title("D1 · Measured fidelities (charge pre-selected) lie below the coherence limit", fontsize=10.5); ax.legend(fontsize=8); ax.grid(True, alpha=.12)
     r = X.expected("good_dies"); ax = axes[1, 2]
     for (name, y), c in zip(r["series"].items(), [COLORS["Diamond"], GOLD, RED]):
         ax.loglog(r["x"], np.maximum(y, 1e-1), color=c, lw=2.2, label=name)
@@ -555,29 +557,33 @@ def fig_xzzx_native(out: Path) -> Path:
     ax = axes[0]
     for c, col, lab in [("css", COLORS["Si"], "standard (CSS) code"), ("xzzx", COLORS["Diamond"], "XZZX code, native circuit")]:
         ax.semilogx(S["etas"], np.array(S["thr"][c]) * 100, "o-", color=col, lw=2.4, ms=7, label=lab)
+    if "thr_upper" in S:
+        ax.semilogx(S["etas"], np.array(S["thr_upper"]["xzzx"], dtype=float) * 100, "o--", color=COLORS["Diamond"], alpha=.55, lw=1.6, ms=5,
+                    label="XZZX, bias-preserving CNOT (impossible for two-level qubits)")
     ax.axvline(0.5, color=INK, ls=":", lw=1); ax.text(0.55, ax.get_ylim()[1] * .98 if ax.get_ylim()[1] else 1.6, "depolarizing", fontsize=8.5, va="top")
-    ax.set_xlabel("Gate-noise bias η = p_Z / (p_X + p_Y)"); ax.set_ylabel("Circuit-level threshold (%), worse basis")
-    ax.set_title("Bias helps XZZX and hurts the standard code", fontsize=11); ax.legend(fontsize=9); ax.grid(True, which="both", alpha=.15)
+    ax.set_xlabel("Gate-noise bias η = p_Z / (p_X + p_Y) on CZ; CNOTs keep ≤ 5"); ax.set_ylabel("Circuit-level threshold (%), worse basis")
+    ax.set_title("Bias helps XZZX; the standard code gains nothing", fontsize=11); ax.legend(fontsize=7.5); ax.grid(True, which="both", alpha=.15)
     ax = axes[1]; ps = np.array(S["ps"]) * 100
     for c, ls in [("css", "--"), ("xzzx", "-")]:
         for d, col in zip((3, 5, 7), (GOLD, "#9d7bff", COLORS["Diamond"])):
             ax.loglog(ps, np.where(np.array(S["curves"][c][d]) > 0, S["curves"][c][d], np.nan), ls, marker="o", ms=4, color=col, lw=1.8, label=f"{c.upper()} d = {d}")
-    ax.set_xlabel("Physical error rate p (%), bias η = 100"); ax.set_ylabel("Logical error per round, worse basis")
-    ax.set_title("At strong bias only XZZX suppresses errors", fontsize=11); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
+    ax.xaxis.set_minor_formatter(plt.NullFormatter()); ax.set_xticks([0.2, 0.5, 1, 2]); ax.set_xticklabels(["0.2", "0.5", "1", "2"])
+    ax.set_xlabel("Physical error rate p (%), bias η = 100 on CZ"); ax.set_ylabel("Logical error per round, worse basis")
+    ax.set_title("At strong bias XZZX keeps suppressing errors to higher p", fontsize=11); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
     ax = axes[2]; tr = np.array(S["t_read_us"]) / 1e3
     for c, ls in [("css", "--"), ("xzzx", "-")]:
         for d, col in zip((3, 5, 7), (GOLD, "#9d7bff", COLORS["Diamond"])):
             ax.loglog(tr, np.where(np.array(S["nv"][c][d]) > 0, S["nv"][c][d], np.nan), ls, marker="o", ms=4, color=col, lw=1.8, label=f"{c.upper()} d = {d}")
     ax.axvline(1, color=RED, ls=":", lw=1.2); ax.text(1.1, 3e-2, "1 ms readout", color=RED, fontsize=8.5)
     ax.set_xlabel("Readout time (ms), 1 s nuclear memory"); ax.set_ylabel("Logical error per round, worse basis")
-    ax.set_title("NV cell: 0.3% gates (η = 100), 1% readout, dephasing idle", fontsize=10.5); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
-    return _finish(fig, out, "fig50_xzzx_native.png", "[bonillaataides2021] [tuckett2018] [gidney2021stim] [higgott2022] [maurer2012]; adamas.xzzx_native (native circuits, bias-preserving gate-noise assumption)")
+    ax.set_title("NV cell: 0.3% gates (η = 100 on CZ), 1% readout, dephasing idle", fontsize=10.5); ax.legend(fontsize=7.5, ncol=2); ax.grid(True, which="both", alpha=.15)
+    return _finish(fig, out, "fig50_xzzx_native.png", "[bonillaataides2021] [etxezarreta2025] [guillaud2019] [gidney2021stim] [higgott2022] [maurer2012]; adamas.xzzx_native (CZ-native circuits; full bias on CZ, residual bias 5 on CNOT)")
 
 
 def fig_xzzx_machine(out: Path) -> Path:
     """Figure 51: what the code choice does to the machine when NV noise is biased."""
     from . import resource as R
-    n, st = R.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    n, st = R.WORKLOADS[R.RSA_JOB]
     tr = np.geomspace(30, 10000, 40)
     styles = {"standard": (COLORS["Si"], ":", "standard code, depolarizing noise (E10 baseline)"),
               "css_biased": (GOLD, "--", "standard code, biased NV noise"), "xzzx_biased": (COLORS["Diamond"], "-", "native XZZX code, biased NV noise")}
@@ -589,15 +595,155 @@ def fig_xzzx_machine(out: Path) -> Path:
         axes[1].loglog(tr / 1e3, [e.physical_qubits / 1e6 if e else np.nan for e in es], ls, color=col, lw=2.4, label=lab)
         axes[2].loglog(tr / 1e3, [e.runtime_hours / 8766 if e else np.nan for e in es], ls, color=col, lw=2.4, label=lab)
     axes[0].axhline(1, color=RED, lw=1); axes[0].set_xlabel("Readout time (µs), 1 s nuclear memory"); axes[0].set_ylabel("Error-suppression factor Λ")
-    axes[0].set_title("Biased noise halves Λ for the standard code", fontsize=11); axes[0].legend(fontsize=8)
-    axes[1].set_xlabel("Readout time (ms)"); axes[1].set_ylabel("Physical qubits (millions), RSA-2048 scale"); axes[1].set_title("XZZX keeps the machine small", fontsize=11)
-    axes[2].set_xlabel("Readout time (ms)"); axes[2].set_ylabel("Runtime (years)"); axes[2].set_title("…and about as fast as the depolarizing baseline", fontsize=11)
+    axes[0].set_title("Biased noise lowers Λ for the standard code", fontsize=11); axes[0].legend(fontsize=8)
+    axes[1].set_xlabel("Readout time (ms)"); axes[1].set_ylabel("Physical qubits (millions), RSA-2048 (calibrated)"); axes[1].set_title("XZZX keeps the machine small", fontsize=11)
+    axes[2].set_xlabel("Readout time (ms)"); axes[2].set_ylabel("Runtime (years)"); axes[2].set_title("…and no slower than the depolarizing baseline", fontsize=11)
     for ax in axes:
         ax.grid(True, which="both", alpha=.15)
-    return _finish(fig, out, "fig51_xzzx_machine.png", "[bonillaataides2021] [fowler2012] [litinski2019]; adamas.resource with adamas.xzzx_native tables (gates at bias 100, assumed)")
+    return _finish(fig, out, "fig51_xzzx_machine.png", "[bonillaataides2021] [etxezarreta2025] [fowler2012] [litinski2019] [gidney2021]; adamas.resource with adamas.xzzx_native tables (CZ at bias 100, CNOT at 5, assumed)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine]
+def fig_what_to_measure(out: Path) -> Path:
+    """Figure 52: what to measure next: Sobol indices, variance removed per dollar, and the code decision under unknown bias."""
+    from . import decision as D
+    from . import resource as R
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5.6), gridspec_kw={"width_ratios": [1.1, 1.25, 1]}); plt.subplots_adjust(wspace=.55)
+    ax = axes[0]; rows = []
+    for study, col in (("power", COLORS["Diamond"]), ("quantum", "#9d7bff")):
+        rows += [(r["name"], r["S1"], r["ST"], col) for r in D.sobol(study) if r["ST"] >= D.RESOLUTION]
+    y = np.arange(len(rows))[::-1]
+    ax.barh(y, [r[2] for r in rows], color=[r[3] for r in rows], alpha=.3, height=.7, label="total index S_T (with interactions)")
+    ax.barh(y, [r[1] for r in rows], color=[r[3] for r in rows], height=.42, label="first-order index S₁ (learn it alone)")
+    ax.set_yticks(y); ax.set_yticklabels([r[0] for r in rows]); ax.yaxis.set_minor_locator(plt.NullLocator()); ax.set_xlim(0, 1.05)
+    ax.set_xlabel("Share of output variance"); ax.legend(fontsize=8, loc="lower right")
+    ax.set_title("Which unknown explains the spread?\nteal: SiC÷diamond loss · violet: log runtime", fontsize=10.5)
+    ax = axes[1]; rm = [r for r in D.roadmap() if r["resolved"]]
+    y = np.arange(len(rm))[::-1]
+    ax.barh(y, [r["S1_per_10k"] for r in rm], color=[COLORS["Diamond"] if r["study"] == "power" else "#9d7bff" for r in rm], height=.6)
+    ax.set_xscale("log"); ax.set_yticks(y); ax.set_yticklabels([f"{r['name']}\n{r['experiment']} · ${r['cost_usd']:,.0f}" for r in rm], fontsize=8.5)
+    ax.yaxis.set_minor_locator(plt.NullLocator())
+    for yy, r in zip(y, rm):
+        ax.text(r["S1_per_10k"] * 1.15, yy, f"S₁ = {r['S1']:.2f}", va="center", fontsize=8.5)
+    ax.set_xlim(min(r["S1_per_10k"] for r in rm) / 2, max(r["S1_per_10k"] for r in rm) * 8)
+    ax.set_xlabel("Variance removed per US$10,000 (S₁ × 10⁴ / cost)"); ax.set_title("Measurement roadmap: best value first", fontsize=10.5)
+    ax = axes[2]; d = D.code_decision(); x = np.arange(len(R.BIAS_GRID))
+    for k, (code, col, lab) in enumerate((("css", GOLD, "standard code"), ("xzzx", COLORS["Diamond"], "XZZX code"))):
+        v = [d["payoff"][(code, e)][0] for e in R.BIAS_GRID]
+        ax.bar(x + (k - .5) * .38, v, .36, color=col, label=lab)
+        for xx, vv, e in zip(x, v, R.BIAS_GRID):
+            ax.text(xx + (k - .5) * .38, vv + 6, f"d{d['payoff'][(code, e)][2]}", ha="center", fontsize=8)
+    ax.set_ylim(0, 1.15 * max(d["payoff"][(c, e)][0] for c in ("css", "xzzx") for e in R.BIAS_GRID))
+    ax.set_xticks(x); ax.set_xticklabels([f"η = {e:g}" for e in R.BIAS_GRID]); ax.set_ylabel("Physical qubits (millions), RSA-2048, 1 ms readout")
+    ax.set_xlabel("Gate-noise bias of NV two-qubit gates (unmeasured)")
+    head = "XZZX wins at every bias" if d["xzzx_dominates"] else "XZZX wins once gates are biased"
+    ax.set_title(f"Code decision: {head}\nEVPI on the bias = {d['evpi']:.1f} M qubits (CNOT bias ≤ 5)", fontsize=10.5); ax.legend(fontsize=8.5)
+    return _finish(fig, out, "fig52_what_to_measure.png", "[sobol2001] [saltelli2002] [howard1966]; adamas.decision (costs: adamas.experiments; native-circuit tables at bias 0.5, 10, 100)")
+
+
+def fig_equations_in_action(out: Path) -> Path:
+    """Figure 53: fourteen equations in action, each with the curve its experiment measures (web: action.html)."""
+    from . import action, coupling, doping, experiments, gate_budget, logic, nv, qec, wafer
+    from .materials import MATERIALS
+    from .power import ron_sp_mohm_cm2
+    ex = {e["id"]: e for e in experiments.EXPERIMENTS}
+    VIO, PINK = "#7b5cd6", "#d6457a"
+    EQ = {"odmr": r"$f_\pm = D \pm \gamma_e B_\parallel$", "dipole": r"$\Delta f = 2\gamma_e\,\frac{\mu_0}{4\pi}\,\frac{2m}{r^3}$",
+          "heat": r"$\Delta T = P\,R_{th}\,(1-e^{-t/\tau})$", "rabi": r"$P_{-1} = \frac{\Omega^2}{\Omega^2+\delta^2}\sin^2(\pi\sqrt{\Omega^2+\delta^2}\,\tau)$",
+          "ramsey": r"$P_0 = \frac{1}{2}\,[1+\cos(2\pi\delta\tau)\,e^{-(\tau/T_2^*)^2}]$", "echo": r"$C = e^{-(\tau/T_2)^p}$",
+          "vector": r"$|\mathbf{B}|^2 = \frac{3}{4}\sum_i(\Delta f_i/2\gamma_e)^2$", "arrhenius": r"$\rho = \frac{1}{q\,p\,\mu},\;\; p \sim e^{-E_A/kT}$",
+          "g2": r"$g^{(2)}(\tau) = 1-\rho^2 e^{-|\tau|/\tau_1}$", "fet": r"$I_D = \frac{k}{2}\,(V_{GS}-V_{th})^2$",
+          "gate": r"$F = q^2 F_{coh} + \frac{1-q^2}{4}$", "yield": r"$Y = \left(\frac{1-e^{-AD_0}}{AD_0}\right)^2$",
+          "bfom": r"$R_{on} = \frac{4V_B^2}{\varepsilon\,\mu\,E_c^3}$", "surface": r"$p_L = 0.1\,(p/p_{th})^{(d+1)/2}$"}
+    fig, axs = plt.subplots(3, 5, figsize=(21, 12.6)); plt.subplots_adjust(hspace=1.05, wspace=.36)
+    for k, s in enumerate(action.SCENES):
+        ax = axs.flat[k]; e = ex.get(s["exp"]); res = experiments.expected(e["expected"]) if e else None
+        i = s["id"]
+        if i == "odmr":
+            f = np.linspace(2700, 3040, 900)
+            for b, c in ((0, "#9aa6b2"), (3, COLORS["Diamond"])):
+                lo, hi = nv.transition_frequencies_mhz((0, 0, b)); ax.plot(f, 1 - sum(0.012 * 9 / ((f - x) ** 2 + 9) for x in ((lo, hi) if b else (2870,))), color=c, lw=2, label=f"B = {b} mT")
+            ax.set_xlabel("frequency (MHz)"); ax.set_ylabel("fluorescence")
+        elif i == "dipole":
+            r = np.linspace(2, 12, 60); ax.loglog(r, 2 * nv.GAMMA_MHZ_PER_MT * 1e-7 * 2 * 1.2 / (r / 100) ** 3 * 1e3, color=VIO, lw=2, label="equation, m = 1.2 A·m²")
+            ax.loglog(res["x"], res["series"]["measured"], "o", color=GOLD, ms=5, label="A2 data"); ax.set_xlabel("distance (cm)"); ax.set_ylabel("splitting (MHz)")
+            ax.set_xticks([2, 3, 4, 6, 8, 12]); ax.set_xticklabels(["2", "3", "4", "6", "8", "12"]); ax.xaxis.set_minor_formatter(plt.NullFormatter())
+        elif i == "heat":
+            t = np.linspace(0, 180, 200)
+            for name, kap, c in (("diamond", 20, COLORS["Diamond"]), ("copper", 4.0, GOLD), ("aluminium", 2.37, "#9aa6b2"), ("silicon", 1.5, VIO)):
+                ax.plot(t, 1.5 * (1 / (4 * kap * .1) + 4.5) * (1 - np.exp(-t / (12 + 30 / kap))), color=c, lw=2, label=name)
+            ax.set_xlabel("time (s)"); ax.set_ylabel("ΔT (K) at 1.5 W")
+        elif i == "rabi":
+            t = np.linspace(0, 1, 400)
+            for de, c in ((0, COLORS["Diamond"]), (6, PINK)):
+                ax.plot(t, nv.rabi(t, 5, de), color=c, lw=2, label=f"δ = {de} MHz")
+            ax.set_xlabel("pulse length τ (µs)"); ax.set_ylabel("P(mₛ = −1)")
+        elif i == "ramsey":
+            t = np.linspace(0, 3, 500); ax.plot(t, nv.ramsey(t, 2, 1), color=VIO, lw=1.8, label="δ = 2 MHz, T₂* = 1 µs")
+            ax.plot(t, .5 * (1 + np.exp(-t ** 2)), ":", color="#9aa6b2"); ax.plot(t, .5 * (1 - np.exp(-t ** 2)), ":", color="#9aa6b2"); ax.set_xlabel("free time τ (µs)"); ax.set_ylabel("P(mₛ = 0)")
+        elif i == "echo":
+            t = np.linspace(0, 2000, 300)
+            for p_, c in ((1, "#9aa6b2"), (2, GOLD), (3, GREEN)):
+                ax.plot(t, nv.hahn_echo(t, 600, p_), color=c, lw=2, label=f"p = {p_}")
+            ax.set_xlabel("free time τ (µs), T₂ = 600 µs"); ax.set_ylabel("echo contrast")
+        elif i == "vector":
+            B = np.array(res["B"]); pr = np.abs(nv.NV_AXES @ B) * 2 * nv.GAMMA_MHZ_PER_MT
+            ax.bar(range(1, 5), pr, color=[COLORS["Diamond"], VIO, PINK, GOLD]); ax.set_xticks(range(1, 5)); ax.set_xticklabels([f"NV {n}" for n in range(1, 5)])
+            ax.set_ylabel("splitting Δfᵢ (MHz)"); ax.set_ylim(0, pr.max() * 1.3); ax.text(.02, .92, f"|B| recovered: {np.sqrt(.75 * ((pr / (2 * nv.GAMMA_MHZ_PER_MT)) ** 2).sum()):.3f} mT", transform=ax.transAxes, fontsize=9)
+        elif i == "arrhenius":
+            T = np.linspace(260, 800, 120)
+            for ea, c, lab in ((0.37, PINK, "boron in diamond, 0.37 eV"), (0.045, "#9aa6b2", "silicon-like, 0.045 eV")):
+                p_ = np.array([doping.free_carriers_cm3(doping.Dopant("x", "C", "acceptor", ea, 4, .9, ()), 3e17, x, 5e16) for x in T])
+                ax.semilogy(1000 / T, 1 / (1.602e-19 * p_ * 1500 * (T / 300) ** -2.2), color=c, lw=2, label=lab)
+            ax.semilogy(res["x"], res["series"]["resistivity (Ω·cm)"], "o", color=GOLD, ms=3.5, label="B3 data"); ax.set_xlabel("1000 / T (1/K)"); ax.set_ylabel("ρ (Ω·cm)")
+        elif i == "g2":
+            tau = np.linspace(-80, 80, 400)
+            for rho, c in ((0.95, COLORS["Diamond"]), (0.6, "#9aa6b2")):
+                ax.plot(tau, 1 - rho ** 2 * np.exp(-np.abs(tau) / 12), color=c, lw=2, label=f"ρ = {rho}")
+            ax.axhline(.5, color=RED, ls="--", lw=1); ax.set_xlabel("delay τ (ns)"); ax.set_ylabel("g⁽²⁾(τ)")
+        elif i == "fet":
+            fet = logic.Fet(mu_cm2_vs=150, vth=1.5, w_um=100); v = np.linspace(0, 20, 100)
+            for vg, c in ((3, "#9aa6b2"), (5, GOLD), (7, VIO), (9, PINK)):
+                ax.plot(v, [fet.current(vg, x) * 1e3 for x in v], color=c, lw=2, label=f"|V_GS| = {vg} V")
+            ax.set_xlabel("|V_DS| (V)"); ax.set_ylabel("|I_D| (mA)")
+        elif i == "gate":
+            q = np.linspace(.5, 1, 60)
+            for r_, c in ((15, GREEN), (25, VIO), (35, "#9aa6b2")):
+                ax.plot(q, [gate_budget.GateBudget(r_nm=r_, t2star_us=1e9, t2_us=600, q_prep=x).fidelity for x in q], color=c, lw=2, label=f"r = {r_} nm")
+            ax.axhline(.67, color=GOLD, ls=":", lw=1.2); ax.text(.51, .69, "measured 2013", fontsize=8, color=GOLD); ax.set_xlabel("preparation probability q"); ax.set_ylabel("Bell fidelity, T₂ = 600 µs")
+        elif i == "yield":
+            d0 = np.logspace(-1, 1.3, 60)
+            for a_, c in ((4, GREEN), (25, COLORS["Diamond"]), (100, VIO)):
+                ax.semilogx(d0, [wafer.good_dies(76, a_, x) for x in d0], color=c, lw=2, label=f"{a_} mm² die")
+            ax.set_yscale("log"); ax.set_xlabel("killer defects D₀ (/cm²)"); ax.set_ylabel("good dies per 3-inch wafer")
+        elif i == "bfom":
+            vb = np.logspace(2, 4, 50)
+            for key in ("Si", "4H-SiC", "GaN", "Diamond"):
+                ax.loglog(vb, [ron_sp_mohm_cm2(MATERIALS[key], x, "p" if key == "Diamond" else "n") for x in vb], color=COLORS[key], lw=2, label=ABBR_[key])
+            ax.set_xlabel("breakdown voltage (V)"); ax.set_ylabel("R_on,sp (mΩ·cm²)")
+        elif i == "surface":
+            p_ = np.logspace(-4, np.log10(2e-2), 60)
+            for d_, c in ((3, "#9aa6b2"), (7, COLORS["Diamond"]), (11, VIO)):
+                ax.loglog(p_, [qec.surface_code_logical_error(x, d_) for x in p_], color=c, lw=2, label=f"d = {d_}")
+            ax.axvline(1e-2, color=RED, ls="--", lw=1); ax.set_xlabel("physical error p"); ax.set_ylabel("logical error p_L")
+        tag = f"{e['id']} · tier {e['tier']}" if e else "framework"
+        ax.set_title("")
+        ax.text(0, 1.30, f"{k + 1}. {s['title'].split(':')[0]}", transform=ax.transAxes, fontsize=11, fontweight="bold", color=INK, va="bottom")
+        ax.text(0, 1.04, EQ[i], transform=ax.transAxes, fontsize=11.5, color=INK, va="bottom")
+        ax.text(1, 1.47, tag, transform=ax.transAxes, fontsize=8, ha="right", va="bottom", color=(experiments.TIERS[e["tier"]]["color"] if e else "#7b5cd6"), fontweight="bold")
+        if ax.get_legend_handles_labels()[0]:
+            ax.legend(fontsize=7.5, loc="best")
+        ax.tick_params(labelsize=8.5); ax.xaxis.label.set_size(9); ax.yaxis.label.set_size(9)
+    a = axs.flat[14]; a.axis("off")
+    a.text(0, .95, "Equations in action", fontsize=15, fontweight="bold", va="top")
+    a.text(0, .78, "Each panel: the governing equation and the curve\nits experiment should measure (gold dots: the\nsimulated result of that experiment).\n\n"
+           "Interactive, animated, with every symbol a slider:\nnormansrule.github.io/adamas-diamond-framework\n/action.html\n\nTiers: A kitchen table · B teaching lab\nC research lab · D facility", fontsize=9.5, va="top", linespacing=1.4)
+    return _finish(fig, out, "fig53_equations_in_action.png", "adamas.action (every curve from the cited package models); scene sources in docs/EQUATIONS_IN_ACTION.md")
+
+
+ABBR_ = {"Si": "silicon", "4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond (holes)"}
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
