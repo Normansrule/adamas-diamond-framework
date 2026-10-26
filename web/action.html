@@ -1,0 +1,150 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css">
+<title>Equations in Action · ADAMAS</title>
+<style>
+.chips{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 6px}
+.chips .grp{display:flex;flex-direction:column;gap:6px}.chips .grp>span{font:600 11px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.chips .row{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--mute);border-radius:10px;padding:7px 10px;cursor:pointer;font:500 13px Inter;display:flex;gap:7px;align-items:center;transition:all .2s}
+.chips button i{font:600 10.5px var(--mono);font-style:normal;padding:2px 5px;border-radius:5px;background:rgba(255,255,255,.07)}
+.chips button:hover{color:var(--ink);border-color:rgba(111,243,255,.4)}.chips button.on{color:var(--ink);background:rgba(45,226,230,.14);border-color:var(--teal);box-shadow:0 0 18px -6px var(--teal)}
+.act{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;padding:10px 0 60px}@media(max-width:1050px){.act{grid-template-columns:1fr}}
+.act .stage{min-height:0}.act canvas{display:block;width:100%}
+.ctlbar{display:flex;gap:8px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);background:rgba(5,7,13,.5);flex-wrap:wrap}
+.ctlbar .btn{padding:8px 13px;font-size:13.5px}.ctlbar #counter{margin-left:auto;font:600 12px var(--mono);color:var(--mute)}
+.eq{font:400 clamp(19px,2vw,25px)/1.75 "Cambria Math","STIX Two Math","Latin Modern Math","Times New Roman",serif;color:var(--ink);padding:16px 18px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line);margin:12px 0;overflow-x:auto}
+.eq var{font-style:italic;color:var(--cyan);padding:0 2px;border-radius:5px;transition:background .25s,color .25s,text-shadow .25s;cursor:pointer}
+.eq var.hot{background:rgba(255,196,107,.22);color:#fff;text-shadow:0 0 14px var(--gold)}
+.eq .k{color:#cbbcff}.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.92em;line-height:1.25}.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px 2px}.fr>span:last-child{padding:2px 4px 0}
+.plug{font:14px/1.9 var(--mono);color:#c7d6e3;padding:12px 14px;border-radius:12px;border:1px dashed rgba(111,243,255,.3);background:rgba(45,226,230,.04)}
+.plug .pv{color:var(--gold);font-weight:600}.plug .pv.big{color:#fff;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:16px}
+.plug small{color:var(--mute);font-family:Inter;font-size:12.5px}.plug .ok{color:var(--green)}.plug .no{color:var(--red)}
+.plug.flash{animation:flash .5s ease}@keyframes flash{from{background:rgba(255,196,107,.16)}to{background:rgba(45,226,230,.04)}}
+.vrow{display:grid;grid-template-columns:120px 1fr 92px;gap:10px;align-items:center;margin:10px 0;font-size:13px;color:var(--mute)}
+.vrow b{font:600 13px var(--mono);color:var(--ink);text-align:right}.vrow label{color:var(--mute)}
+.vrow .seg{grid-column:2 / 4}
+table.sym{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}table.sym td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}table.sym td:first-child{font:600 14px var(--mono);color:var(--cyan);white-space:nowrap}
+.xsteps{counter-reset:s;padding:0;margin:10px 0 0}.xsteps li{list-style:none;counter-increment:s;margin:6px 0;padding:9px 12px 9px 40px;border:1px solid var(--line);border-radius:11px;position:relative;cursor:pointer;font-size:14px;color:#c7d6e3}
+.xsteps li::before{content:counter(s);position:absolute;left:11px;top:9px;width:20px;height:20px;border-radius:50%;background:rgba(45,226,230,.16);color:var(--teal);font:700 11px/20px var(--mono);text-align:center}
+.xsteps li b{display:block;color:var(--ink)}.xsteps li span{display:none}.xsteps li.on{border-color:var(--teal);background:rgba(45,226,230,.08)}.xsteps li.on span{display:block;margin-top:4px;color:var(--mute)}
+.tierb{display:inline-block;font:700 11px var(--mono);padding:4px 8px;border-radius:7px;color:#051018}
+.caption{font:12px var(--mono);color:var(--mute);padding:8px 14px;border-top:1px solid var(--line);min-height:34px}
+.sq{white-space:nowrap}.sq>span{border-top:1.5px solid currentColor;padding:0 3px;margin-left:1px}
+.hero2 h1{font-size:clamp(30px,4vw,48px)}.hero2 .lead{font-size:16.5px;max-width:860px}
+</style></head><body>
+<main class="wrap">
+<section class="block hero2" style="padding:34px 0 0"><span class="eyebrow">Equations in action</span>
+<h1>Every experiment, <span class="grad">every equation, live</span></h1>
+<p class="lead">Fourteen equations that run the framework, each paired with the experiment that measures it. Move a slider and its symbol lights up in the equation, the numbers are plugged in, the animation changes, and the curve the experiment should measure redraws. Press <b>Play</b> to let the equation sweep itself, or <b>Tour</b> to watch all fourteen.</p>
+<div class="chips" id="chips"></div>
+</section>
+<div class="act">
+  <div>
+    <div class="stage"><canvas id="anim" style="height:430px"></canvas><div class="caption" id="animHud"></div>
+      <div class="ctlbar"><button class="btn primary" id="play">▶ Play</button><button class="btn" id="tour">Tour all</button><button class="btn" id="copyTex" title="Copy the equation as LaTeX">Copy LaTeX</button>
+        <span id="counter"></span><button class="btn" id="prev" aria-label="Previous scene">←</button><button class="btn" id="next" aria-label="Next scene">→</button></div></div>
+    <div class="card" style="margin-top:14px"><h3 id="plotTitle">What the experiment should measure</h3><canvas id="plot" style="height:300px"></canvas><p class="src" id="plotNote">Gold dots: the simulated data of the matching experiment (adamas.experiments). Red marker: your slider values.</p></div>
+  </div>
+  <div>
+    <div class="card"><span class="tag" id="grpTag"></span> <span class="tierb" id="tierTag"></span>
+      <h2 id="title" style="font-size:clamp(22px,2.4vw,30px);margin-top:10px"></h2><p id="tagline"></p>
+      <div class="eq" id="eq"></div>
+      <div class="plug" id="plug"></div>
+      <div id="vars" style="margin-top:8px"></div>
+      <details style="margin-top:8px"><summary style="cursor:pointer;color:var(--cyan)">What each symbol means</summary><table class="sym" id="symbols"></table></details>
+    </div>
+    <div class="card" style="margin-top:14px"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
+      <div class="lvl" data-l="k" id="lk"></div><div class="lvl" data-l="s" id="ls"></div><div class="lvl" data-l="r" id="lr"></div><p class="src" id="src"></p></div>
+    <div class="card" style="margin-top:14px" id="expCard"></div>
+  </div>
+</div>
+</main>
+<script type="module">
+import { boot, data } from './assets/site.js';
+import { SCENES } from './assets/action_scenes.js';
+boot('Equations');
+const $ = id => document.getElementById(id);
+const D = await data();
+const meta = D.action.scenes, byId = Object.fromEntries(meta.map(s => [s.id, s]));
+const ctx = { materials: D.action.materials, power: D.power, experiments: Object.fromEntries((D.experiments?.experiments || []).map(e => [e.id, e])) };
+let cur = null, S = {}, st = {}, playing = false, touring = false, tourT = 0, t0 = performance.now(), last = performance.now(), playPhase = 0;
+
+// scene selector, grouped
+$('chips').innerHTML = Object.entries(D.action.groups).map(([g, c]) => `<div class="grp"><span style="color:${c}">${g}</span><div class="row">${meta.filter(s => s.group === g).map(s =>
+  `<button data-s="${s.id}">${s.experiment ? `<i style="color:${s.experiment.color}">${s.experiment.id}</i>` : '<i>∑</i>'}${s.title.split(':')[0]}</button>`).join('')}</div></div>`).join('');
+$('chips').onclick = e => { const b = e.target.closest('button[data-s]'); if (b) { stopTour(); open(b.dataset.s); } };
+
+const value = (v, raw) => v.choices ? raw : v.log ? 10 ** raw : raw;
+const show = (v, x) => v.choices ? (v.choices.find(c => c[1] === x) || [x])[0] : (Math.abs(x) >= 1000 || (Math.abs(x) < 0.01 && x !== 0) ? x.toExponential(2) : +x.toPrecision(4)) + (v.unit ? ' ' + v.unit : '');
+function open(id, push = true) {
+  cur = byId[id] || meta[0]; st = {}; S = {}; playPhase = 0;
+  for (const v of cur.vars) S[v.key] = value(v, v.value);
+  $('title').textContent = cur.title; $('tagline').textContent = cur.tagline; $('eq').innerHTML = cur.html;
+  $('grpTag').textContent = cur.group; $('grpTag').style.color = D.action.groups[cur.group];
+  const ex = cur.experiment; $('tierTag').style.display = ex ? '' : 'none';
+  if (ex) { $('tierTag').textContent = `Experiment ${ex.id} · tier ${ex.tier}`; $('tierTag').style.background = ex.color; }
+  $('symbols').innerHTML = cur.symbols.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('');
+  $('lk').textContent = cur.levels.k; $('ls').textContent = cur.levels.s; $('lr').textContent = cur.levels.r; $('src').textContent = 'Sources: ' + cur.refs.map(r => `[${r}]`).join(' ');
+  $('vars').innerHTML = cur.vars.map(v => v.choices
+    ? `<div class="vrow"><label>${v.label}</label><div class="seg" data-k="${v.key}">${v.choices.map(([l, x]) => `<button data-x="${x}" class="${x === v.value ? 'on' : ''}">${l}</button>`).join('')}</div></div>`
+    : `<div class="vrow"><label for="v_${v.key}">${v.label}</label><input type="range" id="v_${v.key}" data-k="${v.key}" min="${v.min}" max="${v.max}" step="${v.step}" value="${v.value}"><b id="o_${v.key}">${show(v, S[v.key])}</b></div>`).join('');
+  $('vars').querySelectorAll('input[type=range]').forEach(el => el.oninput = () => { if (playing && el.dataset.k === cur.auto) setPlay(false); set(el.dataset.k, +el.value); });
+  $('vars').querySelectorAll('.seg').forEach(sg => sg.onclick = e => { const b = e.target.closest('button'); if (!b) return; sg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    const v = cur.vars.find(x => x.key === sg.dataset.k); set(v.key, typeof v.value === 'number' ? +b.dataset.x : b.dataset.x); });
+  $('eq').querySelectorAll('var').forEach(el => el.onclick = () => { const r = $('v_' + el.dataset.v); if (r) { r.focus(); r.scrollIntoView({ block: 'nearest' }); } });
+  $('expCard').innerHTML = ex ? `<h3>Measure it yourself · ${ex.id}</h3><p><span class="tierb" style="background:${ex.color}">Tier ${ex.tier} · ${ex.tier_name}</span> about US$${ex.cost[0].toLocaleString('en-US')} to ${ex.cost[1].toLocaleString('en-US')}</p>
+    <p style="color:var(--ink);margin:.6em 0 0">${ex.title}</p><ol class="xsteps">${ex.steps.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ol>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><a class="btn small primary" href="experiments.html#${ex.id}">Full experiment, parts and safety →</a><a class="btn small" href="datalab.html">Fit your data</a><a class="btn small" href="${cur.lab}">Related lab</a></div>`
+    : `<h3>Where this equation matters</h3><p>This is one of the framework's headline equations rather than a bench experiment. Explore it further in the related lab, or see how the whole chain fits together in the <a href="explorer.html">Explorer</a>.</p><div style="margin-top:12px"><a class="btn small primary" href="${cur.lab}">Related lab →</a></div>`;
+  $('expCard').querySelectorAll('.xsteps li').forEach(li => li.onclick = () => li.classList.toggle('on'));
+  document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('on', b.dataset.s === cur.id));
+  const i = meta.indexOf(cur); $('counter').textContent = `${i + 1} / ${meta.length}`;
+  $('plotNote').textContent = (ex ? `Gold dots: the simulated result of experiment ${ex.id} (adamas.experiments), where it applies; your measurement should look like them. ` : '') + 'Red marker: your slider values. Every curve is computed in your browser by functions tested against the Python package.';
+  if (push && window.history.replaceState) window.history.replaceState(null, '', '#' + cur.id);
+  (SCENES[cur.id].init || (() => {})).call(SCENES[cur.id], st, S, ctx);
+  document.querySelector('.levels button.on') || document.querySelector('.levels button').click();
+  plug(false); size();
+}
+function set(k, raw, flash = true) {
+  const v = cur.vars.find(x => x.key === k); S[k] = value(v, raw); if ($('o_' + k)) $('o_' + k).textContent = show(v, S[k]);
+  $('eq').querySelectorAll(`var[data-v="${k}"]`).forEach(el => { el.classList.add('hot'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('hot'), 650); });
+  plug(flash);
+}
+let plugT = 0, plugLate = 0;
+function plug(flash) { const now = performance.now(); clearTimeout(plugLate);
+  if (flash && now - plugT < 90) { plugLate = setTimeout(() => plug(false), 95); return; }   // throttle, but always land on the final value
+  plugT = now; $('plug').innerHTML = SCENES[cur.id].plug(S, st, ctx); if (flash) { $('plug').classList.remove('flash'); void $('plug').offsetWidth; $('plug').classList.add('flash'); } }
+
+// canvases: size once per resize, draw every frame
+const cv = { a: $('anim'), p: $('plot') }, gx = {};
+function size() { for (const k of ['a', 'p']) { const c = cv[k], dpr = Math.min(2, devicePixelRatio || 1), w = c.clientWidth, h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); gx[k] = { g, w, h }; } }
+addEventListener('resize', size);
+
+function setPlay(on) { playing = on; $('play').textContent = on ? '❚❚ Pause' : '▶ Play'; }
+function stopTour() { touring = false; $('tour').textContent = 'Tour all'; }
+$('play').onclick = () => setPlay(!playing);
+$('tour').onclick = () => { touring = !touring; $('tour').textContent = touring ? '■ Stop tour' : 'Tour all'; tourT = 0; setPlay(touring); };
+$('next').onclick = () => { stopTour(); step(1); }; $('prev').onclick = () => { stopTour(); step(-1); };
+function step(d) { const i = (meta.indexOf(cur) + d + meta.length) % meta.length; open(meta[i].id); if (touring) setPlay(true); }
+$('copyTex').onclick = async () => { try { await navigator.clipboard.writeText(cur.tex); $('copyTex').textContent = 'Copied'; } catch { $('copyTex').textContent = 'Select it in the docs'; } setTimeout(() => $('copyTex').textContent = 'Copy LaTeX', 1400); };
+addEventListener('keydown', e => { if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '') && e.key !== ' ') return;
+  if (e.key === 'ArrowRight') { stopTour(); step(1); } else if (e.key === 'ArrowLeft') { stopTour(); step(-1); } else if (e.key === ' ' && document.activeElement?.tagName !== 'BUTTON') { e.preventDefault(); setPlay(!playing); } });
+addEventListener('hashchange', () => { const id = window.location.hash.slice(1); if (byId[id] && id !== cur.id) open(id, false); });
+
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now; const t = (now - t0) / 1000;
+  if (playing) {   // sweep the scene's auto variable back and forth
+    const v = cur.vars.find(x => x.key === cur.auto); playPhase += dt / 8; const u = playPhase % 1, f = u < .5 ? 2 * u : 2 - 2 * u;
+    const raw = v.min + (v.max - v.min) * (0.5 - 0.5 * Math.cos(Math.PI * f)); const el = $('v_' + v.key); if (el) el.value = raw; set(v.key, +raw, true);
+    if (touring && (tourT += dt) > 11) { tourT = 0; step(1); }
+  }
+  const sc = SCENES[cur.id];
+  if (gx.a) { const { g, w, h } = gx.a; g.clearRect(0, 0, w, h); sc.frame(g, w, h, t, S, st, dt, ctx); $('animHud').textContent = st.hud || ''; }
+  if (gx.p) { const { g, w, h } = gx.p; g.clearRect(0, 0, w, h); sc.plot(g, w, h, S, st, ctx); }
+  if (cur.id === 'g2' && Math.round(t * 4) !== Math.round((t - dt) * 4)) plug(false);
+  requestAnimationFrame(frame);
+}
+open(window.location.hash.slice(1) || meta[0].id, false);
+requestAnimationFrame(frame);
+</script></body></html>

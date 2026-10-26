@@ -10,16 +10,20 @@ $$R_{on,sp} = \frac{W}{q \mu N} = \frac{4\,BV^{2}}{\varepsilon \mu E_c^{3}}$$
 
 ![Specific on-resistance versus breakdown voltage](img/fig03_ron_vs_bv.png)
 
-At 2608 V, `adamas.power` gives an ideal hole-conduction diamond limit of 0.014 mΩ·cm² and a silicon limit of about 695 mΩ·cm². Measured lateral diamond MOSFETs from one group, all on heteroepitaxial wafers:
+At 2608 V, `adamas.power` gives an ideal hole-conduction diamond limit of 0.027 mΩ·cm² (theoretical 10 MV/cm critical field, hole mobility 2000 cm²/(V·s), full ionization) and a silicon limit of about 695 mΩ·cm². Because $R_{on,sp} \propto E_c^{-3}$, the diamond limit is 0.059 mΩ·cm² at the measured small-area 7.7 MV/cm and about 8 mΩ·cm² at the 1.5 MV/cm of wafer-scale heteroepitaxial material (`adamas.power.critical_field_mv_cm`, a fit of this repository).
+
+Measured lateral diamond MOSFETs from one group, all on heteroepitaxial wafers. These are lateral devices compared with one-dimensional vertical limits, and silicon's limit uses a fixed 0.3 MV/cm, so the ratios are indicative only. The diamond-limit column uses 10 MV/cm:
 
 | Device | Breakdown | $R_{on,sp}$ | Baliga figure of merit $BV^2/R_{on,sp}$ | Versus silicon's limit | Versus diamond's limit | Source |
 |---|---|---|---|---|---|---|
-| NO₂-doped, Al₂O₃ passivated | 2608 V | 19.74 mΩ·cm² | 345 MW/cm² | 35× better | 1400× worse | [saha2021] |
-| Same, chemical-mechanically planarized surface | 2568 V | 7.54 mΩ·cm² | 875 MW/cm² | 89× better | 550× worse | [saha2022], numbers as given in [kasu2022talk] |
-| Same, misoriented substrate, bilayer passivation | 3659 V | 77 mΩ·cm² (derived from the reported 173 MW/cm²) | 173 MW/cm² | 18× better | 2800× worse | [saha2023] |
+| NO₂-doped, Al₂O₃ passivated | 2608 V | 19.74 mΩ·cm² | 345 MW/cm² | 35× better | about 730× worse | [saha2021] |
+| Same, chemical-mechanically planarized surface | 2568 V | 7.54 mΩ·cm² | 875 MW/cm² | 89× better | about 290× worse | [saha2022], numbers as given in [kasu2022talk] |
+| Same, misoriented substrate, bilayer passivation | 3659 V | 77 mΩ·cm² (derived here from the reported 173 MW/cm²; not checked against the paper) | 173 MW/cm² | 18× better | about 1500× worse | [saha2023] |
 | Modulation-doped | 3326 V | not tabulated here | | | | [saha2022mod] |
 
 The remaining gap is the research opportunity, and it comes mostly from incomplete ionization, contact resistance, and lateral (not vertical) geometry ([donato2020], [umezawa2018], [geis2018]). The jump from 345 to 875 MW/cm² came from **polishing the surface**, which ties device performance directly to the wafer-flatness problem of [E1](expert/E1_lithography_from_euv_to_electron_beam.md).
+
+**Diamond wins when hot; a bulk-doped switch loses to silicon carbide at room temperature.** Only 0.50 % of the boron in a bulk-doped 1,200 V drift layer is ionized at 300 K (`adamas.converter.drift_ionized_fraction`), and on-resistance scales as the inverse of that fraction. In this repository's 800 V electric-vehicle (EV) inverter model, silicon carbide (SiC) loss divided by diamond loss is 0.40 at 300 K (diamond loses) and 1.9 at a 523 K (250 °C) junction (diamond wins), at baseline parameters with the theoretical 10 MV/cm field (`adamas.uncertainty.power_ratio`, `power_ratio_hot`). The lower fields of wafer-scale material would make diamond worse. Delta-doped and hole-gas devices avoid the ionization penalty (proposed here; they need their own models). All of this is a model of this repository, not a measurement; details in [E9](expert/E9_power_circuits_diamond_vs_gan_sic.md).
 
 ## 4.2 Device families demonstrated so far
 
@@ -28,11 +32,11 @@ The remaining gap is the research opportunity, and it comes mostly from incomple
 | Schottky barrier diode | Multi-kilovolt blocking; >6 kV reported on thick intrinsic layers | [butler2003], [twitchen2004], [traore2014], [volpe2010] |
 | Schottky-pn diode | High forward current density with fast switching | [makino2009] |
 | pn and p-i-n junctions | Ultraviolet emission at 235 nm from a diamond pn junction | [koizumi2001] |
-| Hydrogen-terminated Field-Effect Transistor (FET) | First enhancement-mode device, 1994; operation to 400 °C; normally-off variants | [kawarada1994], [kawarada2014], [kitabayashi2017], [kawarada2017] |
+| Hydrogen-terminated Field-Effect Transistor (FET) | First enhancement-mode device, 1994; one device operated at 400 °C, short-term; normally-off variants | [kawarada1994], [kawarada2014], [kitabayashi2017], [kawarada2017] |
 | NO₂-doped MOSFET on heteroepitaxial wafer | 2608 V / 345 MW/cm²; 2568 V / 875 MW/cm²; 3659 V / 173 MW/cm²; 3326 V modulation-doped | [saha2021], [saha2022], [saha2023], [saha2022mod], [saha2020] |
 | Inversion-channel MOSFET | First on n-type diamond, 2016 | [matsumoto2016] |
-| n-channel MOSFET | Electron mobility about 150 cm²/(V·s) at 573 K, 2024 | [liao2024] |
-| p-channel MOSFET on n-type body | 2024 | [zhao2024] |
+| n-channel MOSFET | First, per the authors; phosphorus-doped n-type channel; electron mobility about 150 cm²/(V·s) at 573 K (300 °C), 2024 | [liao2024] |
+| p-channel MOSFET on phosphorus-doped n-type body | 2024. The structure class, an inversion-channel p-MOSFET on an n-type body, was first shown in 2016 [matsumoto2016]; the specific advance of [zhao2024] is not yet checked here | [zhao2024], [matsumoto2016] |
 | Junction FET | Operation at elevated temperature with low leakage | [iwasaki2013jfet] |
 | Bipolar junction transistor | Current gain demonstrated with phosphorus-doped base | [kato2012bjt] |
 | Hexagonal-boron-nitride-gated FET | High channel mobility without surface acceptors | [sasama2018], [sasama2022] |

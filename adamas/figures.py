@@ -96,7 +96,9 @@ def fig_ron_bv(out: Path) -> Path:
                 label="Measured diamond MOSFETs" if key == "saha2021" else None)
         ax.annotate(f"[{key}]\n{pt['bv_v']:.0f} V, {pt['ron_mohm_cm2']:.3g} mΩ·cm²", (pt["bv_v"], pt["ron_mohm_cm2"]),
                     xytext=(dx, dy), textcoords="offset points", fontsize=8.5, arrowprops=dict(arrowstyle="->", color=INK))
-    ax.text(0.03, 0.95, "Real lateral devices beat silicon's limit by 18 to 90×\nand sit 550 to 2800× above diamond's own limit: the headroom",
+    vs_si = [power.ron_sp_mohm_cm2(materials.MATERIALS["Si"], p["bv_v"]) / p["ron_mohm_cm2"] for p in power.MEASURED_DIAMOND.values()]
+    vs_d = [p["ron_mohm_cm2"] / power.ron_sp_mohm_cm2(materials.MATERIALS["Diamond"], p["bv_v"], "p") for p in power.MEASURED_DIAMOND.values()]
+    ax.text(0.03, 0.95, f"Lateral devices sit {min(vs_si):.0f} to {max(vs_si):.0f}× below silicon's vertical limit\nand {min(vs_d):.0f} to {max(vs_d):.0f}× above diamond's own limit: the headroom",
             transform=ax.transAxes, fontsize=9, va="top")
     ax.set_xlabel("Breakdown voltage (V)")
     ax.set_ylabel("Specific on-resistance (mΩ·cm²)   lower is better")
@@ -155,6 +157,9 @@ def fig_wafer_timeline(out: Path) -> Path:
                 d = dict(pts)[yr]
                 off = (-30, -16) if yr == 2014 else (6, 8)
                 ax.annotate(note, (yr, d), xytext=off, textcoords="offset points", fontsize=8, color=cmap[name])
+            for yr, d, note in wafer.DIAMOND_ANNOUNCED:
+                ax.plot([yr], [d], "o", ms=9, mfc="none", mec=cmap[name], mew=1.8)
+                ax.annotate(note, (yr, d), xytext=(-150, 10), textcoords="offset points", fontsize=7.5, color=cmap[name], style="italic")
         else:
             pts = pts + [(2026, pts[-1][1])]
             ax.step([p[0] for p in pts], [p[1] for p in pts], where="post", lw=2.4, color=cmap[name], label=name)
@@ -162,12 +167,12 @@ def fig_wafer_timeline(out: Path) -> Path:
     ax.set_yticks([10, 25, 51, 100, 150, 200, 300], ["10", "25", "51 (2 in)", "100", "150", "200", "300"])
     ax.set_xlabel("Year")
     ax.set_ylabel("Wafer diameter (mm)")
-    ax.set_title("Wafer size: diamond is roughly where silicon was in the early 1970s")
+    ax.set_title("By diameter diamond is near silicon's early 1970s; by defect density it is far behind\n(filled: peer-reviewed; hollow: industry announcement)", fontsize=11)
     ax.legend(loc="upper left")
     ax.set_xlim(1958, 2034)
     ax.grid(True, alpha=0.15)
     return _finish(fig, out, "fig06_wafer_timeline.png",
-                   "[plummer2000] [kimoto2014] [yamada2014] [schreck2017] [kim2021] [e6orbray2026]; silicon and SiC dates approximate")
+                   "[plummer2000] [kimoto2014] [yamada2014] [schreck2017] [kim2021] [qu2024] [e6orbray2026]; silicon and SiC dates approximate")
 
 
 def fig_nv_levels(out: Path) -> Path:
@@ -378,7 +383,8 @@ def fig_lattice(out: Path) -> Path:
 
 def fig_register(out: Path) -> Path:
     """Bell-state fidelity of the electron plus nitrogen-14 register versus microwave drive strength."""
-    a = 2.16
+    from . import nv
+    a = nv.A_PAR_14N_MHZ
     omegas = np.linspace(0.2, 4.0, 60)
     fid = [register.bell_fidelity(a, w) for w in omegas]
     fig, ax = plt.subplots(figsize=(8, 4.4))

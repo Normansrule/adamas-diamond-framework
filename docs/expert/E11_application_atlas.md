@@ -14,9 +14,9 @@ Scores in the matrix are this repository's judgment. The rows, with sources:
 | Nanoscale NMR and cell imaging | Sensor size | None at that scale | Demonstrated ([staudacher2013], [mamin2013], [lovchinsky2016], [lesage2013], [barry2016]) | Shallow-NV coherence ([sangtawesin2019]) |
 | RF power amplifiers | Heat and voltage | GaN | 3.8 W/mm ([imanishi2019]) versus GaN's tens of W/mm | Higher hole-gas density and mobility |
 | Kilovolt discrete switches | Field and heat | SiC | 3659 V lateral ([saha2023]) | Vertical device (W-5) |
-| Traction inverters | Efficiency, uncooled operation | SiC | Model only ([E9](E9_power_circuits_diamond_vs_gan_sic.md)) | 150 mm wafers, vertical MOSFET |
+| Traction inverters | Hot, uncooled operation | SiC | Model only ([E9](E9_power_circuits_diamond_vs_gan_sic.md)): a bulk-doped diamond switch loses to SiC at a 300 K junction (SiC loss ÷ diamond loss 0.40) and wins at 523 K (1.9) | 150 mm wafers, vertical MOSFET, low-dislocation drift |
 | Data-center power | Efficiency | GaN, SiC | Model only | Price parity |
-| 300 °C+ and radiation electronics | Bandgap | SiC | 400 °C FETs ([kawarada2014]); SiC precedent on Venus ([neudeck2019]) | Small logic and analog ([E3](E3_digital_and_cpu_design.md), [E4](E4_analog_and_mixed_signal_design.md)) |
+| 300 °C+ and radiation electronics | Bandgap | SiC | 400 °C, single field-effect transistor (FET), short-term ([kawarada2014]); high-temperature diamond logic not demonstrated; SiC precedent on Venus ([neudeck2019]) | Small logic and analog ([E3](E3_digital_and_cpu_design.md), [E4](E4_analog_and_mixed_signal_design.md)) |
 | Small logic, sequencers | Ruggedness, co-location with qubits | Silicon | Inverters and gates ([liu2017]); DIA-4 synthesized here | Complementary logic ([liao2024]) |
 | Few-qubit room-temperature accelerators | No cryostat | Cryogenic platforms | Rack-mounted units installed ([qbpawsey2023], [olcf2025]) | Placement yield, link fidelity |
 | Quantum network memories and repeaters | Long nuclear memory | Cryogenic NV and ions | Demonstrated cold ([pompili2021], [hermans2022]); room-temperature proposals ([ji2022]) | Room-temperature photonic interface (unsolved) |
@@ -29,7 +29,7 @@ Scores in the matrix are this repository's judgment. The rows, with sources:
 
 ```mermaid
 flowchart LR
-    W["One wafer technology:<br/>76 → 150 mm single-crystal diamond"] --> A["Sensors and detectors<br/>(revenue now)"]
+    W["One wafer technology:<br/>2-inch (peer-reviewed), 76 mm (announced)<br/>→ 150 mm single-crystal diamond"] --> A["Sensors and detectors<br/>(revenue now)"]
     W --> B["Heat spreaders<br/>(revenue now)"]
     W --> C["Harsh-environment discretes<br/>(near)"]
     W --> D["Kilovolt power switches<br/>(medium)"]

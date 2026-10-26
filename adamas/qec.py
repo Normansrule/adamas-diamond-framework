@@ -1,7 +1,8 @@
 """Error-correction arithmetic mapped onto NV cells.
 
-Surface code [kitaev2003], [dennis2002], [fowler2012]:
-    p_L ~ 0.1 (p / p_th)^((d + 1) / 2),  p_th ~ 1e-2,  physical qubits per logical qubit = 2 d^2 - 1
+Surface code [kitaev2003], [dennis2002]; heuristic scaling per round per patch (a widely used rule of thumb,
+e.g. [fowlergidney2018]; Fowler et al. give P_L ~ 0.03 (p / 0.57%)^d_e for their circuit model [fowler2012]):
+    p_L ~ 0.1 (p / p_th)^((d + 1) / 2),  p_th ~ 1e-2; rotated layout, physical qubits per logical = 2 d^2 - 1 [litinski2019]
 Three-qubit repetition code [shor1995], demonstrated in room-temperature diamond by [waldherr2014]:
     p_L = 3 p^2 - 2 p^3
 Lower-overhead quantum low-density parity-check codes exist [bravyi2024] and need long-range links.
@@ -22,7 +23,7 @@ def distance_for_target(p: float, target: float, p_th: float = 1e-2) -> int | No
     if p >= p_th:
         return None
     d = 3
-    while surface_code_logical_error(p, d, p_th) > target:
+    while surface_code_logical_error(p, d, p_th) > target * (1 + 1e-9):   # tolerance: 0.1*0.1**8 is 1.0000000000000005e-9 in floating point
         d += 2
         if d > 2001:
             return None

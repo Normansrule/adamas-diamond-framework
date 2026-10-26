@@ -15,9 +15,9 @@
   <div class="stage" style="min-height:0"><svg id="bridge" viewBox="0 0 900 240" style="width:100%;display:block"></svg><div class="hud">One phase leg switching (slowed down about a million times)</div></div>
   <div class="stage" style="margin-top:14px;min-height:0"><canvas id="bars" style="height:300px"></canvas><div class="hud" id="barHud"></div></div>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
-    <div class="lvl" data-l="k">Electric cars flip their power switches on and off thousands of times a second. Every flip wastes a little energy as heat, and so does the switch's resistance while it is on. A better material wastes less, so the car goes farther and needs a smaller radiator. Diamond is also the only one that gets <i>better</i> when it is hot.</div>
+    <div class="lvl" data-l="k">Electric cars flip their power switches on and off thousands of times a second. Every flip wastes a little energy as heat, and so does the switch's resistance while it is on. A better material wastes less, so the car goes farther and needs a smaller radiator. Diamond has a catch: at room temperature its boron atoms hold on to almost all their charges, so a diamond switch wastes <i>more</i> than silicon carbide. Heat sets the charges free, and diamond is the only one that gets <i>better</i> when it is hot.</div>
     <div class="lvl" data-l="s">Per switch, P = I²R<sub>on,sp</sub>/A + ½C<sub>oss,sp</sub>AV²f. Choosing the die area A to minimize P gives P = 2IV√(fR<sub>on,sp</sub>C<sub>oss,sp</sub>/2): conduction and switching losses come out equal, and the material's merit is √(R·C). The required heat-sink thermal resistance is (T<sub>j,max</sub> − T<sub>ambient</sub>)/P.</div>
-    <div class="lvl" data-l="r">Inputs come from <code>adamas.converter</code> via data/site.json and are tested to agree with the Python within 1%. R<sub>on</sub>(T) includes lattice-mobility exponents and, for bulk-doped diamond, the rise of boron ionization with temperature; the measured diamond device (a lateral hole-gas MOSFET) has no ionization gain. Gate charge, reverse recovery, and GaN dynamic R<sub>on</sub> are not modeled; ceilings are package and reliability limits (chapter E9).</div>
+    <div class="lvl" data-l="r">Inputs come from <code>adamas.converter</code> via data/site.json and are tested to agree with the Python within 1%. R<sub>on</sub>(T) = R<sub>ideal</sub>(T/300)<sup>α</sup>/f<sub>ion</sub>(T): lattice-mobility exponents and, for the bulk boron-doped diamond drift, its incomplete ionization (about 0.5% at 300 K for 1200 V, uncompensated; audit G6); the measured diamond device (a lateral hole-gas MOSFET) has no ionization gain. Gate charge, reverse recovery, and GaN dynamic R<sub>on</sub> are not modeled; ceilings are package and reliability limits (chapter E9).</div>
     <p class="src">Sources: [erickson2020] [kassakian2023] [baliga1989] [huang2004] [shenai2018] [reimers2019] [masanet2020] [huang2017] [saha2022] [pernot2010] [lutz2018]</p></div>
 </div></div></main>
 <script type="module">
@@ -25,7 +25,7 @@ import { boot, fitCanvas, data } from '../assets/site.js';
 import * as C from '../assets/sim/converter.js';
 boot('Power');
 const $ = id => document.getElementById(id), D = (await data()).power, NAMES = Object.keys(D);
-const COL = { 'Silicon (ideal)': '#8b98a5', 'Silicon carbide (ideal)': '#e0a030', 'Gallium nitride (ideal)': '#9d7bff', 'Diamond (ideal, holes)': '#2de2e6', 'Diamond (measured 2022 device)': '#ff5d6c' };
+const COL = { 'Silicon (ideal)': '#8b98a5', 'Silicon carbide (ideal)': '#e0a030', 'Gallium nitride (ideal)': '#9d7bff', 'Diamond (bulk-doped drift)': '#2de2e6', 'Diamond (measured 2022 device)': '#ff5d6c' };
 const APPS = { ev: { bv: 1200, v: 800, i: 300 }, dc: { bv: 650, v: 400, i: 20 }, solar: { bv: 1700, v: 1000, i: 50 }, grid: { bv: 10000, v: 6500, i: 100 } };
 function cfg() { return { ...APPS[$('app').value], f: 10 ** (+$('f').value / 10), tK: +$('t').value }; }
 function update() {
@@ -41,7 +41,7 @@ function update() {
     g.fillStyle = '#8ea3b5'; g.font = '11px Inter'; g.fillText(`die ${(r.s.area * 100).toFixed(2)} mm² · heat sink ≤ ${r.rth > 0 ? r.rth.toFixed(2) + ' K/W' : 'impossible'}`, 250, y + 36); });
   $('barHud').textContent = 'Loss per switch at the optimum die area (solid: conduction, light: switching, log scale)';
   const best = rows.filter(r => !r.over).sort((a, b) => a.s.pTotal - b.s.pTotal)[0];
-  $('kpis').innerHTML = `<div class="kpi"><b>${best ? best.n.split(' (')[0] : '–'}</b><span>Lowest loss within its temperature limit</span></div><div class="kpi"><b>${(rows[0].s.pTotal / rows[3].s.pTotal).toFixed(0)}×</b><span>Silicon loss ÷ ideal diamond loss</span></div>`;
+  $('kpis').innerHTML = `<div class="kpi"><b>${best ? best.n.split(' (')[0] : '–'}</b><span>Lowest loss within its temperature limit</span></div><div class="kpi"><b>${(rows[0].s.pTotal / rows[3].s.pTotal).toFixed(0)}×</b><span>Silicon loss ÷ bulk-doped diamond loss</span></div>`;
 }
 ['app', 'f', 't', 'amb'].forEach(i => $(i).oninput = update); addEventListener('resize', update); update();
 // animated half bridge

@@ -4,7 +4,7 @@ This folder turns the framework into something you can run in a cleanroom. It is
 
 | Document | What it is |
 |---|---|
-| [TRAVELER.md](TRAVELER.md) | The 19-step run sheet T1: purpose, equipment, starting-point parameters with sources, in-line checks with pass criteria, safety, failure modes, and the silicon equivalent for every step. Generated from `adamas/traveler.py`. |
+| [TRAVELER.md](TRAVELER.md) | The 20-step run sheet T1: purpose, equipment, starting-point parameters with sources, in-line checks with pass criteria, safety, failure modes, and the silicon equivalent for every step. Generated from `adamas/traveler.py`. |
 | [APPLICATIONS.md](APPLICATIONS.md) | Which variant of the flow builds which product: power switch, RF amplifier, high-temperature logic, quantum sensor, qubit chip. Targets, test plans, and the numbers to beat. |
 | [Interactive traveler](https://normansrule.github.io/adamas-diamond-framework/process.html) | The same steps in the browser: animated cross-section, variant selector, a run log that checks your measurements against the pass criteria and exports CSV, and a printable traveler. |
 

@@ -38,20 +38,16 @@ def rows() -> list[Row]:
     import numpy as np
     from . import experiments, fitting, gate_budget, materials, photophysics, power
     from .hw.adf4351 import registers
-    from scipy.optimize import brentq
     R = []
     # ---- literature ----
     R.append(Row("Error correction", "Phenomenological surface-code threshold (equal data and readout error)", "literature", 3.1, 2.93, 0.10, "[wang2003]",
                  "adamas.surface_sim with PyMatching, chapter E6 (Figure 27)"))
-    q = brentq(lambda x: gate_budget.published_check(x).fidelity - 0.67, 0.5, 1.0)
-    R.append(Row("Qubits", "Preparation probability implied by the measured Bell fidelity 0.67", "literature", q, 0.725, 0.05, "[dolde2013] [aslam2013]",
-                 "adamas.gate_budget with the published pair; reference is the middle of the 0.70 to 0.75 NV⁻ fraction under green light"))
-    q2 = brentq(lambda x: gate_budget.published_check(x).fidelity - 0.82, 0.5, 1.0)
-    R.append(Row("Qubits", "Same budget explains the optimal-control result 0.82 with a higher q (must exceed the 2013 value)", "literature", q2, q, 0.25, "[dolde2014]",
-                 "consistency: optimal control removed pulse error, leaving q as the free parameter"))
-    R.append(Row("Qubits", "Single-NV readout contrast, 300 ns window", "literature", photophysics.readout_contrast(), 0.30, 0.20, "[doherty2013] [gruber1997]",
-                 "adamas.photophysics five-level model with measured rates [tetienne2012]",
-                 "the model has no background light and perfect timing; measured single-NV contrast is typically 20 to 35%"))
+    lo, hi = gate_budget.coherence_limited_range()
+    R.append(Row("Qubits", "Bell fidelity of the published NV pair: coherence-limited model (worst defensible case) vs measured 0.67", "literature", lo, 0.67, 0.05,
+                 "[dolde2013] [dolde2014]", "adamas.gate_budget at q = 1 (the paper normalized out charge-state errors); echo exponent 1 to 3, one or two gate applications, with T1",
+                 f"model range {lo:.2f} to {hi:.2f} stays above the measurement; the authors name dephasing and pulse errors, which the model does not resolve (audit Q1 to Q3)"))
+    R.append(Row("Qubits", "Single-NV readout contrast from the polarized state, 300 ns window", "literature", photophysics.measured_contrast(), 0.30, 0.20, "[doherty2013] [gruber1997]",
+                 "adamas.photophysics five-level model with measured rates [tetienne2012], starting from its own 82% polarization (audit Q18)"))
     m = power.MEASURED_DIAMOND
     si, di = materials.MATERIALS["Si"], materials.MATERIALS["Diamond"]
     inside = sum(power.ron_sp_mohm_cm2(di, v["bv_v"], "p") < v["ron_mohm_cm2"] < power.ron_sp_mohm_cm2(si, v["bv_v"]) for v in m.values())
@@ -77,6 +73,13 @@ def rows() -> list[Row]:
                      "[bonillaataides2021]", "adamas.xzzx_native: Clifford-equivalent circuits must perform the same; 40,000 shots each"))
     except ImportError:
         pass
+    from . import decision
+    lin = {"a": (0.0, 0.0, 1.0, "lin", "", ""), "b": (0.0, 0.0, 1.0, "lin", "", "")}      # Y = a + 2b, both uniform on [0, 1]: S_b = 4/5
+    from . import uncertainty as _U
+    _U.STUDIES["_linear_check"] = (lin, lambda p: p["a"] + 2 * p["b"], "linear test")
+    sb = next(r["S1"] for r in decision.sobol("_linear_check", 8000) if r["name"] == "b"); del _U.STUDIES["_linear_check"]
+    R.append(Row("Systems", "Sobol first-order index recovers the exact value 0.8 for Y = a + 2b (uniform inputs)", "analytic", sb, 0.8, 0.03,
+                 "[sobol2001] [jansen1999]", "adamas.decision pick-freeze estimator, 8,000 samples"))
     regs, _ = registers(2870.0)
     match = sum(a == b for a, b in zip(regs[2:], [0x18004E42, 0x000004B3, 0x008C803C, 0x00580005]))
     R.append(Row("Hardware", "ADF4351 registers R2 to R5 vs evaluation-board defaults", "cross-tool", match, 4, 0.0, "ADF4351 data sheet",
@@ -126,11 +129,15 @@ def to_markdown() -> str:
         tol = "exact" if r.tol_rel == 0 else ("reported" if not math.isfinite(r.tol_rel) else f"±{100 * r.tol_rel:g}%")
         st = r.status + (f": {r.discrepancy}" if r.status == "known discrepancy" else "")
         L.append(f"| {r.area} | {r.check} | {r.kind} | {r.model:.4g} | {r.reference:.4g} | {tol} | {st} | {r.source} | {r.how} |")
+    from . import uncertainty as U
+    mp, mh, mq = (U.monte_carlo(k, 4000) for k in ("power", "power_hot", "quantum"))
     L += ["", "## How sure are the headline numbers?", "",
-          "Figure 49 propagates documented parameter ranges through two headline results (`adamas.uncertainty`). With diamond's critical field "
-          "and hole mobility spanning the published spread, the silicon-carbide-to-diamond inverter loss ratio falls from the baseline 6.7× to "
-          "a median near 3.8× (P10 to P90 about 2.5× to 5.5×): still a large advantage, but the baseline sits at the optimistic end. The "
-          "room-temperature machine's runtime is dominated by readout time, with P10 to P90 spanning roughly 1 to 15 years."]
+          "Figure 49 propagates documented parameter ranges through the headline results (`adamas.uncertainty`). The silicon-carbide-to-diamond "
+          "EV-inverter loss ratio includes the incomplete ionization of a bulk boron-doped drift. At a 300 K junction it is "
+          f"{mp['baseline']:.2f} at the baseline and {mp['p50']:.2f} at the median (P10 to P90 {mp['p10']:.2f} to {mp['p90']:.2f}): a bulk-doped "
+          f"diamond switch loses to silicon carbide. At a 523 K junction it is {mh['baseline']:.1f} at the baseline and {mh['p50']:.1f} at the median "
+          f"(P10 to P90 {mh['p10']:.1f} to {mh['p90']:.1f}): diamond wins when hot. The room-temperature machine's runtime (RSA-2048, calibrated "
+          f"step count) is dominated by readout time: median {mq['p50']:.1f} years, P10 to P90 {mq['p10']:.1f} to {mq['p90']:.1f} years."]
     return "\n".join(L) + "\n"
 
 

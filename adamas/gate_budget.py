@@ -41,6 +41,9 @@ class GateBudget:
     n_pulses: int = 6
     nu_khz: float | None = None      # override the 52/r^3 coupling with a measured value (orientation changes it)
     t2b_us: float | None = None      # second spin's echo time when the two differ
+    echo_exponent: float = 3.0       # stretch exponent of the echo decay; 3 for a slow 13C bath, about 1 for fast noise
+    gate_applications: int = 1       # Dolde 2013 applies the gate twice (create, then map back for readout)
+    t1_us: float | None = None       # electron spin-lattice time; adds exp(-t/T1) per spin (Dolde 2013 pair: 1120 us)
 
     @property
     def coupling_khz(self) -> float:
@@ -54,9 +57,12 @@ class GateBudget:
 
     def _w(self, t2_us: float) -> float:
         k = 2.0 if (self.double_quantum and self.nu_khz is None) else 1.0   # a measured DQ T2 already includes the factor
+        t = self.t_gate_us * self.gate_applications
+        relax = float(np.exp(-t / self.t1_us)) if self.t1_us else 1.0
         if self.echo:
-            return float(np.exp(-(self.t_gate_us * k ** (2 / 3) / t2_us) ** 3))
-        return float(np.exp(-(self.t_gate_us * k / self.t2star_us) ** 2))
+            p = self.echo_exponent
+            return relax * float(np.exp(-(t * k ** (2 / p) / t2_us) ** p))
+        return relax * float(np.exp(-(t * k / self.t2star_us) ** 2))
 
     @property
     def w(self) -> float:
@@ -85,16 +91,29 @@ class GateBudget:
 
 # Published pair of [dolde2013]: two NVs 25 +/- 2 nm apart with different orientations; single-quantum dipolar coupling
 # 4.93 +/- 0.05 kHz (the 52/r^3 rule gives 3.3 kHz at 25 nm; the angular factor accounts for the rest); double-quantum
-# echo times T2A = 150 +/- 18 us and T2B = 514 +/- 50 us; echo on both spins; Bell fidelity 0.67 +/- 0.04, raised to
-# 0.82 with optimal-control pulses on the same pair [dolde2014]. Pulse count of the tomography sequence is an estimate.
-DOLDE2013 = {"r_nm": 25.0, "nu_sq_khz": 4.93, "nu_dq_khz": 4 * 4.93, "t2a_us": 150.0, "t2b_us": 514.0, "fidelity": 0.67,
-             "fidelity_optimal_control": 0.82, "n_pulses": 8}
+# echo times T2A = 150 +/- 18 us and T2B = 514 +/- 50 us, T1 = 1.12 ms; echo on both spins; Bell fidelity 0.67 +/- 0.04,
+# raised to 0.824 with optimal-control pulses on the same pair [dolde2014]. Pulse count is an estimate.
+# Important (audit Q1): Dolde 2013 normalized its tomography "to a charge state preselected scheme" and assumed "a NV
+# initialization close to unity", so the reported 0.67 already excludes charge-state errors. The model therefore
+# compares it at q = 1, and the remaining gap to the coherence-limited value is a known discrepancy that the authors
+# attribute to dephasing and pulse errors; it is not evidence that charge preparation is the bottleneck.
+DOLDE2013 = {"r_nm": 25.0, "nu_sq_khz": 4.93, "nu_dq_khz": 4 * 4.93, "t2a_us": 150.0, "t2b_us": 514.0, "t1_us": 1120.0, "fidelity": 0.67,
+             "fidelity_optimal_control": 0.824, "n_pulses": 8}
 
 
-def published_check(q_prep: float = 1.0, pulse_error: float = 0.0) -> GateBudget:
+def published_check(q_prep: float = 1.0, pulse_error: float = 0.0, echo_exponent: float = 3.0, gate_applications: int = 1,
+                    with_t1: bool = False) -> GateBudget:
     c = DOLDE2013
     return GateBudget(r_nm=c["r_nm"], nu_khz=c["nu_dq_khz"], t2_us=c["t2a_us"], t2b_us=c["t2b_us"], echo=True,
-                      double_quantum=True, q_prep=q_prep, pulse_error=pulse_error, n_pulses=c["n_pulses"])
+                      double_quantum=True, q_prep=q_prep, pulse_error=pulse_error, n_pulses=c["n_pulses"],
+                      echo_exponent=echo_exponent, gate_applications=gate_applications, t1_us=c["t1_us"] if with_t1 else None)
+
+
+def coherence_limited_range() -> tuple[float, float]:
+    """Coherence-only Bell fidelity of the published pair at q = 1 over the defensible model choices: echo exponent 1 to 3,
+    one or two gate applications, with and without T1. The measured 0.67 (charge-normalized) lies below the whole range."""
+    vals = [published_check(1.0, 0.0, p, n, t1).fidelity for p in (1.0, 2.0, 3.0) for n in (1, 2) for t1 in (False, True)]
+    return min(vals), max(vals)
 
 
 def required_t2_us(r_nm: float, target: float, double_quantum: bool = False) -> float:

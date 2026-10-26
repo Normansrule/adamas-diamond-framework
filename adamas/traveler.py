@@ -12,16 +12,16 @@ from the cited paper. Safety notes summarize hazards; they do not replace your f
 from __future__ import annotations
 
 VARIANTS = {
-    "power": {"name": "Power switch (EV, grid, data center)", "skip": ["S06", "S07", "S18"],
+    "power": {"name": "Power switch (EV, grid, data center)", "skip": ["S06", "S07", "S11E", "S18"],
               "note": "High-temperature ALD (option B) for 400 °C and kilovolt operation, or NO₂ + low-temperature ALD (option A) for the highest current."},
-    "rf": {"name": "RF power amplifier (5G, radar, space)", "skip": ["S06", "S07", "S18"],
+    "rf": {"name": "RF power amplifier (5G, radar, space)", "skip": ["S06", "S07", "S11E", "S18"],
            "note": "NO₂ doping + thin low-temperature ALD (option A); gate length 0.1 to 1 µm by electron-beam lithography."},
     "hot_logic": {"name": "High-temperature / radiation-hard logic", "skip": ["S06", "S07", "S12", "S18"],
                   "note": "No NO₂ (it desorbs when hot); high-temperature ALD (option B); E/D logic cells of PDK-0."},
-    "sensor": {"name": "NV quantum sensor (magnetometer)", "skip": ["S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17"],
+    "sensor": {"name": "NV quantum sensor (magnetometer)", "skip": ["S08", "S09", "S10", "S11", "S11E", "S12", "S13", "S14", "S15", "S16", "S17"],
                "note": "Material and NV steps only: dense ensemble implant, oxygen surface, optical and microwave test."},
-    "qubit": {"name": "Room-temperature qubit register chip", "skip": ["S12"],
-              "note": "Full flow with ¹²C cap, aperture implant, photocurrent electrodes on the QELEC layer; no NO₂ near qubits."},
+    "qubit": {"name": "Room-temperature qubit register chip", "skip": ["S12"], "h_term_max_c": 500,
+              "note": "Full flow with ¹²C cap, aperture implant, photocurrent electrodes on the QELEC layer; no NO₂ near qubits. S08 must use the low-temperature hydrogen option: a 600 to 800 °C hydrogen plasma would turn the NV centers made in S06 and S07 into dark NVH (proposed route, not yet qualified)."},
 }
 
 MODULES = [("M0", "Incoming", "#8b98a5"), ("M1", "Clean and grow", "#ffc46b"), ("M2", "Quantum option", "#ff5d6c"),
@@ -33,7 +33,7 @@ STEPS = [
   "why": "Every later step inherits the substrate's defects: dislocations become leakage paths, polishing damage roughens the channel, nitrogen and silicon impurities add unwanted color centers.",
   "equipment": ["Optical microscope with differential interference contrast", "Cross-polarized imaging (birefringence)", "Raman spectrometer (532 nm)", "Atomic force microscope"],
   "params": [("Orientation", "(100), miscut under 3°", "[friel2009]"), ("Grade", "Electronic-grade CVD (N < 5 ppb) for qubits; heteroepitaxial or HPHT acceptable for power", "[friel2009] [schreck2017]"),
-             ("Size", "3 × 3 mm plates up to 3-inch wafers", "[e6orbray2026]")],
+             ("Size", "3 × 3 mm plates; 2-inch heteroepitaxial wafers (3-inch announced by industry, no quality data yet)", "[kim2021] [qu2024] [e6orbray2026]")],
   "checks": [("Raman 1332 cm⁻¹ line width", "cm⁻¹", None, 3.0, "ADAMAS"), ("Surface roughness Ra (AFM, 5 × 5 µm)", "nm", None, 1.0, "ADAMAS"),
              ("No scratches or pits visible at 50×", "", None, None, "ADAMAS")],
   "safety": ["Handle with plastic or diamond-safe tweezers; edges chip."],
@@ -46,7 +46,7 @@ STEPS = [
              ("Temperature and time", "About 170 to 200 °C, 30 min to several hours", "[sangtawesin2019]"),
              ("Follow-up", "DI water rinse, acetone and isopropanol ultrasonic 10 min each, N₂ dry", "")],
   "checks": [("Water contact angle (oxygen-terminated: hydrophilic)", "°", None, 30.0, "ADAMAS"), ("No residue under dark-field microscopy", "", None, None, "ADAMAS")],
-  "safety": ["Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive.", "Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics."],
+  "safety": ["Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive.", "Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics.", "Never boil a perchloric mixture to dryness: hot sulfuric acid can dehydrate HClO₄ to explosive anhydrous perchloric acid; top up or stop well before the volume falls."],
   "failures": [("Hydrophobic patches remain", "Incomplete oxidation or organic film", "Repeat clean; extend time")],
   "silicon": "Silicon uses the RCA clean and a dilute-HF dip to strip native oxide; diamond has no native oxide to strip."},
  {"id": "S03", "short": "Epi growth", "module": "M1", "title": "Homoepitaxial buffer growth (MPCVD)", "t_max_c": 950,
@@ -101,10 +101,13 @@ STEPS = [
  {"id": "S08", "short": "H₂ plasma", "module": "M3", "title": "Hydrogen termination (H₂ plasma)", "t_max_c": 800,
   "why": "Creates the C–H surface whose negative electron affinity lets adsorbed acceptors pull electrons out, leaving the two-dimensional hole gas that is the transistor channel. No dopant atoms are involved.",
   "equipment": ["MPCVD reactor in pure H₂"],
-  "params": [("Plasma", "Pure H₂, about 600 to 800 °C, 5 to 30 min", "[kawarada2023]"), ("Cool-down", "In H₂ to below about 300 °C before venting", "[kawarada2023]")],
-  "checks": [("Water contact angle (hydrophobic)", "°", 75.0, None, "ADAMAS"), ("Sheet resistance in air (Van der Pauw)", "kΩ/sq", 3.0, 30.0, "ADAMAS")],
+  "params": [("Plasma", "Pure H₂, about 600 to 800 °C, 5 to 30 min (wafers without NV centers)", "[kawarada2023]"), ("Cool-down", "In H₂ to below about 300 °C before venting", "[kawarada2023]"),
+             ("Wafers that already hold NV centers (qubit variant)", "Do NOT run the hot plasma: hydrogen at 700 to 1000 °C passivates NV into dark NVH deep into the crystal, and annealing does not restore it. Use atomic hydrogen from a remote plasma or hot filament with the substrate below about 500 °C, keep the NV windows masked, and track a witness ensemble (proposed, not yet qualified)", "[stacey2012]")],
+  "checks": [("Water contact angle (hydrophobic)", "°", 75.0, None, "ADAMAS"), ("Sheet resistance in air (Van der Pauw)", "kΩ/sq", 3.0, 30.0, "ADAMAS"),
+             ("Witness NV ensemble photoluminescence after S08, qubit variant (% of before)", "%", 90.0, None, "ADAMAS")],
   "safety": ["As S03 (hydrogen plasma)."],
-  "failures": [("High sheet resistance", "Incomplete termination or exposure to oxidizers", "Repeat plasma; store in clean N₂; proceed to S09 within hours")],
+  "failures": [("High sheet resistance", "Incomplete termination or exposure to oxidizers", "Repeat plasma; store in clean N₂; proceed to S09 within hours"),
+               ("Witness ensemble goes dark", "Hydrogen passivation of NV centers (too hot, or windows unmasked)", "Lower the temperature; improve the window mask; consider forming NVs after the transistor module")],
   "silicon": "No equivalent. Silicon channels form by inversion under the gate, not by surface chemistry."},
  {"id": "S09", "short": "Gold", "module": "M3", "title": "Blanket gold deposition", "t_max_c": 80,
   "why": "Gold forms a low-resistance contact to the hole gas and protects the fragile C–H surface from every later resist and solvent.",
@@ -125,11 +128,20 @@ STEPS = [
  {"id": "S11", "short": "Mask 2 gate gap", "module": "M3", "title": "Mask 2 (GATE opening): self-aligned channel", "t_max_c": 120,
   "why": "Opening a gap in the gold defines the channel length; the gold on either side becomes source and drain, self-aligned to the channel.",
   "equipment": ["Optical lithography (gaps above 1 µm) or electron-beam lithography (0.1 to 1 µm)", "KI/I₂"],
-  "params": [("Gap", "2 µm (PDK-0 rule) for logic; 0.1 to 1 µm for RF", "[kawarada2023]")],
+  "params": [("Gap", "2 µm (PDK-0 rule) for logic, by wet KI/I₂ etch; 0.1 to 1 µm for RF by electron-beam lift-off or argon ion milling, because a wet gold etch undercuts by about the film thickness", "[kawarada2023]")],
   "checks": [("Channel length (SEM)", "µm", 0.1, 10.0, "ADAMAS"), ("No gold residue in the gap", "", None, None, "ADAMAS")],
   "safety": ["As S10."],
   "failures": [("Undercut widens the gap", "Over-etch", "Time the etch; calibrate on test gaps")],
   "silicon": "Silicon uses a self-aligned polysilicon or metal gate, with implants aligned to it."},
+ {"id": "S11E", "short": "Mask 3 ENH", "module": "M3", "title": "Mask 3 (ENH): partial C–O channel for enhancement-mode FETs", "t_max_c": 120,
+  "why": "Oxidizing part of the channel removes the hole gas there until the gate pulls it back, which makes a normally-off (enhancement-mode) transistor. Logic needs both flavors: depletion-mode loads and enhancement-mode drivers (E/D logic).",
+  "equipment": ["Mask aligner or electron-beam lithography (PDK-0 layer ENH)", "O₂ plasma asher or UV-ozone"],
+  "params": [("Partial oxidation", "Expose a fraction of the channel length to O₂ plasma or UV-ozone through resist openings; tune the oxidized fraction to set the threshold", "[kitabayashi2017]")],
+  "checks": [("Enhancement FETs normally off (drain current at V_GS = 0 below 1% of on-current)", "", None, None, "ADAMAS"),
+             ("Depletion FETs still conduct at V_GS = 0", "", None, None, "ADAMAS")],
+  "safety": ["As S10 (plasma; resist solvents)."],
+  "failures": [("All FETs normally off", "Mask misaligned or over-oxidized", "Shorter exposure; check ENH alignment to the gap")],
+  "silicon": "Silicon sets thresholds with channel implants (one implant mask per threshold flavor)."},
  {"id": "S12", "short": "NO₂", "module": "M3", "title": "NO₂ exposure (option A, high-current devices)", "t_max_c": 25,
   "why": "NO₂ is a strong surface acceptor: it raises the hole density toward 10¹⁴ cm⁻², lowering on-resistance. It must be locked in immediately by the ALD cap (S13).",
   "equipment": ["Sealed exposure chamber with 2% NO₂ in N₂", "Gas cabinet with NO₂ detector"],
@@ -148,7 +160,7 @@ STEPS = [
   "safety": ["Trimethylaluminium is pyrophoric: sealed source, trained operators, never open to air."],
   "failures": [("Large C–V hysteresis", "Traps at the interface or in the oxide", "Adjust temperature; post-deposition anneal within the thermal budget")],
   "silicon": "Silicon also uses ALD high-κ oxides (HfO₂) at advanced nodes, over a thin SiO₂ interface layer."},
- {"id": "S14", "short": "Mask 3 gate", "module": "M4", "title": "Mask 3 (GATE metal)", "t_max_c": 120,
+ {"id": "S14", "short": "Mask 4 gate", "module": "M4", "title": "Mask 4 (GATE metal)", "t_max_c": 120,
   "why": "The gate electrode sits on Al₂O₃ over the channel and must overlap the gap on both sides so the whole channel is controlled.",
   "equipment": ["Lithography", "Evaporator", "Lift-off bath"],
   "params": [("Metal", "Al, Au, or Ti/Au (for example 10/80 nm)", "[kasu2012] [kawarada2023]"), ("Overlap", "At least 2 λ beyond the gap (PDK-0 rule)", "")],
@@ -156,7 +168,7 @@ STEPS = [
   "safety": ["Solvents for lift-off: fume hood."],
   "failures": [("Gate shorts to source or drain", "ALD pinholes or misalignment", "Thicker ALD; check overlay")],
   "silicon": "Similar: metal gate definition, but silicon uses gate-last replacement flows at advanced nodes."},
- {"id": "S15", "short": "Mask 4 vias", "module": "M4", "title": "Mask 4 (VIA): open Al₂O₃ over contacts", "t_max_c": 25,
+ {"id": "S15", "short": "Mask 5 vias", "module": "M4", "title": "Mask 5 (VIA): open Al₂O₃ over contacts", "t_max_c": 25,
   "why": "Contacts need bare gold; the oxide is removed only where pads and probes land.",
   "equipment": ["Lithography", "Buffered oxide etch (HF-based)"],
   "params": [("Etch", "10:1 buffered oxide etch, timed to the ALD thickness", "")],
@@ -164,7 +176,7 @@ STEPS = [
   "safety": ["Hydrofluoric acid: HF-specific training, calcium gluconate gel at hand, never work alone."],
   "failures": [("Open vias", "Under-etch", "Extend etch; check with a probe on a test pad")],
   "silicon": "Silicon opens contacts through a thick dielectric by plasma etch, then fills tungsten plugs."},
- {"id": "S16", "short": "Mask 5 metal", "module": "M4", "title": "Mask 5 (METAL2): interconnect and pads", "t_max_c": 120,
+ {"id": "S16", "short": "Mask 6 metal", "module": "M4", "title": "Mask 6 (METAL2): interconnect and pads", "t_max_c": 120,
   "why": "Connects transistors into cells and brings every node to probe pads; the photocurrent electrodes and microwave line for qubits (QELEC) are drawn here too.",
   "equipment": ["Lithography", "Evaporator", "Lift-off"],
   "params": [("Metal", "Ti/Au, for example 20/130 nm", "")],
@@ -216,6 +228,7 @@ XS = [
  ("Aub", 40, 860, 196, 33, "gold", "S09", "S10", "Au (100 nm)"),
  ("Aud", 140, 600, 196, 33, "gold", "S10", "S11", "Au"),
  ("AuS", 140, 330, 196, 33, "gold", "S11", None, "source"), ("AuD", 410, 600, 196, 33, "gold", "S11", None, "drain"),
+ ("enh", 350, 390, 229, 3, "#ffc46b", "S11E", None, "partial C–O (ENH)"),
  ("NO2", 330, 410, 222, 7, "no2", "S12", None, "NO₂"),
  ("ox1", 40, 860, 180, 16, "#9d7bff", "S13", None, "Al₂O₃ (ALD)"), ("ox2", 330, 410, 196, 33, "#9d7bff", "S13", None, ""),
  ("gate", 345, 395, 124, 56, "#b9c4d0", "S14", None, "gate"),
@@ -238,13 +251,31 @@ def visible(shape, k: int) -> bool:
     return a <= k < b
 
 
-def thermal_violations() -> list[str]:
-    """Steps after gold deposition must stay below 500 °C (gold diffusion, hole-gas stability); growth and NV anneal
-    must precede the first metal. Returns human-readable violations (empty list = consistent flow)."""
+HYDROGEN_STEPS = ("S08",)            # hydrogen plasma or atomic hydrogen
+NV_PASSIVATION_C = 500                # hydrogen above about 700 °C passivates NV [stacey2012]; ADAMAS margin: keep below 500 °C
+
+
+def thermal_violations(variant: str | None = None) -> list[str]:
+    """Process rules, returned as human-readable violations (empty list = consistent flow):
+    1. steps after gold deposition stay below 500 °C (gold diffusion, hole-gas stability), so growth and the NV anneal
+       precede the first metal;
+    2. once NV centers exist (S06 and S07 run in this variant), no hydrogen step may exceed NV_PASSIVATION_C (audit E22).
+    variant None checks the full flow at the default parameters (and therefore reports rule 2 for a flow with NVs)."""
     out, first_metal = [], step_index("S09")
+    skip = set(VARIANTS[variant]["skip"]) if variant else set()
     for k, s in enumerate(STEPS):
+        if s["id"] in skip:
+            continue
         if k >= first_metal and s["t_max_c"] > 500:
             out.append(f"{s['id']} at {s['t_max_c']} °C after gold")
+    has_nv = "S07" not in skip
+    h_max = VARIANTS[variant].get("h_term_max_c") if variant else None
+    for sid in HYDROGEN_STEPS:
+        if sid in skip or not has_nv or step_index(sid) < step_index("S07"):
+            continue
+        t = h_max if h_max is not None else next(s["t_max_c"] for s in STEPS if s["id"] == sid)
+        if t > NV_PASSIVATION_C:
+            out.append(f"{sid} hydrogen at {t} °C after NV creation would passivate the NV centers")
     return out
 
 

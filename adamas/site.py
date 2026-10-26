@@ -1,6 +1,7 @@
 """Build the ADAMAS website (GitHub Pages): landing page, six interactive labs, the explorer, and data files.
 
-    python -m adamas.site [out_dir]        (default: site/)
+    python -m adamas.site [out_dir]              (default: site/)
+    python -m adamas.site desktop/site --offline  (libraries and fonts copied in, for the desktop app; needs npm ci in web/)
 
 Static files live in web/. This builder injects the shared <head> into each lab, writes data/site.json from the Python
 package (so every number on the site comes from the same cited models), copies the precomputed surface-code data and
@@ -15,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
+MARKER = ".adamas-site"
 
 
 def site_data() -> dict:
@@ -42,7 +44,7 @@ def site_data() -> dict:
     from . import resource
     data["resource"] = resource.table()
     data["resource_models"] = {m: resource.table_for(m) for m in resource.MODELS}
-    data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}
+    data["workloads"] = {k: list(v) for k, v in resource.WORKLOADS.items()}; data["rsa_job"] = resource.RSA_JOB
     from . import traveler
     data["traveler"] = traveler.to_json()
     from . import experiments
@@ -50,6 +52,10 @@ def site_data() -> dict:
     from . import uncertainty, validation
     data["validation"] = validation.to_json()
     data["uncertainty"] = uncertainty.to_json()
+    from . import decision
+    data["decision"] = decision.to_json()
+    from . import action
+    data["action"] = action.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -69,7 +75,7 @@ def power_data(bv_table: float = 1200.0) -> dict:
     T = [float(t) for t in np.arange(300, 660, 10)]
     out = {}
     for key, name, measured in [("Si", "Silicon (ideal)", None), ("4H-SiC", "Silicon carbide (ideal)", None), ("GaN", "Gallium nitride (ideal)", None),
-                                ("Diamond", "Diamond (ideal, holes)", None), ("Diamond", "Diamond (measured 2022 device)", "saha2022")]:
+                                ("Diamond", "Diamond (bulk-doped drift)", None), ("Diamond", "Diamond (measured 2022 device)", "saha2022")]:
         m = materials.MATERIALS[key]
         if measured:
             pt = power.MEASURED_DIAMOND[measured]
@@ -93,8 +99,8 @@ def build_course(out: Path, head: str) -> None:
       <p>{H.escape(L["objectives"][0])}.</p><span class="go">Start → <span id="badge{L["id"]}" style="color:var(--mute);font-weight:400;margin-left:8px"></span></span></a>''' for L in LESSONS)
     ids = [L["id"] for L in LESSONS]
     (d / "index.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Course · ADAMAS</title></head><body><main class="wrap">
-<section class="block" style="padding:60px 0 10px"><span class="eyebrow">Course</span><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in seven lessons</span></h1>
-<p class="lead">From "why diamond?" to "how big is the machine?". Each lesson has objectives, readings, a lab task, a notebook you can run in your browser, and a four-question check. About six hours in total; suitable for self-study or a one-month module.</p>
+<section class="block" style="padding:60px 0 10px"><span class="eyebrow">Course</span><h1 style="font-size:clamp(34px,5vw,60px)">Diamond chips, <span class="grad">in eight lessons</span></h1>
+<p class="lead">From "why diamond?" to "how big is the machine?". Each lesson has objectives, readings, a lab task, a notebook you can run in your browser, and a four-question check. About seven hours in total; suitable for self-study or a one-month module.</p>
 <div id="progress" class="card" style="margin-top:20px"></div></section>
 <div class="bento" style="grid-template-columns:repeat(3,1fr)">{cards}</div>
 <section class="block"><div class="card"><h3>For instructors</h3><p>Notebooks live in <a href="{REPO}/tree/main/notebooks">notebooks/</a> and open in Google Colab or GitHub Codespaces. Every quiz answer cites a source in the repository's reference database; the lesson content is one Python file, <a href="{REPO}/blob/main/adamas/course.py">adamas/course.py</a>, so it is easy to fork and adapt.</p></div></section>
@@ -107,7 +113,7 @@ def build_course(out: Path, head: str) -> None:
         code = H.escape("\n\n".join(L["code"]))
         (d / f"lesson-{L['id']}.html").write_text(f'''<!doctype html><html lang="en" data-base=".."><head>{head}<title>Lesson {L["id"]}: {H.escape(L["title"])} · ADAMAS</title></head><body><main class="wrap" style="max-width:920px">
 <section class="block" style="padding:50px 0 10px"><span class="eyebrow">Lesson {L["id"]} of {len(LESSONS)} · {L["minutes"]} minutes</span><h1 style="font-size:clamp(32px,4.5vw,54px)">{H.escape(L["title"])}</h1>
-<canvas class="mini" data-mini="{ {1: "lattice", 2: "power", 3: "ring", 4: "rabi", 5: "stack", 6: "machine", 7: "fab"}.get(L["id"], "lattice") }" style="height:110px;margin:6px 0 14px"></canvas>
+<canvas class="mini" data-mini="{ {1: "lattice", 2: "power", 3: "ring", 4: "rabi", 5: "stack", 6: "machine", 7: "fab", 8: "qec"}.get(L["id"], "lattice") }" style="height:110px;margin:6px 0 14px"></canvas>
 <div class="card"><h3>You will be able to</h3><ul>{"".join(f"<li>{H.escape(o)}</li>" for o in L["objectives"])}</ul></div></section>
 <div class="card" style="margin:14px 0"><span class="tag gold">1 · Read</span><ul>{reads}</ul></div>
 <div class="card" style="margin:14px 0"><span class="tag">2 · Play</span><p style="color:var(--ink)">{H.escape(L["lab"][1])}</p><a class="btn primary" href="../{L["lab"][0]}">Open the lab →</a></div>
@@ -168,12 +174,14 @@ if (window.location && window.location.hash) {{ const t = document.getElementByI
 
 PAGES = [  # (title, href, kind, description) for the search index; labs and tools mirror web/assets/site.js NAV
     ("Home", "index.html", "page", "diamond chips from wafer to qubit, overview, key findings, choose your path"),
-    ("Course", "course/index.html", "page", "seven lessons, notebooks, quizzes"), ("Explorer", "explorer.html", "page", "every equation in nine live panels, guided tour"),
+    ("Course", "course/index.html", "page", "eight lessons, notebooks, quizzes"), ("Explorer", "explorer.html", "page", "every equation in nine live panels, guided tour"),
+    ("Equations in Action", "action.html", "page", "fourteen equations animated with live sliders, plugged-in numbers, experiments, play, tour"),
+    ("Get the app", "download.html", "page", "desktop app download Windows macOS Linux, install offline web app, adamas app"),
     ("Gallery", "gallery.html", "page", "all figures and animations"), ("Glossary", "glossary.html", "page", "acronyms and terms"),
-    ("Process Traveler", "process.html", "page", "19 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
+    ("Process Traveler", "process.html", "page", "20 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
     ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
     ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
-    ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado"),
+    ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado, Sobol, value of information, what to measure next"),
     ("Preprint (PDF)", "paper/adamas.pdf", "page", "paper, results, references"), ("Talk (PDF)", "paper/talk.pdf", "page", "12 slides"), ("Poster (PDF)", "paper/poster.pdf", "page", "A0 poster"),
     ("Lattice Lab", "labs/lattice.html", "lab", "crystal, NV center, magnet, ODMR lines"), ("Heat Race", "labs/heat.html", "lab", "thermal conductivity, hot spot, silicon vs diamond"),
     ("Wafer Lab", "labs/wafer.html", "lab", "yield, defects, dies per wafer, Poisson, Murphy"), ("Fab Walkthrough", "labs/fab.html", "lab", "process, layers, cleanroom"),
@@ -193,6 +201,8 @@ def search_index() -> list[dict]:
     items += [{"title": i["title"], "href": f"gallery.html#{Path(i['src']).stem}", "kind": "figure", "text": i["caption"]} for i in gallery_items()]
     items += [{"title": f"{e['id']} · {e['title']}", "href": "experiments.html", "kind": "experiment", "text": e["goal"]} for e in experiments.EXPERIMENTS]
     items += [{"title": f"{s['id']} · {s['title']}", "href": "process.html", "kind": "step", "text": s["why"]} for s in traveler.STEPS]
+    from . import action
+    items += [{"title": f"Equation: {s['title']}", "href": f"action.html#{s['id']}", "kind": "equation", "text": s["tagline"] + " " + s["tex"]} for s in action.SCENES]
     items += [{"title": f"Lesson {L['id']}: {L['title']}", "href": f"course/lesson-{L['id']}.html", "kind": "lesson", "text": "; ".join(L["objectives"])} for L in LESSONS]
     return items
 
@@ -201,8 +211,9 @@ def findings() -> dict:
     """Headline numbers for the landing page, from the same generator as the preprint."""
     from . import paper
     N = paper.numbers()
-    return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven",
-                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
+    return {k: N[k] for k in ("BFOMratio", "KappaRatio", "UncPowerPfifty", "UncPowerPten", "UncPowerPninety", "FcohPublished", "qForSixtySeven", "FcohLow", "FcohHigh",
+                              "PowerRatioRoom", "PowerRatioHot", "UncPowerHotPfifty", "FionDriftPct", "ThrXZZXUpper", "EtaCnot", "RSAStepsCal", "RSAYearsToffoli",
+                              "ThrXZZXBias", "ThrCSSBias", "RSADieMm", "RSAYears", "UncQPten", "UncQPninety", "RSAQubitsMCSSBiased", "RSAQubitsMXZZX", "RSAYearsXZZX", "SobolMobility", "SobolField", "SobolReadout", "ValChecks", "ValPass", "NumRefs", "NumFigures")}
 
 
 def build_glossary_page(out: Path) -> None:
@@ -219,10 +230,82 @@ def build_glossary_page(out: Path) -> None:
 const q = document.getElementById('q'); q.oninput = () => document.querySelectorAll('.gterm').forEach(t => t.hidden = !t.dataset.text.includes(q.value.toLowerCase().trim()));</script></body></html>''', encoding="utf-8")
 
 
-def build(out: str | Path = "site") -> Path:
+# Libraries the pages load from CDNs. An offline build (the desktop app) copies them from web/node_modules (npm ci in web/)
+# and rewrites every reference, so the app never needs the network.
+VENDOR = [  # (CDN prefix, path under web/node_modules, destination under vendor/, is a directory)
+    ("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/build/three.module.js", "three/three.module.js", False),
+    ("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/", "three/examples/jsm", "three/jsm/", True),
+    ("https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js", "gsap/dist/gsap.min.js", "gsap/gsap.min.js", False),
+    ("https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js", "gsap/dist/ScrollTrigger.min.js", "gsap/ScrollTrigger.min.js", False),
+    ("https://cdn.plot.ly/plotly-2.35.2.min.js", "plotly.js-dist-min/plotly.min.js", "plotly/plotly.min.js", False),
+]
+JSM_DIRS = ("controls", "postprocessing", "shaders")
+FONT_CSS = [("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"),
+            ("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap")]
+
+
+def vendor(out: Path) -> list[str]:
+    """Copy CDN libraries and fonts into out/vendor and point every page at them. Returns what was copied."""
+    import re
+    nm = WEB / "node_modules"
+    missing = [src for _, src, _, _ in VENDOR if not (nm / src).exists()]
+    if missing:
+        raise SystemExit(f"offline build needs the web libraries: cd web && npm ci   (missing {', '.join(missing)})")
+    v = out / "vendor"
+    for _, src, dst, is_dir in VENDOR:
+        if is_dir:
+            for sub in JSM_DIRS:
+                shutil.copytree(nm / src / sub, v / dst / sub, dirs_exist_ok=True)
+        else:
+            (v / dst).parent.mkdir(parents=True, exist_ok=True); shutil.copy(nm / src, v / dst)
+    css = []
+    for fam, pkg, weights in (("Inter", "@fontsource/inter", (300, 400, 500, 600, 700, 800)), ("JetBrains Mono", "@fontsource/jetbrains-mono", (400, 600))):
+        for wgt in weights:
+            f = nm / pkg / "files" / f"{pkg.split('/')[1]}-latin-{wgt}-normal.woff2"
+            if f.exists():
+                (v / "fonts").mkdir(parents=True, exist_ok=True); shutil.copy(f, v / "fonts" / f.name)
+                css.append(f"@font-face{{font-family:'{fam}';font-style:normal;font-weight:{wgt};font-display:swap;src:url({f.name}) format('woff2')}}")
+    (v / "fonts").mkdir(parents=True, exist_ok=True); (v / "fonts" / "fonts.css").write_text("\n".join(css) + "\n", encoding="utf-8")
+    for p in list(out.rglob("*.html")) + list(out.rglob("*.css")) + list((out / "assets").rglob("*.js")):
+        if "vendor" in p.parts:
+            continue
+        s = p.read_text(encoding="utf-8"); t = s
+        for cdn, _, dst, _ in VENDOR:
+            t = t.replace(cdn, "/vendor/" + dst)
+        for f in FONT_CSS:
+            t = t.replace(f, "/vendor/fonts/fonts.css")
+        t = re.sub(r'<link[^>]+fonts\.googleapis\.com[^>]*>', '<link rel="stylesheet" href="/vendor/fonts/fonts.css">', t)
+        if t != s:
+            p.write_text(t, encoding="utf-8")
+    return sorted(str(x.relative_to(out)) for x in v.rglob("*") if x.is_file())
+
+
+def add_app_meta(out: Path) -> None:
+    """Every page links the web-app manifest and icons, so any page can be installed as an app."""
+    from . import __version__, icons
+    icons.write_web_icons(out / "assets" / "icons")
+    for p in out.rglob("*.html"):
+        if "vendor" in p.parts:
+            continue
+        rel = "/".join([".."] * (len(p.relative_to(out).parts) - 1)) or "."
+        s = p.read_text(encoding="utf-8")
+        if 'rel="manifest"' in s or "<head>" not in s:
+            continue
+        meta = (f'<link rel="manifest" href="{rel}/manifest.webmanifest"><meta name="theme-color" content="#05070d">'
+                f'<link rel="icon" type="image/png" href="{rel}/assets/icons/icon-192.png"><link rel="apple-touch-icon" href="{rel}/assets/icons/apple-touch-icon.png">')
+        p.write_text(s.replace("<head>", "<head>" + meta, 1), encoding="utf-8")
+    sw = out / "sw.js"
+    if sw.exists():
+        sw.write_text(sw.read_text(encoding="utf-8").replace("__ADAMAS_VERSION__", __version__), encoding="utf-8")
+
+
+def build(out: str | Path = "site", offline: bool = False) -> Path:
     from . import explorer
     out = Path(out)
     if out.exists():
+        safe = not any(out.iterdir()) or (out / MARKER).exists() or ((out / "index.html").exists() and (out / "data" / "site.json").exists())
+        if not safe:   # never delete a folder that is not an ADAMAS site build
+            raise SystemExit(f"refusing to replace {out}: it is not empty and is not an ADAMAS site build")
         shutil.rmtree(out)
     shutil.copytree(WEB, out, ignore=shutil.ignore_patterns("tests", "_head.txt", "node_modules"))
     head = (WEB / "labs" / "_head.txt").read_text(encoding="utf-8")
@@ -252,9 +335,15 @@ def build(out: str | Path = "site") -> Path:
     (out / "data" / "search.json").write_text(json.dumps(search_index()), encoding="utf-8")
     (out / "data" / "findings.json").write_text(json.dumps(findings()), encoding="utf-8")
     (out / ".nojekyll").write_text("")
+    (out / MARKER).write_text("built by adamas.site; safe to delete\n")
+    add_app_meta(out)
+    if offline:
+        vendor(out)
+        (out / "data" / "build.json").write_text(json.dumps({"offline": True}), encoding="utf-8")
     return out
 
 
 if __name__ == "__main__":
-    p = build(sys.argv[1] if len(sys.argv) > 1 else ROOT / "site")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    p = build(args[0] if args else ROOT / "site", offline="--offline" in sys.argv)
     print("built", p, sum(1 for _ in p.rglob("*")), "files")

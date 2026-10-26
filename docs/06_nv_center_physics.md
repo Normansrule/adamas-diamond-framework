@@ -18,8 +18,8 @@ $$\frac{H}{h} = D\left(S_z^{2} - \tfrac{2}{3}\right) + E\left(S_x^{2} - S_y^{2}\
 | $dD/dT$ | Temperature shift | −74.2 kHz/K | [acosta2010], [toyli2012] |
 | $\gamma_e$ | Electron gyromagnetic ratio | 28.03 GHz/T | [doherty2013] |
 | $E$ | Strain and electric-field splitting | sample dependent, kHz to MHz | [dolde2011] |
-| $A_\parallel$ (¹⁴N) | Hyperfine coupling to the host nitrogen nucleus | −2.16 MHz (¹⁴N), 3.03 MHz (¹⁵N) | [felton2009] |
-| $P$ | ¹⁴N quadrupole splitting | −4.95 MHz | [felton2009] |
+| $A_\parallel$ (¹⁴N) | Hyperfine coupling to the host nitrogen nucleus | −2.147 MHz (¹⁴N), 3.03 MHz (¹⁵N); the code uses \|A∥\| = 2.147 MHz | [felton2009] |
+| $P$ | ¹⁴N quadrupole splitting | −5.016 MHz | [felton2009] |
 | $A$ (¹³C) | Hyperfine coupling to nearby carbon-13 | up to about 130 MHz, site dependent | [smeltzer2011], [childress2006] |
 
 For a field $B_\parallel$ along the NV axis the two resonances are $f_\pm = D \pm \gamma_e B_\parallel$. `adamas.nv.transition_frequencies_mhz(1.0)` returns 2841.97 and 2898.03 MHz at 1 mT.
@@ -34,8 +34,8 @@ The four possible ⟨111⟩ orientations of the NV axis give up to eight lines i
 
 Green excitation (typically 532 nm) drives the ³A₂ → ³E transition; the zero-phonon line is at 637 nm and most emission falls in a phonon sideband from 640 to 800 nm ([davies1976], [doherty2013]). From the excited state, $m_s = \pm 1$ has a much higher probability than $m_s = 0$ of crossing into the singlet states (¹A₁ → ¹E, infrared line at 1042 nm), which return preferentially to $m_s = 0$ ([manson2006], [goldman2015], [robledo2011njp], [tetienne2012]). Two results follow:
 
-- **Spin polarization** above about 80 percent into $m_s = 0$ after a microsecond of green light.
-- **Spin-dependent fluorescence**: about 30 percent fewer photons from $m_s = \pm 1$ during the first few hundred nanoseconds.
+- **Spin polarization** above about 80 percent into $m_s = 0$ after a microsecond of green light (the rate model of `adamas.photophysics` gives 82 percent).
+- **Spin-dependent fluorescence**: $m_s = \pm 1$ is about 30 percent dimmer than $m_s = 0$ during the first few hundred nanoseconds. Starting from the 82 percent polarized state, the model gives a measured readout contrast of 30.8 percent (`adamas.photophysics.measured_contrast()`), in line with the literature.
 
 The contrast is modest and only a fraction of a photon is detected per readout, so room-temperature optical readout of the electron spin is an averaging measurement, not single-shot ([hopper2018], [steiner2010]). Workarounds appear in [Chapter 8](08_quantum_processor_architecture.md).
 
@@ -57,6 +57,9 @@ Gates as fast as a nanosecond have been driven, beyond the rotating-wave regime 
 |---|---|---|---|
 | $T_2^{*}$ | about 1 to 5 µs | natural carbon (1.1% ¹³C) | [childress2006], [mizuochi2009] |
 | $T_2^{*}$ | tens to about 100 µs and beyond | ¹²C-enriched | [balasubramanian2009], [bauch2018] |
+| $T_2^{*}$ | about 1.5 ms (record) | phosphorus-doped n-type, ¹²C | [herbschleb2019] |
+| $T_2^{*}$ | 1.28 µs | low-strain HPHT plate; limited by strain and local charges | [blinder2024] |
+| $T_2$ (echo) | about 5 µs | single NV in heteroepitaxial (dislocated) diamond | [nelz2019] |
 | $T_2$ (echo) | about 0.6 ms | natural carbon | [mizuochi2009] |
 | $T_2$ (echo) | 1.8 ms | 99.7% ¹²C | [balasubramanian2009] |
 | $T_2$ (echo) | 2.4 ms | phosphorus-doped n-type, ¹²C | [herbschleb2019] |

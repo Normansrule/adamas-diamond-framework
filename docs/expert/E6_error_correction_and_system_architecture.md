@@ -10,11 +10,11 @@ Code: `adamas.qec`.
 |---|---|---|---|---|
 | Three-qubit repetition | Majority vote on one error type; $p_L = 3p^2 - 2p^3$ | 3 | Any three coupled spins | [shor1995]; room-temperature NV demonstration [waldherr2014] |
 | Steane and other stabilizer codes | Parity checks on both error types | 7+ | All-to-all within a cell | [steane1996], [gottesman1997]; five-qubit code at 4 K [abobeih2022] |
-| Surface code | Two-dimensional grid, nearest-neighbor checks, threshold near 1% | $2d^2 - 1$ | Planar nearest-neighbor links | [kitaev2003], [dennis2002], [fowler2012] |
+| Surface code | Two-dimensional grid, nearest-neighbor checks, threshold near 1% | $2d^2 - 1$ (rotated layout [litinski2019]) | Planar nearest-neighbor links | [kitaev2003], [dennis2002], [fowler2012] |
 | Quantum low-density parity-check codes | About 10× fewer qubits than surface code | lower | **Long-range links** | [bravyi2024] |
 | Modular / networked cells | Small processors joined by noisy links plus purification | high, but tolerant of 10% link error | Heralded entanglement | [nickerson2014], [nemoto2014] |
 
-Surface-code scaling [fowler2012]:
+Surface-code scaling, a widely used rule of thumb ([fowlergidney2018]; for their own circuit model [fowler2012] give $p_L \approx 0.03\,(p/0.57\%)^{d_e}$ with $d_e = \lceil d/2 \rceil$):
 
 $$p_L \approx 0.1\left(\frac{p}{p_{th}}\right)^{(d+1)/2}, \qquad p_{th}\approx 10^{-2}$$
 
@@ -22,9 +22,9 @@ $$p_L \approx 0.1\left(\frac{p}{p_{th}}\right)^{(d+1)/2}, \qquad p_{th}\approx 1
 
 | Physical error | Target logical error | Distance | Physical qubits | NV cells (4 qubits each) |
 |---|---|---|---|---|
-| 10⁻³ | 10⁻⁹ | 17 | 577 | 145 |
-| 10⁻³ | 10⁻¹² (×100 logical qubits) | 23 | 105,700 | 26,425 |
-| 8 × 10⁻³ ([rong2015] two-qubit) | 10⁻⁹ | > 150 | impractical | impractical |
+| 10⁻³ | 10⁻⁹ | 15 | 449 | 113 |
+| 10⁻³ | 10⁻¹² (×100 logical qubits) | 21 | 88,100 | 22,025 |
+| 8 × 10⁻³ ([rong2015] two-qubit) | 10⁻⁹ | 165 | 54,449 | impractical |
 
 **The lesson.** Gates inside a cell already sit near or below threshold ([rong2015], [xie2023]). The code distance, and with it the machine size, is governed by the *worst* operation in the syndrome cycle, which is the inter-cell link ([E5](E5_nv_qubit_engineering.md)) and the readout. A factor of ten in link error is worth more than a factor of ten in qubit count.
 
@@ -38,7 +38,7 @@ Each data qubit takes part in four syndrome gates per round, 8 of the 15 two-qub
 
 ![Surface code with three error rates](../img/fig27_surface_code_three_rates.png)
 
-**Validation.** With $p_d = p_m$ the distance-5 and distance-9 curves cross at 3.1 percent, against the published 2.93 percent [wang2003]; the small excess is the usual finite-size drift.
+**Validation.** With $p_d = p_m$ the distance-5 and distance-9 curves cross at 3.1 percent, against the published matching-decoder value of 2.93 percent [wang2003]; the small excess is the usual finite-size drift.
 
 **Results for NV cells** (in-cell error 0.1 percent, one data qubit per cell, so $f_{link} = 1$):
 
@@ -53,8 +53,8 @@ Logical error is per $d$-round memory experiment, 4000 shots each, so entries be
 
 **Three design conclusions.**
 
-1. **The break-even link error is about 1.3 percent per gate**, and it barely moves as readout error rises from 0.1 to 3 percent. Time-like matching absorbs readout mistakes well, so **readout is the forgiving parameter and the link is the unforgiving one.** This makes electrical readout with a few percent error ([siyushev2019], [E4](E4_analog_and_mixed_signal_design.md)) acceptable for error correction.
-2. Combining with [E5](E5_nv_qubit_engineering.md): an echoed gate at 25 nm can reach coherence-limited fidelity of 0.98 to 0.999, that is, link errors of 0.1 to 2 percent. **The placement and charge-state problems, not coherence, decide which side of the break-even line a processor lands on.**
+1. **The break-even link error in this phenomenological model is about 1.3 percent per gate** (the circuit-level threshold of E6.1c is about 1 percent, and the machine of E10 assumes 0.3 percent), and it barely moves as readout error rises from 0.1 to 3 percent. Time-like matching absorbs readout mistakes well, so **readout is the forgiving parameter and the link is the unforgiving one.** This makes electrical readout with a few percent error ([siyushev2019], [E4](E4_analog_and_mixed_signal_design.md)) acceptable for error correction.
+2. Combining with [E5](E5_nv_qubit_engineering.md): for the published 25 nm pair, coherence alone allows a Bell fidelity of 0.78 to 0.998 depending on the noise model, that is, link errors of about 0.2 to 22 percent; the measured 0.67 lies below that range, an unexplained discrepancy. **Which side of the break-even line a processor lands on is decided by the measured gate, not by coherence models**: placement, addressing, and the still-unexplained gap all matter.
 3. Packing several data qubits into one cell (nuclear spins around one electron, $f_{link} < 1$) moves the operating point left on the map in proportion, at the cost of slower, serialized syndrome extraction.
 
 ### E6.1c Circuit level, and the readout-time budget (project X-1b, done)
@@ -67,12 +67,12 @@ The phenomenological model above hides two things. One gate fault in a syndrome-
 
 | Result | Value |
 |---|---|
-| Circuit-level threshold, uniform noise (validation) | about 1.2% (curves cross between 1.0 and 1.2%) |
+| Circuit-level threshold, uniform noise (validation) | about 1.2% (curves cross between 1.0 and 1.2%); the phenomenological threshold of E6.1b is 3.1%, and the native circuits of E6.1e give 0.9% because they put a full error p on each qubit of every gate |
 | Readout time at which distance 7 stops beating distance 3, $T_{2,mem}$ = 1 s | about 100 ms |
 | Same, $T_{2,mem}$ = 0.1 s | about 10 ms |
 | Readout time that adds less than a factor of 2 to the distance-7 logical error | about 1% of $T_{2,mem}$ |
 
-**Design rule.** Keep the ancilla readout below about one percent of the nuclear-memory coherence time under illumination. With a 1 s memory, today's millisecond optical readout already meets it; with 0.1 s it does not, and electrical readout (about 0.1 ms, proposed in [E4](E4_analog_and_mixed_signal_design.md)) becomes necessary. This ties the readout electronics of E4, the nuclear memory of [E5](E5_nv_qubit_engineering.md), and the machine sizing of [E10](E10_scaling_a_room_temperature_quantum_computer.md), whose wall-clock times assumed a 1 ms cycle.
+**Design rule.** Keep the ancilla readout below about one percent of the nuclear-memory coherence time under illumination (the strict rule: at most a doubling of the distance-7 error). The looser criterion of the ADAMAS paper (`paper/adamas.tex`), readout below a tenth of the memory time, marks where scaling with distance slows down, not where it stops. With a 1 s memory, today's millisecond optical readout already meets it; with 0.1 s it does not, and electrical readout (about 0.1 ms, proposed in [E4](E4_analog_and_mixed_signal_design.md)) becomes necessary. This ties the readout electronics of E4, the nuclear memory of [E5](E5_nv_qubit_engineering.md), and the machine sizing of [E10](E10_scaling_a_room_temperature_quantum_computer.md), whose wall-clock times assumed a 1 ms cycle.
 
 Caveats: the idle channel is modeled as depolarizing; real nuclear dephasing under illumination is biased and depends on the hyperfine coupling, which favors bias-tailored codes. Leakage out of the NV⁻ charge state enters only through the preparation error.
 
@@ -93,24 +93,27 @@ Section E6.1c modeled the idle error as depolarizing. A nuclear spin waiting und
 
 **Reading.** A computation needs both bases, so the standard code is limited by its X memory and gains nothing from the bias. Spreading the dephasing across both logical sectors, as XZZX does, buys about ten times more readout time before scaling stops (break-even moves from about 10% to about 100% of the memory coherence time). The stricter budget of E6.1c, readout that at most doubles the distance-7 error, relaxes less: from about 5 ms to about 12 ms for a 1 s memory, or roughly 0.5% to 1.2% of the coherence time. The remaining project (X-5): a native XZZX syndrome circuit with its own hook errors, bias-aware decoding, and the effect on the resource estimate of [E10](E10_scaling_a_room_temperature_quantum_computer.md).
 
-### E6.1e Native XZZX circuits with biased gate noise (project X-5, done)
+### E6.1e Native XZZX circuits with biased gate noise (project X-5, done; revised in v0.27 after the audit)
 
-E6.1d emulated the XZZX code by changing only the idle noise. A real XZZX processor measures different stabilizers with different gates, so one gate fault can spread differently ("hook" errors), and the gates themselves can have biased noise. `adamas.xzzx_native` builds the circuit natively: it takes Stim's rotated surface-code memory and rewrites it gate by gate, so that on one checkerboard sublattice of data qubits resets become RX, measurements become MX, CX(ancilla → data) becomes CZ, and CX(data → ancilla) becomes XCX [bonillaataides2021]. Stim confirms that every detector and the logical observable of the rewritten circuit are deterministic without noise, in both memory bases. The same noise is then inserted into both codes: an independent biased Pauli channel after every two-qubit gate with bias η = p_Z/(p_X + p_Y), readout and reset flips, and Z-only dephasing on the data during each ancilla readout. Errors after ideal gates keep their bias; for the NV dipolar interaction, a diagonal ZZ coupling, dephasing commutes with the gate, which motivates this assumption [dolde2013] [tuckett2018].
+E6.1d emulated the XZZX code by changing only the idle noise. A real XZZX processor measures different stabilizers with different gates, so one gate fault can spread differently ("hook" errors), and the gates themselves can have biased noise. `adamas.xzzx_native` builds the circuit natively: it takes Stim's rotated surface-code memory and rewrites it gate by gate, so that on one checkerboard sublattice of data qubits resets become RX, measurements become MX, CX(ancilla → data) becomes CZ, and CX(data → ancilla) becomes XCX [bonillaataides2021]. Stim confirms that every detector and the logical observable of the rewritten circuit are deterministic without noise, in both memory bases.
+
+**Which gates can keep a bias.** A CNOT whose noise stays Z-biased is impossible for a two-level qubit: a Z error that occurs partway through the gate can leave the target with an X or Y error [guillaud2019] [puri2020]. Bias-preserving gates of that kind need cat qubits. A CZ is different. It is diagonal, so it commutes with dephasing, and the NV dipolar interaction is a diagonal ZZ coupling [dolde2013]. A circuit-level study for two-level qubits [etxezarreta2025] finds that CZ gates can keep the bias and CNOTs keep a residual bias of at most about η ≈ 5. Version 0.27 therefore (1) runs every ancilla that measures a Z-type data component in the X frame, so that its gates are CZ, and every X-type component through a CNOT (half the two-qubit gates are CZ, in both codes); and (2) gives CZ the full bias η and CNOT-type gates min(η, 5). The same noise goes into both codes: an independent biased Pauli channel on each qubit after every two-qubit gate, readout and reset flips, and Z-only dephasing on the data during each ancilla readout. Earlier versions gave every gate the full bias, as if CNOTs preserved it.
 
 ![Native XZZX](../img/fig50_xzzx_native.png)
 
-Results (Figure 50, worse of the two memory bases, distances 3 and 5 for thresholds):
+Results (Figure 50, worse of the two memory bases, distances 3 and 5 for thresholds; model of this repository):
 
-| Gate-noise bias η | 0.5 (depolarizing) | 10 | 100 |
+| Gate-noise bias η on CZ (CNOT ≤ 5) | 0.5 (depolarizing) | 10 | 100 |
 |---|---|---|---|
-| Standard (CSS) threshold | 0.95% | 0.68% | 0.63% |
-| XZZX threshold (native) | 0.93% | 1.30% | 1.59% |
+| Standard (CSS) threshold | 0.93% | 0.89% | 0.86% |
+| XZZX threshold (native) | 0.94% | 1.69% | 1.81% |
+| XZZX, bias-preserving CNOTs (upper bound, not reachable with two-level qubits) | 1.02% | 1.91% | 3.25% |
 
 1. **Sanity check.** Under depolarizing noise the two codes are Clifford-equivalent and must perform the same; they do, within sampling error (validation matrix).
-2. **Bias hurts the standard code and helps XZZX.** The CSS threshold falls as the noise concentrates on Z, because its X-memory sector sees all of it; the XZZX threshold rises, because the code spreads Z errors over both sectors.
-3. **For an NV cell** (0.3% gates at η = 100, 1% readout, 0.2% preparation, 1 s nuclear memory), at 1 ms readout the distance-7 XZZX code reaches a worse-basis logical error about 12× lower than the standard code, and distance 7 still beats distance 3 at 100 ms readout.
+2. **Bias helps XZZX and does nothing for the standard code.** The XZZX threshold roughly doubles (0.94% → 1.81%), a relative rise close to the published two-level result, about 90% to about 1.27% [etxezarreta2025]; the absolute values differ (1.81% here against 1.27%) because the noise models differ (here an independent error p on each qubit of every gate, and no single-qubit gate or idle noise outside readout). The standard code stays near 0.9%: its X-memory sector sees the Z errors. With bias-preserving CNOTs the XZZX threshold would reach 3.3%; versions before 0.27 reported 1.59% from a circuit that kept the Z ancillas in the Z frame, and called it the bias-preserving value. That number is withdrawn.
+3. **For an NV cell** (0.3% gates at η = 100 on CZ, 1% readout, 0.2% preparation, 1 s nuclear memory), at 1 ms readout the distance-7 XZZX code reaches a worse-basis logical error about 9× lower than the standard code (about ±30 %: roughly 10 logical failures in 12,000 shots at d = 7), and distance 7 still beats distance 3 at 100 ms readout.
 
-The native result confirms the E6.1d emulation and strengthens it: with biased gates the advantage holds at the gate level, not only in the idle. Caveats: the bias of NV two-qubit gates has not been measured, decoding uses matching on decomposed errors (a bias-tailored decoder would do better), and the resource estimate of E10 still uses the standard code, so it is conservative.
+The robust part of the result is the idle and readout dephasing of E6.1d, which needs no bias-preserving gate at all. The gate-noise part rests on two assumptions that have not been measured: the bias of NV two-qubit gates, and how much bias a CNOT keeps. Decoding uses matching on decomposed errors (a bias-tailored decoder would do better). The resource estimate of [E10](E10_scaling_a_room_temperature_quantum_computer.md) (Section E10.5c) uses these tables.
 
 ## E6.2 Mapping codes onto NV hardware
 

@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_every_step_is_complete():
-    assert len(T.STEPS) == 19 and len({s["id"] for s in T.STEPS}) == 19
+    assert len(T.STEPS) == 20 and len({s["id"] for s in T.STEPS}) == 20
     for s in T.STEPS:
         for key in ("why", "equipment", "params", "checks", "safety", "failures", "silicon", "short"):
             assert s[key], (s["id"], key)
@@ -15,7 +15,11 @@ def test_every_step_is_complete():
 
 
 def test_thermal_budget_is_respected():
-    assert T.thermal_violations() == []
+    for v in T.VARIANTS:                                       # every product variant is buildable as written
+        assert T.thermal_violations(v) == [], v
+    # the full flow at default parameters runs a hot hydrogen plasma after NV creation: the rule must catch it (audit E22)
+    assert any("passivate" in x for x in T.thermal_violations())
+    assert "S11E" in T.ORDER and "S11E" not in T.VARIANTS["hot_logic"]["skip"]   # E/D logic needs the ENH mask (audit E23)
     assert T.step_index("S07") < T.step_index("S09")          # NV anneal before gold
     assert T.step_index("S12") < T.step_index("S13")          # NO2 is capped immediately by ALD
 

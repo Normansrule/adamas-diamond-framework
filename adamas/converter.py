@@ -1,10 +1,15 @@
 """Power-converter loss model: what diamond buys over silicon carbide (SiC) and gallium nitride (GaN) in a real switch.
 
-1. Temperature dependence of on-resistance (drift region, unipolar, fully or partially ionized):
-       R_on(T) / R_on(300 K) = (T / 300)^alpha  /  [ f_ion(T) / f_ion(300) ]
+1. On-resistance relative to the ideal (fully ionized drift, 300 K mobility) limit of adamas.power:
+       R_on(T) / R_on,ideal = (T / 300)^alpha  /  f_ion(T)
+   Until v0.26 this divided by f_ion(T)/f_ion(300 K), which silently assumed full ionization at 300 K; at the
+   1.3e17 cm^-3 boron a 1200 V drift needs, f_ion(300 K) is only about 0.5 percent (audit G6, G7, docs/AUDIT.md).
    with lattice-scattering mobility exponents alpha: Si 2.4 [jacoboni1977], [arora1982]; 4H-SiC 2.4 [kimoto2014];
    GaN two-dimensional electron gas 1.5 [mishra2008]; diamond holes 2.8 [pernot2010]. f_ion is the ionized fraction of
-   the drift-region acceptors from adamas.doping ([lagrange1998], [sze2006]); for Si, SiC, GaN it is taken as 1.
+   the drift-region acceptors from adamas.doping ([lagrange1998], [sze2006]), uncompensated (the optimistic case;
+   compensation lowers it); for Si, SiC, GaN it is taken as 1. Blocking uses the full acceptor charge (depleted
+   acceptors are ionized), conduction only the free holes. Lateral hole-gas devices (adamas.power.MEASURED_DIAMOND)
+   do not depend on bulk ionization and are passed with bulk_doped=False.
    The diamond drift doping is the unipolar-limit value N = eps Ec^2 / (2 q BV) [baliga1982].
 
 2. Half-bridge switch loss, per switch, at duty 0.5 [erickson2020], [kassakian2023]:
@@ -16,7 +21,8 @@
    R_on (a known GaN issue [uren2017], [meneghini2021]) are not modeled; this is a first-order comparison.
 
 3. Junction-temperature ceiling per material, used for derating: Si 175 C [lutz2018], SiC 250 C (package-limited today,
-   [she2017]), GaN 200 C [meneghini2021], diamond 400 C demonstrated [kawarada2014], [umezawa2012].
+   [she2017]), GaN 200 C [meneghini2021], diamond 400 C shown for short-term operation of single hydrogen-terminated
+   FETs [kawarada2014], [umezawa2012] (no long-term or circuit-level demonstration; audit G16).
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -34,13 +40,19 @@ def drift_doping_cm3(m: Material, bv_v: float) -> float:
     return permittivity_f_cm(m) * (m.ec_mv_cm * 1e6) ** 2 / (2 * Q * bv_v)
 
 
-def ron_temperature_factor(name: str, t_k: float, bv_v: float = 1200.0, bulk_doped: bool = True) -> float:
-    """R_on(T)/R_on(300 K). For diamond the drift-region boron ionization rises with T and fights the mobility fall."""
+def drift_ionized_fraction(m: Material, bv_v: float, t_k: float) -> float:
+    """Ionized fraction of the boron in a diamond drift layer designed for bv_v (unipolar-limit doping, uncompensated)."""
+    return doping.ionized_fraction(doping.DOPANTS["C:B"], drift_doping_cm3(m, bv_v), t_k)
+
+
+def ron_temperature_factor(name: str, t_k: float, bv_v: float = 1200.0, bulk_doped: bool = True, m: Material | None = None) -> float:
+    """R_on(T) / R_on,ideal: lattice-mobility loss with temperature and, for a bulk boron-doped diamond drift, 1/f_ion(T).
+
+    At 300 K a 1200 V diamond drift is about 0.5 % ionized, so its R_on is about 200 times the ideal limit; heating
+    frees holes faster than the mobility falls, so the factor drops toward a few tens at 500 to 600 K."""
     fac = (t_k / 300.0) ** MOBILITY_EXPONENT[name]
     if name == "Diamond" and bulk_doped:
-        n = drift_doping_cm3(MATERIALS["Diamond"], bv_v)
-        d = doping.DOPANTS["C:B"]
-        fac /= doping.ionized_fraction(d, n, t_k) / doping.ionized_fraction(d, n, 300.0)
+        fac /= drift_ionized_fraction(m or MATERIALS["Diamond"], bv_v, t_k)
     return fac
 
 

@@ -162,5 +162,8 @@ function plot() {
   $('plotNote').textContent = `${r.ylabel || ''}${r.ea_fit_ev ? ` · corrected Arrhenius fit: E_A = ${r.ea_fit_ev.toFixed(3)} eV` : ''} · simulated from adamas models; your data should look like this.`;
 }
 function pick(x) { cur = x; stepI = -1; list(); build(x); highlight(null); head(x); stepsUI(x); partsUI(x); plot(); }
-size(); pick(E[0]);
+function fromHash() { const x = E.find(e => e.id === (window.location.hash || '').slice(1).toUpperCase()); if (!x) return false; tier = x.tier;
+  $('tiers').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === tier)); pick(x); return true; }
+addEventListener('hashchange', fromHash);
+size(); fromHash() || pick(E[0]);
 </script></body></html>

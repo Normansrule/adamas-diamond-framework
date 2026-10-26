@@ -1,0 +1,21 @@
+{
+  "name": "ADAMAS: diamond chips from wafer to qubit",
+  "short_name": "ADAMAS",
+  "description": "Interactive labs, fourteen equations in action, ten experiments from US$100 to a pilot line, and a course on diamond electronics and room-temperature quantum processors.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#05070d",
+  "theme_color": "#05070d",
+  "categories": ["education", "science"],
+  "icons": [
+    {"src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Equations in Action", "url": "./action.html", "icons": [{"src": "assets/icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Experiments", "url": "./experiments.html", "icons": [{"src": "assets/icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "Qubit Lab", "url": "./labs/qubit.html", "icons": [{"src": "assets/icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}

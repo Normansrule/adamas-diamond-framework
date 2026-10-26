@@ -2,10 +2,13 @@
 
 Two headline results are propagated through their models with every uncertain input drawn from a documented range:
 
-1. Power: the loss ratio silicon carbide / diamond for the 800 V, 300 A, 20 kHz traction inverter (chapter E9). Material
-   constants are not settled: diamond's critical field is quoted from about 5 to 10 MV/cm and its hole mobility from
-   about 1,000 to 3,800 cm^2/(V s) depending on crystal quality and doping [isberg2002] [wort2008] [donato2020]; silicon
-   carbide's field and mobility have narrower spreads [kimoto2014].
+1. Power: the loss ratio silicon carbide / diamond for the 800 V, 300 A, 20 kHz traction inverter (chapter E9), with a
+   bulk boron-doped diamond drift whose incomplete ionization is included (adamas.converter), at a junction temperature
+   of 300 K (the headline) or 523 K (hot operation at silicon carbide's package ceiling, where diamond's ionization rises). Material constants are not
+   settled: diamond's critical field is quoted from about 5 to 10 MV/cm (small-area homoepitaxial; wafer-scale
+   heteroepitaxial material measures 1 to 2 MV/cm, see adamas.power.critical_field_mv_cm) and its hole mobility from
+   about 1,000 to 3,800 cm^2/(V s), with the 3,800 time-of-flight record unreproduced [isberg2002] [sanders2021]
+   [volpe2009] [donato2020]; silicon carbide's field and mobility have narrower spreads [kimoto2014].
 2. Quantum: the runtime of the RSA-2048-scale job on a room-temperature NV machine (chapter E10.5b), with readout time,
    nuclear-memory lifetime, gate time, preparation time, and layout overhead uncertain [hopper2018] [maurer2012]
    [dolde2013] [litinski2019].
@@ -23,10 +26,10 @@ import numpy as np
 # name: (baseline, low, high, scale, unit, source)
 POWER = {
     "Diamond critical field": (10.0, 5.0, 10.0, "lin", "MV/cm", "[wort2008] [donato2020]"),
-    "Diamond hole mobility": (3800.0, 1000.0, 3800.0, "log", "cm²/V·s", "[isberg2002] [wort2008]"),
+    "Diamond hole mobility": (2000.0, 1000.0, 3800.0, "log", "cm²/V·s", "[sanders2021] [volpe2009] [isberg2002]"),
     "Diamond permittivity": (5.7, 5.6, 5.8, "lin", "", "[sze2006]"),
-    "SiC critical field": (3.0, 2.5, 3.5, "lin", "MV/cm", "[kimoto2014]"),
-    "SiC electron mobility": (950.0, 700.0, 1000.0, "lin", "cm²/V·s", "[kimoto2014]"),
+    "SiC critical field": (2.5, 2.2, 3.0, "lin", "MV/cm", "[kimoto2014]"),
+    "SiC electron mobility": (1000.0, 700.0, 1000.0, "lin", "cm²/V·s", "[kimoto2014]"),
 }
 QUANTUM = {
     "Readout time": (1000.0, 100.0, 3000.0, "log", "µs", "[hopper2018] [neumann2010science]"),
@@ -37,24 +40,33 @@ QUANTUM = {
 }
 
 
-def power_ratio(p: dict) -> float:
-    """Loss(SiC) / Loss(diamond) at the area optimum; the 2·I·V·sqrt(f/2) prefactor cancels, leaving sqrt(R·C) ratios."""
+def power_ratio(p: dict, t_k: float = 300.0) -> float:
+    """Loss(SiC) / Loss(diamond) at the area optimum; the 2·I·V·sqrt(f/2) prefactor cancels, leaving sqrt(R·C) ratios.
+    R includes lattice mobility at t_k and, for the bulk-doped diamond drift, 1/f_ion(t_k) (audit G6)."""
     from . import converter, materials, power
     d = replace(materials.MATERIALS["Diamond"], ec_mv_cm=p["Diamond critical field"], mu_p=p["Diamond hole mobility"], eps_r=p["Diamond permittivity"])
     s = replace(materials.MATERIALS["4H-SiC"], ec_mv_cm=p["SiC critical field"], mu_n=p["SiC electron mobility"])
-    rc = lambda m, car: power.ron_sp_mohm_cm2(m, 1200.0, car) * converter.coss_sp_f_cm2(m, 1200.0)  # noqa: E731
-    return math.sqrt(rc(s, "n") / rc(d, "p"))
+    rc = lambda m, name, car: (power.ron_sp_mohm_cm2(m, 1200.0, car) * converter.ron_temperature_factor(name, t_k, 1200.0, m=m)  # noqa: E731
+                               * converter.coss_sp_f_cm2(m, 1200.0))
+    return math.sqrt(rc(s, "4H-SiC", "n") / rc(d, "Diamond", "p"))
+
+
+def power_ratio_hot(p: dict) -> float:
+    """The same ratio with both switches at a 523 K (250 °C) junction: silicon carbide's package ceiling, inside
+    diamond's short-term demonstrated range [kawarada2014]."""
+    return power_ratio(p, 523.0)
 
 
 def quantum_runtime_years(p: dict, table=None) -> float:
     from . import resource
-    n, st = resource.WORKLOADS["RSA-2048 scale (6,000 logical, 3×10⁹ steps)"]
+    n, st = resource.WORKLOADS[resource.RSA_JOB]
     e = resource.estimate(n, st, p["Readout time"], p["Nuclear memory T₂"], gate_us=p["Two-qubit gate time"], prep_us=p["Ancilla preparation"],
                           overhead=p["Layout overhead"], t=table or resource.table())
     return float("inf") if e is None else e.runtime_hours / 8766
 
 
-STUDIES = {"power": (POWER, power_ratio, "SiC loss ÷ diamond loss (EV inverter)"),
+STUDIES = {"power": (POWER, power_ratio, "SiC loss ÷ diamond loss (EV inverter, 300 K, bulk-doped drift)"),
+           "power_hot": (POWER, power_ratio_hot, "SiC loss ÷ diamond loss (EV inverter, 523 K junction)"),
            "quantum": (QUANTUM, quantum_runtime_years, "RSA-2048-scale runtime (years)")}
 
 
@@ -110,4 +122,5 @@ def tornado(study: str) -> list[dict]:
 
 def to_json() -> dict:
     """Parameter spaces for the browser Uncertainty Lab (the lab re-runs the Monte Carlo live)."""
-    return {s: {"label": STUDIES[s][2], "params": {k: list(v) for k, v in STUDIES[s][0].items()}} for s in STUDIES}
+    return {s: {"label": STUDIES[s][2], "params": {k: list(v) for k, v in STUDIES[s][0].items()}, "p50": monte_carlo(s, 2000)["p50"]}
+            for s in STUDIES}

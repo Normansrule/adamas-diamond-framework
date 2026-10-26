@@ -8,10 +8,10 @@
 |---|---|---|---|---|
 | Raw material | Quartz → polysilicon | Methane + hydrogen | Both abundant | [plummer2000], [butler2009] |
 | Crystal growth | Czochralski from the melt, about 1 mm/min, 300 mm boules | Plasma CVD from gas, 1 to 100 µm/h, on a seed | **Silicon** | [czochralski1918], [teal1950], [yan2002] |
-| Wafer diameter | 300 mm | 50 to 76 mm | **Silicon** | [irds2023], [e6orbray2026] |
-| Dislocations | near zero | 10³ to 10⁷ cm⁻² | **Silicon** | [sumiya2012], [schreck2017] |
+| Wafer diameter | 300 mm | 51 mm (2-inch) heteroepitaxial wafers, peer-reviewed; 76 mm announced by industry (reported, not peer-reviewed) | **Silicon** | [irds2023], [kim2021], [qu2024], [e6orbray2026] |
+| Dislocations | near zero | about 10² (HPHT plates), 10⁴ (CVD on HPHT), 2×10⁷ cm⁻² (heteroepitaxial wafers) | **Silicon** | [sumiya2012], [friel2009], [kim2021], [stehl2013] |
 | Native oxide | Thermal SiO₂ | None | **Silicon** | [dealgrove1965] |
-| Doping | Both types shallow (0.045 eV); implant + anneal | Boron 0.37 eV, phosphorus 0.57 eV; growth doping only | **Silicon** | [sze2006], [kalish1999] |
+| Doping | Both types shallow (0.045 eV); implant + anneal | Boron 0.37 eV, phosphorus 0.57 eV; growth doping, implantation immature | **Silicon** | [sze2006], [kalish1999], [saha2023sbd] |
 | Surface doping without atoms | Not available | Transfer doping of C-H surface | **Diamond** | [maier2000], [crawford2021] |
 | Mask count for a basic transistor | many | 4 to 6 | Diamond (simplicity, not capability) | [kawarada2014] |
 | Thermal budget tolerance | Dopants diffuse above about 900 °C | Stable to > 1200 °C in vacuum; burns in oxygen above about 700 °C | Mixed | [naydenov2010], [field2012] |
@@ -20,10 +20,11 @@
 
 | Item | Silicon | Diamond | Advantage | Sources |
 |---|---|---|---|---|
-| Ideal on-resistance at 2.6 kV | about 695 mΩ·cm² | 0.014 mΩ·cm² ideal; 19.74 measured | **Diamond** | [baliga1982], [saha2021] |
-| Maximum junction temperature | about 150 to 200 °C | > 400 °C shown | **Diamond** | [neudeck2002], [kawarada2014] |
+| Ideal on-resistance at 2.6 kV | about 695 mΩ·cm² | 0.027 mΩ·cm² ideal (theoretical 10 MV/cm); about 8 at the 1.5 MV/cm of wafer-scale material; 19.74 measured (lateral) | **Diamond** | [baliga1982], [saha2021] |
+| 800 V EV inverter loss, bulk-doped drift (model) | — | Silicon carbide loss ÷ diamond loss: 0.40 at 300 K, 1.9 at a 523 K junction | SiC at room temperature; **diamond** when hot | proposed here (`adamas.uncertainty`) |
+| Maximum junction temperature | about 150 to 200 °C | 400 °C, single device, short-term; high-temperature logic not demonstrated | **Diamond** (potential) | [neudeck2002], [kawarada2014] |
 | Thermal conductivity | 1.5 W/(cm·K) | 22 to 33 W/(cm·K) | **Diamond** | [wei1993] |
-| Complementary logic | Yes, since the 1960s | First n-channel device in 2024 | **Silicon** | [liao2024] |
+| Complementary logic | Yes, since the 1960s | First n-channel device in 2024, per the authors | **Silicon** | [liao2024] |
 | Integration density | > 10¹⁰ transistors per die | 10¹ to 10² demonstrated | **Silicon** | [moore1965], [irds2023], [liu2017] |
 | Radiation hardness | Moderate | High (large displacement energy, low leakage) | **Diamond** | [pernegger2005], [ookuma2026] |
 | Radio-frequency power | Limited by low breakdown | 3.8 W/mm shown; mostly used under gallium nitride as heat spreader | Diamond (potential) | [imanishi2019], [pomeroy2014] |
@@ -54,14 +55,14 @@ Deeper silicon references for each row: transport [jacoboni1977], [arora1982]; i
 | Maximum operating temperature set by intrinsic conduction | about 250 °C | above 1000 °C (limited by contacts and oxidation instead) | [neudeck2002] |
 | Dopant ionization energies | 0.045 eV | 0.37 eV (B), 0.57 eV (P) | [sze2006], [lagrange1998], [koizumi1997] |
 | Mobility temperature exponent | about −2.4 | about −2.8 (holes) | [jacoboni1977], [pernot2010] |
-| On-resistance trend with temperature | rises | falls (bulk-doped) | [E9](expert/E9_power_circuits_diamond_vs_gan_sic.md) |
+| On-resistance trend with temperature | rises | falls (bulk-doped, as more boron ionizes) | [E9](expert/E9_power_circuits_diamond_vs_gan_sic.md) |
 | Thermal conductivity at 300 K | 1.5 W/(cm·K) | 22 to 33 W/(cm·K) | [glassbrenner1964], [wei1993] |
 | Thermal expansion | 2.6 ppm/K | 1.0 ppm/K | [field2012] |
 | Young's modulus | 130 to 190 GPa | about 1100 GPa | [field2012] |
 | Nuclear-spin bath | 4.7% ²⁹Si (purifiable) | 1.1% ¹³C (purifiable) | [itoh2014] |
 | Native room-temperature optical spin qubit | none | NV center | [doherty2013] |
 | Radiation displacement energy | about 13 eV | about 43 eV | [tapper2000] |
-| Wafer cost per cm² (order of magnitude) | cents | tens to hundreds of dollars | [e6orbray2026]; no public price data, estimate |
+| Wafer cost per cm² (order of magnitude) | cents | tens to hundreds of dollars | no public price data; estimate (unsourced) |
 
 ![Radar](img/fig32_material_radar.png)
 

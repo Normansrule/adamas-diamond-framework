@@ -39,26 +39,26 @@ One connected, executable chain, each link checked against published data or an 
 \end{itemize}\end{column}\end{columns}
 \end{frame}
 
-\begin{frame}{Power switches: real diamond already beats silicon's limit}
+\begin{frame}{Power switches: diamond wins when hot}
 \begin{columns}[T]\begin{column}{.56\textwidth}\centering\includegraphics[width=\textwidth]{fig03_ron_vs_bv.png}\end{column}
 \begin{column}{.42\textwidth}\small
-Best measured: \BestBV\,V; 2022 device about \alert{\MeasuredOverSi$\times$} below silicon's limit.\\[.6em]
-\begin{tabular}{lr}\toprule 800\,V EV inverter & W/switch\\\midrule Silicon & \LossSi\\ SiC & \LossSiC\\ GaN & \LossGaN\\ Diamond (ideal) & \LossDiamond\\\bottomrule\end{tabular}
+Best measured: \BestBV\,V; 2022 lateral device about \MeasuredOverSi$\times$ below silicon's vertical limit.\\[.4em] Bulk-doped drift: only \alert{\FionDriftPct\%} of the boron ionized at 300\,K.\\[.4em]
+{\footnotesize\begin{tabular}{lrr}\toprule W per switch & 300\,K & 523\,K\\\midrule Silicon & \LossSi & --\\ SiC & \LossSiC & \LossSiCHot\\ GaN & \LossGaN & --\\ Diamond, bulk & \LossDiamond & \alert{\LossDiamondHot}\\\bottomrule\end{tabular}}\\[.2em]{\scriptsize 800\,V, 300\,A, 20\,kHz EV inverter}
 \end{column}\end{columns}
 \end{frame}
 
 \begin{frame}{But how sure is that? Uncertainty analysis}
 \begin{columns}[T]\begin{column}{.62\textwidth}\centering\includegraphics[width=\textwidth,trim=0 340 0 0,clip]{fig49_uncertainty.png}\end{column}
 \begin{column}{.36\textwidth}\small
-Diamond's critical field (5 to 10\,MV/cm) and hole mobility (1{,}000 to 3{,}800) are not settled.\\[.5em]
-SiC $\div$ diamond loss: median \alert{\UncPowerPfifty$\times$}, P10 to P90 \UncPowerPten{} to \UncPowerPninety$\times$.\\[.5em]
-Still a big win, but the textbook value is the optimistic end.
+Diamond's critical field (5 to 10\,MV/cm) and hole mobility (1{,}000 to 3{,}800, baseline 2{,}000) are not settled.\\[.5em]
+SiC $\div$ diamond loss at 300\,K: median \UncPowerPfifty, P10 to P90 \UncPowerPten{} to \UncPowerPninety; at 523\,K: median \alert{\UncPowerHotPfifty$\times$}.\\[.5em]
+Mobility explains \SobolMobility{} of the spread, the field \SobolField: \alert{measure mobility first} (a Hall setup, about US\$3k).
 \end{column}\end{columns}
 \end{frame}
 
 \begin{frame}{How you would actually build it}
 \centering\includegraphics[width=.95\textwidth]{fig41_process_flow.png}\\[.3em]\small
-The channel is made by surface chemistry (hydrogen termination), gold protects it, one oxygen plasma isolates every device, and \alert{all heat is spent before the first metal}.
+The channel is made by surface chemistry (hydrogen termination), gold protects it, one oxygen plasma isolates every device, and \alert{all heat is spent before the first metal}. Qubit wafers: hydrogen below 500\,$^\circ$C only (hot plasma darkens NV centers).
 \end{frame}
 
 \begin{frame}{A processor on diamond}
@@ -70,12 +70,12 @@ The channel is made by surface chemistry (hydrogen termination), gold protects i
 \end{itemize}\end{column}\end{columns}
 \end{frame}
 
-\begin{frame}{The two-qubit bottleneck is not coherence}
+\begin{frame}{Two-qubit gates: an honest discrepancy}
 \begin{columns}[T]\begin{column}{.55\textwidth}\centering\includegraphics[width=\textwidth]{fig36_published_gate_check.png}\end{column}
 \begin{column}{.43\textwidth}\small
-Published room-temperature pair (25\,nm, \GateTimeUs\,\textmu s gate): coherence alone allows \alert{\FcohPublished}.\\[.5em]
-Measured 0.67 $\Rightarrow$ preparation $q=\qForSixtySeven$; optimal-control 0.82 $\Rightarrow$ $q=\qForEightyTwo$.\\[.5em]
-The NV$^-$ charge state, not $T_2$, limits the gate.
+Published room-temperature pair (25\,nm, \GateTimeUs\,\textmu s gate): coherence alone allows \alert{\FcohLow{} to \FcohHigh}.\\[.5em]
+Measured 0.67 (already charge-preselected) lies below the whole range.\\[.5em]
+The earlier ``preparation'' explanation is withdrawn; the gap is a known discrepancy. 96\% at 9.5\,nm has since been shown [joas2025].
 \end{column}\end{columns}
 \end{frame}
 
@@ -84,16 +84,16 @@ The NV$^-$ charge state, not $T_2$, limits the gate.
 \begin{column}{.38\textwidth}\small
 Readout takes about 1\,ms while data qubits idle.\\[.4em]
 $\Lambda$ = \LambdaFast{} (0.1\,ms), \LambdaMs{} (1\,ms), \LambdaTenMs{} (10\,ms).\\[.4em]
-Scaling stops near \BreakevenStdMs\,ms; the bias-tailored \alert{XZZX code} pushes that to about \BreakevenXZZXMs\,ms.\\[.4em] Native circuits with biased gates: threshold \ThrDepol\% $\rightarrow$ \alert{\ThrXZZXBias\%} at $\eta=100$ (standard code: \ThrCSSBias\%).
+Scaling stops near \BreakevenStdMs\,ms; the bias-tailored \alert{XZZX code} pushes that to about \BreakevenXZZXMs\,ms.\\[.4em] Native circuits, bias on CZ only (CNOT $\le$ \EtaCnot): threshold \ThrDepol\% $\rightarrow$ \alert{\ThrXZZXBias\%} at $\eta=100$ (standard code: \ThrCSSBias\%).
 \end{column}\end{columns}
 \end{frame}
 
 \begin{frame}{How big, how slow}
 \begin{columns}[T]\begin{column}{.62\textwidth}\centering\includegraphics[width=\textwidth]{fig39_resource_estimate.png}\end{column}
 \begin{column}{.36\textwidth}\small
-RSA-2048 scale: distance \RSADistance, \RSAQubitsM\,M qubits on a \alert{\RSADieMm\,mm die}.\\[.4em]
-Runtime \alert{\RSAYears\ years} at 1\,ms readout (\RSAYearsFast\ at 0.1\,ms), P10 to P90 \UncQPten{} to \UncQPninety{} years; superconducting: \RSADaysSC{} days.\\[.4em]
-If gate noise is biased, the standard code balloons to \RSAQubitsMCSSBiased\,M qubits; \alert{XZZX keeps it at \RSAQubitsMXZZX\,M}.\\[.4em] Area is free; time is not.
+RSA-2048, calibrated to the published 8\,h: distance \RSADistance, \RSAQubitsM\,M qubits on a \alert{\RSADieMm\,mm die}.\\[.4em]
+Runtime \alert{\RSAYears\ years} at 1\,ms readout (\RSAYearsFast\ at 0.1\,ms), P10 to P90 \UncQPten{} to \UncQPninety{} years; superconducting at today's $\Lambda$: \RSAHoursSC{} hours.\\[.4em] Assumes a 25\,\textmu s, 0.3\% inter-cell link (not yet demonstrated).\\[.4em]
+Native circuits: biasing the gates moves the standard code from \CSSDepolQubitsM\ to \RSAQubitsMCSSBiased\,M qubits and \alert{XZZX from \XZZXDepolQubitsM\ to \RSAQubitsMXZZX\,M}.\\[.4em] Area is free; time is not.
 \end{column}\end{columns}
 \end{frame}
 
@@ -104,8 +104,8 @@ If gate noise is biased, the standard code balloons to \RSAQubitsMCSSBiased\,M q
 
 \begin{frame}{Takeaways}
 \begin{enumerate}
-\item Diamond power switches are a real advantage: \alert{about \UncPowerPfifty$\times$} lower loss than SiC once uncertainty is honest.
-\item Room-temperature NV qubits are limited by \alert{charge-state preparation}, not coherence.
+\item Diamond power switches \alert{win when hot} (\PowerRatioHot$\times$ less loss than SiC at 523\,K) and a bulk-doped switch loses at room temperature: incomplete ionization matters.
+\item Room-temperature NV gates measure below what coherence allows, and \alert{the gap is unexplained}; addressing qubits 10--30\,nm apart is the manufacturing problem.
 \item A room-temperature quantum computer would be \alert{small but slow}; readout speed and bias-tailored codes are the levers.
 \item Everything is open, tested, and regenerable: \texttt{pytest}, \texttt{make figures paper talk}.
 \end{enumerate}
