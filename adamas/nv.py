@@ -77,6 +77,14 @@ def hahn_echo(tau_us, t2_us: float, p: float = 3.0):
     return np.exp(-(np.asarray(tau_us, dtype=float) / t2_us) ** p)
 
 
+def echo_mistimed(offset_us, detuning_mhz: float, t2star_us: float):
+    """P(ms = -1) after pi/2_x, tau1, pi_x, tau2, pi/2_x for an ensemble with static Gaussian detunings (mean delta,
+    exp(-(t/T2*)^2) decay): 0.5 (1 - cos(2 pi delta e) exp(-(e/T2*)^2)) with e = tau2 - tau1 [hahn1950]. A centred pi
+    pulse (e = 0) refocuses every static detuning, whatever the total time; only the mistiming e dephases."""
+    e = np.asarray(offset_us, dtype=float)
+    return 0.5 * (1 - np.cos(2 * np.pi * detuning_mhz * e) * np.exp(-(e / t2star_us) ** 2))
+
+
 def cw_odmr_sensitivity_t_rthz(linewidth_mhz: float, contrast: float, count_rate_hz: float) -> float:
     """Shot-noise-limited continuous-wave sensitivity, eta = (4 / (3 sqrt 3)) (h / (g mu_B)) dv / (C sqrt R) [dreau2011]."""
     return 4 / (3 * np.sqrt(3)) * H / (G_E * MU_B) * linewidth_mhz * 1e6 / (contrast * np.sqrt(count_rate_hz))

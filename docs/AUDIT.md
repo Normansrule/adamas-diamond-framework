@@ -58,7 +58,7 @@ The 6.57× gap between the first two rows comes from three factors: distance (2.
 
 | Material class | Largest | Dislocation density (cm⁻²) | Measured breakdown | NV coherence | Label |
 |---|---|---|---|---|---|
-| High-pressure high-temperature (HPHT) plate | about 10–15 mm (unsourced) | about 10¹–10³ | — | Low-strain plates: T₂* ≈ 1.3 µs (strain plus charge, ensemble) [blinder2024] | demonstrated |
+| High-pressure high-temperature (HPHT) plate | about 10 mm (10 × 10 mm² (111) plate [stoupin2016], added in v0.28) | about 10¹–10³ | — | Low-strain plates: T₂* ≈ 1.3 µs (strain plus charge, ensemble) [blinder2024] | demonstrated |
 | CVD on HPHT (homoepitaxial) | about 10 mm; mosaics larger, with tile boundaries | about 10²–10⁵ [sumiya2012, friel2009] | ≥ 7.7 MV/cm, small area [volpe2010] | T₂ up to 1.8–2.4 ms in ¹²C-enriched layers [balasubramanian2009, herbschleb2019] | demonstrated |
 | Heteroepitaxial on Ir/YSZ/Si or sapphire | 92 mm one-off plate [schreck2017]; 2-inch wafers [kim2021, qu2024] | ≈ 2×10⁷ at the growth surface; above 10¹⁰ right after nucleation, 2–10×10⁷ at 1–2 mm thickness [stehl2013] (corrected in v0.27) | 1.1–2 MV/cm [kwak2021, weippert2022, saha2021] | Single NV T₂ = 5 µs [nelz2019]; T₂ 98–539 µs over laterally overgrown regions [oshnik2025, preprint] | demonstrated / reported |
 | "Reproducible 3-inch", 2026 | 76 mm | not reported | not reported | not reported | **reported (industry)** |
@@ -165,7 +165,7 @@ Columns: **Claim** (short) · **Where** · **Verdict** (correct, needs qualifica
 | E27 | High-NA "26 × 33 mm field" | E1:43 | High-NA EUV uses a 26 × 16.5 mm half field |
 | E28 | "52 figures" | ch11:18; DEVELOPMENT_UBUNTU:48; E8:14 | 53; generate from the figure list |
 | Q10 | neumann2010natphys listed as "two NVs entangled" | ch08:48 | Coherent coupling only |
-| Q12 | Pair yield 10⁻⁴; "20 nm apertures" | ch07:30-31,69; experiments.py:173 | Demonstrated pairs used MeV ions (Neumann 21 %; Dolde about 2 %) |
+| Q12 | Pair yield 10⁻⁴; "20 nm apertures" | ch07:30-31,69; experiments.py:173 | Demonstrated pairs used MeV ions (Neumann: 18 MeV, 21 % N→NV conversion, not a pair yield; Dolde: 1 MeV, about 2 % simulated pair success; checked in v0.28) |
 | Q15 | A∥(¹⁴N) = −2.16, P = −4.95 MHz [felton2009] | ch06:21-22; nv.py:15 | Felton gives −2.147 and −5.016; re-cite or change |
 | Q16 | T₂ 1.8 / 2.4 ms | ch06:58-62 | Add the T₂* ≈ 1.5 ms record [herbschleb2019] |
 | Q21 | "Tens of thousands of gate operations" | README:410; ch08:13 | True for electron–nuclear; NV–NV gives T₂/t_g of about 10–400 |
@@ -260,3 +260,7 @@ The fixes of section 6 were approved and applied in v0.27.0. Every number below 
 | F6 References | Done | 23 new entries (part K, status K), metadata checked on publisher, arXiv, or institutional pages; Crossref verification still to run (`make verify`, `make apply-verify`) |
 
 Deferred or open: the experiment-ID rename of E29 (the two ID lists are explained instead, because the roadmap IDs are cross-referenced in README, E2, and E8); copper's thermal conductivity, the high-pressure plate size, and the A1 filter prices are marked unsourced; the bias of NV two-qubit gates and the residual CNOT bias remain assumptions.
+
+### Status after v0.28.0
+
+Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).

@@ -19,6 +19,13 @@ def test_javascript_simulation_modules():
     assert out.returncode == 0, out.stdout[-2000:]
 
 
+@pytest.mark.skipif(NODE is None, reason="node not installed")
+def test_equation_in_the_loop_panels_match_python_golden_values():
+    """web/tests/loop.test.mjs: browser arithmetic against loop_golden.json, and a checker for every assumption."""
+    out = subprocess.run([NODE, "--test", "tests/loop.test.mjs"], cwd=WEB, capture_output=True, text=True)
+    assert out.returncode == 0, out.stdout[-2000:]
+
+
 @pytest.mark.skipif(NODE is None or shutil.which("iverilog") is None, reason="node or iverilog missing")
 def test_dia4_emulator_matches_verilog_on_random_programs(tmp_path):
     d = ROOT / "circuits" / "digital"

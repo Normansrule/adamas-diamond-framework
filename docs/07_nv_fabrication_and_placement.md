@@ -69,9 +69,10 @@ At 15 to 30 nm both NVs sit inside one diffraction-limited laser spot (about 250
 | Spectral: different NV orientations, joint readout in one spot | 9.8 nm, coherent coupling [neumann2010natphys]; 25 nm, F = 0.67 [dolde2013]; F = 0.824 [dolde2014]; 9.5 nm, two-qubit fidelity 96.0 ± 2.5 % with 594 nm charge pre-selection [joas2025] | **Yes: the only route demonstrated** |
 | Spectral: optical zero-phonon line and strain | 3 NVs in one sub-diffraction cluster, crosstalk below 4 %, at 4 K [bersin2019] | Single-qubit only, cryogenic |
 | Magnetic-field gradient | About 1 G/nm, separate Rabi drive on NVs 135 nm apart [grinolds2011]; 0.11 G/nm microcoil, NVs 96 nm apart, fidelity above 97.4 % [zhang2017addr] | Not yet. A 0.1 G/nm gradient splits NVs 15 nm apart by about 4.2 MHz (with γₑ = 28.03 MHz/mT), but readout is still joint |
-| Sub-diffraction optics: stimulated emission depletion (STED), spin reversible saturable optical fluorescence transitions (spin-RESOLFT), charge-state depletion | Imaging well below the diffraction limit; spin control of NVs about 100 to 150 nm apart (unsourced here: references not yet in the bibliography) | Imaging yes; control at < 30 nm no |
+| Sub-diffraction optics: stimulated emission depletion (STED), spin reversible saturable optical fluorescence transitions (spin-RESOLFT), charge-state depletion | Imaging to a few nm [rittweger2009]; spin control of NVs about 100 to 150 nm apart [maurer2010]; charge-state depletion [chen2015csd] and stochastic reconstruction [pfender2014] of single spins | Imaging yes; control at < 30 nm no |
 | Dark-spin chain bus | Theory: chain spins 16 to 20 nm apart, 5 to 20 per link; assumes NV $T_1$ of 100 to 250 ms, cooling to about 250 K, a donut-shaped readout beam and a field gradient [yao2012] | No (proposed) |
 | Photoelectric readout | Single NV [siyushev2019], still with focused light | No |
+| Joint readout, decoded | Spin-to-charge conversion of a strongly coupled pair about 10 nm apart, read optically and decoded by a neural network [joliffe2024] (preprint) | Readout of both spins in one spot, not individual control |
 
 ## 7.3 The placement-yield model
 
@@ -79,7 +80,7 @@ At 15 to 30 nm both NVs sit inside one diffraction-limited laser spot (about 250
 
 ![Monte Carlo pair yield](img/fig11_pair_yield.png)
 
-With one ion per site the pair yield can never exceed $y^2$: 1 percent conversion, typical of keV implants, gives 10⁻⁴. The demonstrated room-temperature pairs were not made this way: they used MeV nitrogen ions, with reported yields of about 21 percent [neumann2010natphys] and about 2 percent [dolde2013]. An array of $N$ coupled qubits scales as roughly $y^{N}$, which is hopeless at today's keV-implant yields and merely difficult at 50 to 75 percent. The three levers, in order of impact:
+With one ion per site the pair yield can never exceed $y^2$: 1 percent conversion, typical of keV implants, gives 10⁻⁴. The demonstrated room-temperature pairs were not made this way: they used MeV nitrogen ions: 18 MeV ¹⁴N with an average nitrogen-to-NV creation efficiency of 21 percent, a conversion yield rather than a pair yield [neumann2010natphys], and 1 MeV ¹⁵N through mica nano-apertures, for which a simulation gives about 2 percent of sites with a pair closer than 20 nm [dolde2013]. An array of $N$ coupled qubits scales as roughly $y^{N}$, which is hopeless at today's keV-implant yields and merely difficult at 50 to 75 percent. The three levers, in order of impact:
 
 1. **Conversion yield** → donor co-doping [luhmann2019], laser writing with feedback [chen2019].
 2. **Detect, then repair**: image the array by super-resolution or optically detected magnetic resonance, and laser-write missing sites. Proposed experiment P-5 in [Chapter 11](11_proposed_experiments_and_roadmap.md).

@@ -36,7 +36,7 @@ The remaining gap is the research opportunity, and it comes mostly from incomple
 | NO₂-doped MOSFET on heteroepitaxial wafer | 2608 V / 345 MW/cm²; 2568 V / 875 MW/cm²; 3659 V / 173 MW/cm²; 3326 V modulation-doped | [saha2021], [saha2022], [saha2023], [saha2022mod], [saha2020] |
 | Inversion-channel MOSFET | First on n-type diamond, 2016 | [matsumoto2016] |
 | n-channel MOSFET | First, per the authors; phosphorus-doped n-type channel; electron mobility about 150 cm²/(V·s) at 573 K (300 °C), 2024 | [liao2024] |
-| p-channel MOSFET on phosphorus-doped n-type body | 2024. The structure class, an inversion-channel p-MOSFET on an n-type body, was first shown in 2016 [matsumoto2016]; the specific advance of [zhao2024] is not yet checked here | [zhao2024], [matsumoto2016] |
+| p-channel MOSFET on phosphorus-doped n-type body | 2024. The structure class, a p-MOSFET on phosphorus-doped n-type diamond, was first shown in 2016 as a normally-off inversion-channel device (Al₂O₃ gate, field-effect mobility about 8 cm²/(V·s), 1.6 mA/mm) [matsumoto2016]; [zhao2024] instead uses a hydrogen-terminated surface-conductive channel on n-type epilayers, giving about −4.5 mA/mm, 0.75 mS/mm and a 10⁷ on/off ratio, but normally on, as a step toward complementary logic on one wafer | [zhao2024], [matsumoto2016] |
 | Junction FET | Operation at elevated temperature with low leakage | [iwasaki2013jfet] |
 | Bipolar junction transistor | Current gain demonstrated with phosphorus-doped base | [kato2012bjt] |
 | Hexagonal-boron-nitride-gated FET | High channel mobility without surface acceptors | [sasama2018], [sasama2022] |

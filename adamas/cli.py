@@ -120,8 +120,9 @@ def cmd_findings(a) -> int:
 
 def cmd_build(a) -> int:
     if a.what == "docs":
-        from . import action, experiments, glossary, readme, traveler, validation
+        from . import action, experiments, glossary, loop, readme, traveler, validation
         print("wrote", action.write_golden())
+        print("wrote", loop.write())
         for m in (traveler, experiments, glossary, validation, action, readme):
             print("wrote", m.write())
         return 0

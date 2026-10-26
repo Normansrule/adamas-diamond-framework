@@ -50,7 +50,7 @@ def odmr_sweep(out: Path, frames: int = 50) -> Path:
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:
-    out = Path(out); return [bloch_rabi(out), odmr_sweep(out)] + make_all_v15(out)
+    out = Path(out); return [bloch_rabi(out), odmr_sweep(out)] + make_all_v15(out) + make_all_v28(out)
 
 
 # ---------------- v0.15 animations: every one driven by a package model ----------------
@@ -190,3 +190,104 @@ def equations_montage(out: str | Path = "docs/img", frames: int = 48) -> Path:
         return l0, d1, d2, d3
     ani = FuncAnimation(fig, draw, frames=frames, interval=90)
     out.mkdir(parents=True, exist_ok=True); p = out / "anim_equations.gif"; ani.save(p, writer=PillowWriter(fps=11)); plt.close(fig); return p
+
+
+# ---------------- v0.28: the physics the audit changed, animated ----------------
+def hot_switch(out: str | Path = "docs/img", frames: int = 44) -> Path:
+    """Why a bulk-doped diamond switch loses at room temperature and wins hot: the ionized boron fraction and the
+    resulting switch loss versus junction temperature (adamas.converter; [pernot2010] [lagrange1998] [erickson2020])."""
+    from . import converter
+    from .materials import MATERIALS
+    out = Path(out)
+    T = np.linspace(300, 650, 120); d = MATERIALS["Diamond"]
+    fion = [100 * converter.drift_ionized_fraction(d, 1200.0, t) for t in T]
+    loss = {n: [converter.material_switch(n, 1200, 800, 300, 20e3, t_k=t).p_total_w for t in T] for n in ("4H-SiC", "GaN", "Diamond")}
+    lab = {"4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond, bulk-doped drift"}
+    ceil = {n: converter.TJ_MAX_C[n] + 273.15 for n in ("4H-SiC", "GaN", "Diamond")}            # junction-temperature limits
+    fig, (a0, a1) = plt.subplots(1, 2, figsize=(10, 4.2), dpi=72); plt.subplots_adjust(wspace=.3, bottom=.16, top=.78)
+    a0.semilogy(T, fion, color=COLORS["Diamond"], lw=2.2); a0.set_xlabel("junction temperature (K)", fontsize=9); a0.set_ylabel("boron ionized (%)", fontsize=9)
+    a0.set_title("A 1.2 kV drift's boron wakes up with heat", fontsize=10.5, pad=26); m0, = a0.plot([], [], "o", color=RED, ms=8); t0 = a0.text(310, 30, "", fontsize=10)
+    for n, c in (("4H-SiC", COLORS["4H-SiC"]), ("GaN", COLORS["GaN"]), ("Diamond", COLORS["Diamond"])):
+        ok = T <= ceil[n]
+        a1.semilogy(T[ok], np.array(loss[n])[ok], color=c, lw=2.2, label=lab[n]); a1.semilogy(T[~ok], np.array(loss[n])[~ok], ":", color=c, lw=1.4)
+    a1.set_xlabel("junction temperature (K)", fontsize=9); a1.set_ylabel("loss per switch (W), EV inverter", fontsize=9)
+    a1.legend(fontsize=8, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False, handlelength=1.4, columnspacing=1)
+    gap = np.array(loss["Diamond"]) - np.array(loss["4H-SiC"]); i = int(np.argmax(gap < 0))  # computed crossing, not typed in
+    assert gap[0] > 0 and gap[i] < 0, "diamond and SiC losses do not cross in 300-650 K; the title would be wrong"
+    x_sic = T[i - 1] + (T[i] - T[i - 1]) * gap[i - 1] / (gap[i - 1] - gap[i])               # linear interpolation
+    a1.set_title(f"Diamond passes SiC at {x_sic:.0f} K and keeps going where GaN cannot\n(dotted: above that material's junction-temperature limit)", fontsize=10, pad=26); m1 = a1.axvline(300, color=RED, lw=1.2)
+    t1 = a1.text(0.98, 0.04, "", transform=a1.transAxes, ha="right", fontsize=10, zorder=5,
+                 bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="none", alpha=0.9))
+    def draw(i):
+        k = int(i * (len(T) - 1) / (frames - 1)); m0.set_data([T[k]], [fion[k]]); t0.set_text(f"{T[k]:.0f} K: {fion[k]:.2f} % ionized")
+        m1.set_xdata([T[k], T[k]]); r = loss["4H-SiC"][k] / loss["Diamond"][k]; t1.set_text(f"SiC ÷ diamond loss = {r:.2f}"); return m0, t0, m1, t1
+    ani = FuncAnimation(fig, draw, frames=frames, interval=90)
+    path = out / "anim_hot_switch.gif"; ani.save(path, writer=PillowWriter(fps=11)); plt.close(fig); return path
+
+
+def addressing_sweep(out: str | Path = "docs/img", frames: int = 46) -> Path:
+    """Two NVs in one laser spot, told apart by crystal axis: the eight ODMR lines of the four <111> axes as the field
+    turns from [001] to [111] at 5 mT (adamas.addressing; [dolde2013] [doherty2013])."""
+    from . import addressing as A
+    out = Path(out)
+    th = np.linspace(0, 54.7356, 90); ax_cols = [COLORS["Diamond"], GOLD_, "#9d7bff", "#8b98a5"]
+    lines = np.array([[A.lines_on_axis(5.0, t, 45.0, a) for a in nv.NV_AXES] for t in th])     # (theta, axis, 2)
+    fig, (a0, a1) = plt.subplots(1, 2, figsize=(10, 4.2), dpi=72); plt.subplots_adjust(wspace=.28, bottom=.16, top=.84)
+    for k in range(4):
+        for j in range(2):
+            a0.plot(th, lines[:, k, j], color=ax_cols[k], lw=2 if k < 2 else 1.2, ls="--" if k == 2 else "-",
+                    label=(["NV A, axis [111]", "NV B, axis [1-1-1]", "axis [-11-1]: same lines as B in this plane", "axis [-1-11]"][k] if j == 0 else None))
+    a0.set_xlabel("field angle from [001] toward [111] (degrees), 5 mT", fontsize=9); a0.set_ylabel("ODMR line (MHz)", fontsize=9); a0.legend(fontsize=8, loc="center left")
+    a0.set_title("Same spot, different axes: the lines separate", fontsize=10.5); vl = a0.axvline(0, color=RED, lw=1.2)
+    f = np.linspace(2700, 3040, 1600); sp, = a1.plot([], [], color=INK, lw=1.4); a1.set_xlim(2700, 3040); a1.set_ylim(.95, 1.003)
+    a1.set_xlabel("frequency (MHz)", fontsize=9); a1.set_ylabel("fluorescence (illustrative dip depth and width)", fontsize=9); txt = a1.text(2710, .955, "", fontsize=10)
+    a1.set_title("What the joint readout sees", fontsize=10.5)
+    def draw(i):
+        k = int(i * (len(th) - 1) / (frames - 1)); vl.set_xdata([th[k], th[k]])
+        y = 1 - sum(0.012 * 1.5 ** 2 / ((f - x) ** 2 + 1.5 ** 2) for x in lines[k].ravel())
+        sp.set_data(f, y); sep = A.spectral_separation_mhz(5.0, th[k], 45.0)
+        txt.set_text(f"θ = {th[k]:.0f}°: A and B {sep:.1f} MHz apart"); return vl, sp, txt
+    ani = FuncAnimation(fig, draw, frames=frames, interval=90)
+    path = out / "anim_addressing.gif"; ani.save(path, writer=PillowWriter(fps=11)); plt.close(fig); return path
+
+
+def gate_bias(out: str | Path = "docs/img", frames: int = 50) -> Path:
+    """A phase (Z) error on the target in the middle of the gate, followed to the output: a CZ keeps it a Z; a CNOT
+    built as H·CZ·H turns it into a bit flip (adamas.gatebias, Stim-checked; [guillaud2019] [etxezarreta2025])."""
+    from . import gatebias as G
+    out = Path(out)
+    fig, axes = plt.subplots(2, 1, figsize=(9, 4.6), dpi=72); plt.subplots_adjust(hspace=.45, top=.9, bottom=.04, left=.04, right=.98)
+    cols = {"X": RED, "Y": "#9d7bff", "Z": COLORS["Diamond"]}
+    specs = [("cz", [("CZ", 0.5)], "CZ gate (native, diagonal): the phase error leaves as a phase error"),
+             ("cnot", [("H", 0.25), ("CZ", 0.5), ("H", 0.75)], "CNOT built as H · CZ · H: the phase error leaves as a bit flip")]
+    tokens = []
+    for ax, (kind, gates, title) in zip(axes, specs):
+        ax.set_xlim(0, 1); ax.set_ylim(-0.3, 1.3); ax.axis("off"); ax.set_title(title, fontsize=10.5, loc="left")
+        for y, name in ((1, "control"), (0, "target")):
+            ax.plot([0.08, 0.98], [y, y], color="#9aa6b2", lw=1.6); ax.text(0.0, y, name, fontsize=9, va="center")
+        for g, x in gates:
+            if g == "H":
+                ax.add_patch(plt.Rectangle((x - 0.03, -0.18), 0.06, 0.36, color="#dfe6ec", zorder=3)); ax.text(x, 0, "H", ha="center", va="center", fontsize=11, zorder=4)
+            else:
+                ax.plot([x, x], [0, 1], color=INK, lw=1.6); ax.plot([x, x], [0, 1], "o", color=INK, ms=7)
+        tok = ax.text(0.5, 0, "Z", ha="center", va="center", fontsize=12, fontweight="bold", color="white",
+                      bbox=dict(boxstyle="circle,pad=0.3", fc=cols["Z"], ec="none"), zorder=5)
+        tokens.append((kind, gates, tok))
+    fig.text(0.04, 0.005, "Gate positions are schematic, not to time scale (the CZ takes most of the gate time).", fontsize=8.5, color="#5a6878")
+    def at(kind, gates, x):   # Pauli on the target after the gates left of x, for a Z injected just after the CZ
+        passed = [(g, (1,) if g == "H" else (0, 1)) for g, gx in gates if 0.5 < gx < x]
+        return G.propagate({1: "Z"}, passed)[1]
+    def draw(i):
+        x = 0.52 + 0.44 * i / (frames - 1); arts = []
+        for kind, gates, tok in tokens:
+            p = at(kind, gates, x); tok.set_position((x, 0)); tok.set_text(p); tok.get_bbox_patch().set_facecolor(cols[p]); arts.append(tok)
+        return arts
+    ani = FuncAnimation(fig, draw, frames=frames, interval=80)
+    path = out / "anim_gate_bias.gif"; ani.save(path, writer=PillowWriter(fps=12)); plt.close(fig); return path
+
+
+GOLD_ = "#e0a030"
+
+
+def make_all_v28(out: str | Path = "docs/img") -> list[Path]:
+    out = Path(out); return [hot_switch(out), addressing_sweep(out), gate_bias(out)]

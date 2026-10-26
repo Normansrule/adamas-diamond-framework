@@ -93,7 +93,7 @@ Edit files in `web/` (never in `site/`, which is regenerated). Physics lives in 
 ## 4d · Build the preprint
 
 ```bash
-sudo apt install -y texlive-latex-recommended texlive-latex-extra latexmk
+sudo apt install -y texlive-latex-recommended texlive-latex-extra texlive-pictures latexmk   # pictures: tikzposter and qrcode for the poster
 make paper talk poster                    # preprint, 12-slide talk, and A0 poster in paper/
 ```
 

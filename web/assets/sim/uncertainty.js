@@ -8,7 +8,8 @@ import { freeCarriers, EPS0_F_CM, Q } from './action.js';
 export const ALPHA = { sic: 2.4, diamond: 2.8 };                        // lattice-mobility exponents, adamas.converter
 export const BORON_EA = 0.37, BV = 1200;                                  // eV [collins1971]; design blocking voltage, V
 export const driftDoping = (epsR, ecMV, bv = BV) => EPS0_F_CM * epsR * (ecMV * 1e6) ** 2 / (2 * Q * bv);
-export const ionizedFraction = (epsR, ecMV, tK = 300) => { const n = driftDoping(epsR, ecMV); return freeCarriers(BORON_EA, n, tK) / n; };
+export const ionizedFraction = (epsR, ecMV, tK = 300, bv = BV) => { const n = driftDoping(epsR, ecMV, bv); return freeCarriers(BORON_EA, n, tK) / n; };
+export const ronFactorDiamond = (tK, bv = BV, alpha = ALPHA.diamond, epsR = 5.7, ecMV = 10) => (tK / 300) ** alpha / ionizedFraction(epsR, ecMV, tK, bv);
 export const powerRatioAt = (p, tK) => {
   const dia = p['Diamond hole mobility'] * p['Diamond critical field'] ** 2 * ionizedFraction(p['Diamond permittivity'], p['Diamond critical field'], tK) / (tK / 300) ** ALPHA.diamond;
   const sic = p['SiC electron mobility'] * p['SiC critical field'] ** 2 / (tK / 300) ** ALPHA.sic;

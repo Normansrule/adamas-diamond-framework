@@ -3,11 +3,11 @@
 <title>Diamond CPU · ADAMAS</title></head><body>
 <main class="wrap"><div class="lab">
 <aside class="panel">
-  <span class="eyebrow">Logic · Lab 4</span><h1>Diamond CPU</h1>
+  <h1>Diamond CPU</h1>
   <p>DIA-4 is a 4-bit processor that this repository synthesizes onto p-channel diamond transistors. Write a program, step it, and watch the registers. The emulator matches the Verilog cycle by cycle.</p>
   <div class="ctl"><label>Example</label><select id="ex"></select></div>
   <div class="ctl"><label>Program (assembly)</label><textarea id="src" rows="12" spellcheck="false"></textarea></div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary small" id="load">Assemble</button><button class="btn small" id="stepB">Step</button><button class="btn small" id="runB">▶ Run</button><button class="btn small" id="resetB">Reset</button></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary small" id="load">Assemble</button><button class="btn small" id="stepB">Step</button><button class="btn small" id="runB" data-icon="play">Run</button><button class="btn small" id="resetB">Reset</button></div>
   <div class="ctl"><label>Clock (visual) <b id="hzV"></b></label><input type="range" id="hz" min="1" max="30" value="4"></div>
   <p id="err" style="color:var(--red);font-size:13px"></p>
   <p style="font-size:12.5px">Instructions: LDI n · ADD n · SUB n · AND n · OR n · XOR n · JNZ addr · JMP addr · OUT · CALL addr · RET · NOP. Operands 0–15; labels allowed.</p>
@@ -16,7 +16,7 @@
   <div class="stage" style="padding:18px;min-height:0">
     <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px">
       <div id="regs"></div>
-      <div><div class="eyebrow" style="margin-bottom:8px">Program memory</div><div id="rom" style="font:13px/1.55 var(--mono)"></div></div>
+      <div><div class="lbl" style="margin-bottom:8px">Program memory</div><div id="rom" style="font:13px/1.55 var(--mono)"></div></div>
     </div>
     <canvas id="outc" style="height:130px;margin-top:12px"></canvas>
   </div>
@@ -28,7 +28,7 @@
     <p class="src">Sources: [faggin1996] [liu2017] [meadconway1980] [rabaey2003] [wolf2013] [weste2011]</p></div>
 </div></div></main>
 <script type="module">
-import { boot, fitCanvas, data } from '../assets/site.js';
+import { boot, fitCanvas, data, label } from '../assets/site.js';
 import * as C from '../assets/sim/dia4.js';
 boot('Chip');
 const $ = id => document.getElementById(id);
@@ -47,7 +47,7 @@ function render() {
 function load() { try { rom = C.assemble($('src').value); $('err').textContent = ''; } catch (e) { $('err').textContent = e.message; } s = C.reset(); outs = []; render(); }
 function step() { s = C.step(s, rom); outs.push(s.out); render(); }
 $('load').onclick = load; $('stepB').onclick = step; $('resetB').onclick = () => { s = C.reset(); outs = []; render(); };
-$('runB').onclick = () => { running = !running; $('runB').textContent = running ? '❚❚ Pause' : '▶ Run'; };
+$('runB').onclick = () => { running = !running; label($('runB'), running ? 'pause' : 'play', running ? 'Pause' : 'Run'); };
 $('hz').oninput = () => $('hzV').textContent = `${$('hz').value} Hz on screen · 2.4 MHz on diamond`; $('hz').oninput();
 (function loop(t) { if (running && t - last > 1000 / +$('hz').value) { step(); last = t; } requestAnimationFrame(loop); })(0);
 $('ex').value = 'countdown'; $('src').value = C.PROGRAMS.countdown; load();

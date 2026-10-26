@@ -70,13 +70,14 @@ export function run(p, seq, framesPerStep = 24) {
 export const SEQUENCES = {
   rabi: tau => [{ op: 'x', angle: tau }],
   ramsey: tau => [{ op: 'x', angle: Math.PI / 2 }, { op: 'wait', t: tau }, { op: 'x', angle: Math.PI / 2 }],
-  echo: tau => [{ op: 'x', angle: Math.PI / 2 }, { op: 'wait', t: tau / 2 }, { op: 'x', angle: Math.PI }, { op: 'wait', t: tau / 2 }, { op: 'x', angle: Math.PI / 2 }],
+  // eps = tau2 - tau1: a mistimed pi pulse (0 for a centred echo); the result follows adamas.nv.echo_mistimed
+  echo: (tau, eps = 0) => [{ op: 'x', angle: Math.PI / 2 }, { op: 'wait', t: Math.max(0, tau / 2 - eps / 2) }, { op: 'x', angle: Math.PI }, { op: 'wait', t: Math.max(0, tau / 2 + eps / 2) }, { op: 'x', angle: Math.PI / 2 }],
 };
 
-export function sweep(p, kind, taus) {             // final P(ms=-1) versus tau for a sequence family
+export function sweep(p, kind, taus, eps = 0) {    // final P(ms=-1) versus tau for a sequence family
   return taus.map(tau => {
     const spins = makeEnsemble(p);
-    for (const st of SEQUENCES[kind](tau)) st.op === 'wait' ? wait(spins, p, st.t) : pulse(spins, p, st.op, st.angle);
+    for (const st of SEQUENCES[kind](tau, Math.max(-tau, Math.min(tau, eps)))) st.op === 'wait' ? wait(spins, p, st.t) : pulse(spins, p, st.op, st.angle);
     return P_MINUS1(spins);
   });
 }

@@ -2,6 +2,8 @@
 
 Live at https://normansrule.github.io/adamas-diamond-framework/ , rebuilt by `.github/workflows/pages.yml` on every push to `main`.
 
+Design rules (type, color, motion, accessibility, icons): [DESIGN.md](DESIGN.md). Equation-in-the-loop panels: registry in `adamas/loop.py`, renderer in `web/assets/eqloop.js`, arithmetic in `web/assets/loop_models.js`, golden values in `web/tests/loop_golden.json`.
+
 ## Architecture
 
 ```mermaid
