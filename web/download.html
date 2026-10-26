@@ -1,0 +1,94 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css">
+<title>Get the app · ADAMAS</title>
+<style>
+.dl{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;padding:40px 0 10px}@media(max-width:950px){.dl{grid-template-columns:1fr}}
+.oscards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}@media(max-width:950px){.oscards{grid-template-columns:1fr}}
+.oscards .card.mine{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset,0 20px 60px -30px var(--teal)}
+.oscards .card h3{display:flex;align-items:center;gap:10px}.oscards .card h3 i{font-style:normal;font-size:24px}
+.files a{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;margin:8px 0;color:var(--ink)}
+.files a:hover{border-color:rgba(111,243,255,.5);text-decoration:none;background:rgba(45,226,230,.06)}.files small{color:var(--mute);font:12px var(--mono)}
+.note{font-size:13.5px;color:var(--mute);border-left:3px solid var(--gold);padding:8px 12px;background:rgba(255,196,107,.06);border-radius:8px;margin-top:10px}
+.mock{border-radius:18px;border:1px solid var(--line);background:#070b14;box-shadow:var(--shadow);overflow:hidden}
+.mock .bar{display:flex;gap:7px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:center}.mock .bar i{width:11px;height:11px;border-radius:50%;background:#2a3446}.mock .bar span{margin-left:10px;font:12px var(--mono);color:var(--mute)}
+.mock canvas{display:block;width:100%;height:300px}
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}@media(max-width:950px){.feat{grid-template-columns:1fr 1fr}}
+.feat div{padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}.feat b{display:block;color:var(--ink)}.feat span{color:var(--mute);font-size:13.5px}
+</style></head><body>
+<main class="wrap">
+<section class="dl">
+  <div><span class="eyebrow">Get the app</span>
+    <h1 style="font-size:clamp(34px,5vw,62px)">ADAMAS on your <span class="grad">desktop, offline</span></h1>
+    <p class="lead">Every lab, the fourteen equations in action, the 3-D experiments, the process traveler, and the course, in one app that runs without an internet connection. Free and open source (MIT license).</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><a class="btn primary" id="primary" href="#all">⬇ Download</a><button class="btn" id="install" hidden>＋ Install as a web app</button><a class="btn" href="#python">Run from Python</a></div>
+    <p class="src" id="rel">Builds are attached to every GitHub release by the desktop workflow.</p>
+    <p class="src" id="inapp" hidden></p>
+  </div>
+  <div class="mock"><div class="bar"><i></i><i></i><i></i><span>ADAMAS</span></div><canvas id="demo"></canvas></div>
+</section>
+<div class="feat">
+  <div><b>Works offline</b><span>three.js, GSAP, Plotly, and the fonts are bundled; nothing is fetched at run time.</span></div>
+  <div><b>Same numbers</b><span>The app is the website, built by the same Python package, so every value matches the preprint.</span></div>
+  <div><b>Fourteen equations</b><span>Animated, with live sliders, for every experiment from US$100 to a pilot line.</span></div>
+  <div><b>Open source</b><span>Built in public by GitHub Actions from the tagged source; checksums in SHA256SUMS.txt.</span></div>
+</div>
+<section class="block" id="all" style="padding-top:50px"><span class="eyebrow">Downloads</span><h2>Pick your system</h2>
+<div class="oscards">
+  <div class="card" data-os="win"><h3><i>⊞</i> Windows 10 and 11</h3><div class="files">
+    <a data-f="ADAMAS-Setup-x64.exe">Installer (recommended) <small>.exe · x64</small></a>
+    <a data-f="ADAMAS-Portable-x64.exe">Portable, no install <small>.exe · x64</small></a></div>
+    <p class="note">The app is not code-signed yet, so SmartScreen may say "Windows protected your PC". Choose <b>More info → Run anyway</b>. Works from WSL too: run the installer from Windows.</p></div>
+  <div class="card" data-os="mac"><h3><i></i> macOS 12 and newer</h3><div class="files">
+    <a data-f="ADAMAS-mac-arm64.dmg">Apple silicon (M1 to M4) <small>.dmg · arm64</small></a>
+    <a data-f="ADAMAS-mac-x64.dmg">Intel Mac <small>.dmg · x64</small></a></div>
+    <p class="note">Not notarized yet: the first time, right-click the app in Applications and choose <b>Open</b>, then <b>Open</b> again.</p></div>
+  <div class="card" data-os="linux"><h3><i>🐧</i> Linux</h3><div class="files">
+    <a data-f="ADAMAS-linux-x86_64.AppImage">AppImage, any distribution <small>.AppImage · x86_64</small></a>
+    <a data-f="ADAMAS-linux-amd64.deb">Debian and Ubuntu <small>.deb · amd64</small></a></div>
+    <p class="note">AppImage: <code>chmod +x ADAMAS-linux-x86_64.AppImage</code> then run it. Ubuntu 24.04 and newer may also need <code>sudo apt install libfuse2t64</code>. Deb: <code>sudo apt install ./ADAMAS-linux-amd64.deb</code>.</p></div>
+</div>
+<p class="src" style="margin-top:14px">Check a download: <code>sha256sum -c SHA256SUMS.txt --ignore-missing</code> after downloading <a data-f="SHA256SUMS.txt" href="#">SHA256SUMS.txt</a>. All releases: <a href="https://github.com/Normansrule/adamas-diamond-framework/releases">GitHub releases</a>.</p>
+</section>
+<section class="block" style="padding-top:20px"><div class="bento" style="grid-template-columns:1fr 1fr">
+  <div class="card"><span class="tag violet">No download</span><h3>Install the website as an app</h3><p>In Chrome or Edge, use the install icon in the address bar (or the button above). On a phone, use "Add to Home Screen". It opens in its own window and keeps working offline after the first visit.</p></div>
+  <div class="card" id="python"><span class="tag gold">For developers</span><h3>Run it from Python</h3><p>Builds the site from your checkout and opens it in a native window (with <code>pywebview</code>) or your browser.</p>
+    <div class="term" style="margin-top:10px"><div class="bar"><i></i><i></i><i></i><button class="btn small copy" data-copy="pycmd">Copy</button></div><pre id="pycmd"><span class="p">$</span> git clone https://github.com/Normansrule/adamas-diamond-framework
+<span class="p">$</span> cd adamas-diamond-framework && pip install -e ".[app]"
+<span class="p">$</span> adamas app</pre></div></div>
+</div></section>
+</main>
+<script type="module">
+import { boot } from './assets/site.js';
+boot('App');
+const $ = id => document.getElementById(id), REPO = 'Normansrule/adamas-diamond-framework', BASEURL = `https://github.com/${REPO}/releases/latest/download/`;
+document.querySelectorAll('[data-f]').forEach(a => a.href = BASEURL + a.dataset.f);
+const ua = (navigator.userAgent || '') + ' ' + (navigator.platform || ''), os = /Win/i.test(ua) ? 'win' : /Mac/i.test(ua) ? 'mac' : /Linux|X11/i.test(ua) ? 'linux' : null;
+if (os) { const card = document.querySelector(`.card[data-os="${os}"]`); card.classList.add('mine'); const first = card.querySelector('[data-f]');
+  $('primary').href = first.href; $('primary').textContent = `⬇ Download for ${{ win: 'Windows', mac: 'macOS', linux: 'Linux' }[os]}`; }
+if (window.adamasDesktop) { $('inapp').hidden = false; $('inapp').textContent = `You are running the ADAMAS desktop app ${window.adamasDesktop.version} on ${window.adamasDesktop.platform}. Newer builds appear here when they are released.`; }
+// latest release: version, date, and file sizes (skipped quietly when offline)
+fetch(`https://api.github.com/repos/${REPO}/releases/latest`).then(r => r.ok ? r.json() : null).then(rel => {
+  if (!rel) return; const assets = Object.fromEntries((rel.assets || []).map(a => [a.name, a]));
+  $('rel').textContent = `Latest release ${rel.tag_name}, published ${new Date(rel.published_at).toLocaleDateString()}.` + (Object.keys(assets).some(n => n.startsWith('ADAMAS-')) ? '' : ' Desktop builds for it are still being built; try again in about 15 minutes.');
+  document.querySelectorAll('.files [data-f]').forEach(a => { const x = assets[a.dataset.f], sm = a.querySelector('small'); if (x && sm) sm.textContent += ` · ${(x.size / 1048576).toFixed(0)} MB`; else if (!x) a.style.opacity = .55; });
+}).catch(() => {});
+// install as a web app when the browser offers it
+const offer = () => { $('install').hidden = false; };
+import('./assets/site.js').then(m => { if (m.installPrompt) offer(); });
+document.addEventListener('adamas-installable', offer);
+$('install').onclick = async () => { const m = await import('./assets/site.js'); if (!m.installPrompt) return; m.installPrompt.prompt(); await m.installPrompt.userChoice; $('install').hidden = true; };
+// window mock-up: a live ODMR sweep, the app's first scene
+const c = $('demo'), g = c.getContext('2d'); let W = 0, H = 0;
+function size() { const d = Math.min(2, devicePixelRatio || 1); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; g.setTransform(d, 0, 0, d, 0, 0); } addEventListener('resize', size); size();
+function draw(t) {
+  g.clearRect(0, 0, W, H); const B = 2 + 2 * Math.sin(t / 1600), f1 = 2870 - 28.03 * B, f2 = 2870 + 28.03 * B, X = f => 30 + (W - 60) * (f - 2700) / 340, Y = v => 40 + (H - 90) * (1 - v);
+  g.strokeStyle = 'rgba(148,190,220,.14)'; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(30, 40 + k * (H - 90) / 5); g.lineTo(W - 30, 40 + k * (H - 90) / 5); g.stroke(); }
+  const grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, '#2de2e6'); grad.addColorStop(1, '#9d7bff'); g.strokeStyle = grad; g.lineWidth = 2.5; g.beginPath();
+  for (let f = 2700; f <= 3040; f += 1) { const v = 0.9 - 0.7 * (36 / ((f - f1) ** 2 + 36) + 36 / ((f - f2) ** 2 + 36)); f === 2700 ? g.moveTo(X(f), Y(v)) : g.lineTo(X(f), Y(v)); } g.stroke();
+  g.fillStyle = '#e8f1f8'; g.font = '600 14px Inter, system-ui'; g.fillText(`f± = D ± γB  ·  B = ${B.toFixed(2)} mT`, 30, 24);
+  g.fillStyle = '#8ea3b5'; g.font = '12px Inter, system-ui'; g.fillText('Equations in Action · optically detected magnetic resonance', 30, H - 16);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script></body></html>

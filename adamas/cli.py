@@ -9,6 +9,7 @@
     adamas uncertainty [power|quantum]  Monte Carlo percentiles and the tornado ranking
     adamas findings                     headline numbers as JSON (the same ones the website and preprint use)
     adamas build [docs|site|figures]    regenerate generated documents, the website, or all figures
+    adamas app [--browser] [--port N]   the website as a local app: native window with pywebview, else your browser
 """
 from __future__ import annotations
 import argparse
@@ -119,14 +120,52 @@ def cmd_findings(a) -> int:
 
 def cmd_build(a) -> int:
     if a.what == "docs":
-        from . import experiments, glossary, readme, traveler, validation
-        for m in (traveler, experiments, glossary, validation, readme):
+        from . import action, experiments, glossary, readme, traveler, validation
+        print("wrote", action.write_golden())
+        for m in (traveler, experiments, glossary, validation, action, readme):
             print("wrote", m.write())
         return 0
     if a.what == "site":
         from .site import build
-        print("built", build(a.out)); return 0
+        print("built", build(a.out, offline=a.offline)); return 0
     return subprocess.call([sys.executable, str(ROOT / "examples" / "make_all_figures.py")])
+
+
+def cmd_app(a) -> int:
+    """Build the site once (rebuilt when the package version changes), serve it on localhost, open a window."""
+    import functools
+    import http.server
+    import threading
+    import webbrowser
+    from . import __version__
+    from .site import build
+    out = Path(a.out) if a.out else ROOT / "site"
+    stamp = out / "data" / "app_version.txt"
+    if a.rebuild or not (out / "index.html").exists() or not stamp.exists() or stamp.read_text().strip() != __version__:
+        offline = (ROOT / "web" / "node_modules" / "three").exists() and not a.online
+        print(f"building the site into {out}{' (offline libraries)' if offline else ''} ...", flush=True)
+        build(out, offline=offline); stamp.write_text(__version__)
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(out))
+    handler.log_message = lambda *args: None
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", a.port), handler)
+    url = f"http://127.0.0.1:{srv.server_address[1]}/{a.page}"
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    print(f"ADAMAS {__version__} at {url}  (Ctrl+C to stop)", flush=True)
+    try:
+        if not a.browser:
+            try:
+                import webview
+                webview.create_window("ADAMAS", url, width=1440, height=920, background_color="#05070d")
+                webview.start(); return 0
+            except ImportError:
+                print("tip: pip install pywebview  (or pip install -e \".[app]\") for a native window; opening your browser instead")
+        webbrowser.open(url)
+        threading.Event().wait()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        srv.shutdown()
+    return 0
 
 
 def main(argv=None) -> int:
@@ -141,7 +180,12 @@ def main(argv=None) -> int:
     sub.add_parser("validate").set_defaults(fn=cmd_validate)
     u = sub.add_parser("uncertainty"); u.add_argument("study", nargs="?", default="power", choices=["power", "quantum"]); u.add_argument("--samples", type=int, default=2000); u.set_defaults(fn=cmd_uncertainty)
     sub.add_parser("findings").set_defaults(fn=cmd_findings)
-    b = sub.add_parser("build"); b.add_argument("what", nargs="?", default="docs", choices=["docs", "site", "figures"]); b.add_argument("--out", default="site"); b.set_defaults(fn=cmd_build)
+    b = sub.add_parser("build"); b.add_argument("what", nargs="?", default="docs", choices=["docs", "site", "figures"]); b.add_argument("--out", default="site")
+    b.add_argument("--offline", action="store_true", help="site: bundle three.js, GSAP, Plotly, and fonts (needs npm ci in web/)"); b.set_defaults(fn=cmd_build)
+    ap = sub.add_parser("app", help="open the website as a local app"); ap.add_argument("--browser", action="store_true", help="use the browser even if pywebview is installed")
+    ap.add_argument("--port", type=int, default=0, help="port (default: any free port)"); ap.add_argument("--page", default="index.html", help="first page, for example action.html")
+    ap.add_argument("--out", default="", help="where to build the site (default: site/ in the checkout)"); ap.add_argument("--rebuild", action="store_true")
+    ap.add_argument("--online", action="store_true", help="load libraries from CDNs instead of bundling them"); ap.set_defaults(fn=cmd_app)
     a = p.parse_args(argv)
     if not getattr(a, "fn", None):
         p.print_help(); return 0

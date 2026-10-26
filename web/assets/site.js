@@ -3,7 +3,7 @@
 const BASE = document.documentElement.dataset.base || '.';
 // Grouped navigation: [group, [[label, href, short description], ...]]. Labels double as boot(active) names.
 export const NAV = [
-  ['Learn', [['Course', 'course/index.html', 'Eight lessons with notebooks and graded checks'], ['Explorer', 'explorer.html', 'Every equation, nine live panels'],
+  ['Learn', [['Course', 'course/index.html', 'Eight lessons with notebooks and graded checks'], ['Equations', 'action.html', 'Fourteen equations in action, animated and live'], ['Explorer', 'explorer.html', 'Every equation, nine live panels'],
     ['Gallery', 'gallery.html', 'All figures and animations'], ['Glossary', 'glossary.html', 'Every acronym, spelled out']]],
   ['Labs', [['Lattice', 'labs/lattice.html', 'Materials · crystal and NV center'], ['Heat', 'labs/heat.html', 'Materials · heat race'], ['Wafer', 'labs/wafer.html', 'Manufacturing · yield'],
     ['Fab', 'labs/fab.html', 'Manufacturing · process walkthrough'], ['Transistor', 'labs/transistor.html', 'Devices · I–V and ring oscillator'], ['Power', 'labs/power.html', 'Devices · EV inverter'],
@@ -24,7 +24,7 @@ export function mountNav(active) {
     <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <div class="links">` + NAV.map(([g, items]) => `<div class="dd${group && group[0] === g ? ' on' : ''}"><button class="ddb" aria-expanded="false">${g} <i>▾</i></button>
       <div class="ddm${items.length > 6 ? ' wide' : ''}">${items.map(([t, h, d]) => `<a href="${BASE}/${h}" class="${t === active ? 'on' : ''}"><b>${t === 'Chip' ? 'Diamond CPU' : t}</b><small>${d}</small></a>`).join('')}</div></div>`).join('') +
-    `<button class="kbtn" id="openSearch" aria-label="Search">⌕ Search <kbd>Ctrl K</kbd></button><a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">★ GitHub</a></div>`;
+    `<button class="kbtn" id="openSearch" aria-label="Search">⌕ Search <kbd>Ctrl K</kbd></button><a class="gh app" href="${BASE}/download.html">⬇ App</a><a class="gh" href="https://github.com/Normansrule/adamas-diamond-framework">★ GitHub</a></div>`;
   document.body.prepend(nav);
   const close = () => nav.querySelectorAll('.dd').forEach(d => { d.classList.remove('open'); d.querySelector('.ddb').setAttribute('aria-expanded', 'false'); });
   nav.querySelectorAll('.ddb').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const d = b.parentElement, was = d.classList.contains('open'); close(); if (!was) { d.classList.add('open'); b.setAttribute('aria-expanded', 'true'); } }));
@@ -41,7 +41,7 @@ export function mountFooter() {
   if (document.querySelector('footer.site')) return;
   const f = document.createElement('footer'); f.className = 'site';
   f.innerHTML = `<div class="wrap fgrid">${NAV.map(([g, items]) => `<div><b>${g}</b>${items.slice(0, 7).map(([t, h]) => `<a href="${BASE}/${h}">${t === 'Chip' ? 'Diamond CPU' : t}</a>`).join('')}</div>`).join('')}
-    <div><b>Project</b><a href="https://github.com/Normansrule/adamas-diamond-framework">Source on GitHub</a><a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/CHANGELOG.md">Changelog</a>
+    <div><b>Project</b><a href="${BASE}/download.html">Desktop app</a><a href="https://github.com/Normansrule/adamas-diamond-framework">Source on GitHub</a><a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/CHANGELOG.md">Changelog</a>
     <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/CITATION.cff">Cite this work</a><a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/references/REFERENCES.md">All references</a></div></div>
     <div class="wrap fnote">ADAMAS · MIT License · open research framework for diamond electronics and room-temperature quantum processors · every number is computed by the Python package and tested · press <kbd>Ctrl K</kbd> to search</div>`;
   document.body.appendChild(f);
@@ -102,7 +102,16 @@ export function scrollProgress() {
   addEventListener('scroll', f, { passive: true }); f();
 }
 
-export function boot(active) { mountNav(active); spotlight(); levels(); copyButtons(); reveal(); scrollProgress(); document.body.classList.add('ready');
+// Installable web app: register the service worker (works offline after the first visit) and keep the browser's
+// install prompt so the Get-the-app page can offer an Install button. Skipped inside the desktop app (app:// scheme).
+export let installPrompt = null;
+export function pwa() {
+  const L = window.location; if (typeof navigator === 'undefined' || !('serviceWorker' in navigator) || !L) return;
+  if (!(L.protocol === 'https:' || L.hostname === 'localhost' || L.hostname === '127.0.0.1')) return;
+  navigator.serviceWorker.register(`${BASE}/sw.js`).catch(() => {});
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; document.dispatchEvent(new Event('adamas-installable')); });
+}
+export function boot(active) { mountNav(active); spotlight(); levels(); copyButtons(); reveal(); scrollProgress(); pwa(); document.body.classList.add('ready');
   import('./glossary.js').then(m => { m.glossary(BASE); setTimeout(() => m.glossary(BASE), 1200); }).catch(() => {}); }
 
 // small canvas helpers shared by labs

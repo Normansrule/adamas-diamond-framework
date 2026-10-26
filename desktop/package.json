@@ -1,0 +1,87 @@
+{
+  "name": "adamas-desktop",
+  "productName": "ADAMAS",
+  "version": "0.26.0",
+  "description": "ADAMAS desktop app: diamond chips from wafer to qubit, offline (labs, equations in action, experiments, course)",
+  "homepage": "https://normansrule.github.io/adamas-diamond-framework/",
+  "repository": "github:Normansrule/adamas-diamond-framework",
+  "license": "MIT",
+  "author": {
+    "name": "Aleksander Norman",
+    "email": "Normansrule@users.noreply.github.com"
+  },
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "site": "cd .. && python -m adamas.site desktop/site --offline && python -m adamas.icons desktop/build/icon.png 1024",
+    "start": "electron .",
+    "dist": "electron-builder --publish never",
+    "check": "electron . --check"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "io.github.normansrule.adamas",
+    "productName": "ADAMAS",
+    "copyright": "MIT License · ADAMAS contributors",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "site/**/*"
+    ],
+    "asarUnpack": [],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "ADAMAS-Setup-${arch}.${ext}",
+      "shortcutName": "ADAMAS"
+    },
+    "portable": {
+      "artifactName": "ADAMAS-Portable-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "identity": "-"
+    },
+    "dmg": {
+      "artifactName": "ADAMAS-mac-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "synopsis": "Diamond chips from wafer to qubit, offline",
+      "maintainer": "Normansrule <Normansrule@users.noreply.github.com>",
+      "syncDesktopName": true
+    },
+    "appImage": {
+      "artifactName": "ADAMAS-linux-${arch}.${ext}"
+    },
+    "deb": {
+      "artifactName": "ADAMAS-linux-${arch}.${ext}"
+    }
+  },
+  "desktopName": "adamas.desktop"
+}

@@ -1,13 +1,13 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place clean
+.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place action-golden app desktop desktop-check clean
 
 all: refs test figures
 
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 52 figures into docs/img/
+figures:         ## regenerate all 53 figures and the equations animation into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]
@@ -94,6 +94,19 @@ resource-biased: ## rebuild the biased-noise resource tables for both codes (abo
 
 resource-bias:   ## rebuild the native-circuit tables at bias 0.5 and 10 for both codes (about 4 minutes)
 	$(PY) -c "from adamas import resource as R; [R.table_eta(c, e, refresh=True) for c in ('css', 'xzzx') for e in (0.5, 10.0)]"
+
+action-golden:   ## Python values the browser physics of Equations in Action is tested against (web/tests/action_golden.json)
+	$(PY) -c "from adamas.action import write_golden; write_golden()"
+
+app:             ## open the website as a local app (native window with pip install -e ".[app]")
+	$(PY) -m adamas app
+
+desktop:         ## build the desktop app for this system into desktop/dist (needs: cd web && npm ci)
+	$(PY) -m adamas.site desktop/site --offline && $(PY) -m adamas.icons desktop/build/icon.png 1024
+	cd desktop && npm ci && npx electron-builder --publish never
+
+desktop-check:   ## open every page in the desktop app and fail on any script error (Linux needs xvfb)
+	$(PY) -m adamas.site desktop/site --offline && cd desktop && npm ci && xvfb-run -a npx electron . --check --no-sandbox
 
 clean:
 	rm -rf .pytest_cache build dist *.egg-info circuits/digital/synth.log

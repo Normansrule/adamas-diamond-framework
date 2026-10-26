@@ -1,0 +1,82 @@
+name: desktop
+# Builds the ADAMAS desktop app (Electron) for Windows, macOS, and Linux from the same site the website uses, bundled
+# for offline use, and attaches the installers plus SHA256SUMS.txt to the GitHub release. Pull requests that touch the
+# app or the website run the Linux self-test only (every page opened in the packaged app, any script error fails).
+on:
+  release:
+    types: [published]
+  pull_request:
+    paths: ["desktop/**", "web/**", "adamas/site.py", ".github/workflows/desktop.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: "desktop-${{ github.ref }}", cancel-in-progress: true }
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: pip install -e . -q
+      - run: cd web && npm ci --silent
+      - run: python -m adamas.site desktop/site --offline && python -m adamas.icons desktop/build/icon.png 1024
+      - uses: actions/upload-artifact@v4
+        with: { name: offline-site, path: "desktop/site\ndesktop/build/icon.png", retention-days: 3 }
+
+  check:
+    needs: site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/download-artifact@v4
+        with: { name: offline-site, path: desktop }
+      - run: cd desktop && npm ci --silent
+      - run: cd desktop && xvfb-run -a npx electron . --check --no-sandbox
+
+  package:
+    if: github.event_name != 'pull_request'
+    needs: [site, check]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, args: "--win nsis portable --x64" }
+          - { os: macos-latest, args: "--mac dmg --arm64 --x64" }
+          - { os: ubuntu-latest, args: "--linux AppImage deb --x64" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/download-artifact@v4
+        with: { name: offline-site, path: desktop }
+      - run: npm ci --silent
+        working-directory: desktop
+      - run: npx electron-builder ${{ matrix.args }} --publish never
+        working-directory: desktop
+        env: { CSC_IDENTITY_AUTO_DISCOVERY: "false" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}
+          path: |
+            desktop/dist/ADAMAS-*.exe
+            desktop/dist/ADAMAS-*.dmg
+            desktop/dist/ADAMAS-*.AppImage
+            desktop/dist/ADAMAS-*.deb
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'release'
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { pattern: "app-*", path: out, merge-multiple: true }
+      - run: cd out && sha256sum ADAMAS-* > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - run: gh release upload "${{ github.event.release.tag_name }}" out/* --clobber --repo "${{ github.repository }}"
+        env: { GH_TOKEN: "${{ github.token }}" }

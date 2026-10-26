@@ -632,7 +632,110 @@ def fig_what_to_measure(out: Path) -> Path:
     return _finish(fig, out, "fig52_what_to_measure.png", "[sobol2001] [saltelli2002] [howard1966]; adamas.decision (costs: adamas.experiments; native-circuit tables at bias 0.5, 10, 100)")
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure]
+def fig_equations_in_action(out: Path) -> Path:
+    """Figure 53: fourteen equations in action, each with the curve its experiment measures (web: action.html)."""
+    from . import action, coupling, doping, experiments, gate_budget, logic, nv, qec, wafer
+    from .materials import MATERIALS
+    from .power import ron_sp_mohm_cm2
+    ex = {e["id"]: e for e in experiments.EXPERIMENTS}
+    VIO, PINK = "#7b5cd6", "#d6457a"
+    EQ = {"odmr": r"$f_\pm = D \pm \gamma_e B_\parallel$", "dipole": r"$\Delta f = 2\gamma_e\,\frac{\mu_0}{4\pi}\,\frac{2m}{r^3}$",
+          "heat": r"$\Delta T = P\,R_{th}\,(1-e^{-t/\tau})$", "rabi": r"$P_{-1} = \frac{\Omega^2}{\Omega^2+\delta^2}\sin^2(\pi\sqrt{\Omega^2+\delta^2}\,\tau)$",
+          "ramsey": r"$P_0 = \frac{1}{2}\,[1+\cos(2\pi\delta\tau)\,e^{-(\tau/T_2^*)^2}]$", "echo": r"$C = e^{-(\tau/T_2)^p}$",
+          "vector": r"$|\mathbf{B}|^2 = \frac{3}{4}\sum_i(\Delta f_i/2\gamma_e)^2$", "arrhenius": r"$\rho = \frac{1}{q\,p\,\mu},\;\; p \sim e^{-E_A/kT}$",
+          "g2": r"$g^{(2)}(\tau) = 1-\rho^2 e^{-|\tau|/\tau_1}$", "fet": r"$I_D = \frac{k}{2}\,(V_{GS}-V_{th})^2$",
+          "gate": r"$F = q^2 F_{coh} + \frac{1-q^2}{4}$", "yield": r"$Y = \left(\frac{1-e^{-AD_0}}{AD_0}\right)^2$",
+          "bfom": r"$R_{on} = \frac{4V_B^2}{\varepsilon\,\mu\,E_c^3}$", "surface": r"$p_L = 0.1\,(p/p_{th})^{(d+1)/2}$"}
+    fig, axs = plt.subplots(3, 5, figsize=(21, 12.6)); plt.subplots_adjust(hspace=1.05, wspace=.36)
+    for k, s in enumerate(action.SCENES):
+        ax = axs.flat[k]; e = ex.get(s["exp"]); res = experiments.expected(e["expected"]) if e else None
+        i = s["id"]
+        if i == "odmr":
+            f = np.linspace(2700, 3040, 900)
+            for b, c in ((0, "#9aa6b2"), (3, COLORS["Diamond"])):
+                lo, hi = nv.transition_frequencies_mhz((0, 0, b)); ax.plot(f, 1 - sum(0.012 * 9 / ((f - x) ** 2 + 9) for x in ((lo, hi) if b else (2870,))), color=c, lw=2, label=f"B = {b} mT")
+            ax.set_xlabel("frequency (MHz)"); ax.set_ylabel("fluorescence")
+        elif i == "dipole":
+            r = np.linspace(2, 12, 60); ax.loglog(r, 2 * nv.GAMMA_MHZ_PER_MT * 1e-7 * 2 * 1.2 / (r / 100) ** 3 * 1e3, color=VIO, lw=2, label="equation, m = 1.2 A·m²")
+            ax.loglog(res["x"], res["series"]["measured"], "o", color=GOLD, ms=5, label="A2 data"); ax.set_xlabel("distance (cm)"); ax.set_ylabel("splitting (MHz)")
+            ax.set_xticks([2, 3, 4, 6, 8, 12]); ax.set_xticklabels(["2", "3", "4", "6", "8", "12"]); ax.xaxis.set_minor_formatter(plt.NullFormatter())
+        elif i == "heat":
+            t = np.linspace(0, 180, 200)
+            for name, kap, c in (("diamond", 20, COLORS["Diamond"]), ("copper", 4.0, GOLD), ("aluminium", 2.37, "#9aa6b2"), ("silicon", 1.5, VIO)):
+                ax.plot(t, 1.5 * (1 / (4 * kap * .1) + 4.5) * (1 - np.exp(-t / (12 + 30 / kap))), color=c, lw=2, label=name)
+            ax.set_xlabel("time (s)"); ax.set_ylabel("ΔT (K) at 1.5 W")
+        elif i == "rabi":
+            t = np.linspace(0, 1, 400)
+            for de, c in ((0, COLORS["Diamond"]), (6, PINK)):
+                ax.plot(t, nv.rabi(t, 5, de), color=c, lw=2, label=f"δ = {de} MHz")
+            ax.set_xlabel("pulse length τ (µs)"); ax.set_ylabel("P(mₛ = −1)")
+        elif i == "ramsey":
+            t = np.linspace(0, 3, 500); ax.plot(t, nv.ramsey(t, 2, 1), color=VIO, lw=1.8, label="δ = 2 MHz, T₂* = 1 µs")
+            ax.plot(t, .5 * (1 + np.exp(-t ** 2)), ":", color="#9aa6b2"); ax.plot(t, .5 * (1 - np.exp(-t ** 2)), ":", color="#9aa6b2"); ax.set_xlabel("free time τ (µs)"); ax.set_ylabel("P(mₛ = 0)")
+        elif i == "echo":
+            t = np.linspace(0, 2000, 300)
+            for p_, c in ((1, "#9aa6b2"), (2, GOLD), (3, GREEN)):
+                ax.plot(t, nv.hahn_echo(t, 600, p_), color=c, lw=2, label=f"p = {p_}")
+            ax.set_xlabel("free time τ (µs), T₂ = 600 µs"); ax.set_ylabel("echo contrast")
+        elif i == "vector":
+            B = np.array(res["B"]); pr = np.abs(nv.NV_AXES @ B) * 2 * nv.GAMMA_MHZ_PER_MT
+            ax.bar(range(1, 5), pr, color=[COLORS["Diamond"], VIO, PINK, GOLD]); ax.set_xticks(range(1, 5)); ax.set_xticklabels([f"NV {n}" for n in range(1, 5)])
+            ax.set_ylabel("splitting Δfᵢ (MHz)"); ax.set_ylim(0, pr.max() * 1.3); ax.text(.02, .92, f"|B| recovered: {np.sqrt(.75 * ((pr / (2 * nv.GAMMA_MHZ_PER_MT)) ** 2).sum()):.3f} mT", transform=ax.transAxes, fontsize=9)
+        elif i == "arrhenius":
+            T = np.linspace(260, 800, 120)
+            for ea, c, lab in ((0.37, PINK, "boron in diamond, 0.37 eV"), (0.045, "#9aa6b2", "silicon-like, 0.045 eV")):
+                p_ = np.array([doping.free_carriers_cm3(doping.Dopant("x", "C", "acceptor", ea, 4, .9, ()), 3e17, x, 5e16) for x in T])
+                ax.semilogy(1000 / T, 1 / (1.602e-19 * p_ * 1500 * (T / 300) ** -2.2), color=c, lw=2, label=lab)
+            ax.semilogy(res["x"], res["series"]["resistivity (Ω·cm)"], "o", color=GOLD, ms=3.5, label="B3 data"); ax.set_xlabel("1000 / T (1/K)"); ax.set_ylabel("ρ (Ω·cm)")
+        elif i == "g2":
+            tau = np.linspace(-80, 80, 400)
+            for rho, c in ((0.95, COLORS["Diamond"]), (0.6, "#9aa6b2")):
+                ax.plot(tau, 1 - rho ** 2 * np.exp(-np.abs(tau) / 12), color=c, lw=2, label=f"ρ = {rho}")
+            ax.axhline(.5, color=RED, ls="--", lw=1); ax.set_xlabel("delay τ (ns)"); ax.set_ylabel("g⁽²⁾(τ)")
+        elif i == "fet":
+            fet = logic.Fet(mu_cm2_vs=150, vth=1.5, w_um=100); v = np.linspace(0, 20, 100)
+            for vg, c in ((3, "#9aa6b2"), (5, GOLD), (7, VIO), (9, PINK)):
+                ax.plot(v, [fet.current(vg, x) * 1e3 for x in v], color=c, lw=2, label=f"|V_GS| = {vg} V")
+            ax.set_xlabel("|V_DS| (V)"); ax.set_ylabel("|I_D| (mA)")
+        elif i == "gate":
+            q = np.linspace(.5, 1, 60)
+            for r_, c in ((15, GREEN), (25, VIO), (35, "#9aa6b2")):
+                ax.plot(q, [gate_budget.GateBudget(r_nm=r_, t2star_us=1e9, t2_us=600, q_prep=x).fidelity for x in q], color=c, lw=2, label=f"r = {r_} nm")
+            ax.axhline(.67, color=GOLD, ls=":", lw=1.2); ax.text(.51, .69, "measured 2013", fontsize=8, color=GOLD); ax.set_xlabel("preparation probability q"); ax.set_ylabel("Bell fidelity, T₂ = 600 µs")
+        elif i == "yield":
+            d0 = np.logspace(-1, 1.3, 60)
+            for a_, c in ((4, GREEN), (25, COLORS["Diamond"]), (100, VIO)):
+                ax.semilogx(d0, [wafer.good_dies(76, a_, x) for x in d0], color=c, lw=2, label=f"{a_} mm² die")
+            ax.set_yscale("log"); ax.set_xlabel("killer defects D₀ (/cm²)"); ax.set_ylabel("good dies per 3-inch wafer")
+        elif i == "bfom":
+            vb = np.logspace(2, 4, 50)
+            for key in ("Si", "4H-SiC", "GaN", "Diamond"):
+                ax.loglog(vb, [ron_sp_mohm_cm2(MATERIALS[key], x, "p" if key == "Diamond" else "n") for x in vb], color=COLORS[key], lw=2, label=ABBR_[key])
+            ax.set_xlabel("breakdown voltage (V)"); ax.set_ylabel("R_on,sp (mΩ·cm²)")
+        elif i == "surface":
+            p_ = np.logspace(-4, np.log10(2e-2), 60)
+            for d_, c in ((3, "#9aa6b2"), (7, COLORS["Diamond"]), (11, VIO)):
+                ax.loglog(p_, [qec.surface_code_logical_error(x, d_) for x in p_], color=c, lw=2, label=f"d = {d_}")
+            ax.axvline(1e-2, color=RED, ls="--", lw=1); ax.set_xlabel("physical error p"); ax.set_ylabel("logical error p_L")
+        tag = f"{e['id']} · tier {e['tier']}" if e else "framework"
+        ax.set_title("")
+        ax.text(0, 1.30, f"{k + 1}. {s['title'].split(':')[0]}", transform=ax.transAxes, fontsize=11, fontweight="bold", color=INK, va="bottom")
+        ax.text(0, 1.04, EQ[i], transform=ax.transAxes, fontsize=11.5, color=INK, va="bottom")
+        ax.text(1, 1.47, tag, transform=ax.transAxes, fontsize=8, ha="right", va="bottom", color=(experiments.TIERS[e["tier"]]["color"] if e else "#7b5cd6"), fontweight="bold")
+        if ax.get_legend_handles_labels()[0]:
+            ax.legend(fontsize=7.5, loc="best")
+        ax.tick_params(labelsize=8.5); ax.xaxis.label.set_size(9); ax.yaxis.label.set_size(9)
+    a = axs.flat[14]; a.axis("off")
+    a.text(0, .95, "Equations in action", fontsize=15, fontweight="bold", va="top")
+    a.text(0, .78, "Each panel: the governing equation and the curve\nits experiment should measure (gold dots: the\nsimulated result of that experiment).\n\n"
+           "Interactive, animated, with every symbol a slider:\nnormansrule.github.io/adamas-diamond-framework\n/action.html\n\nTiers: A kitchen table · B teaching lab\nC research lab · D facility", fontsize=9.5, va="top", linespacing=1.4)
+    return _finish(fig, out, "fig53_equations_in_action.png", "adamas.action (every curve from the cited package models); scene sources in docs/EQUATIONS_IN_ACTION.md")
+
+
+ABBR_ = {"Si": "silicon", "4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond (holes)"}
+
+
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

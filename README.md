@@ -9,6 +9,20 @@
   <a href="https://normansrule.github.io/adamas-diamond-framework/explorer.html">Explorer</a>
 </p>
 <p align="center">
+  <a href="https://github.com/Normansrule/adamas-diamond-framework/releases/latest"><img src="https://img.shields.io/github/v/release/Normansrule/adamas-diamond-framework?label=release&color=2de2e6" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9d7bff" alt="MIT license"></a>
+  <a href="references/REFERENCES.md"><img src="https://img.shields.io/badge/references-556-48e5a3" alt="556 references"></a>
+  <a href="docs/VALIDATION.md"><img src="https://img.shields.io/badge/validation-18%2F19%20pass-48e5a3" alt="Validation"></a>
+  <a href="https://normansrule.github.io/adamas-diamond-framework/action.html"><img src="https://img.shields.io/badge/equations%20in%20action-14-ffc46b" alt="14 equations in action"></a>
+  <a href="https://normansrule.github.io/adamas-diamond-framework/download.html"><img src="https://img.shields.io/badge/desktop%20app-Windows%20·%20macOS%20·%20Linux-ff5d8f" alt="Desktop app"></a>
+</p>
+<p align="center">
+  <a href="https://normansrule.github.io/adamas-diamond-framework/action.html"><b>⚡ Equations in Action</b></a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/download.html"><b>⬇ Get the desktop app</b></a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/experiments.html">🔬 Experiments in 3-D</a> ·
+  <a href="https://normansrule.github.io/adamas-diamond-framework/course/">🎓 Course</a>
+</p>
+<p align="center">
   <a href="https://codespaces.new/Normansrule/adamas-diamond-framework"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="32"></a>
 </p>
 
@@ -22,8 +36,99 @@
 | **Error correction** | With strongly biased noise the native XZZX code's threshold rises to **1.59%** while the standard code falls to 0.63%. | [E6.1e](docs/expert/E6_error_correction_and_system_architecture.md) |
 | **Machine size** | A factoring-scale room-temperature machine fits on a **5.7 mm** die but runs **6.0 years** at 1 ms readout (1.2 to 15.5 years with uncertainty). If gate noise is biased, the standard code needs 399 M qubits and the XZZX code **67 M**. | [E10.5c](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
 | **What to measure next** | Diamond hole mobility and critical field each explain about 0.42 of the power-ratio spread; readout time explains 0.96 of the runtime spread. Per dollar, a few-thousand-dollar **Hall measurement of diamond mobility** comes first. XZZX wins at every gate bias, so measuring the bias sizes the machine but does not change the code. | [E10.5d](docs/expert/E10_scaling_a_room_temperature_quantum_computer.md) |
-| **Evidence** | **18 of 19** validation checks pass (the other is an explained discrepancy); 541 references; 52 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
+| **Evidence** | **18 of 19** validation checks pass (the other is an explained discrepancy); 556 references; 53 figures regenerated from code. | [VALIDATION.md](docs/VALIDATION.md) |
 <!-- findings:end -->
+
+## ⚡ Equations in action (new in v0.26)
+
+<p align="center"><img src="docs/img/anim_equations.gif" alt="Four equations sweeping their variables: ODMR splitting, Rabi oscillation, Ramsey dephasing, wafer yield" width="88%"></p>
+
+The [Equations in Action](https://normansrule.github.io/adamas-diamond-framework/action.html) page pairs every experiment with the equation that governs it. **Every symbol is a slider:** move it and the symbol glows in the equation, your numbers are plugged in line by line, the animation of the mechanism changes (spins fanning out on the Bloch sphere, holes flowing under a transistor gate, defects raining on a wafer), and the curve the experiment should measure redraws next to that experiment's simulated data. **Play** sweeps the variable for you; **Tour** runs all fourteen. Every browser function is checked against its Python twin by the test suite.
+
+| # | Scene | Governing equation | Experiment · budget |
+|---|---|---|---|
+| 1 | [ODMR: a spin you can see](https://normansrule.github.io/adamas-diamond-framework/action.html#odmr) | $f_\pm = D \pm \gamma_e B_\parallel$ | A1 · US$150 |
+| 2 | [Weigh a magnet with light](https://normansrule.github.io/adamas-diamond-framework/action.html#dipole) | $\Delta f = 2\gamma_e \frac{\mu_0}{4\pi}\frac{2m}{r^3}$ | A2 · US$0 to 50 |
+| 3 | [Heat-spreader race](https://normansrule.github.io/adamas-diamond-framework/action.html#heat) | $\Delta T = P R_{th}(1-e^{-t/\tau}),\ R_{th} = \frac{1}{4\kappa a}+\dots$ | A3 · US$100 |
+| 4 | [Rabi oscillation](https://normansrule.github.io/adamas-diamond-framework/action.html#rabi) | $P_{-1} = \frac{\Omega^2}{\Omega^2+\delta^2}\sin^2(\pi\sqrt{\Omega^2+\delta^2}\,\tau)$ | B1 · US$3k |
+| 5 | [Ramsey fringes](https://normansrule.github.io/adamas-diamond-framework/action.html#ramsey) | $P_0 = \tfrac12[1+\cos(2\pi\delta\tau)e^{-(\tau/T_2^*)^2}]$ | B1 |
+| 6 | [Spin echo](https://normansrule.github.io/adamas-diamond-framework/action.html#echo) | $C = e^{-(\tau/T_2)^p}$ | B1 |
+| 7 | [Vector magnetometry](https://normansrule.github.io/adamas-diamond-framework/action.html#vector) | $\vert\mathbf B\vert^2 = \tfrac34\sum_i(\Delta f_i/2\gamma_e)^2$ | B2 · US$1k |
+| 8 | [Boron wakes up](https://normansrule.github.io/adamas-diamond-framework/action.html#arrhenius) | $\frac{p(p+N_D)}{N_A-N_D-p} = \frac{N_V}{g}e^{-E_A/kT}$ | B3 · US$1.5k |
+| 9 | [One photon at a time](https://normansrule.github.io/adamas-diamond-framework/action.html#g2) | $g^{(2)}(\tau) = 1-\rho^2 e^{-\vert\tau\vert/\tau_1}$ | C1 · US$30k |
+| 10 | [Diamond transistor](https://normansrule.github.io/adamas-diamond-framework/action.html#fet) | $I_D = \frac{k}{2}(V_{GS}-V_{th})^2,\ k = \frac{\mu C_{ox}W}{L}$ | C2 · US$10k |
+| 11 | [Two qubits talk](https://normansrule.github.io/adamas-diamond-framework/action.html#gate) | $\nu = \frac{52\,\mathrm{MHz\,nm^3}}{r^3},\ F = q^2F_{coh}+\frac{1-q^2}{4}$ | D1 · US$0.5M |
+| 12 | [Defects on a wafer](https://normansrule.github.io/adamas-diamond-framework/action.html#yield) | $Y = \left(\frac{1-e^{-AD_0}}{AD_0}\right)^2$ | D2 · US$5M |
+| 13 | [Power-device limit](https://normansrule.github.io/adamas-diamond-framework/action.html#bfom) | $R_{on,sp} = \frac{4V_B^2}{\varepsilon\mu E_c^3}$ | framework |
+| 14 | [Error-correction threshold](https://normansrule.github.io/adamas-diamond-framework/action.html#surface) | $p_L \approx 0.1\,(p/p_{th})^{(d+1)/2}$ | framework |
+
+<details><summary><b>All fourteen as one figure</b> (Figure 53), and the full write-up</summary>
+
+![Fourteen equations in action](docs/img/fig53_equations_in_action.png)
+
+[docs/EQUATIONS_IN_ACTION.md](docs/EQUATIONS_IN_ACTION.md) has every equation in full, its symbols, three levels of explanation, the matching experiment, and sources.
+</details>
+
+## 📲 Get the app
+
+Everything on the website, bundled for offline use: labs, equations in action, 3-D experiments, the process traveler, and the course. Built by GitHub Actions from the tagged source for every release.
+
+| System | Download | First launch |
+|---|---|---|
+| **Windows 10 and 11** | [Installer](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-Setup-x64.exe) · [Portable](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-Portable-x64.exe) | Not code-signed yet: on "Windows protected your PC" choose **More info → Run anyway** |
+| **macOS 12+** | [Apple silicon](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-mac-arm64.dmg) · [Intel](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-mac-x64.dmg) | Not notarized yet: right-click the app, **Open**, then **Open** |
+| **Linux** | [AppImage](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-linux-x86_64.AppImage) · [.deb](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/ADAMAS-linux-amd64.deb) | `chmod +x ADAMAS-linux-x86_64.AppImage` (Ubuntu 24.04+ may need `libfuse2t64`) |
+| **Any browser** | [Install the website](https://normansrule.github.io/adamas-diamond-framework/download.html) | Chrome or Edge install icon, or "Add to Home Screen"; works offline after the first visit |
+| **Python** | `pip install -e ".[app]"` then `adamas app` | Native window with pywebview, or your browser |
+
+Checksums: [SHA256SUMS.txt](https://github.com/Normansrule/adamas-diamond-framework/releases/latest/download/SHA256SUMS.txt). How the app is built and tested: [docs/APP.md](docs/APP.md).
+
+## 🗺️ How the ideas connect
+
+Each box is a concept; each arrow says what it feeds; the dashed links are the experiments (tier and budget) that measure it.
+
+```mermaid
+flowchart LR
+    classDef mat fill:#0b2a2a,stroke:#48e5a3,color:#e8f1f8
+    classDef dev fill:#2a2208,stroke:#ffc46b,color:#e8f1f8
+    classDef q fill:#08262a,stroke:#2de2e6,color:#e8f1f8
+    classDef sc fill:#1b1430,stroke:#9d7bff,color:#e8f1f8
+    classDef ex fill:#111827,stroke:#8ea3b5,color:#cbd5e1,stroke-dasharray: 4 3
+    BG[Wide bandgap 5.47 eV]:::mat --> EC[Critical field 10 MV/cm]:::mat --> BF[Baliga limit R_on ∝ V_B²/εμE_c³]:::dev
+    K[Thermal conductivity 22 W/cm·K]:::mat --> HS[Heat spreading 1/4κa]:::dev
+    DOP[Deep boron 0.37 eV]:::mat --> ION[Incomplete ionization]:::mat --> HG[Hydrogen-terminated hole gas]:::dev --> FET[p-channel transistor]:::dev --> LOG[Logic, power, control chips]:::dev
+    BF --> LOG
+    HS --> LOG
+    NV[NV center spin triplet]:::q --> ODMR[Optical readout, ODMR]:::q --> COH[Coherence T₂*, T₂]:::q --> GATE[Dipolar two-qubit gate]:::q
+    GATE --> QEC[Error-correction threshold]:::sc --> MACH[Machine size and runtime]:::sc
+    WAF[Wafer size and defect density]:::sc --> YLD[Yield, good dies]:::sc --> MACH
+    LOG --> MACH
+    A1[A1 ODMR · US$150]:::ex -.-> ODMR
+    A3[A3 heat race · US$100]:::ex -.-> HS
+    B1[B1 Rabi/Ramsey/echo · US$3k]:::ex -.-> COH
+    B3[B3 Hall and Arrhenius · US$1.5k]:::ex -.-> ION
+    C1[C1 single NV · US$30k]:::ex -.-> ODMR
+    C2[C2 cleanroom FET · US$10k]:::ex -.-> FET
+    D1[D1 entangled pair · US$0.5M]:::ex -.-> GATE
+    D2[D2 pilot line · US$5M]:::ex -.-> YLD
+```
+
+## 🧠 Twelve core concepts, one line each
+
+| Concept | In one line | Number to remember | Play with it |
+|---|---|---|---|
+| Bandgap | Energy to free an electron; bigger means higher voltage and temperature | diamond 5.47 eV, silicon 1.12 eV | [Lattice Lab](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html) |
+| Critical field | Field at which the crystal breaks down; enters the power limit cubed | 10 MV/cm, 33× silicon | [Power-device limit](https://normansrule.github.io/adamas-diamond-framework/action.html#bfom) |
+| Thermal conductivity | How fast heat leaves a hot spot | 22 W/(cm·K), 5× copper | [Heat race](https://normansrule.github.io/adamas-diamond-framework/action.html#heat) |
+| Incomplete ionization | Deep dopants hold their holes until heated | under 1% of boron ionized at 300 K | [Boron wakes up](https://normansrule.github.io/adamas-diamond-framework/action.html#arrhenius) |
+| Surface transfer doping | Hydrogen-terminated diamond pulls a hole sheet to its surface | 10¹³ holes/cm² | [Diamond transistor](https://normansrule.github.io/adamas-diamond-framework/action.html#fet) |
+| NV center | Nitrogen next to a vacancy: a spin-1 qubit that glows red | D = 2.87 GHz | [ODMR](https://normansrule.github.io/adamas-diamond-framework/action.html#odmr) |
+| Spin-dependent fluorescence | mₛ = 0 is about 30% brighter, which is the readout | contrast about 0.3 | [Photon Lab](https://normansrule.github.io/adamas-diamond-framework/labs/photon.html) |
+| Coherence | How long a superposition survives; echo undoes static noise | T₂ up to 1.8 ms at room temperature | [Spin echo](https://normansrule.github.io/adamas-diamond-framework/action.html#echo) |
+| Dipolar coupling | Two spins talk through their magnetic fields, falling as 1/r³ | 52 MHz·nm³ / r³ | [Two qubits](https://normansrule.github.io/adamas-diamond-framework/action.html#gate) |
+| Error-correction threshold | Below it, bigger codes suppress errors exponentially | about 1% | [Error correction](https://normansrule.github.io/adamas-diamond-framework/action.html#surface) |
+| Yield | Killer defects ruin the dies they land on | Y = e^(−AD₀) | [Wafer](https://normansrule.github.io/adamas-diamond-framework/action.html#yield) |
+| Value of information | Measure first what removes the most uncertainty per dollar | Hall mobility, about US$3k | [Confidence](https://normansrule.github.io/adamas-diamond-framework/confidence.html#measure) |
 
 ## 🚀 Start here
 
@@ -44,6 +149,7 @@ adamas estimate --workload materials --readout-us 100
 adamas validate                               # the validation matrix
 adamas uncertainty power                      # Monte Carlo percentiles and tornado ranking
 adamas build docs                             # regenerate the traveler, experiments, glossary, validation, and this README block
+adamas app                                    # the whole website as a local app (native window with pip install -e ".[app]")
 ```
 
 The website has grouped menus and a search palette: press **Ctrl K** (or **/**) on any page to jump to a lab, glossary term, figure, experiment, process step, or lesson.
@@ -86,10 +192,11 @@ The framework's thesis: (1) the intra-cell physics (electron plus nuclear regist
 
 ## 🧪 Interactive labs
 
-Thirteen hands-on labs run in the browser on the [project website](https://normansrule.github.io/adamas-diamond-framework/). Each explains itself at three reading levels and lists its sources; each simulation is a tested JavaScript module that runs the same physics as the Python package.
+Thirteen hands-on labs, plus fourteen equations in action, run in the browser on the [project website](https://normansrule.github.io/adamas-diamond-framework/). Each explains itself at three reading levels and lists its sources; each simulation is a tested JavaScript module that runs the same physics as the Python package.
 
 | Lab | What you do | What it shows |
 |---|---|---|
+| [⚡ Equations in Action](https://normansrule.github.io/adamas-diamond-framework/action.html) | Drag any symbol's slider in fourteen equations, or press Play | Each experiment's mechanism animated, your numbers plugged in, and the curve it should measure |
 | [Qubit Lab](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) | Fire microwave pulses at an ensemble of NV spins on a 3-D Bloch sphere; build your own sequences | Rabi, Ramsey, and spin echo; why the echo rescues a dephased ensemble |
 | [Heat Race](https://normansrule.github.io/adamas-diamond-framework/labs/heat.html) | Burn the same power in silicon, SiC, GaN, and diamond | Live heat equation; diamond's hot spot is κ-ratio (about 15×) cooler |
 | [Lattice Lab](https://normansrule.github.io/adamas-diamond-framework/labs/lattice.html) | Fly through silicon and diamond at true scale; plant an NV center; aim a magnet | The four NV axes and their eight magnetic-resonance lines |
@@ -107,12 +214,29 @@ Thirteen hands-on labs run in the browser on the [project website](https://norma
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>524 references</b> · <b>52 figures, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>556 references</b> · <b>53 figures, 14 live equations, a desktop app, a validation matrix, a preprint, a hardware kit, 13 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
 
 ---
+
+## 🔭 Research frontier, 2022 to 2026
+
+Recent peer-reviewed results that bear on the framework's biggest unknowns. The framework ranks readout time and diamond hole mobility as the uncertainties worth the most to measure. Added in v0.26; each entry still awaits Crossref verification (`make verify`), like every new reference.
+
+| Theme | Result | Why it matters here |
+|---|---|---|
+| **Readout** (top quantum unknown) | A nuclear-spin memory used for repeated readout of about 10⁹ NV centers gives about 30× better signal-to-noise [arunkumar2023] | Repetitive readout is the main way to shorten the effective readout time that dominates runtime |
+| | Deliberate ionization pulses raise readout contrast 17% and halve initialization error [wirtitsch2023] | Charge-state control is also the gate bottleneck q in the D1 scene |
+| | Spin-to-charge readout of NV centers 5 nm below the surface, limited by surface charge stability [giri2023] | Chip-surface qubits need a stable surface |
+| **Hole mobility** (top power unknown) | Hexagonal boron nitride on hydrogen-terminated diamond: channel mobility near 1,000 cm²/V·s at room temperature [sasama2025] | Several times the 150 cm²/V·s the transistor models assume; the B3 measurement decides which is right |
+| | Surface conductivity vanishes where shallow NV⁻ appear: hole gas and qubits compete for the same surface [kageura2024] | A design rule for diamond chips that put both on one die |
+| **Wafers** | Free-standing 2-inch heteroepitaxial diamond on Ir/YSZ/Si, dislocations about 2×10⁷ cm⁻² [qu2024] | The D2 pilot line needs exactly this; see the yield scene |
+| | Wafer bow explained analytically, with a substrate figure of merit for flat wafers [schreck2025]; maskless overgrowth cuts dislocations more than 10× [fendt2025] | Bow and dislocations set lithography limits and killer-defect density |
+| **Power devices** | 1,651 V all-ion-implanted Schottky diode on heteroepitaxial diamond [saha2023sbd]; NO₂-doped diamond MOSFETs stable through 190 h of stress [saha2023rel] | Foundry-friendly doping and the first reliability data for surface-doped transistors |
+| **Room-temperature registers** | Two-electron-spin gate at 96% fidelity under ambient conditions [joas2025]; a three-spin register reaches quantum volume 8 [jager2026] | Gate fidelities climbing toward the error-correction threshold at 300 K |
+| **Thermal integration** | Diamond grown at 400 °C, compatible with back-end processing [malakoutian2022]; GaN/diamond bonds at 8.3 m²K/GW [xu2025]; carbide interlayers cut diamond/AlGaN resistance about 5× [aller2025] | Puts diamond heat spreaders on finished chips; interface resistance, not diamond, now limits |
 
 ## 🎓 Learn it or teach it: an eight-lesson course
 
@@ -201,7 +325,7 @@ All three read their numbers from `paper/numbers.tex`, which `python -m adamas.p
 | ![Diamond lattice with an NV center](docs/img/anim_crystal.gif) | ![Heat race, silicon versus diamond](docs/img/anim_heat_race.gif) |
 | ![Five diamond logic gates in a ring oscillator](docs/img/anim_ring_oscillator.gif) | ![Surface code: errors light up their checks](docs/img/anim_surface_code.gif) |
 
-All animations are drawn by the package (`make animations`); the [gallery](https://normansrule.github.io/adamas-diamond-framework/gallery.html) shows all 46 figures and animations with searchable captions.
+All animations are drawn by the package (`make animations`); the [gallery](https://normansrule.github.io/adamas-diamond-framework/gallery.html) shows every figure and animation with searchable captions.
 
 ## 🧭 The framework at a glance
 
@@ -386,7 +510,7 @@ flowchart LR
 | 12 | [Silicon versus diamond scorecard](docs/12_silicon_vs_diamond_scorecard.md) | Row-by-row comparison |
 | 13 | [Economics and risk](docs/13_economics_and_risk.md) | Product sequence and risk register |
 | E1–E8 | [Expert track](docs/expert/) | Lithography → design kit → processors → analog → qubit engineering → error correction → beyond → projects |
-| — | [Glossary](docs/glossary.md) · [All 524 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
+| — | [Glossary](docs/glossary.md) · [All 556 references](references/REFERENCES.md) · [BibTeX](references/references.bib) · [Ubuntu development guide](docs/DEVELOPMENT_UBUNTU.md) | |
 
 ## ⚙️ Quick start
 
@@ -396,7 +520,7 @@ cd adamas-diamond-framework
 sudo apt install -y ngspice iverilog yosys      # optional: circuit and logic tools
 conda env create -f environment.yml && conda activate adamas
 
-python -m pytest -q                     # 120 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
+python -m pytest -q                     # 127 tests (Python, Verilog, SPICE, JavaScript, notebooks, headless page tests), including the citation check
 make spice rtl synth layout place       # ngspice; DIA-4 simulation, synthesis, and placement on PDK-0
 python examples/01_why_diamond.py       # figures of merit, doping, on-resistance
 python examples/02_nv_qubit_basics.py   # resonance lines, coupling, register fidelity
@@ -427,10 +551,12 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.pdk0` | PDK-0 layer map, lambda rules, GDSII writer, monitor-die generator | [meadconway1980], [kawarada2014], [pelgrom1989] |
 | `adamas.stdcells` | PDK-0 standard cells: layouts, LEF, timed Liberty; `circuits/digital/place.py` places DIA-4 | [weste2011], [rabaey2003], [ajayi2019] |
 | `adamas.orfs_platform` | Complete OpenROAD-flow-scripts platform for PDK-0; `make orfs` routes DIA-4 in Docker | [ajayi2019], [meadconway1980] |
-| `adamas.site`, `web/` | The website: landing page, six labs, explorer; `make serve` to preview | see [docs/WEBSITE.md](docs/WEBSITE.md) |
+| `adamas.site`, `web/` | The website: landing page, thirteen labs, equations in action, explorer, installable offline web app; `make serve` to preview, `adamas build site --offline` for the bundled version | see [docs/WEBSITE.md](docs/WEBSITE.md) |
 | `adamas.explorer`, `adamas.poster`, `adamas.animations` | Interactive web explorer (same equations in JavaScript, tested against Python), one-page SVG poster, GIF animations | all of the above |
 | `adamas.hw` + `hardware/a1_odmr` | ADF4351 register calculator (runs under MicroPython), sweep logic, Pico firmware, host capture script | ADF4351 data sheet, [stegemann2023] |
 | `adamas.xzzx_native` | Native XZZX syndrome circuits with biased gate noise and hook errors; thresholds versus bias (`make xzzx`) | [bonillaataides2021], [tuckett2018] |
+| `adamas.action` | Fourteen equations in action: scene definitions, Python golden values the browser physics is tested against, Figure 53 (`adamas build docs`) | [doherty2013], [baliga1982], [fowler2012] |
+| `adamas.icons`, `desktop/` | App icons drawn from the logo; the Electron desktop app (offline site, `app://` scheme, self-test) built for Windows, macOS, and Linux by `.github/workflows/desktop.yml` | see [docs/APP.md](docs/APP.md) |
 | `adamas.decision` | Sobol sensitivity indices, measurement roadmap by variance removed per dollar, code decision and value of information under unknown gate bias | [sobol2001], [saltelli2002], [howard1966] |
 | `adamas.validation`, `adamas.uncertainty` | Validation matrix (literature, cross-tool, analytic) and Monte Carlo + tornado sensitivity analysis; Confidence page | [wang2003], [isberg2002], [kimoto2014] |
 | `adamas.paper` | Generates the preprint's numbers from the package (`make paper`) | |
@@ -453,7 +579,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 2. `tools/check_citations.py` runs in continuous integration and fails the build on any unknown key.
 3. Models that originate in this repository (the gate-fidelity bound, the placement Monte Carlo, the yield plot's defect densities) are labeled as such wherever they appear.
 
-**Honest status of the reference list.** About 440 of the 524 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
+**Honest status of the reference list.** About 500 of the 556 entries (marked ✅) are verified: matched against Crossref on title, year, first author, and volume, with their Digital Object Identifiers (DOIs) fetched automatically into `references/dois.psv`, or checked against an online source while the repository was written. The rest (marked 📚) are books, reports, conference papers, and a few items not indexed by Crossref; human decisions about those are logged in `references/verification_overrides.psv`. No DOI is typed by hand. To re-verify after adding references:
 
 ```bash
 python tools/verify_refs.py        # queries Crossref, writes references/verification_report.csv

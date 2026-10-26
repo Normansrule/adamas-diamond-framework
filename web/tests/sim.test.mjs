@@ -125,3 +125,37 @@ test('search palette ranks title matches first and tolerates partial words', () 
   assert.equal(search(items, 'zzzzzz').length, 0);
   assert.ok(score(items[0], 'qub lab') > 0);
 });
+import * as act from '../assets/sim/action.js';
+import fsAct from 'node:fs';
+
+const G = JSON.parse(fsAct.readFileSync(new URL('./action_golden.json', import.meta.url), 'utf8'));
+const close = (a, b, rel = 1e-6, abs = 1e-9) => Math.abs(a - b) <= Math.max(abs, rel * Math.abs(b));
+test('equations in action: constants match the Python package', () => {
+  assert.ok(close(act.GAMMA, G.gamma_mhz_per_mt, 1e-9)); assert.ok(close(act.DIPOLAR, G.dipolar_mhz_nm3, 1e-6));
+});
+test('equations in action: every JavaScript model matches its Python twin (golden values)', () => {
+  for (const [b, th, [lo, hi]] of G.odmr) { const [a, c] = act.odmrLines(b, th); assert.ok(close(a, lo, 1e-9, 1e-6) && close(c, hi, 1e-9, 1e-6), `odmr ${b} ${th}: ${a},${c} vs ${lo},${hi}`); }
+  for (const [om, de, t, v] of G.rabi) assert.ok(close(act.rabiP(t, om, de), v, 1e-9, 1e-12), `rabi ${om} ${de} ${t}`);
+  for (const [de, t2s, t, v] of G.ramsey) assert.ok(close(act.ramseyP0(t, de, t2s), v, 1e-9, 1e-12));
+  for (const [t2, p, t, v] of G.echo) assert.ok(close(act.echoC(t, t2, p), v, 1e-9, 1e-15));
+  for (const [ea, na, nd, T, v] of G.doping) assert.ok(close(act.freeCarriers(ea, na, T, nd), v, 1e-6), `doping ${ea} ${na} ${T}: ${act.freeCarriers(ea, na, T, nd)} vs ${v}`);
+  for (const [mu, vgs, vds, v] of G.fet) assert.ok(close(act.fetI(vgs, vds, mu), v, 1e-9, 1e-15), `fet ${mu} ${vgs} ${vds}`);
+  for (const [r, t2, q, f, nu] of G.gate) { assert.ok(close(act.bellFidelity(r, t2, q), f, 1e-6), `gate ${r} ${t2} ${q}`); assert.ok(close(act.couplingKHz(r), nu, 1e-6)); }
+  for (const [d, a, d0, n, yp, ym, good] of G.yield) {
+    assert.equal(act.diesPerWafer(d, a), n); assert.ok(close(act.poissonY(a, d0), yp, 1e-12)); assert.ok(close(act.murphyY(a, d0), ym, 1e-12)); assert.ok(close(act.goodDies(d, a, d0), good, 1e-9));
+  }
+  const M = { Si: { eps_r: 11.7, mu: 1400, ec_mv_cm: 0.3 }, '4H-SiC': { eps_r: 9.7, mu: 1000, ec_mv_cm: 2.5 }, Diamond: { eps_r: 5.7, mu: 3800, ec_mv_cm: 10 } };
+  for (const [k, vb, v] of G.bfom) assert.ok(close(act.ronSp(M[k], vb), v, 1e-9), `bfom ${k} ${vb}`);
+  for (const [p, d, pl, n] of G.surface) { assert.ok(close(act.logicalError(p, d), pl, 1e-12)); assert.equal(act.surfaceQubits(d), n); }
+});
+test('equations in action: identities the page relies on', () => {
+  for (const [th, ph] of [[0, 0], [37, 200], [90, 45], [140, 300]]) {   // sum of squared projections on the four NV axes is 4/3 |B|^2
+    const B = act.bVector(2.2, th, ph); assert.ok(close(act.magnitudeFromSplittings(act.splittings(B)), 2.2, 1e-12));
+  }
+  const v = act.rabiVector(1 / (2 * 5), 5, 0); assert.ok(v[2] < -0.999999);              // pi pulse on resonance flips +z to -z
+  const P = act.rabiVector(0.137, 5, 3); assert.ok(close((1 - P[2]) / 2, act.rabiP(0.137, 5, 3), 1e-12));
+  const ds = act.gaussianDetunings(4000, 0, 1);                                            // ensemble average reproduces the Gaussian envelope
+  for (const tau of [0.3, 0.8]) { const m = ds.reduce((s, d) => s + Math.cos(2 * Math.PI * d * tau), 0) / ds.length; assert.ok(Math.abs(m - Math.exp(-(tau ** 2))) < 0.01, `ramsey ${m}`); }
+  const g = act.plate(30); for (let i = 0; i < 40; i++) act.plateStep(g, 11, 100, 0.05); const h = act.plate(30); for (let i = 0; i < 40; i++) act.plateStep(h, 1.16, 100, 0.05);
+  assert.ok(Math.max(...g.T) < Math.max(...h.T), 'the diamond plate stays cooler than copper');
+});

@@ -1,10 +1,10 @@
 # References
 
-**541 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**556 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
-## Materials physics and figures of merit (31)
+## Materials physics and figures of merit (32)
 
 - ✅ **`[clark1964]`** Clark, C. D.; Dean, P. J.; Harris, P. V. (1964). Intrinsic edge absorption in diamond. *Proceedings of the Royal Society A*, 277, 312. [doi:10.1098/rspa.1964.0025](https://doi.org/10.1098/rspa.1964.0025)
 - 📚 **`[johnson1965]`** Johnson, E. O. (1965). Physical limitations on frequency and power parameters of transistors. *RCA Review*, 26, 163.
@@ -37,8 +37,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[pearton2018]`** Pearton, S. J.; Yang, J.; Cary, P. H.; et al. (2018). A review of Ga2O3 materials, processing, and devices. *Applied Physics Reviews*, 5, 011301. [doi:10.1063/1.5006941](https://doi.org/10.1063/1.5006941)
 - ✅ **`[tsao2018]`** Tsao, J. Y.; Chowdhury, S.; Hollis, M. A.; et al. (2018). Ultrawide-bandgap semiconductors: research opportunities and challenges. *Advanced Electronic Materials*, 4, 1600501. [doi:10.1002/aelm.201600501](https://doi.org/10.1002/aelm.201600501)
 - ✅ **`[donato2020]`** Donato, N.; Rouger, N.; Pernot, J.; Longobardi, G.; Udrea, F. (2020). Diamond power devices: state of the art, modelling, figures of merit and future perspective. *Journal of Physics D: Applied Physics*, 53, 093001. [doi:10.1088/1361-6463/ab4eab](https://doi.org/10.1088/1361-6463/ab4eab)
+- 📚 **`[kageura2024]`** Kageura, T.; Sasama, Y.; Yamada, K.; Kimura, K.; Onoda, S.; Yamaguchi, T. (2024). Surface transfer doping of hydrogen-terminated diamond probed by shallow nitrogen-vacancy centers. *Carbon*, 229, 119404.
 
-## Diamond growth and wafers (32)
+## Diamond growth and wafers (35)
 
 - ✅ **`[bundy1955]`** Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. (1955). Man-made diamonds. *Nature*, 176, 51. [doi:10.1038/176051a0](https://doi.org/10.1038/176051a0)
 - ✅ **`[angus1968]`** Angus, J. C.; Will, H. A.; Stanko, W. S. (1968). Growth of diamond seed crystals by vapor deposition. *Journal of Applied Physics*, 39, 2915. [doi:10.1063/1.1656693](https://doi.org/10.1063/1.1656693)
@@ -72,6 +73,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[bolshakov2020]`** Bolshakov, A. P.; Ralchenko, V. G.; Shu, G.; et al. (2020). Single crystal diamond growth by MPCVD at subatmospheric pressures. *Materials Today Communications*, 25, 101635. [doi:10.1016/j.mtcomm.2020.101635](https://doi.org/10.1016/j.mtcomm.2020.101635)
 - ✅ **`[kim2020]`** Kim, S.-W.; Kawamata, Y.; Takaya, R.; Koyama, K.; Kasu, M. (2020). Growth of high-quality one-inch free-standing heteroepitaxial (001) diamond on (11-20) sapphire substrate. *Applied Physics Letters*, 117, 202102. [doi:10.1063/5.0024070](https://doi.org/10.1063/5.0024070)
 - ✅ **`[kim2021]`** Kim, S.-W.; Takaya, R.; Hirano, S.; Kasu, M. (2021). Two-inch high-quality (001) diamond heteroepitaxial growth on sapphire (11-20) misoriented substrate by step-flow mode. *Applied Physics Express*, 14, 115501. [doi:10.35848/1882-0786/ac28e7](https://doi.org/10.35848/1882-0786/ac28e7)
+- 📚 **`[qu2024]`** Qu, P.; Jin, P.; Zhou, G.; Wang, Z.; Wang, Z. (2024). Growth of two-inch free-standing heteroepitaxial diamond on Ir/YSZ/Si (001) substrates via laser-patterned templates. *Journal of Semiconductors*, 45(9), 090501.
+- 📚 **`[fendt2025]`** Fendt, J.; Schreck, M. (2025). Maskless epitaxial overgrowth of diamond on 3D patterns formed by self-organization in an oxidation process. *Journal of Applied Physics*, 137(23), 235107.
+- 📚 **`[schreck2025]`** Schreck, M.; Peter, T. (2025). Wafer bow in diamond heteroepitaxy: causes, their analytical description, and viable solutions. *Journal of Applied Physics*, 137(1), 015108.
 
 ## Silicon baseline (12)
 
@@ -122,7 +126,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[verona2016]`** Verona, C.; Ciccognani, W.; Colangeli, S.; et al. (2016). Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators. *Journal of Applied Physics*, 120, 025104. [doi:10.1063/1.4955469](https://doi.org/10.1063/1.4955469)
 - ✅ **`[crawford2021]`** Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. (2021). Surface transfer doping of diamond: a review. *Progress in Surface Science*, 96, 100613. [doi:10.1016/j.progsurf.2021.100613](https://doi.org/10.1016/j.progsurf.2021.100613)
 
-## Devices and circuits (44)
+## Devices and circuits (47)
 
 - ✅ **`[kawarada1994]`** Kawarada, H.; Aoki, M.; Ito, M. (1994). Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds. *Applied Physics Letters*, 65, 1563. [doi:10.1063/1.112915](https://doi.org/10.1063/1.112915)
 - ✅ **`[aleksov2003]`** Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. (2003). Diamond field effect transistors - concepts and challenges. *Diamond and Related Materials*, 12, 391. [doi:10.1016/s0925-9635(02)00401-6](https://doi.org/10.1016/s0925-9635(02)00401-6)
@@ -164,12 +168,15 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[sasama2022]`** Sasama, Y.; Kageura, T.; Imura, M.; et al. (2022). High-mobility p-channel wide-bandgap transistors based on hydrogen-terminated diamond/hexagonal boron nitride heterostructures. *Nature Electronics*, 5, 37. [doi:10.1038/s41928-021-00689-4](https://doi.org/10.1038/s41928-021-00689-4)
 - ✅ **`[kawarada2023]`** Kawarada, H. (2023). Diamond p-FETs using two-dimensional hole gas for high frequency and high voltage complementary circuits. *Journal of Physics D: Applied Physics*, 56, 053001. [doi:10.1088/1361-6463/aca61c](https://doi.org/10.1088/1361-6463/aca61c)
 - ✅ **`[saha2023]`** Saha, N. C.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. (2023). 3659-V NO2 p-type doped diamond MOSFETs on misoriented heteroepitaxial diamond substrates. *IEEE Electron Device Letters*, 44, 112. [doi:10.1109/led.2022.3226426](https://doi.org/10.1109/led.2022.3226426)
+- 📚 **`[saha2023rel]`** Saha, N. C.; Shiratsuchi, T.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. (2023). Long stress (190 h) operation of NO2 p-type doped diamond MOSFETs. *IEEE Electron Device Letters*, 44(6), 975.
+- 📚 **`[saha2023sbd]`** Saha, N. C.; Irie, Y.; Seki, Y.; et al. (2023). 1651-V all-ion-implanted Schottky barrier diode on heteroepitaxial diamond with 3.6x10^5 on/off ratio. *IEEE Electron Device Letters*, 44(2), 293.
 - ✅ **`[liao2024]`** Liao, M.; Sun, H.; Koizumi, S. (2024). High-temperature and high-electron mobility metal-oxide-semiconductor field-effect transistors based on n-type diamond. *Advanced Science*, 11(13), 2306013. [doi:10.1002/advs.202306013](https://doi.org/10.1002/advs.202306013)
 - ✅ **`[zhao2024]`** Zhao, W.; Koizumi, S.; Liao, M. (2024). P-channel MOSFETs on phosphorous-doped n-type diamond. *IEEE Electron Device Letters*, 45(12), 2268. [doi:10.1109/led.2024.3485683](https://doi.org/10.1109/led.2024.3485683)
 - ✅ **`[chu2025]`** Chu, C.; Yang, S.; et al. (2025). GaN/diamond complementary power circuit (reported via Power Electronics Magazine; original: 71st IEEE International Electron Devices Meeting). *IEEE IEDM Technical Digest*, p. 26.8.1.
 - ✅ **`[kawai2025]`** Kawai, S.; Oi, N.; Isobe, T.; Ota, K.; Amazutsumi, K.; Fujishima, T.; Kawarada, H. (2025). Fast power switching with cascode diamond MOSFET-SiC MOSFET/GaN HEMT complementary half-bridge inverter. *APL Electronic Devices*, 1, 046103. [doi:10.1063/5.0290094](https://doi.org/10.1063/5.0290094)
+- 📚 **`[sasama2025]`** Sasama, Y.; Iwasaki, T.; Imura, M.; Watanabe, K.; Taniguchi, T.; Yamaguchi, T. (2025). Enhanced channel mobility of hexagonal boron nitride/hydrogen-terminated diamond heterojunction field-effect transistor. *Applied Physics Letters*, 127(14), 143502.
 
-## Thermal management and diamond-on-chip integration (11)
+## Thermal management and diamond-on-chip integration (14)
 
 - 📚 **`[carslaw1959]`** Carslaw, H. S.; Jaeger, J. C. (1959). Conduction of Heat in Solids (2nd ed.). *Oxford University Press*.
 - ✅ **`[glassbrenner1964]`** Glassbrenner, C. J.; Slack, G. A. (1964). Thermal conductivity of silicon and germanium from 3 K to the melting point. *Physical Review*, 134, A1058. [doi:10.1103/physrev.134.a1058](https://doi.org/10.1103/physrev.134.a1058)
@@ -182,8 +189,11 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[yates2018]`** Yates, L.; Anderson, J.; Gu, X.; et al. (2018). Low thermal boundary resistance interfaces for GaN-on-diamond devices. *ACS Applied Materials and Interfaces*, 10, 24302. [doi:10.1021/acsami.8b07014](https://doi.org/10.1021/acsami.8b07014)
 - ✅ **`[liang2021]`** Liang, J.; Kobayashi, A.; Shimizu, Y.; et al. (2021). Fabrication of GaN/diamond heterointerface and interfacial chemical bonding state for highly efficient device design. *Advanced Materials*, 33, 2104564. [doi:10.1002/adma.202104564](https://doi.org/10.1002/adma.202104564)
 - ✅ **`[malakoutian2021]`** Malakoutian, M.; Field, D. E.; Hines, N. J.; et al. (2021). Record-low thermal boundary resistance between diamond and GaN-on-SiC for enabling radiofrequency device cooling. *ACS Applied Materials and Interfaces*, 13, 60553. [doi:10.1021/acsami.1c13833](https://doi.org/10.1021/acsami.1c13833)
+- 📚 **`[malakoutian2022]`** Malakoutian, M.; Zheng, X.; Woo, K.; et al. (2022). Low thermal budget growth of near-isotropic diamond grains for heat spreading in semiconductor devices. *Advanced Functional Materials*, 32(47), 2208997.
+- 📚 **`[aller2025]`** Aller, H. T.; Pfeifer, T. W.; Mamun, A.; et al. (2025). Low thermal resistance of diamond-AlGaN interfaces achieved using carbide interlayers. *Advanced Materials Interfaces*, 12(3), 2400575.
+- 📚 **`[xu2025]`** Xu, B.; Mu, F.; Liu, Y.; Guo, R.; Hu, S.; Shiomi, J. (2025). Record-low thermal boundary resistance at bonded GaN/diamond interface by controlling ultrathin heterogeneous amorphous layer. *Acta Materialia*, 282, 120458.
 
-## Nitrogen-vacancy (NV) center physics (47)
+## Nitrogen-vacancy (NV) center physics (50)
 
 - ✅ **`[davies1976]`** Davies, G.; Hamer, M. F. (1976). Optical studies of the 1.945 eV vibronic band in diamond. *Proceedings of the Royal Society A*, 348, 285. [doi:10.1098/rspa.1976.0039](https://doi.org/10.1098/rspa.1976.0039)
 - ✅ **`[loubser1978]`** Loubser, J. H. N.; van Wyk, J. A. (1978). Electron spin resonance in the study of diamond. *Reports on Progress in Physics*, 41, 1201. [doi:10.1088/0034-4885/41/8/002](https://doi.org/10.1088/0034-4885/41/8/002)
@@ -229,8 +239,11 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[herbschleb2019]`** Herbschleb, E. D.; Kato, H.; Maruyama, Y.; et al. (2019). Ultra-long coherence times amongst room-temperature solid-state spins. *Nature Communications*, 10, 3766. [doi:10.1038/s41467-019-11776-8](https://doi.org/10.1038/s41467-019-11776-8)
 - ✅ **`[sangtawesin2019]`** Sangtawesin, S.; Dwyer, B. L.; Srinivasan, S.; et al. (2019). Origins of diamond surface noise probed by correlating single-spin measurements with surface spectroscopy. *Physical Review X*, 9, 031052. [doi:10.1103/physrevx.9.031052](https://doi.org/10.1103/physrevx.9.031052)
 - ✅ **`[bauch2020]`** Bauch, E.; Singh, S.; Lee, J.; et al. (2020). Decoherence of ensembles of nitrogen-vacancy centers in diamond. *Physical Review B*, 102, 134210. [doi:10.1103/physrevb.102.134210](https://doi.org/10.1103/physrevb.102.134210)
+- 📚 **`[arunkumar2023]`** Arunkumar, N.; Olsson, K. S.; Oon, J. T.; et al. (2023). Quantum logic enhanced sensing in solid-state spin ensembles. *Physical Review Letters*, 131(10), 100801.
 - ✅ **`[cambria2023]`** Cambria, M. C.; Norambuena, A.; Dinani, H. T.; et al. (2023). Temperature-dependent spin-lattice relaxation of the nitrogen-vacancy spin triplet in diamond. *Physical Review Letters*, 130, 256903. [doi:10.1103/physrevlett.130.256903](https://doi.org/10.1103/physrevlett.130.256903)
+- 📚 **`[giri2023]`** Giri, R.; Jensen, R. H.; Khurana, D.; et al. (2023). Charge stability and charge-state-based spin readout of shallow nitrogen-vacancy centers in diamond. *ACS Applied Electronic Materials*, 5(12), 6603-6610.
 - ✅ **`[stegemann2023]`** Stegemann, J.; et al. (2023). Modular low-cost 3D printed setup for experiments with NV centers in diamond. *European Journal of Physics*, 44, 035402. [doi:10.1088/1361-6404/acbe7c](https://doi.org/10.1088/1361-6404/acbe7c)
+- 📚 **`[wirtitsch2023]`** Wirtitsch, D.; Wachter, G.; Reisenbauer, S.; et al. (2023). Exploiting ionization dynamics in the nitrogen vacancy center for rapid, high-contrast spin, and charge state initialization. *Physical Review Research*, 5(1), 013014.
 - ✅ **`[williams2026]`** Williams, H.; Newman, A.; Graham, S.; Stephen, C.; Morley, G. (2026). A portable LED-based diamond magnetometer for outreach and teaching labs. *American Journal of Physics*, 94, 489. [doi:10.1119/5.0295777](https://doi.org/10.1119/5.0295777)
 
 ## Quantum sensing (17)
@@ -292,7 +305,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
 
-## Quantum computing with diamond spins (71)
+## Quantum computing with diamond spins (73)
 
 - ✅ **`[kane1998]`** Kane, B. E. (1998). A silicon-based nuclear spin quantum computer. *Nature*, 393, 133. [doi:10.1038/30156](https://doi.org/10.1038/30156)
 - ✅ **`[divincenzo2000]`** DiVincenzo, D. P. (2000). The physical implementation of quantum computation. *Fortschritte der Physik*, 48, 771. [doi:10.1002/3527603182.ch1](https://doi.org/10.1002/3527603182.ch1)
@@ -365,6 +378,8 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[bartling2025]`** Bartling, H. P.; Yun, J.; Schymik, K. N.; et al. (2025). Universal high-fidelity quantum gates for spin qubits in diamond. *Physical Review Applied*, TODO: verify volume and page. [doi:10.1103/physrevapplied.23.034052](https://doi.org/10.1103/physrevapplied.23.034052)
 - 📚 **`[gidney2025]`** Gidney, C. (2025). How to factor 2048 bit RSA integers with less than a million noisy qubits. *arXiv*, 2505.15917.
 - ✅ **`[google2025]`** Google Quantum AI and Collaborators (2025). Quantum error correction below the surface code threshold. *Nature*, 638, 920. [doi:10.1038/s41586-024-08449-y](https://doi.org/10.1038/s41586-024-08449-y)
+- 📚 **`[joas2025]`** Joas, T.; Ferlemann, F.; Sailer, R.; et al. (2025). High-fidelity electron spin gates for scaling diamond quantum registers. *Physical Review X*, 15(2), 021069.
+- 📚 **`[jager2026]`** Jäger, T.; Kwon, M.; Keller, M.; et al. (2026). Modeling quantum volume using randomized benchmarking of room-temperature NV center quantum registers. *npj Quantum Information*, 12(1), 6.
 
 ## Photonics, other color centers, and quantum networks (37)
 
