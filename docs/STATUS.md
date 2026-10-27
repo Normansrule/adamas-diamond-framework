@@ -2,7 +2,14 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.29.0 (2026-10-26).
+Last updated: v0.30.0 (2026-10-27).
+
+## Fixed in v0.30.0
+
+| Item | Was | Now |
+|---|---|---|
+| Build program phase P2 (teaching lab) | Outline | Written in full ([docs/build/P2_teaching_lab.md](build/P2_teaching_lab.md)); its gate is evaluated from simulated B1, B2, and B3 data fitted with the Data Lab's code, with pass rates over 200 simulated setups |
+| Continuous integration | Failing since v0.28 on Python 3.10 (golden values compared exactly; numpy and scipy versions change the last digits) and on v0.29 (`docs/build` hidden by `.gitignore`) | Golden values compared to 1e-9 relative; `docs/build` committed; reproduced and passing in a clean Python 3.10 environment |
 
 ## Fixed in v0.29.0
 
@@ -32,7 +39,8 @@ Last updated: v0.29.0 (2026-10-26).
 |---|---|---|
 | Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
 | Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
-| Build program P2–P8 full write-ups and the Machines and Facilities Atlas (P0 and P1 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| Build program P3–P8 full write-ups and the Machines and Facilities Atlas (P0 to P2 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| GitHub Actions major versions (checkout, setup-node, setup-python, artifacts, pages) | GitHub warns that these target Node.js 20; it already runs them on Node.js 24, and every workflow passes. Newer majors exist (up to v7 and v8) and some change artifact behaviour, so each bump needs its release notes read and a test run. | Bump one workflow at a time and confirm the desktop release still uploads its installers. |
 | Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
 
 ## Still assumptions (labeled as such wherever they appear)
@@ -41,6 +49,7 @@ Last updated: v0.29.0 (2026-10-26).
 |---|---|---|
 | Bias of NV two-qubit gates (full bias on CZ, at most 5 on CNOT) | E6, `adamas.xzzx_native`, Gate Bias Lab | No published measurement of the Pauli bias of an NV-NV gate exists that we could find. The decision analysis shows the code choice is robust to it (value of information about 3 % of the machine). |
 | Inter-cell photonic link parameters | `adamas.resource.LINK` | Proposed, not demonstrated at the needed rate; labeled proposed. |
+| T₁ (longitudinal relaxation) in phase P2 | docs/build/P2_teaching_lab.md | The package has no T₁ model yet, so P2 has no T₁ pass/fail criterion; adding one needs a sourced phonon-limited T₁ at room temperature. |
 | Density and specific heat of SiC and GaN in the Heat Race | `web/assets/sim/heat.js` | Textbook values not yet tied to a cited source; silicon and diamond are cited [haynes2016]. They change only the settling time, not the steady-state ratio, which depends on κ alone. |
 | A1 kit filter prices (US$5 to 80) | EXPERIMENTS.md, `adamas.experiments` | Retail prices vary by vendor and month; given as a range, labeled an estimate. |
 | Tier B and higher experiment totals | EXPERIMENTS.md | Labeled "a reviewer's estimate, not a vendor quote". |

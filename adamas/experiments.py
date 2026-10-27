@@ -199,9 +199,24 @@ def _rng(seed=4):
     return np.random.default_rng(seed)
 
 
-def expected(kind: str) -> dict:
+# Values put into the simulated B1 and B2 data (illustrative, inside published ranges: [jelezko2004a] [childress2006]);
+# build-program phase P2 checks that the student's fits recover them.
+PULSED_TRUTH = {"rabi_mhz": 5.0, "rabi_decay_us": 0.8, "detuning_mhz": 3.0, "t2star_us": 0.6, "t2_us": 300.0, "stretch": 1.5}
+VECTOR_B_MT = (1.2, -0.7, 2.1)
+
+
+def arrhenius_resistivity(T):
+    """Noise-free B3 model: boron 3e17 cm^-3 compensated by 5e16 donors (E_A = 0.37 eV, adamas.doping), lattice-limited
+    hole mobility 1500 (T/300)^-2.2 cm^2/(V s). Resistivity in ohm cm."""
+    from . import doping
+    d = doping.DOPANTS["C:B"]
+    p = np.array([doping.free_carriers_cm3(d, 3e17, t, n_comp=5e16) for t in np.atleast_1d(T)])
+    return 1 / (1.602e-19 * p * 1500 * (np.atleast_1d(T) / 300) ** -2.2)
+
+
+def expected(kind: str, seed: int = 4) -> dict:
     from . import doping, gate_budget, nv, wafer
-    r = _rng()
+    r = _rng(seed)
     if kind == "odmr_ensemble":
         f = np.linspace(2790, 2950, 321)
         clean0 = nv.odmr_spectrum(f, np.zeros(3), contrast=0.012, linewidth_mhz=6.0, hyperfine=False)
@@ -224,22 +239,21 @@ def expected(kind: str) -> dict:
         return {"x": t.tolist(), "series": out, "xlabel": "Time (s)", "ylabel": "Heater temperature rise (K)"}
     if kind == "pulsed":
         tr = np.linspace(0, 1.0, 101); tm = np.linspace(0, 3.0, 151); te = np.linspace(0, 600, 61)
-        rabi = 0.5 * (1 - np.cos(2 * np.pi * 5 * tr) * np.exp(-tr / 0.8)) * 0.1 + r.normal(0, 0.004, tr.size)
-        ram = 0.5 * (1 - np.cos(2 * np.pi * 3 * tm) * np.exp(-(tm / 0.6) ** 2)) * 0.1 + r.normal(0, 0.004, tm.size)
-        echo = 0.1 * np.exp(-(te / 300) ** 1.5) + r.normal(0, 0.003, te.size)
+        P = PULSED_TRUTH
+        rabi = 0.5 * (1 - np.cos(2 * np.pi * P["rabi_mhz"] * tr) * np.exp(-tr / P["rabi_decay_us"])) * 0.1 + r.normal(0, 0.004, tr.size)
+        ram = 0.5 * (1 - np.cos(2 * np.pi * P["detuning_mhz"] * tm) * np.exp(-(tm / P["t2star_us"]) ** 2)) * 0.1 + r.normal(0, 0.004, tm.size)
+        echo = 0.1 * np.exp(-(te / P["t2_us"]) ** P["stretch"]) + r.normal(0, 0.003, te.size)
         return {"panels": {"Rabi (µs)": [tr.tolist(), rabi.tolist()], "Ramsey (µs)": [tm.tolist(), ram.tolist()], "Echo (µs)": [te.tolist(), echo.tolist()]},
                 "xlabel": "Pulse length or free time", "ylabel": "Contrast"}
     if kind == "vector":
         from .nv import NV_AXES
-        B = np.array([1.2, -0.7, 2.1])
+        B = np.array(VECTOR_B_MT)
         proj = np.abs(NV_AXES @ B) * nv.GAMMA_MHZ_PER_MT
         fit = proj * (1 + r.normal(0, 0.01, 4))
         return {"x": [1, 2, 3, 4], "series": {"applied": proj.tolist(), "fitted": fit.tolist()}, "xlabel": "NV orientation", "ylabel": "Half splitting γ|B·n| (MHz)", "bar": True, "B": B.tolist()}
     if kind == "arrhenius":
-        T = np.linspace(300, 780, 25); d = doping.DOPANTS["C:B"]
-        p = np.array([doping.free_carriers_cm3(d, 3e17, t, n_comp=5e16) for t in T])
-        mu = 1500 * (T / 300) ** -2.2
-        R = 1 / (1.602e-19 * p * mu) * (1 + r.normal(0, 0.03, T.size))
+        T = np.linspace(300, 780, 25)
+        R = arrhenius_resistivity(T) * (1 + r.normal(0, 0.03, T.size))
         x = 1000 / T
         raw = np.polyfit(x[:9], np.log(R[:9]), 1)[0] * 1000 * 8.617e-5
         # correct for the T^1.5 density of states and the T^-2.2 lattice mobility before fitting: R * T^-0.7

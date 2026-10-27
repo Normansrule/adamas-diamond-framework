@@ -20,7 +20,7 @@
 </style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
-<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 and P1 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P2 to P8 are outlines until their sources are in.</p></section>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0, P1, and P2 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P3 to P8 are outlines until their sources are in.</p></section>
 <section class="block" style="padding-top:6px">
   <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
   <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
@@ -76,8 +76,17 @@ function detail() {
       <tr><td>Magnetometer (slope −3)</td><td class="n">${m.slope.toFixed(3)} ± ${m.slope_err.toFixed(3)}</td><td>${V(m.pass, m.pass ? 'pass' : 'fail')}</td></tr>
       <tr><td>Thermometer (−74.2 kHz/K)</td><td class="n">${t.slope_khz_k.toFixed(1)} ± ${t.slope_err_khz_k.toFixed(1)}, band ±${t.tolerance_khz_k.toFixed(1)}</td><td>${V(t.pass, t.pass ? 'pass' : 'fail')}</td></tr></table>
       <p class="src">Parts US$${g.bill.low} to ${g.bill.high} (estimates). A correct kit passes the thermometer test in ${(100 * g.pass_rate).toFixed(1)} % of Python's simulated runs; try it below.</p>`; }
+  else if (sel === 'P2') { const g = D.p2, pu = g.pulsed, ve = g.vector, ar = g.arrhenius, r = g.pass_rates, T = pu.truth;
+    const row = (t, put, fit, ok, rate) => `<tr><td>${t}</td><td class="n">${put}</td><td class="n">${fit}</td><td>${V(ok, ok ? 'pass' : 'fail')}</td><td class="n">${rate === undefined ? '' : (100 * rate).toFixed(0) + ' %'}</td></tr>`;
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><table class="tests"><tr><th>Test</th><th>Put in</th><th>Fitted</th><th></th><th>Correct setups passing</th></tr>
+      ${row('Rabi frequency', `${T.rabi_mhz} MHz`, `${pu.rabi_mhz.toFixed(3)} ± ${pu.rabi_err.toFixed(3)}`, pu.rabi_pass, r.rabi_pass)}
+      ${row('T₂* (Ramsey)', `${T.t2star_us} µs`, `${pu.t2star_us.toFixed(3)} ± ${pu.t2star_err.toFixed(3)}`, pu.t2star_pass, r.t2star_pass)}
+      ${row('T₂ (echo)', `${T.t2_us} µs`, `${pu.t2_us.toFixed(0)} ± ${pu.t2_err.toFixed(0)}`, pu.t2_pass, r.t2_pass)}
+      ${row('|B| from four axes', `${ve.truth_mt.toFixed(3)} mT`, `${ve.b_mt.toFixed(3)} ± ${ve.b_err.toFixed(3)}`, ve.pass, r.vector)}
+      ${row('Boron E_A', `${ar.truth_ev} eV`, `${ar.ea_ev.toFixed(3)} ± ${ar.ea_err.toFixed(3)}`, ar.pass, r.arrhenius)}</table>
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates). Each fit must land within two of its own standard errors of the value put in. T₁ has no model yet, so no criterion.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
-  const doc = { P0: 'P0_simulation.md', P1: 'P1_proof_of_concept.md' }[sel];
+  const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>
     <dt>Pass/fail</dt><dd>${esc(p.metric)}</dd><dt>Gate question</dt><dd>${esc(p.gate)}</dd></dl>${doc ? `<p class="src">Full write-up: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/build/${doc}">docs/build/${doc}</a></p>` : ''}</div><div>${right}</div>`;
 }

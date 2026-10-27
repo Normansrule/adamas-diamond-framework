@@ -222,7 +222,7 @@ Eleven labs carry thirteen live panels under the simulation (Rabi, Ramsey, and e
 Preview locally with `make serve`, or click the Codespaces badge for a ready environment with every tool installed.
 
 <p align="center">
-<b>583 references</b> · <b>54 figures, 14 live equations, a desktop app, a validation matrix, a preprint, a hardware kit, 15 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
+<b>583 references</b> · <b>55 figures, 14 live equations, a desktop app, a validation matrix, a preprint, a hardware kit, 15 labs, 10 experiments, a course, and a process traveler</b> · <b>25 chapters</b> · <b>tested Python, SPICE, and Verilog</b> · <b>65 proposed experiments and projects</b>
 </p>
 
 > **ADAMAS** (Greek *adámas*, "unconquerable," the root of the word *diamond*) is an open, fully referenced framework for building electronics on **diamond wafers instead of silicon wafers**: how to make the wafer, how to process it, how to build analog, digital, and quantum circuits on it, and how all of that compares with today's silicon industry. Its central quantum idea is the **nitrogen-vacancy (NV) center**, an atom-sized defect in diamond that works as a quantum bit (qubit) **at room temperature**.
@@ -314,7 +314,9 @@ The [process folder](docs/process/README.md) turns the framework into a cleanroo
 
 ## 🪜 Build program: from a laptop to a pilot line
 
-Nine phases, each ending at a decision gate ([docs/build](docs/build/README.md), [Build Program page](https://normansrule.github.io/adamas-diamond-framework/build.html)). **P0 Simulation** and **P1 Proof of concept** are written in full, and their gates are evaluated by `adamas.build_program`: P0 from the validation matrix, P1 from a simulated A1 kit (an ODMR magnetometer and thermometer) fitted with the same code you use on your data. The P1 thermometer must recover dD/dT = −74.2(7) kHz/K [acosta2010] within two combined standard errors; a kit that behaves exactly like the model passes about 98 % of the time, and the web page lets you run 200 kits to watch it. P2 to P8 are outlines until their sources are in ([STATUS.md](docs/STATUS.md)).
+Nine phases, each ending at a decision gate ([docs/build](docs/build/README.md), [Build Program page](https://normansrule.github.io/adamas-diamond-framework/build.html)). **P0 Simulation**, **P1 Proof of concept**, and **P2 Teaching lab** are written in full, and their gates are evaluated by `adamas.build_program`: P0 from the validation matrix, P1 from a simulated A1 kit (an ODMR magnetometer and thermometer) fitted with the same code you use on your data. The P1 thermometer must recover dD/dT = −74.2(7) kHz/K [acosta2010] within two combined standard errors; a kit that behaves exactly like the model passes about 98 % of the time, and the web page lets you run 200 kits to watch it. P2 fits simulated Rabi, Ramsey, echo, vector-field, and boron-activation data and checks that each fit recovers what was put in. P3 to P8 are outlines until their sources are in ([STATUS.md](docs/STATUS.md)).
+
+![Expected P2 results](docs/img/fig55_build_p2.png)
 
 ![Expected P1 results](docs/img/fig54_build_p1.png)
 
@@ -582,7 +584,7 @@ Full step-by-step terminal guide, including GitHub publishing: [docs/DEVELOPMENT
 | `adamas.xzzx_native` | Native XZZX syndrome circuits with biased gate noise and hook errors; thresholds versus bias (`make xzzx`) | [bonillaataides2021], [tuckett2018] |
 | `adamas.addressing` | Airy spot width, exact spin-1 lines per NV axis, gradient shift, crosstalk, and line width for two NVs in one focus | [born1999], [dolde2013], [doherty2013] |
 | `adamas.gatebias` | Pauli propagation through CZ and H · CZ · H (checked against Stim) and the output bias of each construction | [guillaud2019], [etxezarreta2025] |
-| `adamas.build_program` | Build-program phases P0 to P8; P0 and P1 written in full with gates evaluated by code (`docs/build/`) | [acosta2010], [doherty2013] |
+| `adamas.build_program` | Build-program phases P0 to P8; P0, P1, and P2 written in full with gates evaluated by code (`docs/build/`) | [acosta2010], [doherty2013], [lagrange1998], [rondin2014] |
 | `adamas.loop` | Registry of the equation-in-the-loop panels: symbols, units, ranges, assumptions, sources, golden values for the browser | each panel's own sources |
 | `adamas.action` | Fourteen equations in action: scene definitions, Python golden values the browser physics is tested against, Figure 53 (`adamas build docs`) | [doherty2013], [baliga1982], [fowler2012] |
 | `adamas.icons`, `desktop/` | App icons drawn from the logo; the Electron desktop app (offline site, `app://` scheme, self-test) built for Windows, macOS, and Linux by `.github/workflows/desktop.yml` | see [docs/APP.md](docs/APP.md) |

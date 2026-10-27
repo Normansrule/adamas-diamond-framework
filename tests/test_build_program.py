@@ -30,6 +30,17 @@ def test_p1_bill_sums_the_part_lists():
     assert b["low"] == sum(r[3] for r in b["rows"]) and b["high"] == sum(r[4] for r in b["rows"]) and b["low"] < b["high"]
 
 
+def test_p2_fits_recover_what_was_put_in():
+    g = B.p2_gate()
+    assert g["verdict"] == "go" and g["pulsed"]["echo_gain"] > 10
+    assert abs(g["arrhenius"]["method_bias_ev"]) < 0.01            # the T^-0.7 correction is good to 1 % of 0.37 eV
+
+
+def test_p2_pass_rates_are_near_what_two_sigma_promises():
+    r = B.p2_pass_rates(100)
+    assert all(0.85 <= v <= 1.0 for v in r.values()), r
+
+
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), ("P0_simulation.md", B._p0_md()), ("P1_proof_of_concept.md", B._p1_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
