@@ -185,13 +185,25 @@ def p1_figure(out: str | Path = "docs/img") -> Path:
 
 
 # ---------------------------------------------------------------- P2 ------------------------------------------------
-def _within(value, truth, err, bias=0.0) -> bool:
-    return bool(abs(value - truth) <= 2 * err + abs(bias))
+P2_TESTS = 5                 # Rabi, T2*, T2, |B|, E_A: the gate needs all of them
+P2_GATE_COVERAGE = 0.95      # a correct setup should get "go" 95 % of the time
+P2_TEST_COVERAGE = P2_GATE_COVERAGE ** (1 / P2_TESTS)     # so each test covers 98.98 % (independent tests)
+
+
+def _k_normal(coverage: float = P2_TEST_COVERAGE) -> float:
+    from scipy.stats import norm
+    return float(norm.ppf(0.5 + coverage / 2))
+
+
+def _within(value, expected, err, k: float | None = None) -> bool:
+    """Pass when the fit lands within k of its own standard errors of the value it should find (k from the coverage)."""
+    return bool(abs(value - expected) <= (_k_normal() if k is None else k) * err)
 
 
 def p2_pulsed(seed: int = 4) -> dict:
-    """B1: fit the simulated Rabi, Ramsey, and echo data (adamas.experiments, 0.4 % noise per point) with
-    adamas.fitting and compare each parameter with the value put in (experiments.PULSED_TRUTH)."""
+    """B1: fit the simulated Rabi, Ramsey, and echo data (adamas.experiments: absolute noise 0.004 per point, 0.003 for
+    the echo, on a signal of amplitude 0.1) with adamas.fitting and compare each parameter with the value put in
+    (experiments.PULSED_TRUTH)."""
     from . import experiments, fitting
     T = experiments.PULSED_TRUTH; d = experiments.expected("pulsed", seed)["panels"]
     xr, yr = map(np.array, d["Rabi (µs)"]); xm, ym = map(np.array, d["Ramsey (µs)"]); xe, ye = map(np.array, d["Echo (µs)"])
@@ -201,15 +213,21 @@ def p2_pulsed(seed: int = 4) -> dict:
     t2, t2_e = fe.params["T2_us"], fe.errors["T2_us"]
     return {"rabi_mhz": om, "rabi_err": om_e, "pi_ns": 500.0 / om, "pi_err_ns": 500.0 * om_e / om ** 2, "rabi_pass": _within(om, T["rabi_mhz"], om_e),
             "t2star_us": t2s, "t2star_err": t2s_e, "t2star_pass": _within(t2s, T["t2star_us"], t2s_e),
-            "t2_us": t2, "t2_err": t2_e, "t2_pass": _within(t2, T["t2_us"], t2_e), "echo_gain": t2 / t2s, "truth": T}
+            "t2_us": t2, "t2_err": t2_e, "t2_pass": _within(t2, T["t2_us"], t2_e),
+            "echo_gain": t2 / t2s, "echo_pass": bool(t2 / t2s > ECHO_GAIN_MIN), "truth": T}
+
+
+ECHO_GAIN_MIN = 10.0        # this project's threshold: the echo must outlive free dephasing by an order of magnitude
+VECTOR_LINE_REL = 0.01      # relative uncertainty of each orientation's half-splitting in the simulated B2 data
 
 
 def p2_vector(seed: int = 4) -> dict:
-    """B2: |B| from the four orientation splittings, sum_i (B . n_i)^2 = (4/3) |B|^2 for the tetrahedral NV axes
-    [rondin2014], with the uncertainty propagated from the 1 % per-orientation noise of the simulated data."""
+    """B2: |B| from the four orientation half-splittings s_i = gamma |B . n_i|, sum_i (B . n_i)^2 = (4/3) |B|^2 for the
+    tetrahedral NV axes [rondin2014]. The error is propagated from each line's uncertainty: here the 1 % put into the
+    simulation; on real data, use each line's fit uncertainty. P2 tests the magnitude only, not the direction."""
     from . import experiments
     d = experiments.expected("vector", seed); s = np.array(d["series"]["fitted"]) / nv_gamma()
-    b = math.sqrt(0.75 * float(np.sum(s ** 2))); b_err = 0.75 / b * math.sqrt(float(np.sum((s * 0.01 * s) ** 2)))
+    b = math.sqrt(0.75 * float(np.sum(s ** 2))); b_err = 0.75 / b * math.sqrt(float(np.sum((s * VECTOR_LINE_REL * s) ** 2)))
     truth = float(np.linalg.norm(experiments.VECTOR_B_MT))
     return {"b_mt": b, "b_err": b_err, "truth_mt": truth, "pass": _within(b, truth, b_err)}
 
@@ -221,36 +239,44 @@ def nv_gamma() -> float:
 
 def p2_arrhenius(seed: int = 4) -> dict:
     """B3: corrected Arrhenius fit of the simulated resistivity (3 % noise). The correction R T^-0.7 is approximate,
-    so fitting the noise-free model gives a small method bias; the criterion allows two standard errors plus it."""
+    so even noise-free data give a slightly different E_A (the method bias); the fit is compared with E_A + bias.
+    The fit uses only the lowest-temperature points, so its error has few degrees of freedom: the criterion uses the
+    Student-t factor for the same coverage as the other tests."""
+    from scipy.stats import t as student_t
     from . import doping, experiments, fitting
     d = experiments.expected("arrhenius", seed); x = np.array(d["x"]); R = np.array(d["series"]["resistivity (Ω·cm)"])
     f = fitting.fit_arrhenius(x, R)
     clean = fitting.fit_arrhenius(x, experiments.arrhenius_resistivity(1000 / x)).params["E_A_eV"]
     truth = doping.DOPANTS["C:B"].ea_ev
+    n = max(5, len(x) // 3); k = float(student_t.ppf(0.5 + P2_TEST_COVERAGE / 2, n - 2))   # same point selection as fitting.fit_arrhenius
     return {"ea_ev": f.params["E_A_eV"], "ea_err": f.errors["E_A_eV"], "truth_ev": truth, "method_bias_ev": clean - truth,
-            "pass": _within(f.params["E_A_eV"], truth, f.errors["E_A_eV"], clean - truth)}
+            "points": n, "k": k, "pass": _within(f.params["E_A_eV"], clean, f.errors["E_A_eV"], k)}
 
 
 def p2_gate(seed: int = 4) -> dict:
     pu, ve, ar = p2_pulsed(seed), p2_vector(seed), p2_arrhenius(seed)
-    ok = pu["rabi_pass"] and pu["t2star_pass"] and pu["t2_pass"] and pu["echo_gain"] > 10 and ve["pass"] and ar["pass"]
+    ok = pu["rabi_pass"] and pu["t2star_pass"] and pu["t2_pass"] and pu["echo_pass"] and ve["pass"] and ar["pass"]
     return {"pulsed": pu, "vector": ve, "arrhenius": ar, "verdict": "go" if ok else "stop"}
 
 
-P2_RUNS = 200
+P2_RUNS = 1000
 
 
 def p2_pass_rates(runs: int = P2_RUNS) -> dict:
-    """Fraction of independent simulated runs in which each P2 test passes (a correct setup should pass about 95 %
-    of the time or more; much lower means the fit's error bars are too small for that test)."""
+    """Fraction of independent simulated runs in which each P2 test passes, and all of them together ("gate"). Each
+    test is built for P2_TEST_COVERAGE, so the gate should pass P2_GATE_COVERAGE of correct setups; the binomial
+    standard error of a rate p is sqrt(p (1 - p) / runs)."""
     keys = ("rabi_pass", "t2star_pass", "t2_pass")
-    c = {k: 0 for k in keys + ("vector", "arrhenius")}
+    c = {k: 0 for k in keys + ("vector", "arrhenius", "gate")}
     for k in range(runs):
-        pu = p2_pulsed(2000 + k)
+        g = p2_gate(2000 + k); pu = g["pulsed"]
         for q in keys:
             c[q] += pu[q]
-        c["vector"] += p2_vector(2000 + k)["pass"]; c["arrhenius"] += p2_arrhenius(2000 + k)["pass"]
-    return {k: v / runs for k, v in c.items()}
+        c["vector"] += g["vector"]["pass"]; c["arrhenius"] += g["arrhenius"]["pass"]; c["gate"] += g["verdict"] == "go"
+    out = {k: v / runs for k, v in c.items()}
+    out["runs"] = runs; out["se_test"] = math.sqrt(P2_TEST_COVERAGE * (1 - P2_TEST_COVERAGE) / runs)
+    out["se_gate"] = math.sqrt(P2_GATE_COVERAGE * (1 - P2_GATE_COVERAGE) / runs); out["k"] = _k_normal()
+    return out
 
 
 def p2_bill() -> dict:
@@ -275,8 +301,8 @@ def p2_figure(out: str | Path = "docs/img") -> Path:
         a.plot(x, y, ".", ms=3, color="#8b98a5"); a.plot(f.x, f.model, color=COLORS["Diamond"], lw=2); a.set_title(title, fontsize=10.5); a.set_xlabel({"Rabi (µs)": "pulse length (µs)", "Ramsey (µs)": "free time τ (µs)", "Echo (µs)": "free time (µs)"}[key]); a.set_ylabel("contrast")
     a = ax[3]; ar = g["arrhenius"]; e = experiments.expected("arrhenius"); x = np.array(e["x"]); R = np.array(e["series"]["resistivity (Ω·cm)"])
     a.semilogy(x, R, "o", ms=4, color=GOLD); f = fitting.fit_arrhenius(x, R); a.semilogy(f.x, f.model, color=INK, lw=1.5)
-    a.set_title(f"Boron: E_A = {ar['ea_ev']:.3f} ± {ar['ea_err']:.3f} eV (put in 0.37)", fontsize=10.5); a.set_xlabel("1000 / T (1/K)"); a.set_ylabel("resistivity (Ω·cm)")
-    return _finish(fig, out, "fig55_build_p2.png", "simulated with adamas.experiments (B1, B3) and fitted by adamas.fitting; adamas.build_program; [jelezko2004a] [hahn1950] [lagrange1998]")
+    a.set_title(f"Boron: E_A = {ar['ea_ev']:.3f} ± {ar['ea_err']:.3f} eV (put in {ar['truth_ev']:g})", fontsize=10.5); a.set_xlabel("1000 / T (1/K)"); a.set_ylabel("resistivity (Ω·cm)")
+    return _finish(fig, out, "fig55_build_p2.png", "simulated with adamas.experiments (B1, B3) and fitted by adamas.fitting; adamas.build_program; [barry2020] [hahn1950] [lagrange1998]")
 
 # ---------------------------------------------------------------- documents ----------------------------------------
 GEN = "_Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._"
@@ -482,10 +508,10 @@ Move from continuous-wave ODMR to pulsed control of an NV ensemble (experiment B
 ## Physics and equations
 
 - **Rabi:** P₋₁(t) = (Ω²/Ω_eff²) sin²(πΩ_eff t), Ω_eff = √(Ω² + δ²); a π pulse lasts 1/(2Ω) [rabi1937]. Valid in the rotating-wave limit Ω ≪ D.
-- **Ramsey:** P = ½[1 + cos(2πδτ) e^(−(τ/T₂*)²)] for quasi-static Gaussian detunings [ramsey1950].
-- **Hahn echo:** C(τ) = e^(−(τ/T₂)ⁿ); the π pulse refocuses static detunings, so T₂ ≫ T₂* [hahn1950]. The stretch n depends on the noise (about 3 for a slow nuclear bath).
+- **Ramsey:** the measured contrast follows ½[1 − cos(2πδτ) e^(−(τ/T₂*)²)] (the sign depends on the phase of the last π/2 pulse); the Gaussian envelope comes from quasi-static detunings in an ensemble [ramsey1950] [barry2020].
+- **Hahn echo:** C(τ) = e^(−(τ/T₂)ⁿ); the π pulse refocuses static detunings, so T₂ ≫ T₂* [hahn1950]. The stretch n depends on the noise: about 3 for a slow nuclear-spin bath [childress2006] [barry2020]; the simulated data use 1.5.
 - **Vector field:** each orientation's half-splitting gives |B·n̂ᵢ|γₑ; for the four tetrahedral axes Σᵢ(B·n̂ᵢ)² = (4/3)|B|², which over-determines the field [rondin2014].
-- **Deep acceptor:** p(T) from charge neutrality with E_A = 0.37 eV and compensating donors [lagrange1998]; plotting ln(R T^−0.7) against 1/T removes the T^1.5 density of states and the T^−2.2 lattice mobility, so the slope is E_A/k in the compensated regime.
+- **Deep acceptor:** p(T) from charge neutrality with E_A = {ar['truth_ev']:g} eV and compensating donors [lagrange1998]; plotting ln(R T^−0.7) against 1/T removes the T^1.5 density of states [sze2006] and the T^−2.2 lattice mobility [pernot2010], so the slope is E_A/k in the compensated regime.
 
 The Qubit Lab, Lattice Lab, and the Equations in Action page run the same equations.
 
@@ -515,24 +541,25 @@ B3 (boron activation):
 
 ## Expected results (simulated)
 
-The data are simulated by `adamas.experiments` with the values below put in (illustrative, inside published ranges [jelezko2004a] [childress2006]) and fitted by `adamas.fitting`, the code you use on real data.
+The data are simulated by `adamas.experiments` with the values below put in (illustrative values inside the ranges reported for NV ensembles [barry2020]) and fitted by `adamas.fitting`, the code you use on real data.
 
 ![Expected P2 results](../img/fig55_build_p2.png)
 
 ## Pass/fail
 
-Each test passes when the fitted value is within two of its own standard errors of the value put in (for E_A, plus the method bias of the T^−0.7 correction, found by fitting the noise-free model). The last column is how often a correct setup passes, over {P2_RUNS} simulated runs.
+The gate needs all {P2_TESTS} fitted values to pass (plus the echo threshold, which the simulated data clear by a wide margin), so each test is set for {100 * P2_TEST_COVERAGE:.2f} % coverage and a correct setup gets "go" {100 * P2_GATE_COVERAGE:.0f} % of the time: a fit passes when it lands within {rates['k']:.2f} of its own standard errors of the value it should find (Student-t factor {ar['k']:.2f} for E_A, whose fit uses only {ar['points']} points). E_A is compared with the value put in plus the method bias of the T^−0.7 correction, found by fitting the noise-free model. The last column is how often a correct setup passes over {rates['runs']} simulated runs (binomial standard error {100 * rates['se_test']:.1f} percentage points per test, {100 * rates['se_gate']:.1f} for the gate).
 
 | Test | Put in | Fitted | Pass? | Correct setups passing |
 |---|---|---|---|---|
-| Rabi frequency (π pulse) | {T['rabi_mhz']:g} MHz | {pu['rabi_mhz']:.3f} ± {pu['rabi_err']:.3f} MHz ({pu['pi_ns']:.1f} ns) | {yes(pu['rabi_pass'])} | {100 * rates['rabi_pass']:.0f} % |
-| Dephasing T₂* (Ramsey) | {T['t2star_us']:g} µs | {pu['t2star_us']:.3f} ± {pu['t2star_err']:.3f} µs | {yes(pu['t2star_pass'])} | {100 * rates['t2star_pass']:.0f} % |
-| Coherence T₂ (echo) | {T['t2_us']:g} µs | {pu['t2_us']:.0f} ± {pu['t2_err']:.0f} µs | {yes(pu['t2_pass'])} | {100 * rates['t2_pass']:.0f} % |
-| Echo outlives dephasing | T₂/T₂* > 10 | {pu['echo_gain']:.0f} | {yes(pu['echo_gain'] > 10)} | |
-| Field magnitude from four orientations | {ve['truth_mt']:.3f} mT | {ve['b_mt']:.3f} ± {ve['b_err']:.3f} mT | {yes(ve['pass'])} | {100 * rates['vector']:.0f} % |
-| Boron activation energy | {ar['truth_ev']:.2f} eV | {ar['ea_ev']:.3f} ± {ar['ea_err']:.3f} eV (method bias {ar['method_bias_ev']:+.4f}) | {yes(ar['pass'])} | {100 * rates['arrhenius']:.0f} % |
+| Rabi frequency (π pulse) | {T['rabi_mhz']:g} MHz | {pu['rabi_mhz']:.3f} ± {pu['rabi_err']:.3f} MHz ({pu['pi_ns']:.1f} ns) | {yes(pu['rabi_pass'])} | {100 * rates['rabi_pass']:.1f} % |
+| Dephasing T₂* (Ramsey) | {T['t2star_us']:g} µs | {pu['t2star_us']:.3f} ± {pu['t2star_err']:.3f} µs | {yes(pu['t2star_pass'])} | {100 * rates['t2star_pass']:.1f} % |
+| Coherence T₂ (echo) | {T['t2_us']:g} µs | {pu['t2_us']:.0f} ± {pu['t2_err']:.0f} µs | {yes(pu['t2_pass'])} | {100 * rates['t2_pass']:.1f} % |
+| Field magnitude from four orientations | {ve['truth_mt']:.3f} mT | {ve['b_mt']:.3f} ± {ve['b_err']:.3f} mT (error from a {100 * VECTOR_LINE_REL:g} % line uncertainty) | {yes(ve['pass'])} | {100 * rates['vector']:.1f} % |
+| Boron activation energy | {ar['truth_ev']:g} eV (method bias {ar['method_bias_ev']:+.4f}) | {ar['ea_ev']:.3f} ± {ar['ea_err']:.3f} eV | {yes(ar['pass'])} | {100 * rates['arrhenius']:.1f} % |
+| Echo outlives dephasing (this project's threshold) | T₂/T₂* > {ECHO_GAIN_MIN:g} | {pu['echo_gain']:.0f} | {yes(pu['echo_pass'])} | |
+| **Gate: every row passes** | | | **{yes(g['verdict'] == 'go')}** | **{100 * rates['gate']:.1f} %** |
 
-Pass rates below 95 % mean the fit's error bars are slightly too small for that test (the covariance of a nonlinear fit is an approximation); a single failed run is a reason to repeat it, not to stop.
+A correct setup still fails the gate about one time in twenty, so a single "stop" is a reason to repeat the failing measurement, not to abandon the phase. On real data, use each line's fit uncertainty for the field-magnitude error instead of the {100 * VECTOR_LINE_REL:g} % assumed here; P2 tests the field's magnitude, not its direction.
 
 ## Not yet simulated
 
@@ -548,9 +575,9 @@ The longitudinal relaxation time T₁ belongs in this phase but has no model in 
 
 ## Decision gate
 
-*Can we hold a spin coherent and measure deep dopants reliably?* {'All simulated tests pass, so the procedure and the analysis are ready; the gate is decided by the measured values on your setup.' if g['verdict'] == 'go' else 'At least one simulated test fails; fix the analysis first.'} Go to P3 when your measured T₂ is long enough for the single-NV gates you plan (the gate budget in E5) and to P4 when the B3 activation energy is reproduced on your samples.
+*Can we hold a spin coherent and measure deep dopants reliably?* {'All simulated tests pass, so the procedure and the analysis are ready; the gate is decided by the measured values on your setup.' if g['verdict'] == 'go' else 'A simulated test fails on this run; a correct setup does that about one time in twenty, so repeat it before changing the analysis.'} Go to P3 when your measured T₂ is long enough for the single-NV gates you plan (the gate budget in E5) and to P4 when the B3 activation energy is reproduced on your samples.
 
-Sources: [rabi1937] [ramsey1950] [hahn1950] [jelezko2004a] [childress2006] [rondin2014] [lagrange1998] [sewani2020] [barry2020] [pernot2010]
+Sources: [rabi1937] [ramsey1950] [hahn1950] [childress2006] [barry2020] [rondin2014] [lagrange1998] [sze2006] [pernot2010] [sewani2020]
 """
 
 
@@ -565,7 +592,5 @@ def write(folder: str = "docs/build") -> list[str]:
 def to_json() -> dict:
     """For the website: the ladder, the P0 gate, and the P1 and P2 simulated results."""
     g1, b1, g2, b2 = p1_gate(), p1_bill(), p2_gate(), p2_bill()
-    for k in ("pulsed",):
-        g2[k] = {kk: vv for kk, vv in g2[k].items() if kk != "truth"} | {"truth": g2[k]["truth"]}
     return {"phases": PHASES, "docs": DOCS, "p0": p0_gate(), "p1": {**g1, "bill": {"low": b1["low"], "high": b1["high"]}, "pass_rate": p1_pass_rate()},
             "p2": {**g2, "bill": {"low": b2["low"], "high": b2["high"]}, "pass_rates": p2_pass_rates()}}

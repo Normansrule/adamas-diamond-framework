@@ -125,7 +125,7 @@ EXPERIMENTS = [
   "safety": ["Hot stage burns; use tongs and heat-resistant gloves.", "Heavily doped electrode-grade material behaves almost like a metal and will not show activation: use lightly doped samples."],
   "steps": [("Contact check", "Verify ohmic contacts with I–V at room temperature (straight line through zero).", ["probes"]),
             ("Heat in steps", "Step 25 to 500 °C in 25 °C steps; wait for stability; record resistance in both current directions.", ["stage", "smu"]),
-            ("Arrhenius plot", "Plot ln(R) against 1000/T and fit the straight part.", ["smu"])],
+            ("Arrhenius plot", "Plot ln(R T^-0.7) against 1000/T and fit the straight low-temperature part (see Analysis).", ["smu"])],
   "analysis": "A raw Arrhenius slope underestimates the acceptor energy because the density of states grows as T^1.5 and the lattice mobility falls as about T^-2.2; fit ln(R·T^-0.7) instead. In the compensated regime the corrected slope gives E_A ≈ 0.37 eV (without compensation it approaches E_A/2). A Hall measurement separates density from mobility directly.",
   "expected": "arrhenius", "lab": "explorer.html#ion", "refs": ["lagrange1998", "sze2006", "pernot2010"],
   "scene": [("stage", "block", [0, -0.5, 0], 6, "#a64b2a"), ("sample", "plate", [0, 0.3, 0], 2, "#3f7fbf"), ("probes", "probe4", [0, 1.5, 0], 2, "#e8f1f8"),
@@ -210,8 +210,10 @@ def arrhenius_resistivity(T):
     hole mobility 1500 (T/300)^-2.2 cm^2/(V s). Resistivity in ohm cm."""
     from . import doping
     d = doping.DOPANTS["C:B"]
-    p = np.array([doping.free_carriers_cm3(d, 3e17, t, n_comp=5e16) for t in np.atleast_1d(T)])
-    return 1 / (1.602e-19 * p * 1500 * (np.atleast_1d(T) / 300) ** -2.2)
+    T = np.atleast_1d(T)
+    p = np.array([doping.free_carriers_cm3(d, 3e17, t, n_comp=5e16) for t in T])
+    mu = 1500 * (T / 300) ** -2.2
+    return 1 / (1.602e-19 * p * mu)
 
 
 def expected(kind: str, seed: int = 4) -> dict:

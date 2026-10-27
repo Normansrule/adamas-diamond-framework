@@ -36,9 +36,10 @@ def test_p2_fits_recover_what_was_put_in():
     assert abs(g["arrhenius"]["method_bias_ev"]) < 0.01            # the T^-0.7 correction is good to 1 % of 0.37 eV
 
 
-def test_p2_pass_rates_are_near_what_two_sigma_promises():
-    r = B.p2_pass_rates(100)
-    assert all(0.85 <= v <= 1.0 for v in r.values()), r
+def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
+    r = B.p2_pass_rates(300)
+    assert 0.95 - 3 * r["se_gate"] <= r["gate"] <= 1.0, r      # 95 % within three binomial standard errors (300 runs)
+    assert all(r[k] >= 0.96 for k in ("rabi_pass", "t2star_pass", "t2_pass", "vector", "arrhenius")), r
 
 
 def test_phase_documents_are_current():

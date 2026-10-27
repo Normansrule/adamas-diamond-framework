@@ -83,8 +83,10 @@ function detail() {
       ${row('T₂* (Ramsey)', `${T.t2star_us} µs`, `${pu.t2star_us.toFixed(3)} ± ${pu.t2star_err.toFixed(3)}`, pu.t2star_pass, r.t2star_pass)}
       ${row('T₂ (echo)', `${T.t2_us} µs`, `${pu.t2_us.toFixed(0)} ± ${pu.t2_err.toFixed(0)}`, pu.t2_pass, r.t2_pass)}
       ${row('|B| from four axes', `${ve.truth_mt.toFixed(3)} mT`, `${ve.b_mt.toFixed(3)} ± ${ve.b_err.toFixed(3)}`, ve.pass, r.vector)}
-      ${row('Boron E_A', `${ar.truth_ev} eV`, `${ar.ea_ev.toFixed(3)} ± ${ar.ea_err.toFixed(3)}`, ar.pass, r.arrhenius)}</table>
-      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates). Each fit must land within two of its own standard errors of the value put in. T₁ has no model yet, so no criterion.</p>`; }
+      ${row('Boron E_A', `${ar.truth_ev} eV`, `${ar.ea_ev.toFixed(3)} ± ${ar.ea_err.toFixed(3)}`, ar.pass, r.arrhenius)}
+      ${row('Echo outlives dephasing', 'T₂/T₂* > 10', pu.echo_gain.toFixed(0), pu.echo_pass)}
+      ${row('<b>Gate: all pass</b>', '', '', g.verdict === 'go', r.gate)}</table>
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates). Each fit must land within ${r.k.toFixed(2)} of its own standard errors of the value it should find (E_A: the value put in plus the method bias ${ar.method_bias_ev.toFixed(4)} eV, Student-t factor ${ar.k.toFixed(2)}), so a correct setup gets "go" about 95 % of the time; rates over ${r.runs} simulated runs. T₁ has no model yet, so no criterion.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>

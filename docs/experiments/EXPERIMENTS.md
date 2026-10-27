@@ -190,7 +190,7 @@ Ten experiments in four price tiers. Prices are approximate 2026 US-dollar stree
 
 1. **Contact check.** Verify ohmic contacts with I–V at room temperature (straight line through zero).
 2. **Heat in steps.** Step 25 to 500 °C in 25 °C steps; wait for stability; record resistance in both current directions.
-3. **Arrhenius plot.** Plot ln(R) against 1000/T and fit the straight part.
+3. **Arrhenius plot.** Plot ln(R T^-0.7) against 1000/T and fit the straight low-temperature part (see Analysis).
 
 **Analysis.** A raw Arrhenius slope underestimates the acceptor energy because the density of states grows as T^1.5 and the lattice mobility falls as about T^-2.2; fit ln(R·T^-0.7) instead. In the compensated regime the corrected slope gives E_A ≈ 0.37 eV (without compensation it approaches E_A/2). A Hall measurement separates density from mobility directly. Fit your data with `python -m adamas.fit arrhenius data.csv` or drop the CSV into the [Data Lab](https://normansrule.github.io/adamas-diamond-framework/datalab.html).
 

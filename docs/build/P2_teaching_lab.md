@@ -11,10 +11,10 @@ Move from continuous-wave ODMR to pulsed control of an NV ensemble (experiment B
 ## Physics and equations
 
 - **Rabi:** P₋₁(t) = (Ω²/Ω_eff²) sin²(πΩ_eff t), Ω_eff = √(Ω² + δ²); a π pulse lasts 1/(2Ω) [rabi1937]. Valid in the rotating-wave limit Ω ≪ D.
-- **Ramsey:** P = ½[1 + cos(2πδτ) e^(−(τ/T₂*)²)] for quasi-static Gaussian detunings [ramsey1950].
-- **Hahn echo:** C(τ) = e^(−(τ/T₂)ⁿ); the π pulse refocuses static detunings, so T₂ ≫ T₂* [hahn1950]. The stretch n depends on the noise (about 3 for a slow nuclear bath).
+- **Ramsey:** the measured contrast follows ½[1 − cos(2πδτ) e^(−(τ/T₂*)²)] (the sign depends on the phase of the last π/2 pulse); the Gaussian envelope comes from quasi-static detunings in an ensemble [ramsey1950] [barry2020].
+- **Hahn echo:** C(τ) = e^(−(τ/T₂)ⁿ); the π pulse refocuses static detunings, so T₂ ≫ T₂* [hahn1950]. The stretch n depends on the noise: about 3 for a slow nuclear-spin bath [childress2006] [barry2020]; the simulated data use 1.5.
 - **Vector field:** each orientation's half-splitting gives |B·n̂ᵢ|γₑ; for the four tetrahedral axes Σᵢ(B·n̂ᵢ)² = (4/3)|B|², which over-determines the field [rondin2014].
-- **Deep acceptor:** p(T) from charge neutrality with E_A = 0.37 eV and compensating donors [lagrange1998]; plotting ln(R T^−0.7) against 1/T removes the T^1.5 density of states and the T^−2.2 lattice mobility, so the slope is E_A/k in the compensated regime.
+- **Deep acceptor:** p(T) from charge neutrality with E_A = 0.37 eV and compensating donors [lagrange1998]; plotting ln(R T^−0.7) against 1/T removes the T^1.5 density of states [sze2006] and the T^−2.2 lattice mobility [pernot2010], so the slope is E_A/k in the compensated regime.
 
 The Qubit Lab, Lattice Lab, and the Equations in Action page run the same equations.
 
@@ -61,28 +61,29 @@ B3 (boron activation):
 
 1. **Contact check.** Verify ohmic contacts with I–V at room temperature (straight line through zero).
 2. **Heat in steps.** Step 25 to 500 °C in 25 °C steps; wait for stability; record resistance in both current directions.
-3. **Arrhenius plot.** Plot ln(R) against 1000/T and fit the straight part.
+3. **Arrhenius plot.** Plot ln(R T^-0.7) against 1000/T and fit the straight low-temperature part (see Analysis).
 
 ## Expected results (simulated)
 
-The data are simulated by `adamas.experiments` with the values below put in (illustrative, inside published ranges [jelezko2004a] [childress2006]) and fitted by `adamas.fitting`, the code you use on real data.
+The data are simulated by `adamas.experiments` with the values below put in (illustrative values inside the ranges reported for NV ensembles [barry2020]) and fitted by `adamas.fitting`, the code you use on real data.
 
 ![Expected P2 results](../img/fig55_build_p2.png)
 
 ## Pass/fail
 
-Each test passes when the fitted value is within two of its own standard errors of the value put in (for E_A, plus the method bias of the T^−0.7 correction, found by fitting the noise-free model). The last column is how often a correct setup passes, over 200 simulated runs.
+The gate needs all 5 fitted values to pass (plus the echo threshold, which the simulated data clear by a wide margin), so each test is set for 98.98 % coverage and a correct setup gets "go" 95 % of the time: a fit passes when it lands within 2.57 of its own standard errors of the value it should find (Student-t factor 3.69 for E_A, whose fit uses only 8 points). E_A is compared with the value put in plus the method bias of the T^−0.7 correction, found by fitting the noise-free model. The last column is how often a correct setup passes over 1000 simulated runs (binomial standard error 0.3 percentage points per test, 0.7 for the gate).
 
 | Test | Put in | Fitted | Pass? | Correct setups passing |
 |---|---|---|---|---|
-| Rabi frequency (π pulse) | 5 MHz | 4.996 ± 0.008 MHz (100.1 ns) | yes | 94 % |
-| Dephasing T₂* (Ramsey) | 0.6 µs | 0.642 ± 0.022 µs | yes | 94 % |
-| Coherence T₂ (echo) | 300 µs | 310 ± 15 µs | yes | 94 % |
-| Echo outlives dephasing | T₂/T₂* > 10 | 482 | yes | |
-| Field magnitude from four orientations | 2.518 mT | 2.542 ± 0.018 mT | yes | 98 % |
-| Boron activation energy | 0.37 eV | 0.366 ± 0.003 eV (method bias -0.0043) | yes | 96 % |
+| Rabi frequency (π pulse) | 5 MHz | 4.996 ± 0.008 MHz (100.1 ns) | yes | 98.6 % |
+| Dephasing T₂* (Ramsey) | 0.6 µs | 0.642 ± 0.022 µs | yes | 98.8 % |
+| Coherence T₂ (echo) | 300 µs | 310 ± 15 µs | yes | 98.0 % |
+| Field magnitude from four orientations | 2.518 mT | 2.542 ± 0.018 mT (error from a 1 % line uncertainty) | yes | 99.5 % |
+| Boron activation energy | 0.37 eV (method bias -0.0043) | 0.366 ± 0.003 eV | yes | 99.4 % |
+| Echo outlives dephasing (this project's threshold) | T₂/T₂* > 10 | 482 | yes | |
+| **Gate: every row passes** | | | **yes** | **94.4 %** |
 
-Pass rates below 95 % mean the fit's error bars are slightly too small for that test (the covariance of a nonlinear fit is an approximation); a single failed run is a reason to repeat it, not to stop.
+A correct setup still fails the gate about one time in twenty, so a single "stop" is a reason to repeat the failing measurement, not to abandon the phase. On real data, use each line's fit uncertainty for the field-magnitude error instead of the 1 % assumed here; P2 tests the field's magnitude, not its direction.
 
 ## Not yet simulated
 
@@ -100,4 +101,4 @@ The longitudinal relaxation time T₁ belongs in this phase but has no model in 
 
 *Can we hold a spin coherent and measure deep dopants reliably?* All simulated tests pass, so the procedure and the analysis are ready; the gate is decided by the measured values on your setup. Go to P3 when your measured T₂ is long enough for the single-NV gates you plan (the gate budget in E5) and to P4 when the B3 activation energy is reproduced on your samples.
 
-Sources: [rabi1937] [ramsey1950] [hahn1950] [jelezko2004a] [childress2006] [rondin2014] [lagrange1998] [sewani2020] [barry2020] [pernot2010]
+Sources: [rabi1937] [ramsey1950] [hahn1950] [childress2006] [barry2020] [rondin2014] [lagrange1998] [sze2006] [pernot2010] [sewani2020]
