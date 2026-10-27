@@ -29,9 +29,20 @@ def test_registry_is_complete_and_cites_known_sources():
         assert callable(getattr(__import__(mod, fromlist=[fn]), fn)), p["python"]
 
 
+def _close(a, b):
+    """Equal up to floating-point noise: library versions (numpy, scipy) change the last digits, not the physics."""
+    if isinstance(a, dict):
+        return isinstance(b, dict) and a.keys() == b.keys() and all(_close(a[k], b[k]) for k in a)
+    if isinstance(a, (list, tuple)):
+        return isinstance(b, (list, tuple)) and len(a) == len(b) and all(_close(x, y) for x, y in zip(a, b))
+    if isinstance(a, float) or isinstance(b, float):
+        return math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12)
+    return a == b
+
+
 def test_golden_and_registry_files_are_current():
     g = json.loads((ROOT / "web" / "tests" / "loop_golden.json").read_text())
-    assert json.loads(json.dumps(loop.golden())) == g, "run: adamas build docs"
+    assert _close(json.loads(json.dumps(loop.golden())), g), "run: adamas build docs"
     assert json.loads((ROOT / "web" / "tests" / "loop_registry.json").read_text()) == json.loads(json.dumps(loop.PANELS))
 
 
