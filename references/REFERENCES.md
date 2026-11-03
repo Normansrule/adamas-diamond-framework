@@ -1,10 +1,10 @@
 # References
 
-**582 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**583 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
-## Materials physics and figures of merit (42)
+## Materials physics and figures of merit (43)
 
 - ✅ **`[clark1964]`** Clark, C. D.; Dean, P. J.; Harris, P. V. (1964). Intrinsic edge absorption in diamond. *Proceedings of the Royal Society A*, 277, 312. [doi:10.1098/rspa.1964.0025](https://doi.org/10.1098/rspa.1964.0025)
 - 📚 **`[johnson1965]`** Johnson, E. O. (1965). Physical limitations on frequency and power parameters of transistors. *RCA Review*, 26, 163.
@@ -36,6 +36,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[alvarez2014]`** Alvarez, J.; Boutchich, M.; Kleider, J. P.; et al. (2014). Direct observation of the leakage current in epitaxial diamond Schottky barrier devices by conductive-probe atomic force microscopy and Raman imaging. *Journal of Physics D: Applied Physics*, 47(35), 355102.
 - 📚 **`[kimoto2014]`** Kimoto, T.; Cooper, J. A. (2014). Fundamentals of Silicon Carbide Technology. *Wiley*.
 - ✅ **`[millan2014]`** Millan, J.; Godignon, P.; Perpina, X.; Perez-Tomas, A.; Rebollo, J. (2014). A survey of wide bandgap power semiconductor devices. *IEEE Transactions on Power Electronics*, 29, 2155. [doi:10.1109/cde.2013.6481400](https://doi.org/10.1109/cde.2013.6481400)
+- 📚 **`[haynes2016]`** Haynes, W. M. (ed.) (2016). CRC Handbook of Chemistry and Physics (97th ed.). *CRC Press*.
 - 📚 **`[stoupin2016]`** Stoupin, S.; Antipov, S.; Butler, J. E.; et al. (2016). Large-surface-area diamond (111) crystal plates for applications in high-heat-load wavefront-preserving x-ray crystal optics. *arXiv*, 1605.03977.
 - ✅ **`[inyushkin2018]`** Inyushkin, A. V.; Taldenkov, A. N.; Ralchenko, V. G.; et al. (2018). Thermal conductivity of high purity synthetic single crystal diamonds. *Physical Review B*, 97, 144305. [doi:10.1103/physrevb.97.144305](https://doi.org/10.1103/physrevb.97.144305)
 - ✅ **`[pearton2018]`** Pearton, S. J.; Yang, J.; Cary, P. H.; et al. (2018). A review of Ga2O3 materials, processing, and devices. *Applied Physics Reviews*, 5, 011301. [doi:10.1063/1.5006941](https://doi.org/10.1063/1.5006941)

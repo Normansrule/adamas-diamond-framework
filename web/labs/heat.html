@@ -13,6 +13,7 @@
 </aside>
 <div>
   <div class="stage" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:2px;min-height:0" id="grid"></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Every chip gets hot where it works hardest. Heat has to escape through the material to the cold plate at the bottom. Diamond lets heat through about 15 times more easily than silicon, so the same chip stays much cooler.</div>
     <div class="lvl" data-l="s">∂T/∂t = α∇²T + q/(ρc) with α = κ/(ρc). At steady state κ∇²T = −q, so for identical geometry and power the peak temperature rise scales exactly as 1/κ: silicon 1.5, gallium nitride 2.3, silicon carbide 4.9, diamond 22 W/(cm·K). Diamond also reaches steady state fastest because its diffusivity is highest.</div>
@@ -22,11 +23,12 @@
 <script type="module">
 import { boot, colormap, label } from '../assets/site.js';
 import * as H from '../assets/sim/heat.js';
+import { loop } from '../assets/eqloop.js';
 boot('Heat');
 const $ = id => document.getElementById(id), N = 48, keys = ['Si', 'GaN', 'SiC', 'Diamond'];
-let sims, playing = true, scale = 'shared';
+let sims, playing = true, scale = 'shared', EQ = null, lastLoop = 0;
 $('grid').innerHTML = keys.map(k => `<div style="position:relative"><canvas id="c${k}" width="${N}" height="${N}" style="width:100%;image-rendering:auto;aspect-ratio:1"></canvas>
-  <div class="hud" style="left:10px;top:10px"><b style="color:${H.MATERIALS[k].color}">${H.MATERIALS[k].name}</b> · κ = ${H.MATERIALS[k].kappa} W/cm·K<br><span id="t${k}">ΔT 0 K</span></div></div>`).join('');
+  <div class="hud" style="left:10px;top:10px"><button type="button" class="tilebtn" data-m="${k}" aria-label="Load ${H.MATERIALS[k].name} into the equation below" style="color:${H.MATERIALS[k].color}">${H.MATERIALS[k].name}</button> · κ = ${H.MATERIALS[k].kappa} W/cm·K<br><span id="t${k}">ΔT 0 K</span></div></div>`).join('');
 $('kpis').innerHTML = `<div class="kpi"><b id="kRatio">–</b><span>Silicon peak ÷ diamond peak</span></div><div class="kpi"><b id="kTime">0</b><span>Simulated time (ms)</span></div>`;
 function reset() { sims = keys.map(k => H.create(k, N, 0.2)); }
 $('reset').onclick = reset; $('play').onclick = () => { playing = !playing; label($('play'), playing ? 'pause' : 'play', playing ? 'Pause' : 'Play'); };
@@ -45,7 +47,10 @@ function frame() {
     $('t' + keys[j]).textContent = `peak ΔT ${peaks[j].toFixed(1)} K`;
   });
   $('kRatio').textContent = (peaks[0] / Math.max(peaks[3], 1e-9)).toFixed(1) + '×'; $('kTime').textContent = (sims[0].time * 1e3).toFixed(2);
+  const now = performance.now(); if (EQ && now - lastLoop > 250) { lastLoop = now; EQ.set({ tlab: sims[0].time * 1e3 }); }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+EQ = await loop($('loop'), 'heat', { state: { tlab: 0 }, controls: ['k', 'rc', 'L'], select: 'k' });
+$('grid').addEventListener('click', e => { const b = e.target.closest('.tilebtn'); if (!b || !EQ) return; const m = H.MATERIALS[b.dataset.m]; EQ.set({ k: m.kappa, rc: m.rho * m.c }); EQ.select('k'); });
 </script></body></html>

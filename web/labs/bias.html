@@ -17,6 +17,7 @@
 <div>
   <div class="stage" style="min-height:0"><canvas id="circ" style="height:300px" role="img" aria-label="The gate as a circuit, with the injected error travelling to the output"></canvas><div class="hud" id="circHud"></div></div>
   <div class="stage" style="margin-top:14px;min-height:0"><canvas id="dist" style="height:250px" role="img" aria-label="Errors leaving the gate on each qubit, by type"></canvas><div class="hud" id="distHud"></div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Our qubits usually make one kind of mistake, which is good news: a clever code can watch for that kind. But mistakes travel through the gates. One gate leaves the mistake as it is. The other gate turns it into the other kind of mistake on its way out, and the clever code is fooled.</div>
     <div class="lvl" data-l="s">A CZ gate is diagonal, so a Z error commutes with it and leaves as a Z. Two-level hardware usually makes a CNOT from a CZ between two Hadamards on the target. A Hadamard swaps X and Z, so a phase error during the CZ comes out of the CNOT as a bit flip on the target, and an X error before the CZ also drags a Z onto the control. The bias of the target's errors is inverted: Z and X trade places while Y stays put, so η = p<sub>Z</sub>/(p<sub>X</sub> + p<sub>Y</sub>) becomes 1/(2η + 1) when the Hadamards are short; at this lab's default Hadamard length (0.002 of the CZ time) the model gives 0.33, 0.05, and 0.007 for η = 1, 10, and 100.</div>
@@ -26,6 +27,8 @@
 <script type="module">
 import { boot, fitCanvas } from '../assets/site.js';
 import * as GB from '../assets/sim/gatebias.js';
+import { loop } from '../assets/eqloop.js';
+let EQ = null;
 boot('Gate bias');
 const $ = id => document.getElementById(id);
 let kind = 'cz', pauli = 'Z', qubit = 1, t0 = -1e9;
@@ -50,7 +53,7 @@ function update() {
   const f = x => (Number.isFinite(x) ? (x >= 10 ? x.toFixed(0) : x >= 0.1 ? x.toFixed(2) : x.toExponential(1)) : '∞');
   $('kpis').innerHTML = [[f(eta()), 'bias going in, both qubits'], [f(b[0]), 'bias leaving, control'], [f(b[1]), 'bias leaving, target'], [`${(100 * d.spread).toFixed(2)}%`, 'error events that hit both qubits']]
     .map(([v, s]) => `<div class="kpi"><b>${v}</b><span>${s}</span></div>`).join('');
-  drawDist(w, b);
+  drawDist(w, b); EQ?.set({ eta: eta(), h: hf() });
 }
 function drawDist(w, b) {
   const { g, w: W, h } = fitCanvas($('dist'), 250); g.clearRect(0, 0, W, h);
@@ -90,5 +93,7 @@ function drawCirc(now) {
 }
 $('play').onclick = () => { t0 = performance.now(); };
 ['when', 'eta', 'h'].forEach(i => $(i).oninput = update); addEventListener('resize', update);
+EQ = await loop($('loop'), 'bias', { state: { eta: eta(), h: hf() }, select: 'eta',
+  onChange: (st, ks) => { if (ks.includes('eta')) $('eta').value = Math.log10(st.eta).toFixed(2); if (ks.includes('h')) $('h').value = Math.log10(st.h).toFixed(2); update(); } });
 update(); requestAnimationFrame(drawCirc);
 </script></body></html>
