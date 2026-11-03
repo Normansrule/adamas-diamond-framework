@@ -4,7 +4,7 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 **Status: demonstrated** (Demonstrated near room temperature, with a cited paper). Operating temperature: about 300 K. [gruber1997] [tetienne2012] [waldherr2014]
 
-**Analogy only:** a pull-down resistor (analogy) — the real device is the Optical reset (initialization). Fits: It drains the state to a known value every cycle. Breaks: It works by optical pumping through a metastable level, not by dissipation in a resistor, and stops short of 100 %.
+**Analogy only:** a pull-down resistor (analogy) — the real device is the Optical reset (initialization). Fits: It drains the state to a known value every cycle. Breaks: It works by optical pumping through a metastable level, not by dissipation in a resistor, and stops short of 100 % (0.82 in the rate model).
 
 ## What it should do
 
@@ -33,7 +33,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Electron polarization after pumping | 0.817853 | simulated: rate model, β = 1, 3 µs (adamas.photophysics) | — |  |
+| Electron polarization after pumping | 0.8179 | simulated: rate model, β = 1, 3 µs (adamas.photophysics) | — |  |
 
 ## How to build it
 
@@ -51,7 +51,7 @@ Machines (Atlas): M38 532 nm laser, tens of mW; M39 Acousto-optic modulator (AOM
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Pump reaches its steady state: polarization ≥ 0.99 × steady state (0.818) | 0.817853, **pass** | 0.643128, **fail** | Laser ten times too weak and the pulse too short | ADAMAS design threshold: 0.99 of the steady state | 1.000 ± 0.000 (200 seeds) |
+| Pump reaches its steady state: polarization ≥ 0.99 × steady state (0.818) | 0.8179, **pass** | 0.765, **fail** | Laser pulse too short (0.1 µs) | ADAMAS design threshold: 0.99 of the steady state | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 
@@ -60,7 +60,7 @@ Machines (Atlas): M38 532 nm laser, tens of mW; M39 Acousto-optic modulator (AOM
 
 ## Open problems
 
-- Electron polarization stops near 80 to 90 % at room temperature; repeated measurement is needed for more.
+- Electron polarization stops short of 100 % (0.82 in the rate model of adamas.photophysics); repeated measurement is needed for more.
 
 ## Links
 

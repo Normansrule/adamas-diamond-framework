@@ -10,7 +10,7 @@ Electrical charge control is reported; holding NV⁻ near 100 % under readout li
 
 Hold the NV in its negative charge state (NV⁻) with a gate voltage or a doped junction.
 
-Only NV⁻ is a qubit. Surface termination and nearby dopants set the Fermi level, and electrodes can move it. A p-i-n junction can also pump charge. This device is the reason Dolde's 0.67 Bell fidelity is preparation-limited, not coherence-limited.
+Only NV⁻ is a qubit. Surface termination and nearby dopants set the Fermi level, and electrodes can move it. A p-i-n junction can also pump charge.
 
 ## Gates it can hold
 
@@ -24,7 +24,7 @@ None.
 
 | What | Label | Sources | Note |
 |---|---|---|---|
-| Raise the charge-state preparation that limits two-NV Bell fidelity | proposed | [dolde2013] |  |
+| Raise the probability that both NVs of a pair start in NV⁻ | proposed | [grotz2012] |  |
 | Electrically driven single-photon source | demonstrated | [mizuochi2012] |  |
 
 ## Figures of merit (current versus target)

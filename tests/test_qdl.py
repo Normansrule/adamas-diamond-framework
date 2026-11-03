@@ -56,7 +56,7 @@ def test_computed_design_values_follow_the_coupling_law():
     from adamas.coupling import gate_fidelity_bound
     assert gate_fidelity_bound(qdl.r_max_nm(0.99), qdl.T2_ROOM_MS) == pytest.approx(0.99, rel=1e-9)
     assert qdl.r_max_nm(0.9) > qdl.r_max_nm(0.99) > 10.0       # a looser target allows a wider spacing
-    assert qdl.required_t2_10nm_us() == pytest.approx(44.46, abs=0.05)
+    assert gate_fidelity_bound(10.0, qdl.required_t2_10nm_ms()) == pytest.approx(0.99, rel=1e-9)   # one model for both
 
 
 def test_routes_use_real_traveler_steps_and_atlas_machines():
@@ -68,8 +68,14 @@ def test_routes_use_real_traveler_steps_and_atlas_machines():
         assert set(r["atlas"]) <= set(atlas.ATLAS), d["id"]
         for x in r["extra"]:
             assert x["id"] not in steps and set(x["atlas"]) <= set(atlas.ATLAS) and x["refs"]
+            assert x["after"] in r["steps"], f"{d['id']} {x['id']}: anchor step must be on the route"
         b = qdl.build_process(d)
         assert [s["id"] for s in b if not s["missing"]] == r["steps"] and sum(s["missing"] for s in b) == len(r["extra"])
+
+
+def test_extra_step_ids_are_unique():
+    ids = [sid for _, sid, _ in qdl.missing_steps()]
+    assert len(ids) == len(set(ids))
 
 
 def test_atlas_matches_the_build_program_outline():

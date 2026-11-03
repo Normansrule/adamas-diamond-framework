@@ -28,6 +28,7 @@ rate of the nominal check over independent seeds is computed by pass_rate() and 
 """
 from __future__ import annotations
 
+import copy
 import functools
 import json
 import math
@@ -87,18 +88,25 @@ T2_ROOM_MS = 1.8           # electron Hahn-echo T2, 12C-enriched, room temperatu
 
 def r_max_nm(fidelity: float = 0.99, t2_ms: float = T2_ROOM_MS) -> float:
     """Largest NV-NV spacing whose coherence-limited gate bound 0.5 (1 + exp(-t/T2)), t = 1/(2 nu), nu = 52 MHz nm^3/r^3
-    (adamas.coupling, perpendicular orientation) still reaches `fidelity`. Assumptions: echo-limited, no control errors,
-    perfect charge state; an upper bound, not a prediction."""
+    (adamas.coupling.gate_fidelity_bound, perpendicular orientation) still reaches `fidelity`. Assumptions: one spin's
+    exponential echo decay, no control errors, perfect charge state. The two-spin stretched-echo model of
+    adamas.gate_budget allows wider spacings; this library uses the stricter bound everywhere."""
     from .coupling import DIPOLAR_MHZ_NM3
     t_us = -math.log(2 * fidelity - 1) * t2_ms * 1e3
     nu_khz = 1e3 / (2 * t_us)
     return (DIPOLAR_MHZ_NM3 * 1e3 / nu_khz) ** (1 / 3)
 
 
+def required_t2_us(r_nm: float = 10.0, fidelity: float = 0.99) -> float:
+    """Echo time two NVs r_nm apart need for `fidelity` under the same bound as r_max_nm (adamas.coupling: single
+    spin, exponential decay, no control errors). The two-spin, stretched-echo model of adamas.gate_budget is less strict
+    (it allows wider spacings); this library uses the stricter bound throughout, so its numbers agree with each other."""
+    from .coupling import gate_time_us
+    return float(gate_time_us(r_nm)) / -math.log(2 * fidelity - 1)
+
+
 def required_t2_10nm_us() -> float:
-    """Echo time two NVs 10 nm apart need for a 0.99 gate (adamas.gate_budget.required_t2_us)."""
-    from .gate_budget import required_t2_us
-    return float(required_t2_us(10.0, 0.99))
+    return required_t2_us(10.0, 0.99)
 
 
 def required_t2_10nm_ms() -> float:
@@ -141,13 +149,14 @@ def _k98() -> float:
     return _k_normal()          # 98.98 % two-sided coverage per test, as in build program P2
 
 
-def check_echo(seed=0, t2_us=600.0, need_us=None, noise=0.003, amp=0.1):
+def check_echo(seed=0, t2_us=1800.0, need_us=None, noise=0.003, amp=0.1):
     """Simulate a Hahn-echo decay (stretch 3) and fit it with adamas.fitting.fit_echo; pass when the fitted T2, less
-    k standard errors, still exceeds what a 0.99 two-NV gate at 10 nm needs (adamas.gate_budget)."""
+    k standard errors, still exceeds what a 0.99 two-NV gate at 10 nm needs (required_t2_us, same bound as r_max_nm).
+    The nominal 1.8 ms is the room-temperature value of 12C-enriched diamond [balasubramanian2009]."""
     from . import fitting, nv
     need = required_t2_10nm_us() if need_us is None else need_us
     r = np.random.default_rng(seed)
-    x = np.linspace(0, 2000.0, 401)
+    x = np.linspace(0, 6000.0, 601)
     y = amp * nv.hahn_echo(x, t2_us, 3.0) + r.normal(0, noise, x.size)
     try:
         f = fitting.fit_echo(x, y); t2, e = float(f.params["T2_us"]), float(f.errors["T2_us"])
@@ -155,7 +164,7 @@ def check_echo(seed=0, t2_us=600.0, need_us=None, noise=0.003, amp=0.1):
         t2, e = float("nan"), float("inf")
     low = t2 - _k98() * e
     return {"value": t2, "err": e, "unit": "µs", "threshold": need, "pass": bool(np.isfinite(low) and low >= need),
-            "what": f"fitted T₂ − k·σ ≥ {need:.1f} µs (0.99 gate at 10 nm)"}
+            "what": f"fitted T₂ − k·σ ≥ {need:.0f} µs (0.99 gate at 10 nm)"}
 
 
 def check_selective(seed=0, rabi_mhz=0.2, a_mhz=2.16, threshold=0.99):
@@ -164,7 +173,7 @@ def check_selective(seed=0, rabi_mhz=0.2, a_mhz=2.16, threshold=0.99):
     from .register import bell_fidelity
     f = float(bell_fidelity(a_mhz, rabi_mhz))
     return {"value": f, "err": 0.0, "unit": "", "threshold": threshold, "pass": bool(f >= threshold),
-            "what": f"Bell fidelity after the selective CNOT ≥ {threshold}"}
+            "what": f"Bell-state fidelity after the selective CNOT ≥ {threshold} (a Bell fidelity, not a gate fidelity)"}
 
 
 def check_coupler(seed=0, r_nm=10.0, t2_us=1800.0, noise=0.02, fidelity=0.99):
@@ -191,8 +200,9 @@ def check_readout(seed=0, photons_per_rep=0.03, reps=5000, contrast=None, shots=
     """Repetitive single-shot readout of a nuclear spin: each repetition maps the nuclear state onto the electron and
     counts photons (Poisson). Bright mean = reps x photons_per_rep, dark mean = bright x (1 - C) with C the measured
     contrast of adamas.photophysics. The count threshold is chosen on half the shots and the fidelity is evaluated on
-    the other half. Assumes a quantum non-demolition readout (no nuclear flips during the sequence); pass when the
-    fidelity reaches the demonstrated room-temperature 0.96 [dreau2013]. photons_per_rep is illustrative."""
+    the other half. Assumes a quantum non-demolition readout (no nuclear flips during the sequence), which the real
+    experiment does not have: there flips limit the fidelity, here photon statistics do. Pass when the fidelity reaches
+    the demonstrated room-temperature 0.96 [dreau2013]. photons_per_rep is illustrative."""
     c = measured_contrast() if contrast is None else contrast
     r = np.random.default_rng(seed)
     lb = reps * photons_per_rep; ld = lb * (1 - c)
@@ -204,7 +214,7 @@ def check_readout(seed=0, photons_per_rep=0.03, reps=5000, contrast=None, shots=
     fid = float((np.mean(b[h:] >= t) + np.mean(d[h:] < t)) / 2)
     err = math.sqrt(fid * (1 - fid) / shots)
     return {"value": fid, "err": err, "unit": "", "threshold": threshold, "pass": bool(fid >= threshold),
-            "what": f"readout fidelity ≥ {threshold} [dreau2013]"}
+            "what": f"readout fidelity ≥ {threshold} [dreau2013], no nuclear flips modeled"}
 
 
 def check_polarize(seed=0, beta=1.0, t_us=3.0, frac=0.99):
@@ -216,10 +226,10 @@ def check_polarize(seed=0, beta=1.0, t_us=3.0, frac=0.99):
             "what": f"polarization ≥ {frac:g} × steady state ({ss:.3f})"}
 
 
-def check_rabi(seed=0, rabi_mhz=10.0, design_mhz=10.0, noise=0.004, amp=0.1):
+def check_rabi(seed=0, rabi_mhz=10.0, design_mhz=10.0, noise=0.004, amp=0.1, tol=0.05):
     """Simulate Rabi oscillations driven through the line, fit with adamas.fitting.fit_rabi, and pass when the fitted
-    Rabi frequency is within k standard errors of the design value (the line delivers the field it was designed for).
-    The 10 MHz design value is illustrative, inside the 1 to 20 MHz range of chip-scale drivers ([kim2019cmos], [ibrahim2021])."""
+    Rabi frequency, widened by k standard errors, stays within `tol` (5 %, ADAMAS design threshold) of the design value.
+    The 10 MHz design value is illustrative (an ADAMAS choice, not a sourced number)."""
     from . import fitting, nv
     r = np.random.default_rng(seed)
     x = np.linspace(0, 0.5, 251)                        # µs
@@ -228,8 +238,8 @@ def check_rabi(seed=0, rabi_mhz=10.0, design_mhz=10.0, noise=0.004, amp=0.1):
         f = fitting.fit_rabi(x, y); v, e = float(f.params["rabi_MHz"]), float(f.errors["rabi_MHz"])
     except Exception:
         v, e = float("nan"), float("inf")
-    return {"value": v, "err": e, "unit": "MHz", "threshold": design_mhz, "pass": bool(np.isfinite(v) and abs(v - design_mhz) <= _k98() * e),
-            "what": f"|Ω_fit − {design_mhz:g} MHz| ≤ k·σ"}
+    return {"value": v, "err": e, "unit": "MHz", "threshold": design_mhz, "pass": bool(np.isfinite(v) and abs(v - design_mhz) + _k98() * e <= tol * design_mhz),
+            "what": f"|Ω_fit − {design_mhz:g} MHz| + k·σ ≤ {100 * tol:g} %"}
 
 
 def check_g2(seed=0, g0=0.2, tau_ns=12.0, noise=0.03):
@@ -267,7 +277,8 @@ def check_detect(seed=0, contrast=0.012, linewidth_mhz=6.0, noise=0.0012):
 def check_thermo(seed=0, coupling=1.0):
     """The build-program P1 thermometer with a thermal-contact factor: the diamond sees `coupling` of the plate's
     temperature change (1 = good contact). Pass when the fitted dD/dT agrees with -74.2(7) kHz/K [acosta2010] within
-    two combined standard errors."""
+    k combined standard errors (k for 98.98 % coverage, as the other checks). The D(T) model of adamas.nv is linear
+    at exactly this slope, so the check tests the measurement chain (contact, fit), not the slope itself."""
     from . import build_program as B, fitting, nv
     r = np.random.default_rng(seed)
     f = np.arange(2840.0, 2900.0 + 1e-9, 0.25)
@@ -277,12 +288,15 @@ def check_thermo(seed=0, coupling=1.0):
         t_d = 300.0 + coupling * (t - 300.0)
         shift = nv.zero_field_splitting_mhz(t_d) - nv.zero_field_splitting_mhz(300.0)
         y = nv.odmr_spectrum(f - shift, np.zeros(3), contrast=B.A1_CONTRAST, linewidth_mhz=B.A1_LINEWIDTH, hyperfine=False) + r.normal(0, B.A1_NOISE, f.size)
-        fit = fitting.fit_odmr(f, y, max_lines=1); c.append(fit.params["center1"]); e.append(fit.errors["center1"])
+        try:
+            fit = fitting.fit_odmr(f, y, max_lines=1); c.append(fit.params["center1"]); e.append(fit.errors["center1"])
+        except Exception:
+            return {"value": float("nan"), "err": float("inf"), "unit": "kHz/K", "threshold": B.DDDT_KHZ_K, "pass": False, "what": "fit failed"}
     c, e = np.array(c), np.array(e); w = 1 / e ** 2
     X = np.vstack([np.ones_like(t_k), t_k - t_k.mean()]).T
     cov = np.linalg.inv(X.T @ (w[:, None] * X)); beta = cov @ X.T @ (w * c)
     s, se = beta[1] * 1e3, math.sqrt(cov[1, 1]) * 1e3
-    tol = 2 * math.hypot(se, B.DDDT_SIGMA)
+    tol = _k98() * math.hypot(se, B.DDDT_SIGMA)
     return {"value": float(s), "err": float(se), "unit": "kHz/K", "threshold": B.DDDT_KHZ_K, "pass": bool(abs(s - B.DDDT_KHZ_K) <= tol),
             "what": f"|dD/dT − (−74.2)| ≤ {tol:.1f} kHz/K"}
 
@@ -305,7 +319,7 @@ DEVICES = [
   "function": "Hold one qubit in the electron spin of a nitrogen-vacancy (NV) center and rotate it with microwaves.",
   "explanation": ("A nitrogen atom next to a missing carbon atom traps two electrons whose spin (S = 1) has three levels. "
                   "Green light pumps it into mₛ = 0, microwaves near 2.87 GHz rotate it between mₛ = 0 and −1, and the red "
-                  "fluorescence is about 30 % dimmer in mₛ = ±1, which reads it out. At room temperature the spin keeps its "
+                  "fluorescence is dimmer in mₛ = ±1 ([gruber1997]; contrast 0.31 in the rate model of adamas.photophysics), which reads it out. At room temperature the spin keeps its "
                   "phase for milliseconds under a Hahn echo in ¹²C-enriched diamond. It is the qubit every other register "
                   "device in this library serves."),
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["rong2015", "balasubramanian2009", "doherty2013"],
@@ -320,15 +334,15 @@ DEVICES = [
                       _tgt(0.9999, "ADAMAS design threshold (proposed): stay below 10⁻⁴ error so two-qubit gates dominate the budget")),
           "t2": _fom("Electron Hahn-echo T₂", "ms", "higher",
                      _cur(1.8, "demonstrated", ["balasubramanian2009"], "¹²C-enriched diamond, room temperature"),
-                     _tgt(required_t2_10nm_ms(), "T₂ a 0.99 two-NV gate at 10 nm needs (adamas.gate_budget)", "adamas.qdl.required_t2_10nm_ms"))},
+                     _tgt(required_t2_10nm_ms(), "T₂ a 0.99 two-NV gate at 10 nm needs (single-spin exponential bound, as r_max)", "adamas.qdl.required_t2_10nm_ms"))},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S13", "S16", "S18", "S19"],
             "overrides": {"S03": "Grow with ¹²CH₄ (isotopically enriched) so ¹³C spins do not shorten T₂.",
                           "S06": "Implant single ¹⁵N⁺ per aperture at 2.5 to 10 keV (about 4 to 15 nm deep by the rule of thumb in adamas.coupling).",
                           "S18": "Find the NV, measure ODMR, Rabi, Ramsey and echo (experiments B1 and C1)."},
             "extra": [], "atlas": ["M01", "M10", "M12", "M20", "M21", "M22", "M47", "M49", "M51", "M52"]},
   "layers": ["Al₂O₃ passivation", "Microwave line (QDL-08)", "¹²C diamond cap with NV", "Diamond substrate"],
-  "checks": [_chk("echo", "Echo long enough for a 0.99 gate at 10 nm", {"t2_us": 600.0}, {"t2_us": 20.0},
-                  "Natural-abundance carbon and surface spins cut T₂ to 20 µs", "adamas.gate_budget.required_t2_us (from 52 MHz nm³/r³ and the echo model)")],
+  "checks": [_chk("echo", "Echo long enough for a 0.99 gate at 10 nm", {"t2_us": 1800.0}, {"t2_us": 100.0},
+                  "Natural-abundance carbon and surface spins cut T₂ to 100 µs", "adamas.qdl.required_t2_us (52 MHz nm³/r³ and the single-spin bound)")],
   "failures": ["Charge state flips to NV⁰ under light", "Surface spins shorten T₂ for shallow NVs", "Strain splits and broadens the lines"],
   "open_problems": ["Single-shot electron readout at room temperature does not exist yet (see QDL-05)."],
   "links": {"labs": ["labs/qubit.html", "labs/photon.html"], "chapters": ["06_nv_center_physics.md"], "experiments": ["B1", "C1"], "loop": ["rabi", "ramsey", "echo"]}},
@@ -376,13 +390,13 @@ DEVICES = [
                 _g("Error correction with nuclear ancillas", "demonstrated", ["waldherr2014"])],
   "fom": {"cnot": _fom("CNOT gate fidelity", "", "higher",
                        _cur(0.9992, "demonstrated", ["xie2023"], "electron and ¹⁴N, room temperature, noise filtering", err=0.00007),
-                       _tgt(0.99, "ADAMAS check threshold (proposed): the selective pulse must reach 0.99 in simulation"))},
+                       None)},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S13", "S16", "S18", "S19"],
             "overrides": {"S18": "Calibrate the selective π pulse on one hyperfine line (Rabi frequency well below 2.16 MHz)."},
             "extra": [], "atlas": ["M20", "M22", "M51", "M53", "M47"]},
   "layers": ["Microwave line", "NV + ¹⁴N/¹⁵N nucleus", "Diamond substrate"],
-  "checks": [_chk("selective", "Selective CNOT stays above 0.99", {"rabi_mhz": 0.2}, {"rabi_mhz": 1.0},
-                  "Drive too strong: the pulse also rotates the neighboring hyperfine line", "ADAMAS design threshold 0.99")],
+  "checks": [_chk("selective", "Bell state from the selective CNOT stays above 0.99", {"rabi_mhz": 0.2}, {"rabi_mhz": 1.0},
+                  "Drive too strong: the pulse also rotates the neighboring hyperfine line", "ADAMAS design threshold 0.99 on the Bell-state fidelity")],
   "failures": ["Drive strong enough to excite the neighboring hyperfine line", "Field drift detunes the selective pulse"],
   "open_problems": ["Gates between nuclei of different NVs still go through the electrons (QDL-04)."],
   "links": {"labs": ["labs/qubit.html", "labs/addressing.html"], "chapters": ["08_quantum_processor_architecture.md"], "experiments": ["C2"], "loop": ["rabi", "crosstalk"]}},
@@ -408,7 +422,7 @@ DEVICES = [
                        _cur(0.960, "demonstrated", ["joas2025"], "9.5 nm pair, ambient conditions, charge state pre-selected", err=0.025),
                        _tgt(0.99, "ADAMAS design target (proposed); the coherence bound allows it only for r ≤ r_max")),
           "r_max": _fom("Largest spacing for a 0.99 coherence-limited gate", "nm", "higher", None,
-                        _tgt(r_max_nm(), "From ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009]; an upper bound", "adamas.qdl.r_max_nm"))},
+                        _tgt(r_max_nm(), "From ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009], single-spin exponential bound; the two-spin stretched-echo model (adamas.gate_budget) allows wider spacings", "adamas.qdl.r_max_nm"))},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S13", "S16", "S18", "S19"],
             "overrides": {"S06": "Two apertures 10 to 15 nm apart, or one aperture with a dose that leaves two NVs inside (adamas.coupling.pair_yield).",
                           "S18": "Find a coupled pair by double electron-electron resonance (DEER) and measure ν."},
@@ -416,7 +430,7 @@ DEVICES = [
   "layers": ["Microwave line", "Two NVs 10 to 25 nm apart", "¹²C diamond"],
   "checks": [_chk("coupler", "Coupling strong enough for a 0.99 gate", {"r_nm": 10.0}, {"r_nm": 30.0},
                   "Placement error: the pair ends up 30 nm apart", "r_max from ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009]")],
-  "failures": ["Pair too far apart (placement)", "One NV in the wrong charge state (Dolde's 0.67 is preparation-limited)", "Cannot address two NVs closer than the diffraction limit"],
+  "failures": ["Pair too far apart (placement)", "One NV in the wrong charge state", "Cannot address two NVs closer than the diffraction limit"],
   "open_problems": ["Placing NVs 10 nm apart with high yield", "Addressing each NV of a close pair separately (Addressing Lab)"],
   "links": {"labs": ["labs/addressing.html", "labs/machine.html"], "chapters": ["07_nv_fabrication_and_placement.md", "08_quantum_processor_architecture.md"], "experiments": ["C2"], "loop": ["budget", "crosstalk"]}},
 
@@ -426,7 +440,7 @@ DEVICES = [
   "function": "Turn the spin state into a measurable signal: photons, photocurrent, or a charge state.",
   "explanation": ("Route 1, optical: count red photons; only a fraction of a photon per shot is detected, so the electron "
                   "readout is averaged. Route 2, spin-to-charge conversion (SCC): a timed laser sequence ionizes one spin state, "
-                  "and the charge state is then read with many photons. Route 3, photoelectric (PDMR): read the electrons the "
+                  "and the charge state is then read with many photons. Route 3, photoelectric detection of magnetic resonance (PDMR): read the electrons the "
                   "ionization frees as a current through electrodes. Route 4, nuclear single-shot: map the nucleus onto the "
                   "electron thousands of times and add up the photons."),
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["dreau2013", "shields2015", "siyushev2019", "hopper2018"],
@@ -458,7 +472,7 @@ DEVICES = [
 
  {"id": "QDL-06", "name": "Optical reset (initialization)", "family": "register",
   "analogy": {"label": "pull-down resistor", "fits": "It drains the state to a known value every cycle.",
-              "breaks": "It works by optical pumping through a metastable level, not by dissipation in a resistor, and stops short of 100 %."},
+              "breaks": "It works by optical pumping through a metastable level, not by dissipation in a resistor, and stops short of 100 % (0.82 in the rate model)."},
   "function": "Pump the electron into mₛ = 0 with green light before every operation.",
   "explanation": ("Under green light, mₛ = ±1 crosses more often into a metastable singlet that returns mostly to mₛ = 0, so "
                   "after about a microsecond the spin sits in mₛ = 0 with high but not perfect probability. Nuclear spins are "
@@ -474,22 +488,21 @@ DEVICES = [
   "route": {"variant": "qubit", "steps": ["S18"], "overrides": {"S18": "Laser pulses gated by an acousto-optic modulator (M39)."},
             "extra": [], "atlas": ["M38", "M39", "M42", "M46"]},
   "layers": ["Green light in", "NV", "Diamond"],
-  "checks": [_chk("polarize", "Pump reaches its steady state", {"beta": 1.0, "t_us": 3.0}, {"beta": 0.1, "t_us": 0.3},
-                  "Laser ten times too weak and the pulse too short", "ADAMAS design threshold: 0.99 of the steady state")],
+  "checks": [_chk("polarize", "Pump reaches its steady state", {"beta": 1.0, "t_us": 3.0}, {"beta": 1.0, "t_us": 0.1},
+                  "Laser pulse too short (0.1 µs)", "ADAMAS design threshold: 0.99 of the steady state")],
   "failures": ["Too much power ionizes NV⁻ to NV⁰", "Pulse too short"],
-  "open_problems": ["Electron polarization stops near 80 to 90 % at room temperature; repeated measurement is needed for more."],
+  "open_problems": ["Electron polarization stops short of 100 % (0.82 in the rate model of adamas.photophysics); repeated measurement is needed for more."],
   "links": {"labs": ["labs/photon.html"], "chapters": ["06_nv_center_physics.md"], "experiments": ["B1"], "loop": ["contrast"]}},
 
  {"id": "QDL-07", "name": "Charge-control electrodes", "family": "register",
   "analogy": None,
   "function": "Hold the NV in its negative charge state (NV⁻) with a gate voltage or a doped junction.",
   "explanation": ("Only NV⁻ is a qubit. Surface termination and nearby dopants set the Fermi level, and electrodes can move it. "
-                  "A p-i-n junction can also pump charge. This device is the reason Dolde's 0.67 Bell fidelity is "
-                  "preparation-limited, not coherence-limited."),
+                  "A p-i-n junction can also pump charge."),
   "status": {"label": "reported", "temperature_k": 300, "refs": ["hauf2011", "grotz2012", "doi2014"],
              "note": "Electrical charge control is reported; holding NV⁻ near 100 % under readout light is not."},
   "gates": [], "entanglement": [],
-  "use_cases": [_g("Raise the charge-state preparation that limits two-NV Bell fidelity", "proposed", ["dolde2013"]),
+  "use_cases": [_g("Raise the probability that both NVs of a pair start in NV⁻", "proposed", ["grotz2012"]),
                 _g("Electrically driven single-photon source", "demonstrated", ["mizuochi2012"])],
   "fom": {"nv_minus": _fom("NV⁻ fraction under readout", "", "higher", _todo("NV⁻ fraction under electrical control: confirm from the paper", ["grotz2012"]),
                            _tgt(None, "As high as the gate budget needs (Machine Builder)"))},
@@ -509,7 +522,7 @@ DEVICES = [
   "analogy": {"label": "word line with 50 Ω termination (resistor)", "fits": "It carries the control signal to many cells and is terminated so it does not reflect.",
               "breaks": "It is a classical wire: it drives qubits but carries no quantum information (the quantum wire is QDL-10)."},
   "function": "Carry microwave pulses to the NVs as an oscillating magnetic field.",
-  "explanation": ("A gold coplanar waveguide (CPW) on the diamond carries a few watts at 2 to 4 GHz. The current makes a "
+  "explanation": ("A gold coplanar waveguide (CPW) on the diamond carries microwave current near the 2.87 GHz resonance. The current makes a "
                   "magnetic field at the NV whose strength sets the Rabi frequency. A 50 Ω termination keeps reflections from "
                   "heating the chip unevenly. It is classical: noise on it is control error, not decoherence of a quantum bus."),
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["fuchs2009", "kim2019cmos"], "note": "Classical device."},
@@ -522,7 +535,7 @@ DEVICES = [
             "extra": [], "atlas": ["M11", "M13", "M28", "M41", "M51"]},
   "layers": ["Gold CPW (signal and grounds)", "Al₂O₃", "NV layer", "Diamond"],
   "checks": [_chk("rabi", "Line delivers the designed Rabi frequency", {"rabi_mhz": 10.0}, {"rabi_mhz": 5.0},
-                  "6 dB of extra loss (bad bond or mismatch) halves the field", "fit coverage k as in build program P2")],
+                  "6 dB of extra loss (bad bond or mismatch) halves the field", "ADAMAS design threshold: within 5 % of the design value, including k·σ")],
   "failures": ["Heating from high power", "Reflections from a poor termination"],
   "open_problems": ["Driving one NV of a close pair without the other (frequency or gradient addressing)."],
   "links": {"labs": ["labs/qubit.html", "labs/addressing.html"], "chapters": ["09_cmos_control_integration.md"], "experiments": ["B1"], "loop": ["rabi"]}},
@@ -542,7 +555,7 @@ DEVICES = [
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S05", "S06", "S07", "S18"],
             "overrides": {},
             "extra": [{"after": "S07", "id": "X09a", "title": "Nanophotonic etch (nanopillars or waveguides)",
-                       "text": "Electron-beam lithography of a hard mask, then oxygen ICP-RIE of pillars or waveguides around the NVs.",
+                       "text": "Electron-beam lithography of a hard mask, then oxygen inductively coupled plasma reactive-ion etching (ICP-RIE) of pillars or waveguides around the NVs.",
                        "label": "reported", "refs": ["babinec2010", "burek2012"], "atlas": ["M12", "M16"]}],
             "atlas": ["M12", "M16", "M47"]},
   "layers": ["Etched diamond nanopillar", "NV inside the pillar", "Diamond"],
@@ -589,7 +602,7 @@ DEVICES = [
   "fom": {"zpl": _fom("Zero-phonon fraction of the emission", "", "higher",
                       _cur(0.03, "demonstrated", ["faraon2011"], "room-temperature emission; cavities raise it more than tenfold below 10 K"), None)},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S05", "S06", "S07", "S18"], "overrides": {},
-            "extra": [{"after": "S07", "id": "X09a", "title": "Nanophotonic etch (cavity)", "text": "As QDL-09, with a cavity.",
+            "extra": [{"after": "S07", "id": "X11a", "title": "Nanophotonic etch (cavity)", "text": "As QDL-09, with a cavity.",
                        "label": "cryogenic", "refs": ["faraon2011"], "atlas": ["M12", "M16"]}],
             "atlas": ["M47", "M49", "M50"]},
   "layers": ["Cavity", "NV", "Diamond"],
@@ -601,17 +614,17 @@ DEVICES = [
 
  {"id": "QDL-12", "name": "Ensemble magnetometer", "family": "sensing",
   "analogy": None,
-  "function": "Measure magnetic fields with millions of NVs at once, by the shift of their resonance lines.",
+  "function": "Measure magnetic fields with millions of NVs at once, by the shift of their optically detected magnetic resonance (ODMR) lines.",
   "explanation": ("A field B shifts the ODMR lines by 28 MHz per mT along each NV axis. Four crystal orientations give a "
                   "vector magnetometer. It is the device that already pays: commercial sensors and teaching kits exist."),
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["barry2020", "wolf2015", "stuerner2021"], "note": ""},
   "gates": [], "entanglement": [_g("None needed (classical ensemble average)", "demonstrated", ["barry2020"])],
   "use_cases": [_g("Magnetic anomaly and current sensing", "demonstrated", ["barry2020"]),
                 _g("Teaching lab (experiments A1, A2, B2)", "demonstrated", ["sewani2020"])],
-  "fom": {"gamma": _fom("Line shift per field", "MHz/mT", "higher", _cur(gamma_mhz_per_mt(), "simulated", ["doherty2013"], "g = 2.0028 (adamas.nv)", python="adamas.qdl.gamma_mhz_per_mt"), None),
+  "fom": {"gamma": _fom("Line shift per field", "MHz/mT", "higher", _cur(gamma_mhz_per_mt(), "reported", ["doherty2013"], "physical constant, g = 2.0028 (adamas.nv)", python="adamas.qdl.gamma_mhz_per_mt"), None),
           "sens": _fom("Sensitivity", "T/√Hz", "lower", _todo("Ensemble sensitivity records: confirm from the paper", ["wolf2015", "barry2020"]), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18", "S19"],
-            "overrides": {"S06": "High dose (up to 10¹³ cm⁻²) for an ensemble layer, or buy irradiated HPHT diamond (M31)."},
+            "overrides": {"S06": "High dose for an ensemble layer (traveler S06 [pezzagna2010]), or buy irradiated high-pressure high-temperature (HPHT) diamond (M31)."},
             "extra": [], "atlas": ["M30", "M31", "M32", "M33", "M34", "M35", "M36"]},
   "layers": ["Microwave antenna", "NV ensemble layer", "Diamond"],
   "checks": [_chk("detect", "The dip is detected", {"contrast": 0.012}, {"contrast": 0.0006},
@@ -678,7 +691,7 @@ DEVICES = [
  # ---------------- sensing, chemistry, life sciences, navigation, communications, simulation
  {"id": "QDL-17", "name": "Scanning-probe magnetometer tip", "family": "sensing", "analogy": None,
   "function": "Image magnetic fields at the nanoscale with one NV in a diamond tip scanned over a sample.",
-  "explanation": "One shallow NV at the apex of a diamond pillar on an atomic force microscope cantilever maps stray fields of magnets, currents and superconductors.",
+  "explanation": "One shallow NV at the apex of a diamond pillar on an atomic force microscope (AFM) cantilever maps stray fields of magnets, currents and superconductors.",
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["casola2018", "rondin2014"], "note": ""},
   "gates": [_g("Single-qubit sensing sequences", "demonstrated", ["degen2017"])], "entanglement": [],
   "use_cases": [_g("Condensed-matter and data-storage imaging", "demonstrated", ["casola2018"])],
@@ -692,7 +705,7 @@ DEVICES = [
   "failures": ["Tip-sample distance drifts", "Shallow-NV coherence loss"], "open_problems": ["Coherence of NVs within 10 nm of the surface"],
   "links": {"labs": [], "chapters": ["06_nv_center_physics.md"], "experiments": ["C1"], "loop": ["odmr"]}},
 
- {"id": "QDL-18", "name": "Nanoscale NMR sensor", "family": "chemistry", "analogy": None,
+ {"id": "QDL-18", "name": "Nanoscale nuclear magnetic resonance (NMR) sensor", "family": "chemistry", "analogy": None,
   "function": "Record nuclear magnetic resonance from zeptoliter to picoliter volumes on the diamond surface.",
   "explanation": "A shallow NV detects the oscillating field of nuclear spins in a sample on the surface; ensembles with synchronized readout resolve chemical shifts.",
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["staudacher2013", "mamin2013", "aslam2017", "glenn2018", "lovchinsky2016"], "note": ""},
@@ -715,7 +728,7 @@ DEVICES = [
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {"S06": "Shallow dense ensemble layer."},
             "extra": [], "atlas": ["M20", "M22", "M38", "M43"]},
   "layers": ["Sample", "NV ensemble layer", "Diamond", "Camera optics"],
-  "checks": [_chk("detect", "Per-pixel dip is detected", {"contrast": 0.012}, {"contrast": 0.0006}, "Layer too thin: twenty times less contrast", "five-sigma convention (build program P1)")],
+  "checks": [_chk("detect", "Per-pixel dip is detected", {"contrast": 0.012}, {"contrast": 0.0006}, "Green background reaches the camera: twenty times less contrast", "five-sigma convention (build program P1)")],
   "failures": ["Strain gradients across the field"], "open_problems": ["Sensitivity per pixel at video rate"],
   "links": {"labs": [], "chapters": ["10_current_experiments_and_industry.md"], "experiments": ["A1"], "loop": ["odmr"]}},
 
@@ -725,14 +738,14 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["acosta2010", "kucsko2013", "toyli2013"], "note": ""},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Temperature inside living cells", "demonstrated", ["kucsko2013"]), _g("Hot-spot mapping in chips", "proposed", ["turner2020"])],
-  "fom": {"dddt": _fom("dD/dT", "kHz/K", "higher", _cur(-74.2, "demonstrated", ["acosta2010"], "weighted average of four samples near 300 K", err=0.7),
+  "fom": {"dddt": _fom("dD/dT", "kHz/K", "larger magnitude", _cur(-74.2, "demonstrated", ["acosta2010"], "weighted average of four samples near 300 K", err=0.7),
                        None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {},
             "extra": [{"after": "S07", "id": "X20a", "title": "Nanodiamond milling and surface treatment", "text": "Mill irradiated, annealed diamond to nanodiamonds; or buy them.",
                        "label": "demonstrated", "refs": ["kucsko2013"], "atlas": ["M31"]}], "atlas": ["M31", "M37", "M44"]},
   "layers": ["Nanodiamond with NVs", "Cell or chip"],
   "checks": [_chk("thermo", "dD/dT agrees with −74.2(7) kHz/K", {"coupling": 1.0}, {"coupling": 0.8},
-                  "Poor thermal contact: the diamond sees 80 % of the change", "±2 combined σ around [acosta2010]", seed=11)],
+                  "Poor thermal contact: the diamond sees 80 % of the change", "±k combined σ around [acosta2010] (98.98 % coverage)")],
   "failures": ["Laser heating", "Strain shifts D"], "open_problems": ["Calibration in biological media"],
   "links": {"labs": ["labs/heat.html"], "chapters": ["06_nv_center_physics.md"], "experiments": ["A3"], "loop": ["odmr"]}},
 
@@ -754,7 +767,7 @@ DEVICES = [
   "explanation": "Green light polarizes the NV; microwaves or level crossings pass that polarization to nuclear spins, in crystals and powders, at room temperature.",
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["london2013", "king2015", "ajoy2018"], "note": ""},
   "gates": [_g("Polarization transfer (electron to nuclei)", "demonstrated", ["london2013"])], "entanglement": [],
-  "use_cases": [_g("Brighter MRI and NMR agents", "proposed", ["ajoy2018"])],
+  "use_cases": [_g("Brighter agents for magnetic resonance imaging (MRI) and NMR", "proposed", ["ajoy2018"])],
   "fom": {"gain": _fom("Signal enhancement over thermal", "×", "higher", _todo("Hyperpolarization enhancement: confirm from the paper", ["king2015"]), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {}, "extra": [], "atlas": ["M31", "M38", "M53"]},
   "layers": ["¹³C nuclei", "NV", "Diamond powder or crystal"], "checks": [], "no_check": "No polarization-transfer model in the package.",
@@ -763,8 +776,8 @@ DEVICES = [
 
  {"id": "QDL-23", "name": "Diamond gyroscope", "family": "navigation", "analogy": None,
   "function": "Sense rotation through the geometric phase of NV or ¹⁴N nuclear spins.",
-  "explanation": "Proposals use the nuclear spin as a rotation sensor; early demonstrations exist. For GPS-free navigation with the magnetometer.",
-  "status": {"label": "proposed", "temperature_k": 300, "refs": ["ledbetter2012", "ajoy2012"], "note": "Proposed, early demonstrations."},
+  "explanation": "Proposals use the nuclear spin as a rotation sensor, for navigation without satellite positioning (GPS) together with the magnetometer.",
+  "status": {"label": "proposed", "temperature_k": 300, "refs": ["ledbetter2012", "ajoy2012"], "note": "Proposal."},
   "gates": [_g("Nuclear Ramsey sequence", "proposed", ["ledbetter2012"])], "entanglement": [],
   "use_cases": [_g("Navigation without GPS", "proposed", ["ledbetter2012"])], "fom": {},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18", "S19"], "overrides": {}, "extra": [], "atlas": ["M53", "M59"]},
@@ -777,7 +790,7 @@ DEVICES = [
   "explanation": "The NV levels respond to electric fields and stress; NVs in a diamond-anvil cell image stress and magnetism at megabar pressure.",
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["dolde2011", "hsieh2019"], "note": ""},
   "gates": [], "entanglement": [],
-  "use_cases": [_g("Single-charge field detection", "demonstrated", ["dolde2011"]), _g("Materials at megabar pressure", "demonstrated", ["hsieh2019"])],
+  "use_cases": [_g("Electric-field sensing with a single NV", "demonstrated", ["dolde2011"]), _g("Materials at megabar pressure", "demonstrated", ["hsieh2019"])],
   "fom": {"e": _fom("Electric-field sensitivity", "V/cm/√Hz", "lower", _todo("Electric-field sensitivity: confirm from the paper", ["dolde2011"]), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {"S06": "Shallow NV layer in an anvil culet for pressure work."},
             "extra": [], "atlas": ["M20", "M22", "M47"]},
@@ -791,7 +804,7 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["breeze2018"], "note": ""},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Low-noise microwave amplifier", "proposed", ["breeze2018"]), _g("Maser-assisted ensemble readout (ADAMAS idea)", "proposed", ["breeze2018"])],
-  "fom": {"f": _fom("Operating frequency", "GHz", "higher", _cur(9, "demonstrated", ["breeze2018"], "continuous wave, room temperature, in a cavity"), None)},
+  "fom": {"f": _fom("Operating frequency (about)", "GHz", "set by design", _cur(9, "demonstrated", ["breeze2018"], "continuous wave, room temperature, in a cavity"), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S06", "S07"], "overrides": {"S06": "High-density NV ensemble (or irradiated HPHT)."},
             "extra": [{"after": "S07", "id": "X25a", "title": "Cavity assembly (sapphire or dielectric resonator)", "text": "Mount the diamond in a high-Q microwave cavity with a magnet.",
                        "label": "demonstrated", "refs": ["breeze2018"], "atlas": ["M28"]}], "atlas": ["M31", "M38", "M43"]},
@@ -817,7 +830,7 @@ DEVICES = [
   "function": "Generate the microwaves and read the photons or photocurrent with a silicon chip bonded to the diamond.",
   "explanation": "Silicon CMOS can synthesize the microwave drive, filter the green light and detect red photons on one chip; diamond chiplets bonded on CMOS are demonstrated.",
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["kim2019cmos", "ibrahim2021"], "note": ""},
-  "gates": [_g("Drives the single-qubit gates of QDL-01", "demonstrated", ["kim2019cmos"])], "entanglement": [],
+  "gates": [_g("On-chip microwave drive and optical detection for continuous-wave ODMR", "demonstrated", ["kim2019cmos"]), _g("Pulsed single-qubit gates from the chiplet", "proposed", ["ibrahim2021"])], "entanglement": [],
   "use_cases": [_g("Chip-scale magnetometer", "demonstrated", ["kim2019cmos", "ibrahim2021"]), _g("Control plane for a register (build program P6)", "proposed", ["ibrahim2021"])],
   "fom": {},
   "route": {"variant": "qubit", "steps": ["S19"], "overrides": {"S19": "Flip-chip or wire-bond the diamond onto the CMOS die."},
@@ -825,7 +838,7 @@ DEVICES = [
                        "label": "demonstrated", "refs": ["kim2019cmos"], "atlas": ["M00", "M29"]}], "atlas": ["M00", "M26", "M29"]},
   "layers": ["Diamond chiplet", "Bond", "CMOS die (synthesizer, photodiode, filter)"],
   "checks": [_chk("rabi", "On-chip driver delivers the design Rabi frequency", {"rabi_mhz": 10.0}, {"rabi_mhz": 5.0},
-                  "Driver gives half the current", "fit coverage k as in build program P2")],
+                  "Driver gives half the current", "ADAMAS design threshold: within 5 % of the design value, including k·σ")],
   "failures": ["Heating from the driver near the diamond", "Green light leaking through the filter"], "open_problems": ["Driving many qubits independently"],
   "links": {"labs": ["labs/stack.html"], "chapters": ["09_cmos_control_integration.md"], "experiments": [], "loop": ["rabi"]}},
 
@@ -916,7 +929,7 @@ def to_json() -> dict:
     for d in DEVICES:
         e = {k: v for k, v in d.items()}
         e["build"] = build_process(d)
-        e["results"] = _results()[d["id"]]
+        e["results"] = copy.deepcopy(_results()[d["id"]])
         e["atlas_names"] = {a: ATLAS[a][0] for a in d["route"]["atlas"]}
         devs.append(e)
     return {"devices": devs, "statuses": STATUS_TEXT, "families": FAMILIES, "superconducting": SUPERCONDUCTING_NOTE,
@@ -946,7 +959,7 @@ def _fmt(v, unit=""):
     if isinstance(v, float) and (abs(v) >= 1e4 or (0 < abs(v) < 1e-3)):
         s = f"{v:.3g}"
     elif isinstance(v, float):
-        s = f"{v:.6g}"
+        s = f"{v:.4g}"
     else:
         s = str(v)
     return f"{s} {unit}".strip()
@@ -1008,7 +1021,7 @@ def _device_md(d: dict, rates: dict) -> str:
             r = _results()[d["id"]][i]; p = rates[(d["id"], i)]
             se = math.sqrt(max(p * (1 - p), 1e-12) / RUNS)
             L.append(f"| {c['title']}: {r['nominal']['what']} | {_fmt(r['nominal']['value'], r['nominal']['unit'])}, **{'pass' if r['nominal']['pass'] else 'FAIL'}** | "
-                     f"{_fmt(r['degraded']['value'], r['degraded']['unit'])}, **{'pass' if r['degraded']['pass'] else 'fail'}** | {c['fault']} | {c['threshold_src']} | {p:.3f} ± {se:.3f} ({RUNS} seeds) |")
+                     f"{_fmt(r['degraded']['value'], r['degraded']['unit'])}, **{'pass' if r['degraded']['pass'] else 'fail'}** | {c['fault']} | {c['threshold_src']} | {p:.2f} ± {se:.2f} ({RUNS} seeds) |")
         L += [""]
     else:
         L += [d.get("no_check", ""), ""]

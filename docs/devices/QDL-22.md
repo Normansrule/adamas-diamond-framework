@@ -24,7 +24,7 @@ None.
 
 | What | Label | Sources | Note |
 |---|---|---|---|
-| Brighter MRI and NMR agents | proposed | [ajoy2018] |  |
+| Brighter agents for magnetic resonance imaging (MRI) and NMR | proposed | [ajoy2018] |  |
 
 ## Figures of merit (current versus target)
 

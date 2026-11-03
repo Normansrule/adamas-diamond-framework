@@ -6,7 +6,7 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 ## What it should do
 
-Measure magnetic fields with millions of NVs at once, by the shift of their resonance lines.
+Measure magnetic fields with millions of NVs at once, by the shift of their optically detected magnetic resonance (ODMR) lines.
 
 A field B shifts the ODMR lines by 28 MHz per mT along each NV axis. Four crystal orientations give a vector magnetometer. It is the device that already pays: commercial sensors and teaching kits exist.
 
@@ -31,7 +31,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Line shift per field | 28.0317 MHz/mT | simulated: g = 2.0028 (adamas.nv) [doherty2013] | — |  |
+| Line shift per field | 28.03 MHz/mT | reported: physical constant, g = 2.0028 (adamas.nv) [doherty2013] | — |  |
 | Sensitivity | to confirm | Ensemble sensitivity records: confirm from the paper [wolf2015] [barry2020] | — |  |
 
 ## How to build it
@@ -42,7 +42,7 @@ Traveler variant: `sensor` (docs/process/TRAVELER.md). Steps marked **missing** 
 |---|---|---|---|
 | S01 | **Incoming substrate inspection.** Every later step inherits the substrate's defects: dislocations become leakage paths, polishing damage roughens the channel, nitrogen and silicon impurities add unwanted color centers. | 25 | Safety: Handle with plastic or diamond-safe tweezers; edges chip. |
 | S02 | **Oxidizing acid clean.** Removes graphitic (non-diamond) carbon, metals, and organics, and leaves an oxygen-terminated reference surface. | 200 | Safety: Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive. Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics. Never boil a perchloric mixture to dryness: hot sulfuric acid can dehydrate HClO₄ to explosive anhydrous perchloric acid; top up or stop well before the volume falls. |
-| S06 | **Nitrogen implantation through apertures.** High dose (up to 10¹³ cm⁻²) for an ensemble layer, or buy irradiated HPHT diamond (M31). | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
+| S06 | **Nitrogen implantation through apertures.** High dose for an ensemble layer (traveler S06 [pezzagna2010]), or buy irradiated high-pressure high-temperature (HPHT) diamond (M31). | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
 | S18 | **Quantum test (NV windows).** Measures the numbers that decide whether qubits work: resonance contrast, coherence, and charge-state stability. They feed the gate budget of chapter E5. | 25 | Safety: Class 3B/4 laser: interlocked enclosure, wavelength-rated eyewear. |
 | S19 | **Dicing and high-temperature packaging.** Diamond's advantage is operating hot; the package must not become the limit. | 350 | Safety: Laser dicing fumes: local extraction. |
@@ -55,7 +55,7 @@ Machines (Atlas): M30 Green source: LED or under 1 mW 532 nm laser module; M31 N
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| The dip is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.2432 σ, **pass** | 3.06121 σ, **fail** | Contrast twenty times lower (misaligned filter lets green through) | five-sigma convention (build program P1) | 1.000 ± 0.000 (200 seeds) |
+| The dip is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.24 σ, **pass** | 3.061 σ, **fail** | Contrast twenty times lower (misaligned filter lets green through) | five-sigma convention (build program P1) | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

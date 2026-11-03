@@ -4,13 +4,13 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 **Status: proposed** (On paper only: theory, a proposal, or an ADAMAS design idea). Operating temperature: about 300 K. [ledbetter2012] [ajoy2012]
 
-Proposed, early demonstrations.
+Proposal.
 
 ## What it should do
 
 Sense rotation through the geometric phase of NV or ¹⁴N nuclear spins.
 
-Proposals use the nuclear spin as a rotation sensor; early demonstrations exist. For GPS-free navigation with the magnetometer.
+Proposals use the nuclear spin as a rotation sensor, for navigation without satellite positioning (GPS) together with the magnetometer.
 
 ## Gates it can hold
 

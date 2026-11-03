@@ -8,7 +8,7 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 Image magnetic fields at the nanoscale with one NV in a diamond tip scanned over a sample.
 
-One shallow NV at the apex of a diamond pillar on an atomic force microscope cantilever maps stray fields of magnets, currents and superconductors.
+One shallow NV at the apex of a diamond pillar on an atomic force microscope (AFM) cantilever maps stray fields of magnets, currents and superconductors.
 
 ## Gates it can hold
 
@@ -53,7 +53,7 @@ Machines (Atlas): M24 Atomic force microscopy (AFM); M47 High numerical-aperture
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Single-NV dip is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 25.5482 σ, **pass** | 3.80619 σ, **fail** | Background light swamps the single NV | five-sigma convention (build program P1) | 1.000 ± 0.000 (200 seeds) |
+| Single-NV dip is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 25.55 σ, **pass** | 3.806 σ, **fail** | Background light swamps the single NV | five-sigma convention (build program P1) | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

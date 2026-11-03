@@ -12,7 +12,7 @@ Classical device.
 
 Carry microwave pulses to the NVs as an oscillating magnetic field.
 
-A gold coplanar waveguide (CPW) on the diamond carries a few watts at 2 to 4 GHz. The current makes a magnetic field at the NV whose strength sets the Rabi frequency. A 50 Ω termination keeps reflections from heating the chip unevenly. It is classical: noise on it is control error, not decoherence of a quantum bus.
+A gold coplanar waveguide (CPW) on the diamond carries microwave current near the 2.87 GHz resonance. The current makes a magnetic field at the NV whose strength sets the Rabi frequency. A 50 Ω termination keeps reflections from heating the chip unevenly. It is classical: noise on it is control error, not decoherence of a quantum bus.
 
 ## Gates it can hold
 
@@ -54,7 +54,7 @@ Machines (Atlas): M11 Optical lithography (mask aligner or laser writer); M13 El
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Line delivers the designed Rabi frequency: |Ω_fit − 10 MHz| ≤ k·σ | 10.004 MHz, **pass** | 4.99904 MHz, **fail** | 6 dB of extra loss (bad bond or mismatch) halves the field | fit coverage k as in build program P2 | 0.990 ± 0.007 (200 seeds) |
+| Line delivers the designed Rabi frequency: |Ω_fit − 10 MHz| + k·σ ≤ 5 % | 10 MHz, **pass** | 4.999 MHz, **fail** | 6 dB of extra loss (bad bond or mismatch) halves the field | ADAMAS design threshold: within 5 % of the design value, including k·σ | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

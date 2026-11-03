@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Operating frequency | 9 GHz | demonstrated: continuous wave, room temperature, in a cavity [breeze2018] | — |  |
+| Operating frequency (about) | 9 GHz | demonstrated: continuous wave, room temperature, in a cavity [breeze2018] | — |  |
 
 ## How to build it
 

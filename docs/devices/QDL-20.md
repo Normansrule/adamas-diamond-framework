@@ -52,7 +52,7 @@ Machines (Atlas): M31 NV-rich diamond (irradiated and annealed HPHT); M37 Perman
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| dD/dT agrees with −74.2(7) kHz/K: |dD/dT − (−74.2)| ≤ 4.4 kHz/K | -75.0972 kHz/K, **pass** | -59.8225 kHz/K, **fail** | Poor thermal contact: the diamond sees 80 % of the change | ±2 combined σ around [acosta2010] | 0.975 ± 0.011 (200 seeds) |
+| dD/dT agrees with −74.2(7) kHz/K: |dD/dT − (−74.2)| ≤ 5.4 kHz/K | -79.5 kHz/K, **pass** | -65.39 kHz/K, **fail** | Poor thermal contact: the diamond sees 80 % of the change | ±k combined σ around [acosta2010] (98.98 % coverage) | 0.99 ± 0.01 (200 seeds) |
 
 ## Failure modes
 

@@ -51,7 +51,7 @@ Machines (Atlas): M38 532 nm laser, tens of mW; M40 Amplified photodiode or aval
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Signal is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.2432 σ, **pass** | 3.06121 σ, **fail** | Twenty times less contrast (stray light) | five-sigma convention (build program P1) | 1.000 ± 0.000 (200 seeds) |
+| Signal is detected: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.24 σ, **pass** | 3.061 σ, **fail** | Twenty times less contrast (stray light) | five-sigma convention (build program P1) | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

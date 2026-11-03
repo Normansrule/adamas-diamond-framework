@@ -1,4 +1,4 @@
-# QDL-18 Nanoscale NMR sensor
+# QDL-18 Nanoscale nuclear magnetic resonance (NMR) sensor
 
 _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Every number has a source key or is computed by the package._
 

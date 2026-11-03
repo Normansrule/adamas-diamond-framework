@@ -12,7 +12,7 @@ Single-shot readout at room temperature is demonstrated for nuclear spins only.
 
 Turn the spin state into a measurable signal: photons, photocurrent, or a charge state.
 
-Route 1, optical: count red photons; only a fraction of a photon per shot is detected, so the electron readout is averaged. Route 2, spin-to-charge conversion (SCC): a timed laser sequence ionizes one spin state, and the charge state is then read with many photons. Route 3, photoelectric (PDMR): read the electrons the ionization frees as a current through electrodes. Route 4, nuclear single-shot: map the nucleus onto the electron thousands of times and add up the photons.
+Route 1, optical: count red photons; only a fraction of a photon per shot is detected, so the electron readout is averaged. Route 2, spin-to-charge conversion (SCC): a timed laser sequence ionizes one spin state, and the charge state is then read with many photons. Route 3, photoelectric detection of magnetic resonance (PDMR): read the electrons the ionization frees as a current through electrodes. Route 4, nuclear single-shot: map the nucleus onto the electron thousands of times and add up the photons.
 
 ## Gates it can hold
 
@@ -40,7 +40,7 @@ Route 1, optical: count red photons; only a fraction of a photon per shot is det
 |---|---|---|---|---|
 | Nuclear single-shot readout fidelity | 0.96 ± 0.012 | demonstrated: ¹³C nucleus, 120 ms per readout, room temperature [dreau2013] | 0.96 | Reproduce the demonstrated value (check below) [dreau2013] |
 | SCC readout noise relative to the projection limit | 2.76 × | demonstrated: room temperature; conventional optical readout 10.6× on the same NV [shields2015] | 1 × | Projection-noise limit (single-shot) |
-| Optical readout contrast after pumping | 0.308214 | simulated: rate model of adamas.photophysics, β = 1, 0.3 µs window | — |  |
+| Optical readout contrast after pumping | 0.3082 | simulated: rate model of adamas.photophysics, β = 1, 0.3 µs window | — |  |
 
 ## How to build it
 
@@ -69,7 +69,7 @@ Machines (Atlas): M47 High numerical-aperture objective; M49 Two single-photon a
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Repetitive nuclear readout reaches 0.96: readout fidelity ≥ 0.96 [dreau2013] | 0.9765, **pass** | 0.845, **fail** | Collection efficiency four times lower (no solid-immersion lens or waveguide) | 0.96 demonstrated [dreau2013] | 1.000 ± 0.000 (200 seeds) |
+| Repetitive nuclear readout reaches 0.96: readout fidelity ≥ 0.96 [dreau2013], no nuclear flips modeled | 0.9765, **pass** | 0.845, **fail** | Collection efficiency four times lower (no solid-immersion lens or waveguide) | 0.96 demonstrated [dreau2013] | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

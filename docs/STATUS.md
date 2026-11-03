@@ -13,7 +13,7 @@ The Quantum Device Library ([docs/devices/README.md](devices/README.md), `adamas
 | QDL-07 | X07a p-i-n doped growth (boron and phosphorus layers) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
 | QDL-09 | X09a Nanophotonic etch (nanopillars or waveguides) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
 | QDL-10 | X10a Dark-spin chain placement | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-11 | X09a Nanophotonic etch (cavity) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-11 | X11a Nanophotonic etch (cavity) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
 | QDL-13 | X13a Optomechanical resonator fabrication | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
 | QDL-14 | X14a Released diamond nanobeam | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
 | QDL-15 | X15a Ferromagnet strip deposition | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |

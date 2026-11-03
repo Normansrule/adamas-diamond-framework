@@ -12,7 +12,7 @@ Superconducting qubits operate near 10 to 20 mK (dilution-refrigerator base belo
 
 Hold one qubit in the electron spin of a nitrogen-vacancy (NV) center and rotate it with microwaves.
 
-A nitrogen atom next to a missing carbon atom traps two electrons whose spin (S = 1) has three levels. Green light pumps it into mₛ = 0, microwaves near 2.87 GHz rotate it between mₛ = 0 and −1, and the red fluorescence is about 30 % dimmer in mₛ = ±1, which reads it out. At room temperature the spin keeps its phase for milliseconds under a Hahn echo in ¹²C-enriched diamond. It is the qubit every other register device in this library serves.
+A nitrogen atom next to a missing carbon atom traps two electrons whose spin (S = 1) has three levels. Green light pumps it into mₛ = 0, microwaves near 2.87 GHz rotate it between mₛ = 0 and −1, and the red fluorescence is dimmer in mₛ = ±1 ([gruber1997]; contrast 0.31 in the rate model of adamas.photophysics), which reads it out. At room temperature the spin keeps its phase for milliseconds under a Hahn echo in ¹²C-enriched diamond. It is the qubit every other register device in this library serves.
 
 ## Gates it can hold
 
@@ -38,8 +38,8 @@ A nitrogen atom next to a missing carbon atom traps two electrons whose spin (S 
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Single-qubit gate fidelity | 0.999952 | demonstrated: room temperature, randomized benchmarking [rong2015] | 0.9999 | ADAMAS design threshold (proposed): stay below 10⁻⁴ error so two-qubit gates dominate the budget |
-| Electron Hahn-echo T₂ | 1.8 ms | demonstrated: ¹²C-enriched diamond, room temperature [balasubramanian2009] | 0.0444621 ms | T₂ a 0.99 two-NV gate at 10 nm needs (adamas.gate_budget) (`adamas.qdl.required_t2_10nm_ms`) |
+| Single-qubit gate fidelity | 1 | demonstrated: room temperature, randomized benchmarking [rong2015] | 0.9999 | ADAMAS design threshold (proposed): stay below 10⁻⁴ error so two-qubit gates dominate the budget |
+| Electron Hahn-echo T₂ | 1.8 ms | demonstrated: ¹²C-enriched diamond, room temperature [balasubramanian2009] | 0.4753 ms | T₂ a 0.99 two-NV gate at 10 nm needs (single-spin exponential bound, as r_max) (`adamas.qdl.required_t2_10nm_ms`) |
 
 ## How to build it
 
@@ -67,7 +67,7 @@ Machines (Atlas): M01 Microwave plasma chemical vapor deposition (MPCVD) reactor
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Echo long enough for a 0.99 gate at 10 nm: fitted T₂ − k·σ ≥ 44.5 µs (0.99 gate at 10 nm) | 600.67 µs, **pass** | 20.0834 µs, **fail** | Natural-abundance carbon and surface spins cut T₂ to 20 µs | adamas.gate_budget.required_t2_us (from 52 MHz nm³/r³ and the echo model) | 1.000 ± 0.000 (200 seeds) |
+| Echo long enough for a 0.99 gate at 10 nm: fitted T₂ − k·σ ≥ 475 µs (0.99 gate at 10 nm) | 1795 µs, **pass** | 97.96 µs, **fail** | Natural-abundance carbon and surface spins cut T₂ to 100 µs | adamas.qdl.required_t2_us (52 MHz nm³/r³ and the single-spin bound) | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

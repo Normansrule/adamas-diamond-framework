@@ -45,7 +45,7 @@ Machines (Atlas): M30 Green source: LED or under 1 mW 532 nm laser module; M31 N
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| The module sees the dip: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.2432 σ, **pass** | 3.06121 σ, **fail** | Filter misaligned: twenty times less contrast | five-sigma convention (build program P1) | 1.000 ± 0.000 (200 seeds) |
+| The module sees the dip: dip depth / σ ≥ 5 at 2870 MHz (five-sigma detection) | 43.24 σ, **pass** | 3.061 σ, **fail** | Filter misaligned: twenty times less contrast | five-sigma convention (build program P1) | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

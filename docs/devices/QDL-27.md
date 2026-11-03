@@ -14,7 +14,8 @@ Silicon CMOS can synthesize the microwave drive, filter the green light and dete
 
 | What | Label | Sources | Note |
 |---|---|---|---|
-| Drives the single-qubit gates of QDL-01 | demonstrated | [kim2019cmos] |  |
+| On-chip microwave drive and optical detection for continuous-wave ODMR | demonstrated | [kim2019cmos] |  |
+| Pulsed single-qubit gates from the chiplet | proposed | [ibrahim2021] |  |
 
 ## Entanglement
 
@@ -48,7 +49,7 @@ Machines (Atlas): M00 Workstation plus open tools (adamas, Stim, PyMatching, ngs
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| On-chip driver delivers the design Rabi frequency: |Ω_fit − 10 MHz| ≤ k·σ | 10.004 MHz, **pass** | 4.99904 MHz, **fail** | Driver gives half the current | fit coverage k as in build program P2 | 0.990 ± 0.007 (200 seeds) |
+| On-chip driver delivers the design Rabi frequency: |Ω_fit − 10 MHz| + k·σ ≤ 5 % | 10 MHz, **pass** | 4.999 MHz, **fail** | Driver gives half the current | ADAMAS design threshold: within 5 % of the design value, including k·σ | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

@@ -49,7 +49,7 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** a
 | S05 | **Etched alignment marks.** Every later mask, including the nanoscale nitrogen apertures, aligns to these. They must be etched into diamond because the NV anneal (S07) exceeds gold's melting point (1064 °C). | 120 | Safety: Plasma tools: standard interlocks; chlorine-free recipes only. |
 | S06 | **Nitrogen implantation through apertures.** Places nitrogen where qubits are wanted (layer QIMPLANT of PDK-0). Depth and dose set how many NV centers form and how close they sit to the surface. | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
-| X09a | **Nanophotonic etch (cavity).** As QDL-09, with a cavity. | — | **missing** (cryogenic) [faraon2011] |
+| X11a | **Nanophotonic etch (cavity).** As QDL-09, with a cavity. | — | **missing** (cryogenic) [faraon2011] |
 | S18 | **Quantum test (NV windows).** Measures the numbers that decide whether qubits work: resonance contrast, coherence, and charge-state stability. They feed the gate budget of chapter E5. | 25 | Safety: Class 3B/4 laser: interlocked enclosure, wavelength-rated eyewear. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
@@ -60,7 +60,7 @@ Machines (Atlas): M47 High numerical-aperture objective; M49 Two single-photon a
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| The link uses one emitter: g⁽²⁾(0) + 2σ < 0.5 [kurtsiefer2000] | 0.191934, **pass** | 0.659345, **fail** | Three NVs in the spot instead of one | 0.5 criterion [kurtsiefer2000] | 1.000 ± 0.000 (200 seeds) |
+| The link uses one emitter: g⁽²⁾(0) + 2σ < 0.5 [kurtsiefer2000] | 0.1919, **pass** | 0.6593, **fail** | Three NVs in the spot instead of one | 0.5 criterion [kurtsiefer2000] | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 

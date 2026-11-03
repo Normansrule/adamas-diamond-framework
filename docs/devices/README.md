@@ -27,7 +27,7 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 | [QDL-05 Spin readout (four routes)](QDL-05.md) | demonstrated | Turn the spin state into a measurable signal: photons, photocurrent, or a charge state. | pass (1.00) |
 | [QDL-06 Optical reset (initialization)](QDL-06.md) | demonstrated | Pump the electron into mₛ = 0 with green light before every operation. | pass (1.00) |
 | [QDL-07 Charge-control electrodes](QDL-07.md) | reported | Hold the NV in its negative charge state (NV⁻) with a gate voltage or a doped junction. | — |
-| [QDL-08 Microwave drive line (coplanar waveguide)](QDL-08.md) | demonstrated | Carry microwave pulses to the NVs as an oscillating magnetic field. | pass (0.99) |
+| [QDL-08 Microwave drive line (coplanar waveguide)](QDL-08.md) | demonstrated | Carry microwave pulses to the NVs as an oscillating magnetic field. | pass (1.00) |
 | [QDL-09 Optical waveguide and photon collector](QDL-09.md) | reported | Collect more of the NV's red light with nanowires, solid-immersion lenses or waveguides. | — |
 
 ## Links between registers
@@ -45,7 +45,7 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 
 | Device | Status | What it does | Checks |
 |---|---|---|---|
-| [QDL-12 Ensemble magnetometer](QDL-12.md) | demonstrated | Measure magnetic fields with millions of NVs at once, by the shift of their resonance lines. | pass (1.00) |
+| [QDL-12 Ensemble magnetometer](QDL-12.md) | demonstrated | Measure magnetic fields with millions of NVs at once, by the shift of their optically detected magnetic resonance (ODMR) lines. | pass (1.00) |
 | [QDL-17 Scanning-probe magnetometer tip](QDL-17.md) | demonstrated | Image magnetic fields at the nanoscale with one NV in a diamond tip scanned over a sample. | pass (1.00) |
 | [QDL-19 Quantum diamond microscope](QDL-19.md) | demonstrated | Image magnetic fields over millimeters with a camera looking at an NV layer. | pass (1.00) |
 
@@ -53,14 +53,14 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 
 | Device | Status | What it does | Checks |
 |---|---|---|---|
-| [QDL-18 Nanoscale NMR sensor](QDL-18.md) | demonstrated | Record nuclear magnetic resonance from zeptoliter to picoliter volumes on the diamond surface. | — |
+| [QDL-18 Nanoscale nuclear magnetic resonance (NMR) sensor](QDL-18.md) | demonstrated | Record nuclear magnetic resonance from zeptoliter to picoliter volumes on the diamond surface. | — |
 | [QDL-24 Electric-field and stress sensor](QDL-24.md) | demonstrated | Measure electric fields and stress through the NV's strain and Stark shifts. | — |
 
 ## Biology and medicine
 
 | Device | Status | What it does | Checks |
 |---|---|---|---|
-| [QDL-20 Diamond thermometer (bulk and nanodiamond)](QDL-20.md) | demonstrated | Measure temperature through the shift of the zero-field splitting D with temperature. | pass (0.97) |
+| [QDL-20 Diamond thermometer (bulk and nanodiamond)](QDL-20.md) | demonstrated | Measure temperature through the shift of the zero-field splitting D with temperature. | pass (0.99) |
 | [QDL-21 Biomagnetic sensor (neuron action potentials)](QDL-21.md) | demonstrated | Detect the magnetic field of a firing nerve without touching it. | pass (1.00) |
 | [QDL-22 Optical hyperpolarizer](QDL-22.md) | demonstrated | Transfer the NV's optical spin polarization to ¹³C nuclei to boost magnetic resonance signals. | — |
 
@@ -86,7 +86,7 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 
 | Device | Status | What it does | Checks |
 |---|---|---|---|
-| [QDL-27 CMOS control and readout chiplet](QDL-27.md) | demonstrated | Generate the microwaves and read the photons or photocurrent with a silicon chip bonded to the diamond. | pass (0.99) |
+| [QDL-27 CMOS control and readout chiplet](QDL-27.md) | demonstrated | Generate the microwaves and read the photons or photocurrent with a silicon chip bonded to the diamond. | pass (1.00) |
 | [QDL-28 Packaged sensor module](QDL-28.md) | demonstrated | Put the diamond, light source, filter, detector and antenna in one portable package. | pass (1.00) |
 
 ## Build steps the traveler does not have yet
@@ -96,7 +96,7 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 | QDL-07 | X07a | p-i-n doped growth (boron and phosphorus layers) |
 | QDL-09 | X09a | Nanophotonic etch (nanopillars or waveguides) |
 | QDL-10 | X10a | Dark-spin chain placement |
-| QDL-11 | X09a | Nanophotonic etch (cavity) |
+| QDL-11 | X11a | Nanophotonic etch (cavity) |
 | QDL-13 | X13a | Optomechanical resonator fabrication |
 | QDL-14 | X14a | Released diamond nanobeam |
 | QDL-15 | X15a | Ferromagnet strip deposition |

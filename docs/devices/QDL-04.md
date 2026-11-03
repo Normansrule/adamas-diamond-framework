@@ -41,7 +41,7 @@ Two electron spins a few nanometers apart feel each other's field. Echo pulses r
 |---|---|---|---|---|
 | Bell-state fidelity | 0.824 | demonstrated: two NVs about 25 nm apart, optimal control, room temperature [dolde2014] | 0.5 | Entanglement witness: above 0.5 proves entanglement (build program P5) |
 | Two-qubit gate fidelity | 0.96 ± 0.025 | demonstrated: 9.5 nm pair, ambient conditions, charge state pre-selected [joas2025] | 0.99 | ADAMAS design target (proposed); the coherence bound allows it only for r ≤ r_max |
-| Largest spacing for a 0.99 coherence-limited gate | — |  | 15.5867 nm | From ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009]; an upper bound (`adamas.qdl.r_max_nm`) |
+| Largest spacing for a 0.99 coherence-limited gate | — |  | 15.59 nm | From ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009], single-spin exponential bound; the two-spin stretched-echo model (adamas.gate_budget) allows wider spacings (`adamas.qdl.r_max_nm`) |
 
 ## How to build it
 
@@ -69,12 +69,12 @@ Machines (Atlas): M12 Electron-beam lithography; M20 Low-energy ion implanter (�
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Coupling strong enough for a 0.99 gate: fitted coupling − k·σ ≥ 13.75 kHz (r ≤ 15.6 nm) | 52.067 kHz, **pass** | 1.92918 kHz, **fail** | Placement error: the pair ends up 30 nm apart | r_max from ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009] | 1.000 ± 0.000 (200 seeds) |
+| Coupling strong enough for a 0.99 gate: fitted coupling − k·σ ≥ 13.75 kHz (r ≤ 15.6 nm) | 52.07 kHz, **pass** | 1.929 kHz, **fail** | Placement error: the pair ends up 30 nm apart | r_max from ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009] | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 
 - Pair too far apart (placement)
-- One NV in the wrong charge state (Dolde's 0.67 is preparation-limited)
+- One NV in the wrong charge state
 - Cannot address two NVs closer than the diffraction limit
 
 ## Open problems

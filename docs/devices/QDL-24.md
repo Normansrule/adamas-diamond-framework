@@ -22,7 +22,7 @@ None.
 
 | What | Label | Sources | Note |
 |---|---|---|---|
-| Single-charge field detection | demonstrated | [dolde2011] |  |
+| Electric-field sensing with a single NV | demonstrated | [dolde2011] |  |
 | Materials at megabar pressure | demonstrated | [hsieh2019] |  |
 
 ## Figures of merit (current versus target)

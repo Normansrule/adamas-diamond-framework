@@ -38,7 +38,7 @@ The ¹⁴N hyperfine coupling of about 2.16 MHz splits the electron line in thre
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| CNOT gate fidelity | 0.9992 ± 7e-05 | demonstrated: electron and ¹⁴N, room temperature, noise filtering [xie2023] | 0.99 | ADAMAS check threshold (proposed): the selective pulse must reach 0.99 in simulation |
+| CNOT gate fidelity | 0.9992 ± 7e-05 | demonstrated: electron and ¹⁴N, room temperature, noise filtering [xie2023] | — |  |
 
 ## How to build it
 
@@ -66,7 +66,7 @@ Machines (Atlas): M20 Low-energy ion implanter (¹⁵N); M22 High-vacuum anneali
 
 | Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |
 |---|---|---|---|---|---|
-| Selective CNOT stays above 0.99: Bell fidelity after the selective CNOT ≥ 0.99 | 0.995678, **pass** | 0.971873, **fail** | Drive too strong: the pulse also rotates the neighboring hyperfine line | ADAMAS design threshold 0.99 | 1.000 ± 0.000 (200 seeds) |
+| Bell state from the selective CNOT stays above 0.99: Bell-state fidelity after the selective CNOT ≥ 0.99 (a Bell fidelity, not a gate fidelity) | 0.9957, **pass** | 0.9719, **fail** | Drive too strong: the pulse also rotates the neighboring hyperfine line | ADAMAS design threshold 0.99 on the Bell-state fidelity | 1.00 ± 0.00 (200 seeds) |
 
 ## Failure modes
 
