@@ -42,6 +42,18 @@ def transition_frequencies_mhz(b_mt, e_mhz: float = 0.0, t_k: float = 300.0) -> 
     return float(ev[1] - ev[0]), float(ev[2] - ev[0])
 
 
+def lines_perturbative_mhz(b_mt: float, theta_deg: float, t_k: float = 300.0) -> tuple[float, float]:
+    """ODMR lines to second order in the field (B << D / gamma), theta the angle between the field and the NV axis:
+        f = D + 3 (gamma B_perp)^2 / (2 D) -/+ sqrt((gamma B_par)^2 + ((gamma B_perp)^2 / (2 D))^2)
+    The square root treats the m_s = +1 and -1 pair as nearly degenerate: B_perp couples them through m_s = 0, which
+    splits the lines by (gamma B_perp)^2 / D even for a field perpendicular to the axis. Away from 90 degrees it
+    reduces to D -/+ gamma B_par + 3 (gamma B_perp)^2 / (2 D). Compare with transition_frequencies_mhz (exact)."""
+    d = zero_field_splitting_mhz(t_k); g = GAMMA_MHZ_PER_MT
+    bpar, bperp = b_mt * abs(np.cos(np.radians(theta_deg))), b_mt * abs(np.sin(np.radians(theta_deg)))
+    shift, half = 3 * (g * bperp) ** 2 / (2 * d), float(np.hypot(g * bpar, (g * bperp) ** 2 / (2 * d)))
+    return float(d + shift - half), float(d + shift + half)
+
+
 def odmr_spectrum(freq_mhz, b_lab_mt, axes=NV_AXES, contrast=0.03, linewidth_mhz=1.0, hyperfine=True):
     """Normalized fluorescence versus microwave frequency for an ensemble (or one axis)."""
     f = np.asarray(freq_mhz, dtype=float)

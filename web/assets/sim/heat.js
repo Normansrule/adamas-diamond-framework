@@ -1,6 +1,7 @@
 // 2-D heat conduction in a die cross-section (explicit finite differences). Pure module; unit-tested with node.
 // dT/dt = alpha * laplacian(T) + q / (rho c), alpha = kappa / (rho c). Bottom edge held at the heat-sink temperature;
-// other edges insulated. Material data: kappa [sze2006] [kimoto2014] [mishra2008] [wei1993]; rho and c textbook values.
+// other edges insulated. Material data: kappa [sze2006] [kimoto2014] [mishra2008] [wei1993]; rho and c: silicon and diamond [haynes2016];
+// SiC and GaN are textbook values not yet tied to a cited source (docs/STATUS.md).
 export const MATERIALS = {
   Si:      { name: 'Silicon',         kappa: 1.5,  rho: 2.33, c: 0.705, color: '#8b98a5' },
   SiC:     { name: 'Silicon carbide', kappa: 4.9,  rho: 3.21, c: 0.69,  color: '#e0a030' },
@@ -45,3 +46,6 @@ export function steady(sim, q, iters = 6000) {        // Gauss-Seidel on kappa *
 }
 
 export const maxT = sim => sim.T.reduce((a, b) => Math.max(a, b), 0);
+
+// Slowest thermal mode of a slab, insulated top and isothermal bottom: tau = 4 L^2 / (pi^2 alpha) (mirrors adamas.thermal.slowest_mode_time_s)
+export const slowestModeTime = (kappa, rc, L) => 4 * L * L * rc / (Math.PI ** 2 * kappa);

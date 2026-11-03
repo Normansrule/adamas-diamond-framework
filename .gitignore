@@ -3,6 +3,7 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 build/
+!docs/build/
 dist/
 .venv/
 references/verification_report.csv

@@ -286,8 +286,36 @@ def gate_bias(out: str | Path = "docs/img", frames: int = 50) -> Path:
     path = out / "anim_gate_bias.gif"; ani.save(path, writer=PillowWriter(fps=12)); plt.close(fig); return path
 
 
+def thermometer(out: str | Path = "docs/img", frames: int = 48) -> Path:
+    """The A1 kit as a thermometer (build-program phase P1): the zero-field dip slides down by dD/dT = -74.2 kHz/K as the
+    diamond warms from 20 to 50 degC (inside the 280 to 330 K range of the measurement), simulated with the A1 noise model and fitted at each step (adamas.build_program,
+    adamas.fitting; [acosta2010])."""
+    from . import build_program as B, fitting
+    out = Path(out); r = np.random.default_rng(21)
+    f = np.arange(2860.0, 2880.0 + 1e-9, 0.1); temps = np.linspace(20, 50, frames)
+    fig, (a0, a1) = plt.subplots(1, 2, figsize=(10, 4.2), dpi=72); plt.subplots_adjust(wspace=.3, bottom=.16, top=.84)
+    pts, = a0.plot([], [], ".", ms=2.5, color="#8b98a5"); fl, = a0.plot([], [], color=COLORS["Diamond"], lw=2); vl = a0.axvline(2870, color=RED, lw=1)
+    a0.set_xlim(2860, 2880); a0.set_ylim(0.968, 1.006); a0.set_xlabel("microwave frequency (MHz)", fontsize=9); a0.set_ylabel("red fluorescence", fontsize=9)
+    a0.set_title("The dip moves as the diamond warms", fontsize=10.5); txt = a0.text(2861, 0.971, "", fontsize=10)
+    a1.plot(temps, nv.zero_field_splitting_mhz(300.0) + B.DDDT_KHZ_K * 1e-3 * (temps + 273.15 - 300), color=RED, lw=1.2, label="−74.2 kHz/K [acosta2010]")
+    sc, = a1.plot([], [], "o", color=COLORS["Diamond"], ms=5); a1.legend(fontsize=8, loc="upper right")
+    a1.set_xlabel("diamond temperature (°C)", fontsize=9); a1.set_ylabel("fitted D (MHz)", fontsize=9); a1.set_title("Each fit lands on the published slope", fontsize=10.5)
+    a1.set_xlim(18, 52); a1.set_ylim(2867.5, 2870.9)
+    xs, ys = [], []
+    def draw(i):
+        t = temps[i]; shift = nv.zero_field_splitting_mhz(t + 273.15) - nv.zero_field_splitting_mhz(300.0)
+        y = nv.odmr_spectrum(f - shift, np.zeros(3), contrast=B.A1_CONTRAST, linewidth_mhz=B.A1_LINEWIDTH, hyperfine=False) + r.normal(0, B.A1_NOISE, f.size)
+        fit = fitting.fit_odmr(f, y, max_lines=1); c = fit.params["center1"]
+        pts.set_data(f, y); fl.set_data(fit.x, fit.model); vl.set_xdata([c, c]); txt.set_text(f"{t:.0f} °C: D = {c:.2f} MHz")
+        if i == 0:
+            xs.clear(); ys.clear()
+        xs.append(t); ys.append(c); sc.set_data(xs, ys); return pts, fl, vl, txt, sc
+    ani = FuncAnimation(fig, draw, frames=frames, interval=90)
+    path = out / "anim_thermometer.gif"; ani.save(path, writer=PillowWriter(fps=11)); plt.close(fig); return path
+
+
 GOLD_ = "#e0a030"
 
 
 def make_all_v28(out: str | Path = "docs/img") -> list[Path]:
-    out = Path(out); return [hot_switch(out), addressing_sweep(out), gate_bias(out)]
+    out = Path(out); return [hot_switch(out), addressing_sweep(out), gate_bias(out), thermometer(out)]

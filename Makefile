@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place action-golden app desktop desktop-check clean
+.PHONY: all test figures animations loop-gif trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place action-golden app desktop desktop-check clean
 
 all: refs test figures
 
@@ -37,6 +37,12 @@ place:           ## LEF, timed Liberty, and a placed DIA-4 (GDS + DEF) on PDK-0
 
 animations:      ## every animated GIF in docs/img (about a minute)
 	$(PY) -c "from adamas.animations import make_all; make_all('docs/img')"
+
+loop-gif:        ## record the equation-in-the-loop GIF for the README from an offline site build (needs Playwright: npm i -g playwright)
+	$(PY) -m adamas.site /tmp/adamas-loop-site --offline && rm -rf /tmp/adamas-loop-frames && mkdir -p /tmp/adamas-loop-frames
+	($(PY) -m http.server -d /tmp/adamas-loop-site 8765 >/dev/null 2>&1 & echo $$! > /tmp/adamas-loop.pid); sleep 1
+	NODE_PATH=$$(npm root -g) node tools/record_loop.mjs http://localhost:8765 /tmp/adamas-loop-frames; s=$$?; kill $$(cat /tmp/adamas-loop.pid); exit $$s
+	$(PY) tools/make_loop_gif.py /tmp/adamas-loop-frames docs/img/anim_equation_loop.gif
 
 explorer:        ## rebuild docs/index.html (interactive explorer) and the poster
 	$(PY) -c "from adamas.explorer import write; write('docs/index.html')" && $(PY) -c "from adamas.poster import write; write()"

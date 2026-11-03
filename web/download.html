@@ -59,6 +59,7 @@
 </main>
 <script type="module">
 import { boot, label } from './assets/site.js';
+import { GAMMA } from './assets/sim/action.js';
 boot('App');
 const $ = id => document.getElementById(id), REPO = 'Normansrule/adamas-diamond-framework', BASEURL = `https://github.com/${REPO}/releases/latest/download/`;
 document.querySelectorAll('[data-f]').forEach(a => a.href = BASEURL + a.dataset.f);
@@ -84,7 +85,7 @@ $('install').onclick = async () => { const m = await import('./assets/site.js');
 const c = $('demo'), g = c.getContext('2d'); let W = 0, H = 0;
 function size() { const d = Math.min(2, devicePixelRatio || 1); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; g.setTransform(d, 0, 0, d, 0, 0); } addEventListener('resize', size); size();
 function draw(t) {
-  g.clearRect(0, 0, W, H); const B = 2 + 2 * Math.sin(t / 1600), f1 = 2870 - 28.03 * B, f2 = 2870 + 28.03 * B, X = f => 30 + (W - 60) * (f - 2700) / 340, Y = v => 40 + (H - 90) * (1 - v);
+  g.clearRect(0, 0, W, H); const B = 2 + 2 * Math.sin(t / 1600), f1 = 2870 - GAMMA * B, f2 = 2870 + GAMMA * B, X = f => 30 + (W - 60) * (f - 2700) / 340, Y = v => 40 + (H - 90) * (1 - v);
   g.strokeStyle = 'rgba(148,190,220,.14)'; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(30, 40 + k * (H - 90) / 5); g.lineTo(W - 30, 40 + k * (H - 90) / 5); g.stroke(); }
   const grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, '#2de2e6'); grad.addColorStop(1, '#9d7bff'); g.strokeStyle = grad; g.lineWidth = 2.5; g.beginPath();
   for (let f = 2700; f <= 3040; f += 1) { const v = 0.9 - 0.7 * (36 / ((f - f1) ** 2 + 36) + 36 / ((f - f2) ** 2 + 36)); f === 2700 ? g.moveTo(X(f), Y(v)) : g.lineTo(X(f), Y(v)); } g.stroke();

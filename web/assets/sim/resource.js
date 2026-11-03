@@ -28,3 +28,6 @@ export function human(hours) {
   if (hours < 1 / 60) return `${(hours * 3600).toFixed(1)} s`; if (hours < 1) return `${(hours * 60).toFixed(1)} min`;
   if (hours < 48) return `${hours.toFixed(1)} h`; if (hours < 24 * 365 * 2) return `${(hours / 24).toFixed(0)} days`; return `${(hours / 24 / 365).toFixed(1)} years`;
 }
+
+// Whole-computation failure probability (union bound), mirrors adamas.resource.failure_probability
+export const failureProbability = (nLogical, steps, d, A, lam) => nLogical * steps * d * A * lam ** (-(d + 1) / 2);

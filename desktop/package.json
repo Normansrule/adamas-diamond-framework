@@ -1,7 +1,7 @@
 {
   "name": "adamas-desktop",
   "productName": "ADAMAS",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "description": "ADAMAS desktop app: diamond chips from wafer to qubit, offline (labs, equations in action, experiments, course)",
   "homepage": "https://normansrule.github.io/adamas-diamond-framework/",
   "repository": "github:Normansrule/adamas-diamond-framework",

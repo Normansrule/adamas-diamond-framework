@@ -58,6 +58,8 @@ def site_data() -> dict:
     data["action"] = action.to_json()
     from . import loop
     data["loops"] = loop.to_json()
+    from . import build_program
+    data["build"] = build_program.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -132,7 +134,7 @@ def gallery_items() -> list[dict]:
     import ast
     import re
     caps = {}
-    for f in ["figures.py", "figures_expert.py", "figures_apps.py", "animations.py"]:
+    for f in ["figures.py", "figures_expert.py", "figures_apps.py", "animations.py", "build_program.py"]:
         src = (ROOT / "adamas" / f).read_text(encoding="utf-8")
         for node in ast.parse(src).body:
             if isinstance(node, ast.FunctionDef):
@@ -186,6 +188,7 @@ PAGES = [  # (title, href, kind, description) for the search index; labs and too
     ("Process Traveler", "process.html", "page", "20 cleanroom steps, run log, safety, cross-sections, hydrogen termination, ALD, gold"),
     ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
     ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
+    ("Build program", "build.html", "page", "phases P0 to P8, decision gates, P1 magnetometer and thermometer, simulated kits"),
     ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado, Sobol, value of information, what to measure next"),
     ("Preprint (PDF)", "paper/adamas.pdf", "page", "paper, results, references"), ("Talk (PDF)", "paper/talk.pdf", "page", "12 slides"), ("Poster (PDF)", "paper/poster.pdf", "page", "A0 poster"),
     ("Lattice Lab", "labs/lattice.html", "lab", "crystal, NV center, magnet, ODMR lines"), ("Heat Race", "labs/heat.html", "lab", "thermal conductivity, hot spot, silicon vs diamond"),

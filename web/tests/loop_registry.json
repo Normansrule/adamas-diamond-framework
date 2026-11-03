@@ -466,5 +466,451 @@
    "Chapter 2",
    "docs/02_wafer_manufacturing.md"
   ]
+ },
+ "odmr": {
+  "lab": "labs/lattice.html",
+  "title": "Where the magnetic-resonance lines sit",
+  "python": "adamas.nv.lines_perturbative_mhz",
+  "html": "<i>f</i><sub>±</sub> = <button class=\"v\" type=\"button\" data-k=\"D\"><i>D</i></button> + <span class=\"fr\"><span>3<i>b</i><sub>⊥</sub><sup>2</sup></span><span>2<button class=\"v\" type=\"button\" data-k=\"D\"><i>D</i></button></span></span> ± √(<i>b</i><sub>∥</sub><sup>2</sup> + (<span class=\"fr\"><span><i>b</i><sub>⊥</sub><sup>2</sup></span><span>2<button class=\"v\" type=\"button\" data-k=\"D\"><i>D</i></button></span></span>)<sup>2</sup>), &nbsp; <i>b</i><sub>∥</sub> = γ<sub>e</sub><button class=\"v\" type=\"button\" data-k=\"B\"><i>B</i></button> cos <button class=\"v\" type=\"button\" data-k=\"th\">θ</button>, <i>b</i><sub>⊥</sub> = γ<sub>e</sub><button class=\"v\" type=\"button\" data-k=\"B\"><i>B</i></button> sin <button class=\"v\" type=\"button\" data-k=\"th\">θ</button>",
+  "result": {
+   "sym": "Δf",
+   "name": "splitting of the two lines of the NV along [111]",
+   "unit": "MHz",
+   "digits": 1
+  },
+  "vars": {
+   "B": {
+    "sym": "B",
+    "name": "field magnitude",
+    "unit": "mT",
+    "min": 0,
+    "max": 8,
+    "digits": 2,
+    "src": "the magnet (experiment A2: a magnet's dipole field)"
+   },
+   "th": {
+    "sym": "θ",
+    "name": "angle between the field and the [111] NV axis",
+    "unit": "°",
+    "derived": true,
+    "digits": 1,
+    "src": "set by the lab's field direction"
+   },
+   "D": {
+    "sym": "D",
+    "name": "zero-field splitting",
+    "unit": "MHz",
+    "min": 2860,
+    "max": 2880,
+    "digits": 1,
+    "src": "2870 MHz at 300 K, −74.2 kHz/K [acosta2010] [doherty2013]"
+   }
+  },
+  "units": [
+   "γₑ = 28.03 MHz/mT, so γₑB is in MHz",
+   "b²/D: MHz²/MHz = MHz"
+  ],
+  "assumptions": [
+   {
+    "id": "weak",
+    "text": "second order in B: γₑB ≪ D (the ±1 pair mixes near 90°)"
+   },
+   {
+    "id": "strainfree",
+    "text": "no strain or electric field (E = 0)"
+   }
+  ],
+  "refs": [
+   "doherty2013",
+   "acosta2010"
+  ],
+  "derivation": [
+   "Chapter 6",
+   "docs/06_nv_center_physics.md"
+  ]
+ },
+ "heat": {
+  "lab": "labs/heat.html",
+  "title": "How long the hot spot takes to settle",
+  "python": "adamas.thermal.slowest_mode_time_s",
+  "html": "τ = <span class=\"fr\"><span>4<button class=\"v\" type=\"button\" data-k=\"L\"><i>L</i></button><sup>2</sup></span><span>π<sup>2</sup><button class=\"v\" type=\"button\" data-k=\"al\">α</button></span></span>, &nbsp; <button class=\"v\" type=\"button\" data-k=\"al\">α</button> = <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"k\">κ</button></span><span><button class=\"v\" type=\"button\" data-k=\"rc\">ρ<i>c</i></button></span></span>, &nbsp; steady peak ∝ 1/<button class=\"v\" type=\"button\" data-k=\"k\">κ</button>",
+  "result": {
+   "sym": "τ",
+   "name": "time constant of the slowest thermal mode (95 % settled after 3τ)",
+   "unit": "ms",
+   "digits": 2
+  },
+  "vars": {
+   "k": {
+    "sym": "κ",
+    "name": "thermal conductivity",
+    "unit": "W/(cm·K)",
+    "min": 1,
+    "max": 25,
+    "log": true,
+    "digits": 2,
+    "src": "diamond 22 [wei1993], SiC 4.9 [kimoto2014], GaN 2.3 [mishra2008], Si 1.5 [sze2006]; click a tile to load it"
+   },
+   "rc": {
+    "sym": "ρc",
+    "name": "volumetric heat capacity",
+    "unit": "J/(cm³·K)",
+    "min": 1,
+    "max": 3.5,
+    "digits": 2,
+    "src": "density × specific heat: diamond 3.52 × 0.509, silicon 2.33 × 0.705 [haynes2016]"
+   },
+   "L": {
+    "sym": "L",
+    "name": "die thickness",
+    "unit": "cm",
+    "min": 0.02,
+    "max": 0.5,
+    "digits": 2,
+    "src": "the lab's cross-section is 0.2 cm deep"
+   },
+   "al": {
+    "sym": "α",
+    "name": "thermal diffusivity",
+    "unit": "cm²/s",
+    "derived": true,
+    "digits": 2,
+    "src": "κ / (ρc)"
+   }
+  },
+  "units": [
+   "cm² / (cm²/s) = s, shown in ms",
+   "W/(cm·K) ÷ J/(cm³·K) = cm²/s"
+  ],
+  "assumptions": [
+   {
+    "id": "constk",
+    "text": "constant κ (it falls as the die heats)"
+   },
+   {
+    "id": "settled",
+    "text": "the lab has run for 3τ (steady state)"
+   }
+  ],
+  "refs": [
+   "carslaw1959",
+   "wei1993",
+   "sze2006",
+   "kimoto2014",
+   "mishra2008",
+   "haynes2016"
+  ],
+  "derivation": [
+   "Chapter 4",
+   "docs/04_analog_power_rf_devices.md"
+  ]
+ },
+ "ring": {
+  "lab": "labs/transistor.html",
+  "title": "A hand estimate of the ring oscillator",
+  "python": "adamas.logic.ring_period_estimate_s",
+  "html": "<i>T</i> = <button class=\"v\" type=\"button\" data-k=\"N\"><i>N</i></button> (<span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"C\"><i>C</i></button><button class=\"v\" type=\"button\" data-k=\"V\"><i>V</i><sub>DD</sub></button></span><span>2<button class=\"v\" type=\"button\" data-k=\"IL\"><i>I</i><sub>L</sub></button></span></span> + <span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"C\"><i>C</i></button><button class=\"v\" type=\"button\" data-k=\"V\"><i>V</i><sub>DD</sub></button></span><span>2(<button class=\"v\" type=\"button\" data-k=\"ID\"><i>I</i><sub>D</sub></button> − <button class=\"v\" type=\"button\" data-k=\"IL\"><i>I</i><sub>L</sub></button>)</span></span>), &nbsp; <i>I</i> ∝ <button class=\"v\" type=\"button\" data-k=\"mu\">μ</button>",
+  "result": {
+   "sym": "T",
+   "name": "estimated period of the five-stage ring",
+   "unit": "ns",
+   "digits": 1
+  },
+  "vars": {
+   "mu": {
+    "sym": "μ",
+    "name": "hole mobility in the channel",
+    "unit": "cm²/(V·s)",
+    "min": 20,
+    "max": 600,
+    "digits": 0,
+    "src": "hydrogen-terminated diamond, 50 to 300 typical [kawarada2017]"
+   },
+   "V": {
+    "sym": "V_DD",
+    "name": "supply voltage",
+    "unit": "V",
+    "min": 4,
+    "max": 20,
+    "step": 1,
+    "digits": 1,
+    "src": "the lab's supply"
+   },
+   "N": {
+    "sym": "N",
+    "name": "number of stages",
+    "unit": "",
+    "derived": true,
+    "digits": 0,
+    "src": "five, as in the lab and the ngspice netlist"
+   },
+   "C": {
+    "sym": "C",
+    "name": "node capacitance (gate plus 20 fF wiring)",
+    "unit": "fF",
+    "derived": true,
+    "digits": 1,
+    "src": "C_ox W L of the next driver + wiring"
+   },
+   "IL": {
+    "sym": "I_L",
+    "name": "load current (depletion device, V_GS = 0)",
+    "unit": "mA",
+    "derived": true,
+    "digits": 3,
+    "src": "square law at saturation"
+   },
+   "ID": {
+    "sym": "I_D",
+    "name": "driver current at V_DS = V_DD/2",
+    "unit": "mA",
+    "derived": true,
+    "digits": 3,
+    "src": "square law, input at V_DD"
+   }
+  },
+  "units": [
+   "F × V / A = s, shown in ns"
+  ],
+  "assumptions": [
+   {
+    "id": "vsim",
+    "text": "the hand estimate agrees with the lab's transient simulation within 50 %"
+   },
+   {
+    "id": "longch",
+    "text": "long channel: no velocity saturation"
+   }
+  ],
+  "refs": [
+   "rabaey2003",
+   "sze2006",
+   "liu2017"
+  ],
+  "derivation": [
+   "E3",
+   "docs/expert/E3_digital_and_cpu_design.md"
+  ]
+ },
+ "logical": {
+  "lab": "labs/qec.html",
+  "title": "How fast a bigger code wins",
+  "python": "adamas.qec.surface_code_logical_error",
+  "html": "<i>p</i><sub>L</sub> ≈ <button class=\"v\" type=\"button\" data-k=\"A\"><i>A</i></button> (<span class=\"fr\"><span><button class=\"v\" type=\"button\" data-k=\"p\"><i>p</i></button></span><span><button class=\"v\" type=\"button\" data-k=\"pth\"><i>p</i><sub>th</sub></button></span></span>)<sup>(<button class=\"v\" type=\"button\" data-k=\"d\"><i>d</i></button> + 1)/2</sup>",
+  "result": {
+   "sym": "p_L",
+   "name": "logical failure probability per decoding trial",
+   "unit": "",
+   "digits": 4
+  },
+  "vars": {
+   "p": {
+    "sym": "p",
+    "name": "physical error rate",
+    "unit": "",
+    "min": 0.01,
+    "max": 0.2,
+    "step": 0.01,
+    "digits": 3,
+    "src": "the lab's slider: independent bit flips"
+   },
+   "d": {
+    "sym": "d",
+    "name": "code distance",
+    "unit": "",
+    "min": 3,
+    "max": 9,
+    "step": 2,
+    "digits": 0,
+    "src": "the lab's code size"
+   },
+   "pth": {
+    "sym": "p_th",
+    "name": "threshold",
+    "unit": "",
+    "min": 0.03,
+    "max": 0.15,
+    "digits": 3,
+    "src": "10.3 % for code capacity with minimum-weight matching [wang2003]; this lab's greedy decoder is lower"
+   },
+   "A": {
+    "sym": "A",
+    "name": "prefactor",
+    "unit": "",
+    "min": 0.01,
+    "max": 1,
+    "log": true,
+    "digits": 2,
+    "src": "fitted to simulation (the lab fits it to its own threshold run); 0.1 is the round value used by [gidney2021]"
+   }
+  },
+  "units": [
+   "p / p_th is dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "below",
+    "text": "below threshold: p < p_th"
+   },
+   {
+    "id": "lowp",
+    "text": "leading order: valid well below threshold"
+   },
+   {
+    "id": "codecap",
+    "text": "code capacity: perfect syndrome measurements"
+   }
+  ],
+  "refs": [
+   "dennis2002",
+   "wang2003",
+   "fowler2012",
+   "gidney2021"
+  ],
+  "derivation": [
+   "E6",
+   "docs/expert/E6_error_correction_and_system_architecture.md"
+  ]
+ },
+ "budget": {
+  "lab": "labs/machine.html",
+  "title": "The failure budget that sets the code distance",
+  "python": "adamas.resource.failure_probability",
+  "html": "<i>P</i><sub>fail</sub> = <button class=\"v\" type=\"button\" data-k=\"n\"><i>n</i><sub>L</sub></button> · <button class=\"v\" type=\"button\" data-k=\"st\"><i>S</i></button> · <button class=\"v\" type=\"button\" data-k=\"d\"><i>d</i></button> · <button class=\"v\" type=\"button\" data-k=\"A\"><i>A</i></button> <button class=\"v\" type=\"button\" data-k=\"lam\">Λ</button><sup>−(<button class=\"v\" type=\"button\" data-k=\"d\"><i>d</i></button> + 1)/2</sup> ≤ ε",
+  "result": {
+   "sym": "P_fail",
+   "name": "probability that the whole computation fails",
+   "unit": "",
+   "digits": 4
+  },
+  "vars": {
+   "n": {
+    "sym": "n_L",
+    "name": "logical qubits",
+    "unit": "",
+    "derived": true,
+    "digits": 0,
+    "src": "the chosen job"
+   },
+   "st": {
+    "sym": "S",
+    "name": "logical steps",
+    "unit": "",
+    "derived": true,
+    "digits": 2,
+    "src": "the chosen job (RSA-2048 calibrated to 1.07 × 10⁹)"
+   },
+   "d": {
+    "sym": "d",
+    "name": "code distance (smallest odd d meeting ε = 1 %)",
+    "unit": "",
+    "derived": true,
+    "digits": 0,
+    "src": "chosen by the lab"
+   },
+   "A": {
+    "sym": "A",
+    "name": "fit prefactor",
+    "unit": "",
+    "derived": true,
+    "digits": 3,
+    "src": "Stim circuit-level fit at this readout time and memory [gidney2021stim]"
+   },
+   "lam": {
+    "sym": "Λ",
+    "name": "error suppression per +2 distance",
+    "unit": "",
+    "derived": true,
+    "digits": 2,
+    "src": "same fit; 2.14 measured on superconducting hardware [google2025]"
+   }
+  },
+  "units": [
+   "a product of counts and probabilities: dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "below",
+    "text": "below threshold: Λ > 1"
+   },
+   {
+    "id": "union",
+    "text": "union bound: failures independent and rare"
+   },
+   {
+    "id": "link",
+    "text": "the 0.3 % inter-cell link is proposed, not demonstrated"
+   }
+  ],
+  "refs": [
+   "fowler2012",
+   "litinski2019",
+   "gidney2021stim",
+   "google2025"
+  ],
+  "derivation": [
+   "E10",
+   "docs/expert/E10_scaling_a_room_temperature_quantum_computer.md"
+  ]
+ },
+ "bias": {
+  "lab": "labs/bias.html",
+  "title": "What bias leaves the gate",
+  "python": "adamas.gatebias.output_bias",
+  "html": "η<sub>out</sub> = <span class=\"fr\"><span><i>P</i><sub>Z</sub></span><span><i>P</i><sub>X</sub> + <i>P</i><sub>Y</sub></span></span> on the target; CZ: η<sub>out</sub> = <button class=\"v\" type=\"button\" data-k=\"eta\">η</button>, &nbsp; H·CZ·H: η<sub>out</sub> → <span class=\"fr\"><span>1</span><span>2<button class=\"v\" type=\"button\" data-k=\"eta\">η</button> + 1</span></span> as <button class=\"v\" type=\"button\" data-k=\"h\"><i>h</i></button> → 0",
+  "result": {
+   "sym": "η_out",
+   "name": "bias of the target's errors leaving the H · CZ · H CNOT",
+   "unit": "",
+   "digits": 4
+  },
+  "vars": {
+   "eta": {
+    "sym": "η",
+    "name": "bias going in, p_Z / (p_X + p_Y)",
+    "unit": "",
+    "min": 0.5,
+    "max": 1000,
+    "log": true,
+    "digits": 2,
+    "src": "NV dephasing dominates; the value for two-qubit gates is an assumption"
+   },
+   "h": {
+    "sym": "h",
+    "name": "Hadamard time over CZ time",
+    "unit": "",
+    "min": 0.001,
+    "max": 0.5,
+    "log": true,
+    "digits": 3,
+    "src": "lab slider; short pulses make h small"
+   }
+  },
+  "units": [
+   "a ratio of probabilities: dimensionless"
+  ],
+  "assumptions": [
+   {
+    "id": "first",
+    "text": "first order in the error rate"
+   },
+   {
+    "id": "endseg",
+    "text": "errors at the end of each segment (spread is a lower bound)"
+   },
+   {
+    "id": "shorth",
+    "text": "short Hadamards: h ≪ 1"
+   }
+  ],
+  "refs": [
+   "guillaud2019",
+   "etxezarreta2025",
+   "gidney2021stim"
+  ],
+  "derivation": [
+   "E6.1e",
+   "docs/expert/E6_error_correction_and_system_architecture.md"
+  ]
  }
 }

@@ -146,6 +146,12 @@ class Estimate:
     lam: float
 
 
+def failure_probability(n_logical: float, steps: float, d: int, A: float, lam: float) -> float:
+    """Probability that the whole computation fails: every logical qubit, every step, d rounds per step, each round
+    failing with p_L(d) = A Lambda^(-(d+1)/2) (circuit-level fit) [fowler2012]. Union bound, valid while it is small."""
+    return n_logical * steps * d * A * lam ** (-(d + 1) / 2)
+
+
 def estimate(n_logical: float, steps: float, t_read_us: float = 1000.0, t2_mem_ms: float = 1000.0, eps: float = 0.01,
              gate_us: float = LINK["time_us"], prep_us: float = 5.0, overhead: float = 2.0, qubits_per_cell: int = 4,
              pitch_um: float = LINK["pitch_um"], fill: float = 0.6, t: dict | None = None, model: str = "standard") -> Estimate | None:

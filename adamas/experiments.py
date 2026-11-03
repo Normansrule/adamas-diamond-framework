@@ -211,7 +211,7 @@ def expected(kind: str) -> dict:
     if kind == "magnet_distance":
         d = np.array([3, 4, 5, 6, 8, 10.0]); m = 1.2
         b_mt = 1e-7 * 2 * m / (d / 100) ** 3 * 1e3
-        split = 2 * 28.025 * b_mt * 0.85
+        split = 2 * nv.GAMMA_MHZ_PER_MT * b_mt * 0.85
         meas = split * (1 + r.normal(0, 0.05, d.size))
         return {"x": d.tolist(), "series": {"measured": meas.tolist(), "dipole law": split.tolist()}, "xlabel": "Magnet distance (cm)", "ylabel": "Outer line splitting (MHz)", "log": True}
     if kind == "heat_spreaders":
@@ -232,7 +232,7 @@ def expected(kind: str) -> dict:
     if kind == "vector":
         from .nv import NV_AXES
         B = np.array([1.2, -0.7, 2.1])
-        proj = np.abs(NV_AXES @ B) * 28.025
+        proj = np.abs(NV_AXES @ B) * nv.GAMMA_MHZ_PER_MT
         fit = proj * (1 + r.normal(0, 0.01, 4))
         return {"x": [1, 2, 3, 4], "series": {"applied": proj.tolist(), "fitted": fit.tolist()}, "xlabel": "NV orientation", "ylabel": "Half splitting γ|B·n| (MHz)", "bar": True, "B": B.tolist()}
     if kind == "arrhenius":

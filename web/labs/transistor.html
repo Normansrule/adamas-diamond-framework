@@ -18,6 +18,7 @@
     <div class="stage" style="min-height:0"><canvas id="vtc" style="height:280px"></canvas><div class="hud">Inverter transfer curve and noise margins</div></div>
   </div>
   <div class="stage" style="margin-top:14px;min-height:0"><canvas id="ring" style="height:260px"></canvas><div class="hud" id="ringHud">Five-stage ring oscillator: each node's voltage over time</div></div>
+  <section id="loop" aria-label="Equation in the loop"></section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">A transistor is a switch controlled by voltage. Put two together and you get a "not" gate: in goes on, out comes off. Chain five of those in a circle and they chase each other forever, flipping on and off. How fast they flip tells you how fast a diamond computer could run.</div>
     <div class="lvl" data-l="s">Square law: I<sub>D</sub> = k[(V<sub>GS</sub>−V<sub>T</sub>)V<sub>DS</sub> − V<sub>DS</sub>²/2] below saturation and k(V<sub>GS</sub>−V<sub>T</sub>)²/2 above, with k = μC<sub>ox</sub>W/L. Diamond logic today is p-channel only, so the "pull-up" is a normally-on depletion transistor. That makes the low output level ratioed (never exactly zero) and costs static power whenever the output is low.</div>
@@ -27,6 +28,8 @@
 <script type="module">
 import { boot, fitCanvas } from '../assets/site.js';
 import * as F from '../assets/sim/fet.js';
+import { loop } from '../assets/eqloop.js';
+let EQ = null;
 boot('Transistor');
 const $ = id => document.getElementById(id);
 function axes(g, w, h, xmax, ymax, xl, yl) {
@@ -56,8 +59,12 @@ function update() {
   const R = F.ring(F.fet({ mu, w: 16, vth: ve }), F.fet({ mu, w: 16 / r, vth: vd }), { vdd, tEnd: 250e-9 * 150 / mu, dt: 2e-11 * 150 / mu });
   c = fitCanvas($('ring'), 260); c.g.clearRect(0, 0, c.w, c.h); const tmax = R.t[R.t.length - 1] * 1e9; A = axes(c.g, c.w, c.h, tmax, vdd, 'time (ns)', '|V| (V)');
   R.wave.forEach((wv, k) => { c.g.strokeStyle = ['#2de2e6', '#9d7bff', '#ff5d8f', '#ffc46b', '#48e5a3'][k]; c.g.lineWidth = 1.8; c.g.beginPath(); wv.forEach((v, i) => i ? c.g.lineTo(A.X(R.t[i] * 1e9), A.Y(v)) : c.g.moveTo(A.X(0), A.Y(v))); c.g.stroke(); });
+  EQ?.set({ mu, V: vdd, ve, vd, r, sim: R.period * 1e9 });
   $('kT').textContent = Number.isFinite(R.period) ? `${(R.period * 1e9).toFixed(1)} ns · ${(1e-6 / R.period).toFixed(1)} MHz` : 'does not oscillate';
   $('ringHud').textContent = Number.isFinite(R.period) ? `Five-stage ring: stage delay ${(R.period / 10 * 1e9).toFixed(2)} ns` : 'Ring does not oscillate: the gate has no gain at these settings (try a larger driver ratio).';
 }
 ['mu', 've', 'vd', 'r', 'vdd'].forEach(i => $(i).oninput = update); addEventListener('resize', update); update();
+EQ = await loop($('loop'), 'ring', { state: { mu: +$('mu').value, V: +$('vdd').value, ve: +$('ve').value / 10, vd: +$('vd').value / 10, r: +$('r').value }, select: 'mu',
+  onChange: (st, ks) => { if (ks.includes('mu')) $('mu').value = Math.round(st.mu); if (ks.includes('V')) $('vdd').value = Math.round(st.V); update(); } });
+update();
 </script></body></html>
