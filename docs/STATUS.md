@@ -2,7 +2,42 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.30.0 (2026-10-27).
+Last updated: v0.31.0 (2026-11-03).
+
+## Open in v0.31.0: Quantum Device Library
+
+The Quantum Device Library ([docs/devices/README.md](devices/README.md), `adamas/qdl.py`) lists 28 devices. What it does not have yet:
+
+| Device | Item | Why it waits |
+|---|---|---|
+| QDL-07 | X07a p-i-n doped growth (boron and phosphorus layers) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-09 | X09a Nanophotonic etch (nanopillars or waveguides) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-10 | X10a Dark-spin chain placement | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-11 | X09a Nanophotonic etch (cavity) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-13 | X13a Optomechanical resonator fabrication | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-14 | X14a Released diamond nanobeam | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-15 | X15a Ferromagnet strip deposition | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-17 | X17a Pillar tip etch and cantilever mount | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-20 | X20a Nanodiamond milling and surface treatment | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-25 | X25a Cavity assembly (sapphire or dielectric resonator) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-27 | X27a CMOS die from a multi-project wafer (MPW) shuttle | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-02, 07, 09, 10, 13 to 16, 18, 22 to 26 | No simulated pass/fail check | The package has no model for these devices yet (nuclear decoupling, charge state, photonics, mechanics, NMR, maser, many-body); each page says which |
+| All | Photos of build steps (Fab Journey, planned for v0.32.0) | Wikimedia Commons licenses could not be checked from the build container; diagrams only until each license is logged in references/images.psv with a test |
+| QDL-05 | [dreau2013] metadata | Checked on arXiv (1210.6195); awaiting Crossref verification (`make verify`) |
+
+Numbers that exist in the papers but are not yet confirmed from them (the device pages say "to confirm" instead of a value):
+
+| Device | Figure of merit | To confirm |
+|---|---|---|
+| QDL-07 | NV⁻ fraction under readout | NV⁻ fraction under electrical control: confirm from the paper |
+| QDL-09 | Collection gain over bulk | Photon-collection gain of diamond nanowires: confirm from the paper |
+| QDL-12 | Sensitivity | Ensemble sensitivity records: confirm from the paper |
+| QDL-17 | Spatial resolution | Tip spatial resolution: confirm from the paper |
+| QDL-18 | Spectral resolution | Chemical-shift resolution: confirm from the paper |
+| QDL-19 | Field sensitivity per pixel | Per-pixel sensitivity: confirm from the paper |
+| QDL-21 | Sensitivity | Biomagnetic sensitivity: confirm from the paper |
+| QDL-22 | Signal enhancement over thermal | Hyperpolarization enhancement: confirm from the paper |
+| QDL-24 | Electric-field sensitivity | Electric-field sensitivity: confirm from the paper |
 
 ## Fixed in v0.30.0
 

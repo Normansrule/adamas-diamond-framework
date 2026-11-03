@@ -1,0 +1,214 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Device Library · ADAMAS</title>
+<style>
+/* Process Plate: a blueprint field, mono labels, square corners; status is carried by text and border style, never by color alone. */
+.qhero{position:relative;min-height:340px;display:grid;align-items:end;padding:56px 0 18px;overflow:hidden}
+.qhero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:.5}
+.qhero h1{font-size:clamp(30px,4.6vw,56px);margin:6px 0 10px;max-width:900px}
+.eyebrow{font:600 12.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
+.plate{background-color:#060a12;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px;border:1px solid var(--line);border-radius:4px}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chipb{font:500 12.5px var(--mono);padding:6px 10px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.02);color:var(--mute);cursor:pointer}
+.chipb[aria-pressed="true"]{color:var(--ink);border-color:var(--teal);background:rgba(45,226,230,.10)}
+.chipb:focus-visible,.dev:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0;margin-top:12px}
+.dev{all:unset;box-sizing:border-box;display:grid;gap:6px;align-content:start;padding:14px;border:1px solid var(--line);margin:0 -1px -1px 0;background:#070c16;cursor:pointer;min-height:150px}
+.dev:hover{background:#0a1322}.dev[aria-pressed="true"]{background:rgba(45,226,230,.08);border-color:var(--teal);position:relative;z-index:1}
+.dev .id{font:600 12px var(--mono);color:var(--mute)}.dev h3{font:600 15px/1.3 var(--mono);margin:0;color:var(--ink);letter-spacing:-.01em}
+.dev p{margin:0;font-size:13px;color:var(--mute);line-height:1.45}
+.st{display:inline-block;font:600 11px var(--mono);padding:2px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+.st.demonstrated{color:var(--green);border-color:rgba(72,229,163,.5)}.st.reported{color:var(--gold);border-color:rgba(255,196,107,.5)}
+.st.simulated{color:var(--cyan);border-color:rgba(111,243,255,.5)}.st.proposed{color:var(--violet);border-color:rgba(157,123,255,.6);border-style:dashed}
+.st.cryogenic{color:#9cc3ff;border-color:rgba(156,195,255,.6);border-style:dotted}
+.ana{font:500 11.5px var(--mono);color:var(--mute)}
+#detail{padding:22px;display:grid;gap:18px;min-width:0}
+#detail h2{font:600 clamp(20px,2.6vw,28px)/1.2 var(--mono);margin:0;letter-spacing:-.02em}
+.dhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px}@media(max-width:900px){.cols{grid-template-columns:minmax(0,1fr)}}
+.box{border:1px solid var(--line);background:rgba(5,8,14,.86);border-radius:3px;padding:14px;min-width:0}
+.box h3{font:600 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin:0 0 8px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}.tbl td,.tbl th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{color:var(--mute);font-weight:500;font-size:12px}.tbl td.n{font:500 12.5px var(--mono);font-variant-numeric:tabular-nums}
+.tscroll{overflow-x:auto}
+.ref{font:500 11.5px var(--mono);color:var(--mute)}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.xs{width:100%;max-width:460px;display:block}
+.xs text{fill:var(--ink);font:500 11.5px Inter}
+.route{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.route li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:8px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.015)}
+.route li.miss{border-style:dashed;border-color:rgba(255,196,107,.55)}
+.route .sid{font:600 12px var(--mono);color:var(--teal)}.route li.miss .sid{color:var(--gold)}
+.route b{font-size:13.5px}.route span{display:block;font-size:12.5px;color:var(--mute)}
+.safety{font-size:12px;color:#ffb0b8}
+.verdict{font:600 11.5px var(--mono);padding:2px 7px;border-radius:3px}.verdict.go{background:rgba(72,229,163,.18);color:var(--green)}.verdict.stop{background:rgba(255,93,108,.18);color:var(--red)}
+.live label{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font:500 12.5px var(--mono);color:var(--mute)}
+.live input[type=range]{width:100%}
+.readouts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.readouts div{border:1px solid var(--line);border-radius:3px;padding:8px}.readouts b{display:block;font:600 16px var(--mono);font-variant-numeric:tabular-nums}.readouts span{font-size:11.5px;color:var(--mute)}
+.navrow{display:flex;gap:8px;justify-content:space-between;margin-top:10px}
+ul.plain{margin:0;padding-left:18px;font-size:13.5px}
+@media (max-width:560px){#detail{padding:14px}.readouts{grid-template-columns:minmax(0,1fr)}.route li{grid-template-columns:54px minmax(0,1fr)}}
+</style></head><body>
+<main class="wrap">
+<section class="qhero"><canvas id="heroCv" aria-hidden="true"></canvas>
+  <div><p class="eyebrow">Quantum Device Library</p>
+  <h1>Room-temperature diamond devices, <span class="grad">each with its evidence</span></h1>
+  <p class="lead" style="max-width:860px">What each device built from nitrogen-vacancy (NV) centers should do, the gates and entanglement it can hold, what it is for, its figures of merit with sources, and the steps to build it. Every claim carries one label: demonstrated, reported, simulated, proposed, or cryogenic.</p>
+  <div class="kpis" id="kpis"></div></div>
+</section>
+<section class="block" style="padding-top:8px" aria-labelledby="libH">
+  <h2 id="libH" class="sr-only">Devices</h2>
+  <div class="filters" id="fam" role="group" aria-label="Filter by field"></div>
+  <div class="filters" id="stat" role="group" aria-label="Filter by status"></div>
+  <div class="qgrid" id="grid"></div>
+  <p class="src" id="count" aria-live="polite"></p>
+</section>
+<section class="block" style="padding-top:4px" aria-label="Selected device">
+  <div class="plate" id="detail" tabindex="-1"></div>
+  <div class="navrow"><button class="btn" id="prevDev" data-icon="prev">Previous device</button><button class="btn" id="nextDev" data-icon-end="next">Next device</button></div>
+</section>
+<section class="block"><div class="card" id="honest"></div></section>
+</main>
+<script type="module">
+import { boot, data } from './assets/site.js';
+import * as Q from './assets/sim/qdl.js';
+boot('Device Library');
+const $ = id => document.getElementById(id), Dt = (await data()).qdl, DEV = Dt.devices;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const refs = ks => (ks || []).map(k => `<span class="ref">[${esc(k)}]</span>`).join(' ');
+const badge = s => `<span class="st ${s}">${esc(s)}</span>`;
+const num = v => v === null || v === undefined ? '—' : (Math.abs(v) >= 1e4 || (v !== 0 && Math.abs(v) < 1e-3)) ? v.toPrecision(3) : String(+v.toPrecision(6));
+let fam = 'all', stat = 'all', sel = (window.location.hash || '').slice(1);
+if (!DEV.some(d => d.id === sel)) sel = 'QDL-04';
+
+// ---- counts
+const counts = Object.fromEntries(Object.keys(Dt.statuses).map(s => [s, DEV.filter(d => d.status.label === s).length]));
+$('kpis').innerHTML = `<div class="kpi"><b>${DEV.length}</b><span>devices</span></div>` + Object.entries(counts).map(([s, n]) => `<div class="kpi"><b>${n}</b><span>${esc(s)}</span></div>`).join('');
+
+// ---- filters
+function chips(el, items, cur, set) {
+  el.innerHTML = items.map(([k, t]) => `<button class="chipb" type="button" data-k="${esc(k)}" aria-pressed="${k === cur}">${esc(t)}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { set(b.dataset.k); render(); });
+}
+function filters() {
+  chips($('fam'), [['all', 'All fields'], ...Object.entries(Dt.families)], fam, k => fam = k);
+  chips($('stat'), [['all', 'Any status'], ...Object.keys(Dt.statuses).map(s => [s, s])], stat, k => stat = k);
+}
+const shown = () => DEV.filter(d => (fam === 'all' || d.family === fam) && (stat === 'all' || d.status.label === stat));
+
+// ---- grid
+function grid() {
+  const list = shown();
+  $('grid').innerHTML = list.map(d => `<button class="dev" type="button" data-id="${d.id}" aria-pressed="${d.id === sel}">
+    <span class="id">${d.id} · ${esc(Dt.families[d.family])}</span><h3>${esc(d.name)}</h3><span>${badge(d.status.label)}</span>
+    <p>${esc(d.function)}</p>${d.analogy ? `<span class="ana">Analogy only: ${esc(d.analogy.label)}</span>` : ''}</button>`).join('');
+  $('grid').querySelectorAll('.dev').forEach(b => b.onclick = () => pick(b.dataset.id, true));
+  $('count').textContent = `${list.length} of ${DEV.length} devices shown`;
+}
+
+// ---- cross-section (isometric slabs, top layer first; schematic, not to scale)
+function section(layers) {
+  const n = layers.length, h = 34, dx = 26, dy = 14, x0 = 16, w = 230, y0 = 22;
+  const fills = ['#2de2e6', '#9d7bff', '#ffc46b', '#48e5a3', '#ff5d8f', '#6ff3ff'];
+  let s = `<svg class="xs" viewBox="0 0 460 ${y0 + n * h + dy + 16}" role="img" aria-label="Schematic cross-section, top to bottom: ${esc(layers.join(', '))}">`;
+  layers.forEach((L, i) => { const y = y0 + i * h, c = fills[i % fills.length];
+    if (i === 0) s += `<path d="M${x0} ${y} l${dx} ${-dy} h${w} l${-dx} ${dy}z" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-opacity=".7"/>`;
+    s += `<path d="M${x0} ${y} h${w} v${h} h${-w}z" fill="${c}" fill-opacity=".16" stroke="${c}" stroke-opacity=".6"/>`;
+    s += `<path d="M${x0 + w} ${y} l${dx} ${-dy} v${h} l${-dx} ${dy}z" fill="${c}" fill-opacity=".26" stroke="${c}" stroke-opacity=".6"/>`;
+    s += `<text x="${x0 + w + dx + 12}" y="${y + h / 2 - 2}">${esc(L)}</text>`; });
+  return s + `<text x="${x0}" y="${y0 + n * h + 14}" style="fill:var(--mute);font-size:11px">schematic; not to scale</text></svg>`;
+}
+
+// ---- detail
+const rows = (list, empty) => list.length ? `<div class="tscroll"><table class="tbl"><tr><th>What</th><th>Label</th><th>Sources</th></tr>${list.map(g => `<tr><td>${esc(g.name)}${g.note ? `<div class="note">${esc(g.note)}</div>` : ''}</td><td>${badge(g.label)}</td><td>${refs(g.refs)}</td></tr>`).join('')}</table></div>` : `<p class="note">${empty}</p>`;
+function fom(d) {
+  const f = Object.values(d.fom); if (!f.length) return '<p class="note">None quantified yet.</p>';
+  return `<div class="tscroll"><table class="tbl"><tr><th>Figure of merit</th><th>Current</th><th>Target</th></tr>${f.map(m => {
+    const c = m.current, t = m.target;
+    const cur = !c ? '—' : c.todo ? `<span class="verdict stop">to confirm</span><div class="note">${esc(c.todo)} ${refs(c.refs)}</div>`
+      : `<span class="n">${esc(c.bound || '')}${num(c.value)}${c.err ? ' ± ' + num(c.err) : ''} ${esc(m.unit)}</span> ${badge(c.label)}<div class="note">${esc(c.conditions)} ${refs(c.refs)}${c.python ? ` <code>${esc(c.python)}</code>` : ''}</div>`;
+    const tg = !t ? '—' : `${t.value === null ? '' : `<span class="n">${num(t.value)} ${esc(m.unit)}</span>`}<div class="note">${esc(t.basis)} ${refs(t.refs)}${t.python ? ` <code>${esc(t.python)}</code>` : ''}</div>`;
+    return `<tr><td>${esc(m.name)}</td><td>${cur}</td><td>${tg}</td></tr>`; }).join('')}</table></div>`;
+}
+function checks(d) {
+  if (!d.checks.length) return `<p class="note">${esc(d.no_check)}</p>`;
+  return `<div class="tscroll"><table class="tbl"><tr><th>Check</th><th>Nominal</th><th>Degraded twin</th></tr>${d.checks.map((c, i) => { const r = d.results[i];
+    const v = x => `<span class="n">${num(x.value)} ${esc(x.unit)}</span> <span class="verdict ${x.pass ? 'go' : 'stop'}">${x.pass ? 'pass' : 'fail'}</span>`;
+    return `<tr><td>${esc(c.title)}<div class="note">${esc(r.nominal.what)}. Threshold: ${esc(c.threshold_src)}</div></td><td>${v(r.nominal)}</td><td>${v(r.degraded)}<div class="note">${esc(c.fault)}</div></td></tr>`; }).join('')}</table></div>
+    <p class="note">Simulated with a fixed seed and analyzed with the Data Lab's fitting code. The degraded twin has one physical fault and must fail. Pass rates over many seeds: docs/devices/${d.id}.md.</p>`;
+}
+function route(d) {
+  return `<ol class="route">${d.build.map(s => `<li class="${s.missing ? 'miss' : ''}"><span class="sid">${esc(s.id)}</span><div><b>${esc(s.title)}</b>${s.missing ? ` <span class="st proposed" style="display:inline-block">not in traveler</span>` : ''}
+    <span>${esc(s.text)}${s.t_max_c !== null ? ` · up to ${s.t_max_c} °C` : ''}</span>${s.safety && s.safety.length ? `<span class="safety">Safety: ${esc(s.safety.join(' '))}</span>` : ''}${s.refs ? `<span>${refs(s.refs)}</span>` : ''}</div></li>`).join('')}</ol>
+    <p class="note">Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training first; these notes do not replace it. Full step sheets: <a href="process.html">Process Traveler</a>.</p>
+    <p class="note">Machines: ${Object.entries(d.atlas_names).map(([k, v]) => `${esc(k)} ${esc(v)}`).join('; ')}</p>`;
+}
+function liveCoupler() {
+  return `<div class="box live"><h3>Live: coupling versus spacing</h3>
+    <label>r <input type="range" min="5" max="40" step="0.5" value="10" data-live="r" aria-label="NV spacing in nanometers"><output data-live="rv">10 nm</output></label>
+    <div class="readouts"><div><b data-live="nu">–</b><span>coupling ν (kHz)</span></div><div><b data-live="t">–</b><span>gate time 1/(2ν) (µs)</span></div><div><b data-live="f">–</b><span>coherence bound on F</span></div></div>
+    <p class="note">ν = ${num(Dt.dipolar_mhz_nm3)} MHz·nm³ / r³ (perpendicular), F ≤ ½(1 + e<sup>−t/T₂</sup>) with T₂ = ${Dt.t2_room_ms} ms [balasubramanian2009]. Upper bound: no control errors, perfect charge state. A 0.99 gate needs r ≤ ${num(Dt.r_max_nm)} nm.</p></div>`;
+}
+function wireLive(root) {
+  const r = root.querySelector('[data-live="r"]'); if (!r) return;
+  const upd = () => { const x = +r.value, T = Dt.t2_room_ms, D = Dt.dipolar_mhz_nm3;
+    root.querySelector('[data-live="rv"]').textContent = `${x} nm`;
+    root.querySelector('[data-live="nu"]').textContent = Q.couplingKHz(x, D).toFixed(2);
+    root.querySelector('[data-live="t"]').textContent = Q.gateTimeUs(x, D).toFixed(1);
+    root.querySelector('[data-live="f"]').textContent = Q.fidelityBound(x, T, D).toFixed(4); };
+  r.oninput = upd; upd();
+}
+function detail() {
+  const d = DEV.find(x => x.id === sel), st = d.status, lk = d.links;
+  $('detail').innerHTML = `<div class="dhead"><span class="id ref">${d.id} · ${esc(Dt.families[d.family])}</span>${badge(st.label)}${st.temperature_k ? `<span class="ref">about ${st.temperature_k} K</span>` : ''}</div>
+    <h2 id="devTitle">${esc(d.name)}</h2>
+    ${d.analogy ? `<p class="note"><b>Analogy only:</b> a ${esc(d.analogy.label)} (analogy); the real device is the ${esc(d.name)}. Fits: ${esc(d.analogy.fits)} Breaks: ${esc(d.analogy.breaks)}</p>` : ''}
+    <div class="cols"><div class="box"><h3>What it should do</h3><p style="margin:0 0 8px">${esc(d.function)}</p><p class="note" style="font-size:14px;color:var(--ink)">${esc(d.explanation)}</p>
+      <p class="note">${esc(Dt.statuses[st.label])}. ${refs(st.refs)} ${esc(st.note)}</p></div>
+      <div class="box"><h3>Cross-section</h3>${section(d.layers)}</div></div>
+    <div class="cols"><div class="box"><h3>Gates it can hold</h3>${rows(d.gates, 'None: this device does not run gates.')}</div>
+      <div class="box"><h3>Entanglement</h3>${rows(d.entanglement, 'None.')}</div></div>
+    <div class="cols"><div class="box"><h3>Use cases</h3>${rows(d.use_cases, 'None listed.')}</div>
+      <div class="box"><h3>Figures of merit</h3>${fom(d)}</div></div>
+    ${d.id === 'QDL-04' ? liveCoupler() : ''}
+    <div class="cols"><div class="box"><h3>How to build it</h3>${route(d)}</div>
+      <div class="box"><h3>Pass/fail checks</h3>${checks(d)}<h3 style="margin-top:14px">Failure modes</h3><ul class="plain">${d.failures.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <h3 style="margin-top:14px">Open problems</h3><ul class="plain">${d.open_problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <p class="note">Labs: ${lk.labs.map(h => `<a href="${esc(h)}">${esc(h.replace('labs/', '').replace('.html', ''))}</a>`).join(', ') || '—'} · Experiments: ${esc(lk.experiments.join(', ') || '—')} · Write-up: docs/devices/${d.id}.md</p></div></div>`;
+  wireLive($('detail'));
+}
+function pick(id, focus) {
+  sel = id; try { window.history.replaceState(null, '', '#' + id); } catch (e) { /* file:// */ }
+  grid(); detail(); if (focus) $('detail').focus();
+}
+function step(k) { const list = shown().length ? shown() : DEV, i = list.findIndex(d => d.id === sel); pick(list[(i + k + list.length) % list.length].id, true); }
+$('prevDev').onclick = () => step(-1); $('nextDev').onclick = () => step(1);
+function render() { filters(); grid(); }
+$('honest').innerHTML = `<h3>Reading this library honestly</h3><ul class="plain"><li>"Transistor", "memory bit cell", "storage capacitor" and "resistor" are analogies only and always sit next to the real name.</li>
+  <li>Bell-state fidelity and gate fidelity are different metrics; they sit in different rows and are not ranked against each other.</li><li>${esc(Dt.superconducting)}</li>
+  <li>Numbers marked "to confirm" exist in the cited paper but have not been checked against it yet; docs/STATUS.md lists them.</li></ul>`;
+render(); detail();
+
+// ---- hero: a diamond lattice in perspective; NV sites pulse (static when reduced motion is requested)
+(function hero() {
+  const c = $('heroCv'), g = c.getContext('2d'); if (!g) return;
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const P = []; for (let i = 0; i < 9; i++) for (let j = 0; j < 5; j++) for (let k = 0; k < 2; k++) P.push([i + (j % 2) * .5 + k * .25, j + k * .25, k, ((i * 7 + j * 3 + k) % 11) === 0]);
+  let t0 = 0;
+  function frame(t) {
+    const w = c.clientWidth, h = c.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1); c.width = w * dpr; c.height = h * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h); const s = Math.max(w, 600) / 10, ph = still ? 0 : (t - t0) / 1000;
+    const xy = p => [w * .38 + (p[0] - 4) * s + p[1] * s * .35, h * .2 + p[1] * s * .42 - p[2] * s * .3];
+    g.strokeStyle = 'rgba(148,190,220,.18)'; g.lineWidth = 1;
+    for (let a = 0; a < P.length; a++) for (let b = a + 1; b < P.length; b++) { const dx = P[a][0] - P[b][0], dy = P[a][1] - P[b][1], dz = P[a][2] - P[b][2];
+      if (dx * dx + dy * dy + dz * dz < .5) { const [x1, y1] = xy(P[a]), [x2, y2] = xy(P[b]); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); } }
+    for (const p of P) { const [x, y] = xy(p);
+      if (p[3]) { const a = .55 + .45 * Math.sin(ph * 1.6 + p[0]), r = 18 + 6 * a, gr = g.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, `rgba(255,93,143,${.75 * a})`); gr.addColorStop(1, 'rgba(255,93,143,0)'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+      g.fillStyle = p[3] ? '#ff9db8' : 'rgba(111,243,255,.55)'; g.beginPath(); g.arc(x, y, p[3] ? 3.2 : 2, 0, 7); g.fill(); }
+    if (!still) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(t => { t0 = t; frame(t); });
+})();
+</script></body></html>
