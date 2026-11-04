@@ -61,7 +61,7 @@
 </section>
 <section class="block" style="padding-top:4px">
   <div class="jgrid"><nav aria-label="Steps"><ol class="slist" id="steps"></ol></nav>
-    <div><div class="plate" id="view" tabindex="-1" aria-labelledby="stepTitle"></div>
+    <div><div class="plate" id="view" tabindex="-1" role="region" aria-labelledby="stepTitle"></div>
       <div class="navrow" style="margin-top:10px"><button class="btn" id="prevStep" data-icon="prev">Previous step</button>
         <button class="btn" id="printLv" data-icon="print">Print this scope (PDF)</button><button class="btn primary" id="nextStep" data-icon-end="next">Next step</button></div></div></div>
 </section>
@@ -81,7 +81,7 @@ const level = () => J.levels.find(L => L.id === lv);
 function section(layers) {
   const n = layers.length, h = 30, dx = 22, dy = 12, x0 = 10, w = 150, y0 = 18;
   const fills = ['#2de2e6', '#9d7bff', '#ffc46b', '#48e5a3', '#ff5d8f', '#6ff3ff'];
-  let s = `<svg class="xs" viewBox="0 0 470 ${y0 + n * h + dy + 4}" role="img" aria-label="Schematic cross-section, top to bottom: ${esc(layers.join(', '))}">`;
+  let s = `<svg class="xs" viewBox="0 0 540 ${y0 + n * h + dy + 4}" role="img" aria-label="Schematic cross-section, top to bottom: ${esc(layers.join(', '))}">`;
   layers.forEach((L, i) => { const y = y0 + i * h, c = fills[i % fills.length];
     if (i === 0) s += `<path d="M${x0} ${y} l${dx} ${-dy} h${w} l${-dx} ${dy}z" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-opacity=".7"/>`;
     s += `<path d="M${x0} ${y} h${w} v${h} h${-w}z" fill="${c}" fill-opacity=".16" stroke="${c}" stroke-opacity=".6"/><path d="M${x0 + w} ${y} l${dx} ${-dy} v${h} l${-dx} ${dy}z" fill="${c}" fill-opacity=".26" stroke="${c}" stroke-opacity=".6"/>`;
@@ -97,7 +97,7 @@ function diagram(d) {
   if (d.kind === 'spc') return `<div class="tscroll"><table class="tbl"><tr><th>Step</th><th>Check</th><th>Limits</th><th>Source</th></tr>${d.limits.map(x => `<tr><td>${esc(x.step)}</td><td>${esc(x.check)}</td><td>${x.min !== null ? '≥ ' + x.min : ''}${x.max !== null ? ' ≤ ' + x.max : ''} ${esc(x.unit)}</td><td>${esc(x.src)}</td></tr>`).join('')}</table></div><p class="note">Each row becomes a control chart when you log your own wafers. No data are shown because none have been measured yet.</p>`;
   if (d.kind === 'gate') { const y = J.levels.find(L => L.id === 'L3').steps.find(s => s.id === 'W7').diagram.rows.reduce((a, r) => Math.max(a, r.yield), 0);
     return `<div class="gate"><label>Working cells the array needs <input type="number" min="1" step="1" value="100" data-g="cells" aria-label="Working cells needed"></label>
-      <p class="note">With the best simulated yield of step W7 (${y.toFixed(4)} per site pair):</p><p>Sites to write: <output data-g="out">–</output></p>
+      <p class="note">With the best simulated yield of step W7 (${y.toFixed(4)} working cells per two-site cell written):</p><p>Two-site cells to write: <output data-g="out">–</output> <span class="note" data-g="sites"></span></p>
       <p class="note">Expected value only, from the illustrative inputs of W7; whether that is "good enough" is your decision (build-program P5 question), so the page gives no verdict.</p></div>`; }
   return '';
 }
@@ -105,19 +105,22 @@ function stepHTML(s, n, total, print = false) {
   const cks = s.checkpoints.map(c => `<tr><td>${esc(c.what)}<div class="note"><code>${esc(c.python)}</code></div></td><td>${esc(c.value)}</td><td><span class="verdict ${c.pass === null ? 'out' : c.pass ? 'go' : 'stop'}">${c.pass === null ? 'computed' : c.pass ? 'pass' : 'fail'}</span></td></tr>`).join('');
   const crit = s.criteria.map(c => `<tr><td>${esc(c.check)}</td><td>${c.min !== null ? '≥ ' + c.min : ''}${c.max !== null ? ' ≤ ' + c.max : ''} ${esc(c.unit)}</td><td>${esc(c.src)}</td></tr>`).join('');
   return `<div class="shead"><div class="stepno" aria-hidden="true">${String(n).padStart(2, '0')}</div><div><p class="note" style="margin:0">${esc(lv)} · step ${n} of ${total} · ${esc(s.id)} ${badge(s.label)}</p><h2${print ? '' : ' id="stepTitle"'}>${esc(s.title)}</h2></div></div>
-    <div class="box"><h3>Do this</h3><p style="margin:0">${esc(s.action)}</p>${s.refs.length ? `<p class="note">Sources: ${s.refs.map(r => `[${esc(r)}]`).join(' ')}</p>` : ''}</div>
+    <div class="box"><h3>Do this</h3><p style="margin:0">${esc(s.action)}</p>${s.why ? `<p class="note"><b>Why:</b> ${esc(s.why)}</p>` : ''}${s.refs.length ? `<p class="note">Sources: ${s.refs.map(r => `[${esc(r)}]`).join(' ')}</p>` : ''}</div>
     ${s.parts.length || (s.equipment || []).length ? `<div class="box"><h3>Parts and machines</h3><div class="tray">${s.parts.map(p => `<span class="part"><b>${esc(p.id)}</b> ${esc(p.name)}</span>`).join('')}</div>${s.equipment ? `<p class="note">Traveler equipment: ${esc(s.equipment.join('; '))}</p>` : ''}</div>` : ''}
     <div class="box"><h3>${s.diagram.kind === 'section' ? 'Cross-section' : s.diagram.kind === 'setup' ? 'Setup' : s.diagram.kind === 'yield' ? 'Placement yield' : s.diagram.kind === 'spc' ? 'Control limits' : 'Decision'}</h3>${diagram(s.diagram)}
       <p class="note">${s.photo.status === 'photo' ? `Photo: ${esc(s.photo.title)}, ${esc(s.photo.author)}, ${esc(s.photo.license)}` : esc(s.photo.note)}</p></div>
-    ${cks || crit ? `<div class="box"><h3>Checkpoint</h3>${cks ? `<div class="tscroll"><table class="tbl"><tr><th>Test (simulated)</th><th>Result</th><th></th></tr>${cks}</table></div>` : ''}${crit ? `<p class="note">Measure on your sample:</p><div class="tscroll"><table class="tbl"><tr><th>Criterion</th><th>Limits</th><th>Source</th></tr>${crit}</table></div>` : ''}</div>` : ''}
+    ${cks || crit ? `<div class="box"><h3>Checkpoint</h3>${cks ? `<div class="tscroll"><table class="tbl"><tr><th>Test (simulated)</th><th>Result</th><th></th></tr>${cks}</table></div>` : ''}${crit ? `<p class="note">Measure on your sample (ADAMAS = limit chosen by this project, proposed):</p><div class="tscroll"><table class="tbl"><tr><th>Criterion</th><th>Limits</th><th>Source</th></tr>${crit}</table></div>` : ''}</div>` : ''}
     ${s.safety.length ? `<div class="safety"><h3 class="box-h">Safety</h3>${esc(s.safety.join(' '))}<p class="note" style="color:inherit">${esc(J.training)}</p></div>` : ''}
     ${s.time || s.cost ? `<p class="note">Whole experiment: ${esc(s.time)}${s.cost ? `; US$${s.cost[0].toLocaleString('en-US')} to ${s.cost[1].toLocaleString('en-US')} (estimates from the experiment card, not quotes)` : ''}</p>` : ''}
     ${s.troubleshoot.length ? `<div class="box"><h3>Troubleshooting</h3><div class="tscroll"><table class="tbl"><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>${s.troubleshoot.map(t => `<tr><td>${esc(t.symptom)}</td><td>${esc(t.cause)}</td><td>${esc(t.fix)}</td></tr>`).join('')}</table></div></div>` : ''}`;
 }
 function wireGate(root) {
-  const inp = root.querySelector('[data-g="cells"]'); if (!inp) return;
+  root.querySelectorAll('[data-g="cells"]').forEach(inp => wireOne(root, inp)); }
+function wireOne(root0, inp) { const root = inp.closest('.gate');
   const y = J.levels.find(L => L.id === 'L3').steps.find(s => s.id === 'W7').diagram.rows.reduce((a, r) => Math.max(a, r.yield), 0);
-  const upd = () => { const n = Math.max(1, Math.round(+inp.value || 1)); root.querySelector('[data-g="out"]').textContent = y > 0 ? Math.ceil(n / y).toLocaleString('en-US') : '∞'; };
+  const upd = () => { const n = Math.max(1, Math.round(+inp.value || 1)); const c = y > 0 ? Math.ceil(n / y) : Infinity;
+    root.querySelector('[data-g="out"]').textContent = isFinite(c) ? c.toLocaleString('en-US') : '∞';
+    root.querySelector('[data-g="sites"]').textContent = isFinite(c) ? `(${(2 * c).toLocaleString('en-US')} implant sites)` : ''; };
   inp.oninput = upd; upd();
 }
 function render(focus) {
@@ -133,8 +136,12 @@ function render(focus) {
 }
 document.querySelectorAll('.tab').forEach(b => b.onclick = () => { lv = b.dataset.l; k = 0; render(false); b.focus(); });
 $('prevStep').onclick = () => { k--; render(true); }; $('nextStep').onclick = () => { k++; render(true); };
-$('printLv').onclick = () => { const L = level();
+function fillPrint() { const L = level();
   $('printAll').innerHTML = `<h1>Fab Journey ${esc(L.id)}: ${esc(L.name)}</h1><p>${esc(L.scope)}</p>` + L.steps.map((s, i) => `<section class="plate">${stepHTML(s, i + 1, L.steps.length, true)}</section>`).join('');
-  if (typeof window.print === 'function') window.print(); };
+  wireGate($('printAll')); }
+window.addEventListener('beforeprint', fillPrint);           // Ctrl+P / Cmd+P prints the whole scope too
+$('printLv').onclick = () => { fillPrint(); if (typeof window.print === 'function') window.print(); };
+window.addEventListener('hashchange', () => { const h = (window.location.hash || '').slice(1).split('-');
+  if (J.levels.some(L => L.id === h[0])) { lv = h[0]; k = Math.max(0, (+h[1] || 1) - 1); render(true); } });
 render(false);
 </script></body></html>

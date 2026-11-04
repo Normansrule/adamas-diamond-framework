@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import functools
 import math
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,34 +67,34 @@ L2_AFTER = {
     "S18": ["Gold coplanar waveguide and electrodes", "Al₂O₃", "NV pair (tested)", SUB], "S19": ["Package and gold wire bonds", "Chip", "Carrier"],
 }
 L2_EXTRA = {"S06a": {"title": "Vacancy creation", "label": "reported", "refs": ["chen2019"], "atlas": ["M25"],
-                     "text": "The implant itself makes the vacancies the anneal needs; laser writing can add vacancies at chosen sites [chen2019]. Optional; not a traveler step yet."}}
+                     "text": "Strip the PMMA mask. The implant itself makes the vacancies the anneal needs; laser writing can add vacancies at chosen sites [chen2019]. Optional; not a traveler step yet."}}
 L2_CHECK = {"S18": [("QDL-01", 0), ("QDL-04", 0), ("QDL-05", 0)], "S06a": []}
 IMPLANT_KEV = 5.0          # inside the traveler's 2.5 to 10 keV window [pezzagna2010]; illustrative choice
 
 # L3: wafer-scale steps (D2, P5, P7). Cross-sections are schematic.
-WAFER = "Silicon or sapphire wafer"
+WAFER = "Silicon (or sapphire) wafer"
 L3_STEPS = [
     {"id": "W1", "title": "Heteroepitaxial growth on iridium", "atlas": ["M03", "M01"], "label": "reported",
-     "text": "Grow diamond on an iridium buffer (on yttria-stabilized zirconia over silicon, or on sapphire) by bias-enhanced nucleation, then thicken it by microwave plasma chemical vapor deposition (MPCVD).",
-     "after": ["Diamond film", "Iridium buffer", "Yttria-stabilized zirconia", WAFER], "refs": []},
+     "text": "Grow diamond on an iridium buffer by bias-enhanced nucleation (iridium on yttria-stabilized zirconia (YSZ) over silicon, or directly on sapphire), then thicken it by microwave plasma chemical vapor deposition (MPCVD). Heteroepitaxial films carry many dislocations, which limit NV coherence (adamas.nv dislocation model).",
+     "after": ["Diamond film", "Iridium buffer", "YSZ (silicon route only)", WAFER], "refs": ["schreck2014", "schreck2017"]},
     {"id": "W2", "title": "Polish and map", "atlas": ["M05", "M06", "M07", "M08", "M09"], "label": "reported",
      "text": "Polish, then map stress (Raman), crystal quality (X-ray diffraction), photoluminescence and birefringence over the whole wafer.",
-     "after": ["Polished diamond film (mapped)", "Iridium buffer", "Yttria-stabilized zirconia", WAFER], "refs": []},
-    {"id": "W3", "title": "Implant a placement array", "atlas": ["M12", "M20", "M21"], "label": "reported",
-     "text": "Write an aperture array by electron-beam lithography and implant ¹⁵N through it, as in L2 step S06 but over the wafer.",
-     "after": ["PMMA aperture array", "Implanted ¹⁵N array", "Diamond film", WAFER], "refs": ["pezzagna2010"]},
+     "after": ["Polished diamond film (mapped)", "Iridium buffer", "YSZ (silicon route only)", WAFER], "refs": ["schreck2017"]},
+    {"id": "W3", "title": "Implant a placement array", "atlas": ["M12", "M20", "M21"], "label": "proposed",
+     "text": "Write an aperture array and implant ¹⁵N through it, as in L2 step S06 but over the wafer. Two-site cells about 10 nm apart need apertures and placement finer than the traveler's 20 to 50 nm PMMA apertures (tip-based masks or a focused ion beam, M21); this is a proposal.",
+     "after": ["PMMA aperture array", "Implanted ¹⁵N array", "Diamond film", "Iridium buffer", "YSZ (silicon route only)", WAFER], "refs": ["pezzagna2010"]},
     {"id": "W4", "title": "Anneal", "atlas": ["M22"], "label": "reported",
      "text": "Vacuum anneal to form NV centers, then an oxidizing clean (traveler step S07).",
-     "after": ["NV array (random conversion)", "Diamond film", WAFER], "refs": ["pezzagna2010"]},
-    {"id": "W5", "title": "Map, then repair empty sites", "atlas": ["M47", "M48", "M25"], "label": "reported",
-     "text": "Map every site confocally, then laser-write vacancies at the empty ones and re-anneal (detect and repair).",
-     "after": ["NV array (repaired sites)", "Diamond film", WAFER], "refs": ["chen2019"]},
+     "after": ["NV array (random conversion)", "Diamond film", "Iridium buffer", "YSZ (silicon route only)", WAFER], "refs": ["pezzagna2010"]},
+    {"id": "W5", "title": "Map, then repair empty sites", "atlas": ["M47", "M48", "M25"], "label": "proposed",
+     "text": "Map every site confocally, then laser-write NVs at the empty ones with local laser annealing and fluorescence feedback, as demonstrated for single NVs in bulk [chen2019]; repairing an implanted array this way is a proposal. A furnace re-anneal would act on the whole wafer and could change working sites, and repair cannot fix sites that hold two or more NVs.",
+     "after": ["NV array (repaired sites)", "Diamond film", "Iridium buffer", "YSZ (silicon route only)", WAFER], "refs": ["chen2019"]},
     {"id": "W6", "title": "Statistical process control", "atlas": ["M00", "M17"], "label": "proposed", "chart": "spc",
      "text": "Track every traveler check on every wafer as a control chart against its acceptance limits (experiment D2).", "refs": []},
     {"id": "W7", "title": "Placement yield", "atlas": ["M00"], "label": "simulated", "chart": "yield",
      "text": "Probability that a two-site cell holds exactly one NV per site, closer than the coupling horizon (adamas.coupling.pair_yield).", "refs": ["pezzagna2010"]},
     {"id": "W8", "title": "Gate: plan arrays?", "atlas": ["M00"], "label": "proposed", "chart": "gate",
-     "text": "Build-program P5 question: is placement yield good enough to plan arrays? Set the array size and the share of working cells you need; the page computes how many sites that takes.", "refs": []},
+     "text": "Build-program P5 question: is placement yield good enough to plan arrays? Set how many working cells the array needs; the page computes how many two-site cells (and sites) that takes.", "refs": []},
 ]
 
 
@@ -113,7 +114,7 @@ def checkpoint(name: str) -> dict:
     B = _bp()
     if name == "p1_detection":
         r = B.p1_detection()
-        return {"what": "Dip found near 2870 MHz with signal-to-noise ≥ 5", "value": f"{r['center_mhz']:.2f} ± {r['center_err_mhz']:.2f} MHz, signal-to-noise {r['snr']:.0f}",
+        return {"what": "Dip found with signal-to-noise ≥ 5 and its center within half a line width of 2870 MHz", "value": f"{r['center_mhz']:.2f} ± {r['center_err_mhz']:.2f} MHz, signal-to-noise {r['snr']:.0f}",
                 "pass": r["pass"], "python": "adamas.build_program.p1_detection"}
     if name == "p1_magnetometer":
         r = B.p1_magnetometer()
@@ -157,9 +158,10 @@ def placement_yield(ions_per_site: int, conv: float = 0.01, sigma_nm: float = 5.
     return pair_yield(target_nm, sigma_nm, conv, ions_per_site=ions_per_site, r_max_nm=r_max_nm())
 
 
-def sites_needed(cells: int, yield_per_site: float) -> float:
-    """Sites to write so that `cells` working cells are expected (expected value only)."""
-    return math.inf if yield_per_site <= 0 else cells / yield_per_site
+def cells_to_write(cells: int, yield_per_cell: float) -> float:
+    """Two-site cells to write so that `cells` working cells are expected (expected value only); each cell is two
+    implant sites, so the site count is twice this."""
+    return math.inf if yield_per_cell <= 0 else cells / yield_per_cell
 
 
 # --------------------------------------------------------------------------------------------------- photos
@@ -190,11 +192,11 @@ def _exp_steps(eid: str) -> list[dict]:
     for k, (title, text, scene) in enumerate(e["steps"], 1):
         sid = f"{eid}.{k}"
         ck = EXP_CHECK.get((eid, title))
-        out.append({"id": sid, "title": title, "action": text, "label": "demonstrated", "experiment": eid,
+        out.append({"id": sid, "title": title, "action": text, "label": "reported", "experiment": eid,
                     "parts": [{"id": a, "name": ATLAS[a][0]} for a in EXP_ATLAS.get(eid, [])] if k == 1 else [],
                     "uses": list(scene), "diagram": {"kind": "setup", "chain": SETUP.get(eid, []), "active": k},
                     "photo": _photo(sid), "checkpoints": [checkpoint(ck)] if ck else [], "criteria": [],
-                    "safety": list(e["safety"]) if k == 1 else [], "time": e["time"] if k == 1 else None,
+                    "safety": list(e["safety"]), "time": e["time"] if k == 1 else None,
                     "cost": list(e["cost"]) if k == 1 else None, "troubleshoot": [], "refs": list(e["refs"]) if k == 1 else []})
     return out
 
@@ -220,11 +222,12 @@ def _l2_steps() -> list[dict]:
                   "troubleshoot": [], "refs": x["refs"], "t_max_c": None}
         else:
             s = T[sid]
-            st = {"id": sid, "title": s["title"], "action": dev["route"]["overrides"].get(sid, s["why"]), "label": "reported", "traveler": True,
+            params = "; ".join(f"{p[0]}: {p[1]}" for p in s["params"])
+            st = {"id": sid, "title": s["title"], "action": dev["route"]["overrides"].get(sid, params or s["title"]), "why": s["why"], "label": "reported", "traveler": True,
                   "parts": [{"id": a, "name": ATLAS[a][0]} for a in _l2_atlas(sid)], "equipment": list(s["equipment"]),
                   "criteria": [{"check": c[0], "unit": c[1], "min": c[2], "max": c[3], "src": c[4]} for c in s["checks"]],
-                  "safety": list(s["safety"]), "troubleshoot": [{"symptom": f[0], "cause": f[1], "fix": f[2]} for f in s["failures"]],
-                  "refs": [], "t_max_c": s["t_max_c"]}
+                  "safety": _safety(s, T), "troubleshoot": [{"symptom": f[0], "cause": f[1], "fix": f[2]} for f in s["failures"]],
+                  "refs": sorted({k for p in s["params"] for k in re.findall(r"\[([^\]]+)\]", p[2])}), "t_max_c": s["t_max_c"]}
         st.update({"diagram": {"kind": "section", "before": before, "after": after}, "photo": _photo(sid), "time": None, "cost": None,
                    "checkpoints": [qdl_checkpoint(d, i) for d, i in L2_CHECK.get(sid, [])]})
         out.append(st); before = after
@@ -235,6 +238,17 @@ def _l2_steps() -> list[dict]:
 L2_ATLAS = {"S01": ["M06", "M08", "M09", "M19"], "S02": ["M10"], "S03": ["M01"], "S04": ["M10"], "S05": ["M11", "M12", "M16"],
             "S06": ["M12", "M20", "M21"], "S07": ["M22", "M10"], "S13": ["M14"], "S16": ["M11", "M13"],
             "S18": ["M47", "M49", "M51", "M54", "M55"], "S19": ["M27", "M28"]}
+
+
+def _safety(s: dict, T: dict) -> list[str]:
+    """The step's safety text with "As Sxx." resolved, plus the S02 acid-bench text when the step reuses that bench."""
+    out = []
+    for x in s["safety"]:
+        m = re.fullmatch(r"As (S\d\d)\.", x.strip())
+        out += list(T[m.group(1)]["safety"]) if m else [x]
+    if s["id"] != "S02" and any("(S02)" in e for e in s["equipment"]):
+        out += [x for x in T["S02"]["safety"] if x not in out]
+    return out
 
 
 def _l2_atlas(sid: str) -> list[str]:
@@ -257,13 +271,16 @@ def _l3_steps() -> list[dict]:
             rows = [{"ions_per_site": n, "yield": placement_yield(n)} for n in (1, 50, 100, 200)]
             st["diagram"] = {"kind": "yield", "rows": rows, "conv": 0.01, "sigma_nm": 5.0, "target_nm": 10.0}
             best = max(rows, key=lambda r: r["yield"])
-            st["checkpoints"] = [{"what": "Expected share of two-site cells that work (one NV per site, closer than r_max)", "value": f"{best['yield']:.4f} at {best['ions_per_site']} ions per site",
+            st["checkpoints"] = [{"what": "Expected share of two-site cells that work (one NV per site, closer than r_max)", "value": f"{best['yield']:.4f} at {best['ions_per_site']} ions per site (best of the grid 1, 50, 100, 200; the peak is near 1/conversion)",
                                   "pass": None, "python": "adamas.journey.placement_yield"}]
         else:
             st["diagram"] = {"kind": "gate"}
+        if w["id"] == "W2":
+            st["safety"] = ["Raman and photoluminescence lasers: enclosed or interlocked beam, wavelength-rated eyewear. X-ray diffraction: radiation interlocks."]
         if w["id"] in ("W1", "W3", "W4", "W5"):
             st["safety"] = {"W1": ["Hydrogen and methane are flammable: leak-checked lines, gas detectors, interlocked exhaust."],
-                            "W3": ["Ion implanter: radiation (X-ray) interlocks and high voltage."], "W4": ["Furnace hot-zone burns; vacuum implosion shielding."],
+                            "W3": ["Ion implanter: radiation (X-ray) interlocks and high voltage."],
+                            "W4": ["Furnace hot-zone burns; vacuum implosion shielding.", "Tri-acid clean: as traveler step S02 (perchloric-rated hood, face shield, acid apron)."],
                             "W5": ["Class 4 pulsed laser: interlocked enclosure."]}[w["id"]]
         out.append(st)
     return out
@@ -303,6 +320,8 @@ def _level_md(L: dict) -> str:
     out = [f"# Fab Journey {L['id']}: {L['name']}", "", GEN, "", L["scope"], "", f"> {TRAINING}", ""]
     for n, s in enumerate(S, 1):
         out += [f"## Step {n} · {s['id']} {s['title']}", "", f"**Label:** {s['label']}. " + s["action"], ""]
+        if s.get("why"):
+            out += [f"**Why:** {s['why']}", ""]
         if s["parts"]:
             out += ["**Parts and machines:** " + "; ".join(f"{p['id']} {p['name']}" for p in s["parts"]), ""]
         d = s["diagram"]
@@ -321,7 +340,7 @@ def _level_md(L: dict) -> str:
             v = "pass" if c["pass"] else ("fail" if c["pass"] is False else "computed")
             out += [f"**Checkpoint (simulated, `{c['python']}`):** {c['what']}: {c['value']} → **{v}**", ""]
         if s["criteria"]:
-            out += ["**Acceptance criteria (measure on your sample):** " + "; ".join(
+            out += ["**Acceptance criteria (measure on your sample; ADAMAS = limit chosen by this project, proposed):** " + "; ".join(
                 f"{c['check']}{' ≥ ' + str(c['min']) if c['min'] is not None else ''}{' ≤ ' + str(c['max']) if c['max'] is not None else ''} {c['unit']} ({c['src']})".replace("  ", " ") for c in s["criteria"]), ""]
         if s["safety"]:
             out += ["**Safety:** " + " ".join(s["safety"]) + " " + TRAINING, ""]

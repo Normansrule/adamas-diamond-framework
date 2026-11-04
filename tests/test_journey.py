@@ -38,12 +38,24 @@ def test_l2_follows_the_coupled_pair_route_and_the_cross_sections_chain():
     assert "7.5 ± 3.0 nm" in " ".join(next(s for s in s2 if s["id"] == "S06")["diagram"]["after"])   # 5 keV, rule of thumb
 
 
+def test_nothing_is_labeled_demonstrated_without_our_own_evidence():
+    assert all(s["label"] != "demonstrated" for L in journey.LEVELS for s in journey.steps(L["id"]))
+
+
+def test_every_hands_on_step_has_safety_text_and_no_dangling_references():
+    for L in journey.LEVELS:
+        for s in journey.steps(L["id"]):
+            if s["diagram"]["kind"] in ("setup", "section"):
+                assert s["safety"], s["id"]
+            assert not any(x.strip().startswith("As S") for x in s["safety"]), s["id"]
+
+
 def test_hazardous_steps_carry_safety_and_point_to_training():
     for L in journey.LEVELS:
         for s in journey.steps(L["id"]):
             if s.get("traveler"):
                 t = next(x for x in traveler.STEPS if x["id"] == s["id"])
-                assert s["safety"] == list(t["safety"])
+                assert set(t["safety"]) <= set(s["safety"]) or any(x.startswith("As S") for x in t["safety"])
     assert "training" in journey.TRAINING and all(journey.steps("L0")[0]["safety"])
     md = journey.documents()
     assert all(journey.TRAINING in md[f"{L['id']}.md"] for L in journey.LEVELS)
@@ -61,9 +73,9 @@ def test_checkpoints_are_computed_and_pass_for_a_correct_setup():
 
 
 def test_placement_yield_is_a_probability_and_peaks_near_one_nv_per_site():
-    ys = {n: journey.placement_yield(n) for n in (1, 100, 1000)}
-    assert all(0 <= y <= 1 for y in ys.values()) and ys[100] > ys[1] and ys[100] > ys[1000]
-    assert journey.sites_needed(100, 0.05) == pytest.approx(2000.0) and journey.sites_needed(1, 0) == float("inf")
+    ys = {n: journey.placement_yield(n) for n in (1, 30, 100, 300, 1000)}
+    assert all(0 <= y <= 1 for y in ys.values()) and ys[100] > ys[30] and ys[100] > ys[300] > ys[1000]   # peak near 1/conversion
+    assert journey.cells_to_write(100, 0.05) == pytest.approx(2000.0) and journey.cells_to_write(1, 0) == float("inf")
 
 
 def test_photo_log_rows_are_open_licensed_credited_and_exist():
