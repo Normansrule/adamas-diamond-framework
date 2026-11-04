@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.34.0 (build phase P4)
+
+P4 (devices) is written with four code-evaluated checks on the PDK-0 monitor die (contact resistance, threshold matching, mobility, threshold), limits taken from traveler steps S08 and S17, every input labeled illustrative, and a degraded twin per test that must fail. Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.33.0 (build phase P3)
 
 P3 (single NV) is written with three code-evaluated tests (antibunching, the ¹⁴N hyperfine triplet, nuclear-spin Rabi). Every input except the hyperfine constant is labeled illustrative, each test has a degraded twin that must fail, and the gate is designed so a correct setup passes at least 95 % of the time (checked over 400 simulated runs in docs/build/P3_single_nv.md). Open items are in [STATUS.md](STATUS.md).

@@ -43,7 +43,7 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
 
 
@@ -77,3 +77,22 @@ def test_p3_tests_draw_independent_noise():
     import numpy as np
     a, b, c = (B._rng(7, i).normal(size=5) for i in range(3))
     assert not (np.allclose(a, b) or np.allclose(b, c))
+
+
+def test_p4_gate_passes_and_every_degraded_twin_fails():
+    g, b = B.p4_gate(), B.p4_degraded()
+    assert g["verdict"] == "go"
+    assert not (b["tlm"]["pass"] or b["matching"]["pass"] or (b["extraction"]["mu_pass"] and b["extraction"]["vt_pass"]))
+    assert b["extraction"]["mu"] == pytest.approx(150 * 30 / B.P4_TOX_BAD_NM, rel=0.03)      # the oxide ratio, as the doc says
+
+
+def test_p4_tlm_model_is_the_textbook_line():
+    r0, r1 = B.tlm_resistance_ohm(0.0), B.tlm_resistance_ohm(10.0)
+    assert r0 == pytest.approx(2 * B.P4_RC_OHM_MM / (B.P4_TLM_W_UM * 1e-3), rel=1e-9)
+    assert (r1 - r0) == pytest.approx(B.P4_RSH_KOHM * 1e3 * 10.0 / B.P4_TLM_W_UM, rel=1e-9)
+
+
+def test_p4_pass_rates_meet_the_design():
+    r = B.p4_pass_rates(300)
+    assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
+    assert all(v <= 0.03 for v in r["degraded"].values()), r
