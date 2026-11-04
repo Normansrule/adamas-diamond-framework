@@ -1,0 +1,73 @@
+"""Machine Atlas M00 to M59: every tool the build program names, the build phases that use it, and its silicon-industry
+equivalent. Names and phases are copied from docs/phase0/BUILD_PROGRAM_OUTLINE.md (section "Machine Atlas") so that other
+modules (adamas.qdl) can link a device's build route to real machines; tests/test_qdl.py checks that every ID a device
+uses exists here and that this table still matches the outline.
+"""
+from __future__ import annotations
+
+ATLAS = {  # id: (tool, phases, silicon-industry equivalent); names and phases from docs/phase0/BUILD_PROGRAM_OUTLINE.md
+    "M00": ('Workstation plus open tools (adamas, Stim, PyMatching, ngspice, Yosys, KLayout, OpenROAD)', 'P0', 'Same, plus commercial EDA'),
+    "M01": ('Microwave plasma chemical vapor deposition (MPCVD) reactor', 'P4 (H-termination), P7 (growth)', 'Epitaxy reactor'),
+    "M02": ('High-pressure high-temperature (HPHT) press, or purchased HPHT seeds', 'P7', 'Czochralski puller'),
+    "M03": ('Heteroepitaxy stack deposition (iridium on YSZ/Si or sapphire, bias-enhanced nucleation)', 'P7', '(none; silicon is homoepitaxial)'),
+    "M04": ('Laser cutting and slicing', 'P7', 'Wire saw'),
+    "M05": ('Lapping, polishing, scaife or chemo-mechanical polishing', 'P7', 'Chemical-mechanical polishing (CMP)'),
+    "M06": ('Raman mapping', 'P4, P7', 'Raman and stress metrology'),
+    "M07": ('X-ray diffraction (XRD) rocking curves and topography', 'P7', 'XRD'),
+    "M08": ('Photoluminescence (PL) and NV-density mapping', 'P5, P7', 'PL mapping'),
+    "M09": ('Defect inspection (birefringence, etch-pit counting)', 'P7', 'Wafer inspection'),
+    "M10": ('Wet bench: tri-acid and piranha cleans, HF', 'P4, P5', 'Same'),
+    "M11": ('Optical lithography (mask aligner or laser writer)', 'P4', 'Stepper or scanner (EUV for context, E1)'),
+    "M12": ('Electron-beam lithography', 'P4, P5', 'E-beam for masks and research'),
+    "M13": ('Electron-beam evaporator (Ti/Pt/Au, Au)', 'P4', 'Physical vapor deposition (PVD) cluster'),
+    "M14": ('Atomic layer deposition (ALD) of Al₂O₃', 'P4', 'ALD for high-k gates'),
+    "M15": ('Oxygen plasma asher or reactive-ion etch for isolation', 'P4', 'Same'),
+    "M16": ('Inductively coupled plasma reactive-ion etching (ICP-RIE)', 'P4, P7', 'ICP etch'),
+    "M17": ('Probe station, hot chuck, semiconductor parameter analyzer', 'P4', 'Parametric test'),
+    "M18": ('High-voltage curve tracer for breakdown', 'P4, P7', 'Same'),
+    "M19": ('Profilometer, optical microscope, four-point probe', 'P2, P4', 'Same'),
+    "M20": ('Low-energy ion implanter (¹⁵N)', 'P5', 'Ion implanter'),
+    "M21": ('Aperture masks (PMMA, AFM-tip) or focused ion beam', 'P5', '(no equivalent)'),
+    "M22": ('High-vacuum annealing furnace (800–1200 °C)', 'P5', 'Rapid thermal anneal'),
+    "M23": ('Secondary-ion mass spectrometry (SIMS)', 'P5, P7', 'SIMS'),
+    "M24": ('Atomic force microscopy (AFM)', 'P4, P5', 'AFM'),
+    "M25": ('Laser writing of vacancies (detect-and-repair)', 'P5', '(no equivalent)'),
+    "M26": ('Wafer or die bonder (thermocompression, hybrid)', 'P6', 'Advanced packaging'),
+    "M27": ('Dicing (laser or saw)', 'P6, P7', 'Dicing'),
+    "M28": ('Wire bonder and package', 'P6', 'Same'),
+    "M29": ('CMOS control chip from a multi-project wafer (MPW) shuttle', 'P6', 'The control die itself'),
+    "M30": ('Green source: LED or under 1 mW 532 nm laser module', 'P1', '—'),
+    "M31": ('NV-rich diamond (irradiated and annealed HPHT)', 'P1', '—'),
+    "M32": ('Longpass filter', 'P1', '—'),
+    "M33": ('Silicon photodiode and transimpedance amplifier', 'P1', '—'),
+    "M34": ('Phase-locked loop (PLL) microwave synthesizer, ADF4351 class', 'P1', '—'),
+    "M35": ('Microstrip or loop antenna', 'P1', '—'),
+    "M36": ('Microcontroller (Raspberry Pi Pico)', 'P1', '—'),
+    "M37": ('Permanent magnets and a non-magnetic rail; thermistor and heater for dD/dT', 'P1', '—'),
+    "M38": ('532 nm laser, tens of mW', 'P2', '—'),
+    "M39": ('Acousto-optic modulator (AOM)', 'P2', '—'),
+    "M40": ('Amplified photodiode or avalanche photodiode', 'P2', '—'),
+    "M41": ('Fast RF switch and 1–10 W microwave amplifier', 'P2', '—'),
+    "M42": ('Pulse timing: FPGA board or pulse generator', 'P2', '—'),
+    "M43": ('Helmholtz coil set and current supplies', 'P2', '—'),
+    "M44": ('Hot stage (to about 500 °C)', 'P2', '—'),
+    "M45": ('Source-measure unit (SMU)', 'P2', '—'),
+    "M46": ('Optical breadboard, mounts, laser goggles and interlock', 'P2', '—'),
+    "M47": ('High numerical-aperture objective', 'P3, P5', '—'),
+    "M48": ('Galvo or piezo scanning', 'P3', '—'),
+    "M49": ('Two single-photon avalanche diodes (SPADs)', 'P3', '—'),
+    "M50": ('Time tagger (picosecond correlator)', 'P3', '—'),
+    "M51": ('Arbitrary waveform generator (AWG)', 'P3, P5', '—'),
+    "M52": ('Electronic-grade, low-nitrogen, optionally ¹²C-enriched CVD diamond', 'P3, P5', '—'),
+    "M53": ('RF source for nuclear spins (MHz range)', 'P3', '—'),
+    "M54": ('Two-color excitation for charge-state readout (orange or red laser)', 'P3, P5', '—'),
+    "M55": ('Photoelectric readout chain (bias electrodes, lock-in, transimpedance)', 'P4, P6', '—'),
+    "M56": ('Converter test bench (double-pulse tester, power analyzer, thermal camera)', 'P8', 'Same'),
+    "M57": ('Irradiation access (gamma, proton)', 'P8', 'Same'),
+    "M58": ('Magnetically shielded room or gradiometer setup', 'P8', '—'),
+    "M59": ('Navigation test platform with a magnetic-anomaly map', 'P8', '—'),
+}
+
+def tool(atlas_id: str) -> str:
+    """Name of machine atlas_id (KeyError if the ID is not in the Atlas)."""
+    return ATLAS[atlas_id][0]
