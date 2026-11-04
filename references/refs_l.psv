@@ -1,0 +1,2 @@
+# ADAMAS reference database (part L, v0.31.0): sources added for the Quantum Device Library (adamas/qdl.py). Metadata checked on the arXiv page (arXiv:1210.6195); awaiting Crossref verification (make verify, make apply-verify).
+dreau2013 | Dréau, A.; Spinicelli, P.; Maze, J. R.; Roch, J.-F.; Jacques, V. | 2013 | Single-shot readout of multiple nuclear spin qubits in diamond under ambient conditions | Physical Review Letters | 110(6), 060502 | nv,qc | K

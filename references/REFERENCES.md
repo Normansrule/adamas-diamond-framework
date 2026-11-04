@@ -1,6 +1,6 @@
 # References
 
-**583 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**584 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -205,7 +205,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[aller2025]`** Aller, H. T.; Pfeifer, T. W.; Mamun, A.; et al. (2025). Low thermal resistance of diamond-AlGaN interfaces achieved using carbide interlayers. *Advanced Materials Interfaces*, 12(3), 2400575.
 - 📚 **`[xu2025]`** Xu, B.; Mu, F.; Liu, Y.; Guo, R.; Hu, S.; Shiomi, J. (2025). Record-low thermal boundary resistance at bonded GaN/diamond interface by controlling ultrathin heterogeneous amorphous layer. *Acta Materialia*, 282, 120458.
 
-## Nitrogen-vacancy (NV) center physics (59)
+## Nitrogen-vacancy (NV) center physics (60)
 
 - ✅ **`[davies1976]`** Davies, G.; Hamer, M. F. (1976). Optical studies of the 1.945 eV vibronic band in diamond. *Proceedings of the Royal Society A*, 348, 285. [doi:10.1098/rspa.1976.0039](https://doi.org/10.1098/rspa.1976.0039)
 - ✅ **`[loubser1978]`** Loubser, J. H. N.; van Wyk, J. A. (1978). Electron spin resonance in the study of diamond. *Reports on Progress in Physics*, 41, 1201. [doi:10.1088/0034-4885/41/8/002](https://doi.org/10.1088/0034-4885/41/8/002)
@@ -243,6 +243,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[aslam2013]`** Aslam, N.; Waldherr, G.; Neumann, P.; Jelezko, F.; Wrachtrup, J. (2013). Photo-induced ionization dynamics of the nitrogen vacancy defect in diamond investigated by single-shot charge state detection. *New Journal of Physics*, 15, 013064. [doi:10.1088/1367-2630/15/1/013064](https://doi.org/10.1088/1367-2630/15/1/013064)
 - ✅ **`[bargill2013]`** Bar-Gill, N.; Pham, L. M.; Jarmola, A.; Budker, D.; Walsworth, R. L. (2013). Solid-state electronic spin coherence time approaching one second. *Nature Communications*, 4, 1743. [doi:10.1038/ncomms2771](https://doi.org/10.1038/ncomms2771)
 - ✅ **`[doherty2013]`** Doherty, M. W.; Manson, N. B.; Delaney, P.; Jelezko, F.; Wrachtrup, J.; Hollenberg, L. C. L. (2013). The nitrogen-vacancy colour centre in diamond. *Physics Reports*, 528, 1. [doi:10.1016/j.physrep.2013.02.001](https://doi.org/10.1016/j.physrep.2013.02.001)
+- 📚 **`[dreau2013]`** Dréau, A.; Spinicelli, P.; Maze, J. R.; Roch, J.-F.; Jacques, V. (2013). Single-shot readout of multiple nuclear spin qubits in diamond under ambient conditions. *Physical Review Letters*, 110(6), 060502.
 - ✅ **`[doi2014]`** Doi, Y.; Makino, T.; Kato, H.; et al. (2014). Deterministic electrical charge-state initialization of single nitrogen-vacancy center in diamond. *Physical Review X*, 4, 011057. [doi:10.1103/physrevx.4.011057](https://doi.org/10.1103/physrevx.4.011057)
 - ✅ **`[myers2014]`** Myers, B. A.; Das, A.; Dartiailh, M. C.; et al. (2014). Probing surface noise with depth-calibrated spins in diamond. *Physical Review Letters*, 113, 027602. [doi:10.1103/physrevlett.113.027602](https://doi.org/10.1103/physrevlett.113.027602)
 - 📚 **`[pfender2014]`** Pfender, M.; Aslam, N.; Waldherr, G.; et al. (2014). Single-spin stochastic optical reconstruction microscopy. *Proceedings of the National Academy of Sciences*, 111(41), 14669-14674.
