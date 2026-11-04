@@ -43,5 +43,28 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
+
+
+def test_p3_gate_passes_and_every_degraded_twin_fails():
+    g, b = B.p3_gate(), B.p3_degraded()
+    assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
+    assert g["hyperfine"]["lines"] == 3 and b["hyperfine"]["lines"] < 3       # power broadening hides the triplet
+    assert b["nuclear_rabi"]["transfer"] == pytest.approx(0.5, abs=3 * b["nuclear_rabi"]["transfer_err"])
+
+
+def test_p3_g2_zero_model_and_coverage():
+    assert B.g2_zero_expected(1, 1.0) == 0.0 and B.g2_zero_expected(2, 1.0) == 0.5        # ideal one and two emitters
+    assert B.P3_TEST_COVERAGE ** B.P3_TESTS == pytest.approx(B.P3_GATE_COVERAGE, rel=1e-9)
+
+
+def test_p3_pass_rates_meet_the_design():
+    r = B.p3_pass_rates(200)
+    assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 200) ** 0.5, r            # at least 95 % within three binomial standard errors
+    assert all(v <= 0.03 for v in r["degraded"].values()), r                  # a faulty setup rarely passes
+
+
+def test_p3_json_has_no_nan():
+    import json
+    json.dumps(B.to_json()["p3"], allow_nan=False)

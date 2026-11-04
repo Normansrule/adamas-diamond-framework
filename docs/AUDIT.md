@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.33.0 (build phase P3)
+
+P3 (single NV) is written with three code-evaluated tests (antibunching, the ¹⁴N hyperfine triplet, nuclear-spin Rabi). Every input except the hyperfine constant is labeled illustrative, each test has a degraded twin that must fail, and the gate is designed so a correct setup passes at least 95 % of the time (checked over 400 simulated runs in docs/build/P3_single_nv.md). Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.31.0 (Quantum Device Library review)
 
 A Grill Me review of the device mapping before the Quantum Device Library (docs/devices) corrected six points, each now enforced by tests/test_qdl.py: the "transistor" analogy covers two different devices (the electron-nuclear conditional gate, CNOT 0.9992 [xie2023], and the NV-NV dipolar coupler); the coupler's Bell fidelity (0.824 [dolde2014]) and gate fidelity (0.960 ± 0.025 [joas2025]) are different metrics and are kept in separate fields; the microwave line is classical, and the proposed quantum wire is the dark-spin bus [yao2012]; the photonic link is cryogenic only (zero-phonon fraction about 0.03 at room temperature [faraon2011]); readout gains nuclear single-shot readout at room temperature (0.96 in 120 ms [dreau2013]); the "resistor" analogy names both the 50 Ω termination and optical reset. Superconducting qubits are cited at their operating temperature (below 20 mK [krinner2019]) wherever a comparison could be read. Numbers still to confirm from their papers and build steps missing from the traveler are listed in [STATUS.md](STATUS.md).

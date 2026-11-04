@@ -12,15 +12,17 @@
 .ladder text{fill:var(--ink);font:600 15px Inter}.ladder text.s{fill:var(--mute);font:400 12px Inter}
 .ladder path{fill:none;stroke:rgba(148,190,220,.4);stroke-width:1.5}
 .pcard{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}@media(max-width:1000px){.pcard{grid-template-columns:1fr}}
+.pcard>*{min-width:0}.pcard dd{overflow-wrap:anywhere}
 .pcard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}.pcard dt{color:var(--mute);font-size:13px}.pcard dd{margin:0;font-size:14.5px}
 .tests{width:100%;border-collapse:collapse;font-size:14px}.tests td,.tests th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .tests th{color:var(--mute);font-weight:500;font-size:12.5px}.tests td.n{font:500 13px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:600px){.tests td.n{white-space:normal;font-size:12px}.tests td,.tests th{padding:7px 4px}}
 .verdict{font:600 12px var(--mono);padding:3px 8px;border-radius:7px}.verdict.go{background:rgba(72,229,163,.18);color:var(--green)}.verdict.stop{background:rgba(255,93,108,.18);color:var(--red)}
 .verdict.out{background:rgba(255,255,255,.06);color:var(--mute)}
 </style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
-<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0, P1, and P2 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P3 to P8 are outlines until their sources are in.</p></section>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P3 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P4 to P8 are outlines until their sources are in.</p></section>
 <section class="block" style="padding-top:6px">
   <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
   <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
@@ -87,6 +89,20 @@ function detail() {
       ${row('Echo outlives dephasing', 'T₂/T₂* > 10', pu.echo_gain.toFixed(0), pu.echo_pass)}
       ${row('<b>Gate: all pass</b>', '', '', g.verdict === 'go', r.gate)}</table>
       <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates). Each fit must land within ${r.k.toFixed(2)} of its own standard errors of the value it should find (E_A: the value put in plus the method bias ${ar.method_bias_ev.toFixed(4)} eV, Student-t factor ${ar.k.toFixed(2)}), so a correct setup gets "go" about 95 % of the time; rates over ${r.runs} simulated runs. T₁ has no model yet, so no criterion.</p>`; }
+  else if (sel === 'P3') { const g = D.p3, ab = g.antibunching, hf = g.hyperfine, nr = g.nuclear_rabi, b = g.degraded, r = g.pass_rates, pc = v => (100 * v).toFixed(1) + ' %';
+    const num = (v, e, d) => v === null ? 'not resolved' : `${v.toFixed(d)} ± ${e.toFixed(d)}`;
+    const lines = h => h.lines === 3 ? num(h.spacing_mhz, h.err, 3) + ' MHz' : `${h.lines} line(s), not resolved`;
+    const row = (t, fit, ok, rate, word) => `<tr><td>${t}</td><td class="n">${fit}</td><td>${V(word === 'caught' ? !ok : ok, word === 'caught' ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${pc(rate)}</td></tr>`;
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><table class="tests"><tr><th>Test</th><th>Fitted</th><th></th><th>Correct setups passing</th></tr>
+      ${row('One emitter: g⁽²⁾(0) + kσ < 0.5', num(ab.g2_zero, ab.err, 3), ab.pass, r.antibunching)}
+      ${row(`Hyperfine triplet, spacing ${hf.put_in} MHz`, lines(hf), hf.pass, r.hyperfine)}
+      ${row('Nuclear Rabi, full transfer', num(nr.transfer, nr.transfer_err, 3), nr.pass, r.nuclear_rabi)}
+      ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table>
+      <h3>Degraded twins: one fault each, must fail</h3><table class="tests"><tr><th>Fault</th><th>Fitted</th><th></th><th>Faulty setups passing</th></tr>
+      ${row('Two NVs in the focus', num(b.antibunching.g2_zero, b.antibunching.err, 3), b.antibunching.pass, r.degraded.antibunching, 'caught')}
+      ${row('Power-broadened line', lines(b.hyperfine), b.hyperfine.pass, r.degraded.hyperfine, 'caught')}
+      ${row('RF detuned by one Rabi frequency', num(b.nuclear_rabi.transfer, b.nuclear_rabi.transfer_err, 3), b.nuclear_rabi.pass, r.degraded.nuclear_rabi, 'caught')}</table>
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the nuclear-spin RF source is not priced yet). Illustrative inputs except the ¹⁴N hyperfine constant [felton2009]. Each test uses k = ${r.k.toFixed(2)} standard errors so a correct setup gets "go" at least 95 % of the time; rates over ${r.runs} simulated runs. Single-shot readout and the charge state have no criterion yet.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>

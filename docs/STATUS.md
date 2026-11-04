@@ -2,7 +2,17 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.32.0 (2026-11-04).
+Last updated: v0.33.0 (2026-11-04).
+
+## Open in v0.33.0: build phase P3 (single NV)
+
+[P3](build/P3_single_nv.md) is written in full, with its gate evaluated by code (`adamas.build_program.p3_gate`). What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Illustrative inputs | The background fraction (ρ² = 0.8), antibunching time (12 ns), line width (0.4 MHz), nuclear Rabi frequency (10 kHz) and all noise levels are chosen to look like a typical confocal setup; none is measured or sourced. Only the ¹⁴N hyperfine constant (2.147 MHz [felton2009]) is sourced | Measured values from a P3 setup, or sourced typical values |
+| Price of the nuclear-spin RF source (Atlas M53) | No sourced price; the C1 part list does not include it | A quote or a sourced street price |
+| Single-shot nuclear readout, charge state (M54), electron–nuclear gate | No model in the package for repetitive readout or NV⁻/NV⁰ dynamics; the register's CNOT is computed as a Bell-state fidelity, not a gate fidelity | Models with sources, then a criterion each |
 
 ## Open in v0.32.0: Fab Journey
 
@@ -86,7 +96,7 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 |---|---|---|
 | Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
 | Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
-| Build program P3–P8 full write-ups and the Machines and Facilities Atlas (P0 to P2 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| Build program P4–P8 full write-ups and the Machines and Facilities Atlas (P0 to P3 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
 | GitHub Actions major versions (checkout, setup-node, setup-python, artifacts, pages) | GitHub warns that these target Node.js 20; it already runs them on Node.js 24, and every workflow passes. Newer majors exist (up to v7 and v8) and some change artifact behaviour, so each bump needs its release notes read and a test run. | Bump one workflow at a time and confirm the desktop release still uploads its installers. |
 | Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
 
