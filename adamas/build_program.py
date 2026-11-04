@@ -311,80 +311,120 @@ def p2_figure(out: str | Path = "docs/img") -> Path:
 # ---------------------------------------------------------------- P3 ------------------------------------------------
 P3_TESTS = 3                 # antibunching, hyperfine triplet, nuclear-spin Rabi: the gate needs all of them
 P3_GATE_COVERAGE = 0.95
-P3_TEST_COVERAGE = P3_GATE_COVERAGE ** (1 / P3_TESTS)     # so each test covers 98.30 % (independent tests)
+P3_TEST_COVERAGE = P3_GATE_COVERAGE ** (1 / P3_TESTS)     # so each test covers 98.30 % (independent noise per test, see _rng)
 P3_RUNS = 400
-P3_RHO2 = 0.8                # signal fraction squared, rho^2 = (S / (S + B))^2: illustrative background, as in experiment C1
+P3_RHO2 = 0.8                # rho^2 for one NV, rho = S / (S + B): illustrative background, as in experiment C1
 P3_TAU_NS = 12.0             # antibunching time constant of the simulated data (illustrative, as in experiment C1)
 P3_G2_NOISE = 0.03           # per 1 ns bin of the normalized histogram (illustrative)
+P3_BIAS_MT = 1.0             # small axial bias field that separates the ms = +1 and -1 lines (illustrative)
 P3_ODMR = {"contrast": 0.25, "linewidth_mhz": 0.4, "noise": 0.01}          # one NV, low microwave power (illustrative)
 P3_BROAD_MHZ = 3.0           # degraded twin: power-broadened line, wider than the 2.147 MHz spacing
-P3_NUC_RABI_MHZ = 0.01       # 10 kHz nuclear Rabi frequency (illustrative); [jelezko2004b] showed the oscillation
+P3_RESOLVED_SNR = 5.0        # this project's criterion: the outer spacing exceeds five of its standard errors
+P3_NUC_RABI_MHZ = 0.01       # 10 kHz nuclear Rabi frequency (illustrative)
 P3_NUC_NOISE = 0.05          # per point, after normalizing with bright (ms = 0) and dark (ms = -1) reference counts (illustrative)
 
 
 def _k3() -> float:
+    """Two-sided coverage factor of each two-sided P3 test (hyperfine, nuclear Rabi)."""
     return _k_normal(P3_TEST_COVERAGE)
 
 
-def g2_zero_expected(emitters: int = 1, rho2: float = P3_RHO2) -> float:
-    """g2(0) of N identical, independent emitters seen through uncorrelated background: 1 - rho^2 / N, where rho is the
-    fraction of detected light that comes from the emitters. Valid for continuous excitation and a detector time
-    resolution much shorter than the antibunching time; one emitter with no background gives 0 [kurtsiefer2000]."""
-    return 1.0 - rho2 / emitters
+def _k3_one_sided() -> float:
+    """One-sided coverage factor of the antibunching test (it only asks whether g2(0) is below 0.5)."""
+    from scipy.stats import norm
+    return float(norm.ppf(P3_TEST_COVERAGE))
+
+
+def _rng(seed: int, test: int) -> np.random.Generator:
+    """An independent random stream per test (0 antibunching, 1 hyperfine, 2 nuclear Rabi), so the three tests of one
+    simulated setup have independent noise, as the coverage formula assumes. A degraded twin reuses its test's stream
+    (common random numbers), so the fault, not the noise, is what differs."""
+    return np.random.default_rng([seed, test])
+
+
+def g2_zero_expected(emitters: int = 1, rho2_one: float = P3_RHO2) -> float:
+    """g2(0) of N identical, independent emitters seen through uncorrelated background: 1 - rho_N^2 / N, where rho_N is
+    the fraction of detected light that comes from the emitters. The background B is fixed by rho2_one (the value for
+    one emitter, B/S = 1/rho_1 - 1), so rho_N = N / (N + B/S): a second NV adds light, not background. Valid for
+    continuous, low-power excitation (bunching from the metastable singlet at |tau| > tau1 is neglected) and a detector
+    time resolution much shorter than the antibunching time; one emitter with no background gives 0 [kurtsiefer2000]."""
+    b_over_s = 1.0 / math.sqrt(rho2_one) - 1.0
+    rho = emitters / (emitters + b_over_s)
+    return 1.0 - rho ** 2 / emitters
 
 
 def _g2_data(seed: int, emitters: int):
-    r = np.random.default_rng(seed); tau = np.linspace(-80, 80, 161); g0 = g2_zero_expected(emitters)
+    r = _rng(seed, 0); tau = np.linspace(-80, 80, 161); g0 = g2_zero_expected(emitters)
     return tau, 1 - (1 - g0) * np.exp(-np.abs(tau) / P3_TAU_NS) + r.normal(0, P3_G2_NOISE, tau.size), g0
 
 
+def _odmr_data(seed: int, linewidth_mhz: float):
+    """One NV in a small axial field: the window covers the ms = 0 to -1 line only, near D - gamma_e B."""
+    from . import nv
+    f0 = nv.transition_frequencies_mhz((0.0, 0.0, P3_BIAS_MT))[0]
+    f = np.linspace(f0 - 7.0, f0 + 7.0, 281)
+    y = nv.odmr_spectrum(f, np.array([0, 0, P3_BIAS_MT]), axes=np.array([[0, 0, 1.0]]), contrast=P3_ODMR["contrast"], linewidth_mhz=linewidth_mhz, hyperfine=True)
+    return f, y + _rng(seed, 1).normal(0, P3_ODMR["noise"], f.size)
+
+
 def _nuc_data(seed: int, detuning_mhz: float):
-    r = np.random.default_rng(seed); t = np.linspace(0.0, 300.0, 121)          # µs
+    r = _rng(seed, 2); t = np.linspace(0.0, 300.0, 121)          # µs
     om = P3_NUC_RABI_MHZ; oe = math.hypot(om, detuning_mhz)
     return t, (om / oe) ** 2 * np.sin(np.pi * oe * t) ** 2 + r.normal(0, P3_NUC_NOISE, t.size)
 
 
 def p3_antibunching(seed: int = 4, emitters: int = 1) -> dict:
     """C1, Hanbury Brown-Twiss: simulate the normalized coincidence histogram g2(tau) = 1 - (1 - g0) exp(-|tau|/tau1)
-    with g0 from g2_zero_expected, fit with adamas.fitting.fit_g2, and pass when g2(0) + k sigma < 0.5 (one emitter).
-    The degraded twin has two emitters in the focus (emitters=2), the one physical fault this test must catch."""
+    with g0 from g2_zero_expected, fit with adamas.fitting.fit_g2, and pass when g2(0) + k sigma < 0.5 (one emitter;
+    one-sided k). The degraded twin has two emitters in the focus (emitters=2), the one physical fault it must catch."""
     from . import fitting
     tau, y, g0 = _g2_data(seed, emitters)
     f = fitting.fit_g2(tau, y); v, e = float(f.params["g2_zero"]), float(f.errors["g2_zero"])
-    return {"emitters": emitters, "put_in": g0, "g2_zero": v, "err": e, "k": _k3(), "pass": bool(v + _k3() * e < 0.5)}
+    k = _k3_one_sided()
+    return {"emitters": emitters, "put_in": g0, "g2_zero": v, "err": e, "k": k, "pass": bool(np.isfinite(e) and v + k * e < 0.5)}
 
 
 def p3_hyperfine(seed: int = 4, linewidth_mhz: float = P3_ODMR["linewidth_mhz"]) -> dict:
-    """C1, low-power ODMR of one NV at zero field: three lines split by the 14N hyperfine coupling |A_par| = 2.147 MHz
-    [felton2009] (adamas.nv). Fit with adamas.fitting.fit_odmr (up to three lines); pass when exactly three lines are
-    found and their mean spacing (outer separation / 2) lies within k of its standard error of |A_par|. The degraded
+    """C1, low-power ODMR of one NV in a small axial field (P3_BIAS_MT; strain mixing is neglected, valid when
+    gamma_e B is much larger than the strain splitting E): the ms = 0 to -1 line splits into three, spaced by the 14N
+    hyperfine coupling |A_par| (2.147 MHz [felton2009], adamas.nv). Fit with adamas.fitting.fit_odmr (up to three
+    lines). The test asks whether the nucleus is RESOLVED, not whether the constant is reproduced: pass when exactly
+    three lines are found, the mean spacing (outer separation / 2) is at least P3_RESOLVED_SNR of its standard errors,
+    and every fitted line is narrower (full width) than the spacing. The spacing is reported next to |A_par| for
+    comparison only, because the published value's own uncertainty is not yet recorded (docs/STATUS.md). The degraded
     twin is power-broadened (linewidth P3_BROAD_MHZ, wider than the spacing), so the triplet is not resolved."""
     from . import fitting, nv
-    r = np.random.default_rng(seed); f = np.linspace(2863.0, 2877.0, 281)
-    y = nv.odmr_spectrum(f, np.zeros(3), axes=np.array([[0, 0, 1.0]]), contrast=P3_ODMR["contrast"], linewidth_mhz=linewidth_mhz, hyperfine=True) \
-        + r.normal(0, P3_ODMR["noise"], f.size)
-    out = {"linewidth_mhz": linewidth_mhz, "put_in": nv.A_PAR_14N_MHZ, "lines": 0, "spacing_mhz": float("nan"), "err": float("nan"), "k": _k3(), "pass": False}
+    f, y = _odmr_data(seed, linewidth_mhz)
+    out = {"linewidth_mhz": linewidth_mhz, "reference": nv.A_PAR_14N_MHZ, "lines": 0, "spacing_mhz": float("nan"), "err": float("nan"),
+           "max_fwhm_mhz": float("nan"), "pass": False}
+    import warnings
     try:
-        fit = fitting.fit_odmr(f, y, max_lines=3)
+        with warnings.catch_warnings():                 # a broadened (degraded) spectrum can leave a line's covariance undefined
+            warnings.simplefilter("ignore", category=Warning)
+            fit = fitting.fit_odmr(f, y, max_lines=3)
     except (ValueError, RuntimeError):
         return out
-    c = sorted((fit.params[k], fit.errors[f"center{k[6:]}"]) for k in fit.params if k.startswith("center"))
+    idx = [k[6:] for k in fit.params if k.startswith("center")]
+    c = sorted((fit.params[f"center{i}"], fit.errors[f"center{i}"]) for i in idx)
     out["lines"] = len(c)
     if len(c) == 3:
         a, e = (c[2][0] - c[0][0]) / 2, math.hypot(c[2][1], c[0][1]) / 2
-        out.update(spacing_mhz=float(a), err=float(e), pass_=bool(np.isfinite(e) and abs(a - nv.A_PAR_14N_MHZ) <= _k3() * e))
-        out["pass"] = out.pop("pass_")
+        fwhm = max(2 * abs(fit.params[f"hwhm{i}"]) for i in idx)
+        out.update(spacing_mhz=float(a), err=float(e), max_fwhm_mhz=float(fwhm))
+        out["pass"] = bool(np.isfinite(e) and e > 0 and a / e >= P3_RESOLVED_SNR and fwhm < a)
     return out
 
 
 def p3_nuclear_rabi(seed: int = 4, detuning_mhz: float = 0.0) -> dict:
-    """C1 extended: drive the 14N nuclear spin with an RF pulse of growing length and read it out through the electron
-    (a nuclear-state-selective microwave pi pulse, then optical readout), as in [jelezko2004b]. The normalized signal is
-    the flipped population P(t) = (Omega^2 / Omega_eff^2) sin^2(pi Omega_eff t), Omega_eff = sqrt(Omega^2 + delta^2)
-    (rotating-wave limit, Omega much smaller than the RF frequency; no decay over the window). Fit with
-    adamas.fitting.fit_rabi; the transferred population is twice the fitted amplitude. Pass when it is consistent with
-    full transfer, |transfer - 1| <= k sigma: the drive is on resonance with an addressable nuclear transition. The degraded
-    twin is driven off resonance by one Rabi frequency, so only half the population moves."""
+    """C1 extended: initialize the 14N nuclear spin by optical pumping near the excited-state level anticrossing
+    [jacques2009], drive it with an RF pulse of growing length, and read it out through the electron (a
+    nuclear-state-selective microwave pi pulse, then optical readout; the method of [jelezko2004b], shown there on a
+    13C nucleus). Assumes a pure initial nuclear state: with an unpolarized nucleus the contrast is smaller. The
+    normalized signal is the flipped population P(t) = (Omega^2 / Omega_eff^2) sin^2(pi Omega_eff t),
+    Omega_eff = sqrt(Omega^2 + delta^2) (rotating-wave limit, Omega much smaller than the RF frequency; no decay over the
+    window). Fit with adamas.fitting.fit_rabi; the transferred population is twice the fitted amplitude. Pass when it
+    is consistent with full transfer, |transfer - 1| <= k sigma: the drive is on resonance. The degraded twin is driven
+    off resonance by one Rabi frequency, so only half the population moves."""
     from . import fitting
     t, y = _nuc_data(seed, detuning_mhz); om = P3_NUC_RABI_MHZ; oe = math.hypot(om, detuning_mhz)
     f = fitting.fit_rabi(t, y)
@@ -408,7 +448,7 @@ def p3_degraded(seed: int = 4) -> dict:
 
 def p3_pass_rates(runs: int = P3_RUNS) -> dict:
     """Fraction of independent simulated runs (seeds 3000 + i) in which each test passes on a correct setup, and in
-    which the degraded twin wrongly passes. Binomial standard error of a rate p: sqrt(p (1 - p) / runs)."""
+    which the degraded twin wrongly passes. Binomial standard error at the design rate p: sqrt(p (1 - p) / runs)."""
     c = {k: 0 for k in ("antibunching", "hyperfine", "nuclear_rabi", "gate")}; d = {k: 0 for k in ("antibunching", "hyperfine", "nuclear_rabi")}
     for i in range(runs):
         g = p3_gate(3000 + i); b = p3_degraded(3000 + i)
@@ -424,11 +464,12 @@ def p3_pass_rates(runs: int = P3_RUNS) -> dict:
 
 def p3_bill() -> dict:
     """Parts and price range for P3: the C1 part list (approximate 2026 street prices from adamas.experiments; estimates,
-    not quotes). The RF source for the nuclear spin (Atlas M53) has no sourced price and is listed without one."""
+    not quotes). The RF source for the nuclear spin (Atlas M53) and the charge-state
+    laser (M54) have no sourced price and are listed without one."""
     from .experiments import EXPERIMENTS
     by = {e["id"]: e for e in EXPERIMENTS}
     rows = [("C1", *p) for p in by["C1"]["parts"]]
-    return {"rows": rows, "low": sum(r[3] for r in rows), "high": sum(r[4] for r in rows), "headline": by["C1"]["cost"], "unpriced": ["M53"]}
+    return {"rows": rows, "low": sum(r[3] for r in rows), "high": sum(r[4] for r in rows), "headline": by["C1"]["cost"], "unpriced": ["M53", "M54"]}
 
 
 P3_MACHINES = ("M47", "M48", "M49", "M50", "M51", "M52", "M53", "M54")
@@ -447,13 +488,13 @@ def p3_figure(out: str | Path = "docs/img") -> Path:
         r = p3_antibunching(emitters=n); fit = fitting.fit_g2(x, y); a.plot(fit.x, fit.model, color=col, lw=2, label=f"{lab}: g⁽²⁾(0) = {r['g2_zero']:.2f} ± {r['err']:.2f}")
     a.axhline(0.5, color=INK, ls="--", lw=1); a.set_ylim(0, 1.25); a.legend(fontsize=8, loc="lower right")
     a.set_title("1. Antibunching: pass when g⁽²⁾(0) + kσ < 0.5 (dots data, lines fits)", fontsize=10.5); a.set_xlabel("delay τ (ns)"); a.set_ylabel("g⁽²⁾(τ)")
-    a = ax[1]; f = np.linspace(2863.0, 2877.0, 281)
+    a = ax[1]
     for lw, col, lab, off in ((P3_ODMR["linewidth_mhz"], COLORS["Diamond"], "low power", 0.0), (P3_BROAD_MHZ, RED, "power-broadened (degraded twin)", -0.12)):
-        y = nv.odmr_spectrum(f, np.zeros(3), axes=np.array([[0, 0, 1.0]]), contrast=P3_ODMR["contrast"], linewidth_mhz=lw, hyperfine=True) + np.random.default_rng(4).normal(0, P3_ODMR["noise"], f.size)
+        f, y = _odmr_data(4, lw)
         a.plot(f, y + off, ".", ms=2.5, color=col, label=lab)
     hf = g["hyperfine"]; a.legend(fontsize=8, loc="lower left")
-    a.set_title(f"2. Hyperfine triplet: spacing {hf['spacing_mhz']:.3f} ± {hf['err']:.3f} MHz (|A∥| {nv.A_PAR_14N_MHZ} MHz)", fontsize=10.5)
-    a.set_xlabel("microwave frequency (MHz)"); a.set_ylabel("fluorescence (normalized; red offset −0.12)")
+    a.set_title(f"2. Hyperfine triplet resolved: spacing {hf['spacing_mhz']:.3f} ± {hf['err']:.3f} MHz (|A∥| {nv.A_PAR_14N_MHZ} MHz)", fontsize=10.5)
+    a.set_xlabel(f"microwave frequency (MHz), ms = 0 to −1 at {P3_BIAS_MT:g} mT"); a.set_ylabel("fluorescence (normalized; red offset −0.12)")
     a = ax[2]
     for det, col, lab in ((0.0, COLORS["Diamond"], "on resonance"), (P3_NUC_RABI_MHZ, RED, "detuned by Ω (degraded twin)")):
         x, y = _nuc_data(4, det); a.plot(x, y, ".", ms=3, color=col, alpha=.6)
@@ -752,29 +793,31 @@ def _p3_md() -> str:
     pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
     parts = {"Oil or air objective": "M47", "Scanning": "M48", "Single-photon detectors": "M49", "Time tagger": "M50", "Electronic-grade diamond": "M52", "Microwave and control": "M51"}
     rows = "\n".join(f"| {parts.get(r[1], '')} | {r[1]} ({r[0]}) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
-    rows += "\n" + "\n".join(f"| {m} | {atlas.tool(m)} | needed for the nuclear-spin test | not priced (no source yet) |" for m in bill["unpriced"])
+    use = {"M53": "needed for the nuclear-spin test", "M54": "for the charge-state check (not yet simulated)"}
+    rows = rows.replace("|  | Laser and optics", "| (not in the Atlas) | Laser and optics")
+    rows += "\n" + "\n".join(f"| {m} | {atlas.tool(m)} | {use[m]} | not priced (no source yet) |" for m in bill["unpriced"])
     machines = ", ".join(f"{m} {atlas.tool(m)}" for m in P3_MACHINES)
     steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["C1"]["steps"]))
     safety = " ".join(by["C1"]["safety"])
-    hf_fit = f"{hf['spacing_mhz']:.3f} ± {hf['err']:.3f} MHz" if hf["lines"] == 3 else f"{hf['lines']} line(s) found"
+    hf_fit = f"{hf['spacing_mhz']:.3f} ± {hf['err']:.3f} MHz, widest line {hf['max_fwhm_mhz']:.2f} MHz" if hf["lines"] == 3 else f"{hf['lines']} line(s) found"
     hb = b["hyperfine"]; hb_fit = f"{hb['spacing_mhz']:.3f} ± {hb['err']:.3f} MHz" if hb["lines"] == 3 else f"{hb['lines']} line(s) found, triplet not resolved"
-    return f"""# P3 · Single NV: one emitter, its nuclear spin, and a two-qubit register
+    return f"""# P3 · Single NV: one emitter and its nuclear spin
 
 {GEN}
 
-**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,} for a complete setup). The RF source for the nuclear spin is not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
+**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,} for a complete setup). The RF source for the nuclear spin and the charge-state laser are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
 
 Every input below is **illustrative** (chosen to look like a typical room-temperature confocal setup, not measured), except the ¹⁴N hyperfine constant, which is sourced. The phase is **simulated**: no ADAMAS hardware has run it.
 
 ## Goal
 
-Find one NV center, prove it is one (photon antibunching), resolve the ¹⁴N nuclear spin it carries (hyperfine triplet), and rotate that nuclear spin coherently (nuclear-spin Rabi). These are the Device Library's QDL-01 (electron-spin qubit cell) and QDL-02 (nuclear-spin memory) on one NV, the pair that QDL-03 (electron–nuclear conditional gate) entangles; QDL-03's gate is not tested here.
+Find one nitrogen-vacancy (NV) center, prove it is one (photon antibunching), resolve the ¹⁴N nuclear spin it carries (hyperfine triplet in optically detected magnetic resonance, ODMR), and rotate that nuclear spin coherently (nuclear-spin Rabi). These are the Quantum Device Library's (QDL) QDL-01 (electron-spin qubit cell) and QDL-02 (nuclear-spin memory) on one NV, the pair that QDL-03 (electron–nuclear conditional gate, a controlled-NOT or CNOT) entangles; QDL-03's gate is not tested here, and ¹⁴N is a spin-1 nucleus, so it holds three levels, not two.
 
 ## Physics and equations
 
-- **Antibunching:** one emitter cannot give two photons at once, so the normalized coincidence rate g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁) dips at zero delay [kurtsiefer2000]. For N identical, independent emitters seen through uncorrelated background, g₀ = 1 − ρ²/N, where ρ is the fraction of detected light that comes from the emitters. Valid for continuous excitation and a detector time resolution much shorter than τ₁. g₀ < 0.5 rules out two or more emitters. Simulated with ρ² = {P3_RHO2:g} (illustrative), so one NV gives g₀ = {g2_zero_expected(1):.2f} and two give {g2_zero_expected(2):.2f}.
-- **Hyperfine triplet:** the ¹⁴N nucleus (spin 1) splits each electron-spin line into three, spaced by |A∥| = {nv.A_PAR_14N_MHZ} MHz [felton2009]. The lines are resolved only when each is narrower than the spacing, so the microwave power must be low (power broadening widens the line). Simulated at zero field with a {P3_ODMR['linewidth_mhz']:g} MHz line width (illustrative).
-- **Nuclear-spin Rabi:** an RF field drives the nuclear spin; the flipped population is P(t) = (Ω²/Ω_eff²) sin²(πΩ_eff t), Ω_eff = √(Ω² + δ²). Valid in the rotating-wave limit (Ω much smaller than the RF frequency) and over a window short compared with the nuclear coherence time. The nuclear state is read through the electron: a microwave π pulse selective on one hyperfine line flips the electron only for one nuclear state, then the electron is read optically [jelezko2004b]. In the electron's ms = 0 state the ¹⁴N transitions sit near the quadrupole frequency |P| = 5.016 MHz [felton2009], split by any bias field. Simulated with Ω = {1e3 * P3_NUC_RABI_MHZ:g} kHz (illustrative).
+- **Antibunching:** one emitter cannot give two photons at once, so the normalized coincidence rate g⁽²⁾(τ) = 1 − (1 − g₀) e^(−|τ|/τ₁) dips at zero delay [kurtsiefer2000]. For N identical, independent emitters seen through uncorrelated background, g₀ = 1 − ρ²/N, where ρ is the fraction of detected light that comes from the emitters. Valid for continuous, low-power excitation (the bunching above 1 at longer delays, from the metastable singlet, is neglected) and a detector time resolution much shorter than τ₁. g₀ < 0.5 rules out two or more emitters. Simulated with ρ² = {P3_RHO2:g} for one NV (illustrative), so one NV gives g₀ = {g2_zero_expected(1):.2f}; a second NV adds light but not background, so ρ grows and two NVs give {g2_zero_expected(2):.2f}.
+- **Hyperfine triplet:** the ¹⁴N nucleus (spin 1) splits each electron-spin line into three, spaced by |A∥| = {nv.A_PAR_14N_MHZ} MHz [felton2009]. The lines are resolved only when each is narrower than the spacing, so the microwave power must be low (power broadening widens the line). Simulated on the ms = 0 to −1 line in a {P3_BIAS_MT:g} mT axial bias field, which separates it from the ms = +1 line (γₑB = {P3_BIAS_MT * 28.03:.2f} MHz with γₑ = 28.03 MHz/mT [doherty2013]); strain mixing is neglected, valid while γₑB is much larger than the strain splitting E. Line width {P3_ODMR['linewidth_mhz']:g} MHz (illustrative). The test asks whether the triplet is resolved; it does not test the value of |A∥|, whose published uncertainty is not yet recorded here ([STATUS.md](../STATUS.md)).
+- **Nuclear-spin Rabi:** a radio-frequency (RF) field drives the nuclear spin; the flipped population is P(t) = (Ω²/Ω_eff²) sin²(πΩ_eff t), Ω_eff = √(Ω² + δ²). Valid in the rotating-wave limit (Ω much smaller than the RF frequency) and over a window short compared with the nuclear coherence time. The model assumes the nucleus starts in one pure state, which green light alone does not give at low field (the three nuclear levels stay about equally populated); optical pumping near the excited-state level anticrossing polarizes it [jacques2009]. The nuclear state is read through the electron: a microwave π pulse selective on one hyperfine line flips the electron only for one nuclear state, then the electron is read optically (the method of [jelezko2004b], shown there on a ¹³C nucleus). In the electron's ms = 0 state the ¹⁴N transitions sit near the quadrupole frequency |P| = 5.016 MHz [felton2009], split by any bias field. Simulated with Ω = {1e3 * P3_NUC_RABI_MHZ:g} kHz (illustrative).
 
 The Photon Lab runs the antibunching equation.
 
@@ -798,10 +841,11 @@ C1 (find and prove a single NV, resolve its nucleus):
 
 Nuclear-spin Rabi (extends C1, uses Atlas M53):
 
-1. **Pick a nuclear transition.** Apply a small bias field along the NV axis so the ¹⁴N transitions near |P| no longer overlap; find the one you want with an RF sweep read through the electron.
-2. **Map the nucleus onto the electron.** Calibrate a microwave π pulse that is selective on one hyperfine line (Rabi frequency well below {nv.A_PAR_14N_MHZ} MHz).
-3. **Sweep the RF pulse length.** For each length: initialize with the green laser, apply the RF pulse, apply the selective π pulse, read the electron optically. Record bright (ms = 0) and dark (ms = −1) reference counts in the same run and normalize with them.
-4. **Fit.** `python -m adamas.fit rabi nuclear.csv` (time in µs); the transferred population is twice the fitted amplitude.
+1. **Polarize the nucleus.** Set the axial field near the excited-state level anticrossing, where green light pumps the ¹⁴N spin into one state [jacques2009]; check the polarization from the relative depth of the three hyperfine lines.
+2. **Pick a nuclear transition.** The ¹⁴N transitions near |P| move with the field; find the one that starts from the polarized state with an RF sweep read through the electron.
+3. **Map the nucleus onto the electron.** Calibrate a microwave π pulse that is selective on one hyperfine line (Rabi frequency well below {nv.A_PAR_14N_MHZ} MHz).
+4. **Sweep the RF pulse length.** For each length: polarize with the green laser, apply the RF pulse, apply the selective π pulse, read the electron optically. Record bright (ms = 0) and dark (ms = −1) reference counts in the same run and normalize with them.
+5. **Fit.** `python -m adamas.fit rabi nuclear.csv` (time in µs); the transferred population is twice the fitted amplitude.
 
 ## Expected results (simulated)
 
@@ -811,12 +855,12 @@ Each test is shown with its **degraded twin**: the same simulation with one phys
 
 ## Pass/fail
 
-The gate needs all {P3_TESTS} tests to pass, so each is set for {100 * P3_TEST_COVERAGE:.2f} % coverage and a correct setup gets "go" at least {100 * P3_GATE_COVERAGE:.0f} % of the time: k = {rates['k']:.2f} standard errors. Rates are over {rates['runs']} simulated runs (binomial standard error {100 * rates['se_test']:.1f} percentage points per test, {100 * rates['se_gate']:.1f} for the gate).
+The gate needs all {P3_TESTS} tests to pass, so each is set for {100 * P3_TEST_COVERAGE:.2f} % coverage and a correct setup gets "go" at least {100 * P3_GATE_COVERAGE:.0f} % of the time: k = {ab['k']:.2f} standard errors for the one-sided antibunching test and {rates['k']:.2f} for the two-sided nuclear Rabi test. The hyperfine test has its own criterion (resolution, below). Each test draws its own noise, so the tests are independent. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per test, {100 * rates['se_gate']:.1f} for the gate).
 
 | Test | Criterion | Put in | Fitted | Pass? | Correct setups passing |
 |---|---|---|---|---|---|
 | One emitter (antibunching) | g⁽²⁾(0) + kσ < 0.5 | g₀ = {ab['put_in']:.2f} | {ab['g2_zero']:.3f} ± {ab['err']:.3f} | {yes(ab['pass'])} | {pct(rates['antibunching'])} |
-| Nuclear spin resolved (hyperfine) | three lines; mean spacing within kσ of {nv.A_PAR_14N_MHZ} MHz [felton2009] | {hf['put_in']} MHz | {hf_fit} | {yes(hf['pass'])} | {pct(rates['hyperfine'])} |
+| Nuclear spin resolved (hyperfine) | three lines; spacing at least {P3_RESOLVED_SNR:g}σ; every line narrower than the spacing | {hf['reference']} MHz [felton2009] | {hf_fit} | {yes(hf['pass'])} | {pct(rates['hyperfine'])} |
 | Nuclear spin driven (Rabi) | transferred population within kσ of 1 | Ω = {nr['put_in_khz']:g} kHz, δ = 0 | {nr['transfer']:.3f} ± {nr['transfer_err']:.3f} ({nr['rabi_khz']:.2f} ± {nr['rabi_err_khz']:.2f} kHz) | {yes(nr['pass'])} | {pct(rates['nuclear_rabi'])} |
 | **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
 
@@ -828,12 +872,13 @@ The degraded twins, one fault each. The last column is how often the faulty setu
 | Hyperfine | power-broadened line, {P3_BROAD_MHZ:g} MHz wide | {hb_fit} | {yes(hb['pass'])} | {pct(rates['degraded']['hyperfine'])} |
 | Nuclear Rabi | RF detuned by one Rabi frequency (half the population moves) | {b['nuclear_rabi']['transfer']:.3f} ± {b['nuclear_rabi']['transfer_err']:.3f} | {yes(b['nuclear_rabi']['pass'])} | {pct(rates['degraded']['nuclear_rabi'])} |
 
-The antibunching test passes correct setups more often than its {100 * P3_TEST_COVERAGE:.2f} % design because it is one-sided and the simulated g₀ sits well below 0.5. The nuclear Rabi fit leaves its decay time free over a window with no decay, which inflates the amplitude's error, so that test is also conservative. A single "stop" on real data is a reason to repeat the failing measurement before changing the setup.
+The antibunching and hyperfine tests are not calibrated to {100 * P3_TEST_COVERAGE:.2f} %: their pass rates depend on how far the simulated g₀ sits below 0.5 and how well the lines are resolved, both wide margins here. The nuclear Rabi fit leaves its decay time free over a window with no decay, which inflates the amplitude's error, so that test is also conservative. A single "stop" on real data is a reason to repeat the failing measurement before changing the setup.
 
 ## Not yet simulated
 
 - **Single-shot readout** of the nuclear spin (repetitive readout [neumann2010science]) belongs to this phase; the Device Library's readout check covers optical readout only, so it has no criterion here.
 - **Charge state** (NV⁻ versus NV⁰) under the green laser, which Atlas M54 measures, has no model in the package yet.
+- **The value of |A∥|.** The test checks that the triplet is resolved, not that the spacing reproduces {nv.A_PAR_14N_MHZ} MHz, because the published uncertainty of that constant is not recorded in the package yet.
 - **The electron–nuclear gate** (CNOT) is computed in `adamas.register` as a Bell-state fidelity, not a gate fidelity, and is not part of this gate ([STATUS.md](../STATUS.md)).
 
 ## Failure modes
@@ -848,7 +893,7 @@ The antibunching test passes correct setups more often than its {100 * P3_TEST_C
 
 *Do we have single, addressable registers?* {'All simulated tests pass and every degraded twin fails, so the analysis can tell a working register from a broken one; the gate is decided by the measured values on your setup.' if g['verdict'] == 'go' and not any(v['pass'] for v in b.values()) else 'On this run a simulated test fails or a degraded twin passes; a correct setup fails about one time in twenty, so repeat it before changing the analysis.'} Go to P5 (placement) when one emitter, its resolved nucleus, and full nuclear Rabi contrast are measured on the same NV.
 
-Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [jelezko2004b] [felton2009] [doherty2013] [neumann2010science]
+Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [jelezko2004b] [jacques2009] [felton2009] [doherty2013] [neumann2010science]
 """
 
 

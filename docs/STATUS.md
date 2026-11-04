@@ -10,8 +10,10 @@ Last updated: v0.33.0 (2026-11-04).
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| Illustrative inputs | The background fraction (ρ² = 0.8), antibunching time (12 ns), line width (0.4 MHz), nuclear Rabi frequency (10 kHz) and all noise levels are chosen to look like a typical confocal setup; none is measured or sourced. Only the ¹⁴N hyperfine constant (2.147 MHz [felton2009]) is sourced | Measured values from a P3 setup, or sourced typical values |
-| Price of the nuclear-spin RF source (Atlas M53) | No sourced price; the C1 part list does not include it | A quote or a sourced street price |
+| Illustrative inputs | The background fraction (ρ² = 0.8), antibunching time (12 ns), bias field (1 mT), line width (0.4 MHz), nuclear Rabi frequency (10 kHz) and all noise levels are chosen to look like a typical confocal setup; none is measured or sourced. Only the ¹⁴N hyperfine constant (2.147 MHz [felton2009]) is sourced | Measured values from a P3 setup, or sourced typical values |
+| Uncertainty of the ¹⁴N hyperfine constant | 2.147 MHz [felton2009] is used without its published uncertainty, and other papers report values a little higher; so the P3 hyperfine test checks that the triplet is resolved, not the value | Record the published uncertainty (and other measurements) from the papers, then add a value test with the combined uncertainty, as P1 does for dD/dT |
+| Field for nuclear polarization | The procedure says "near the excited-state level anticrossing" [jacques2009] without a number, because the field value is not yet recorded from the paper | Confirm the field from [jacques2009] |
+| Price of the nuclear-spin RF source (M53) and the charge-state laser (M54) | No sourced price; the C1 part list does not include them | A quote or a sourced street price |
 | Single-shot nuclear readout, charge state (M54), electron–nuclear gate | No model in the package for repetitive readout or NV⁻/NV⁰ dynamics; the register's CNOT is computed as a Bell-state fidelity, not a gate fidelity | Models with sources, then a criterion each |
 
 ## Open in v0.32.0: Fab Journey

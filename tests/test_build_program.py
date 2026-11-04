@@ -51,11 +51,14 @@ def test_p3_gate_passes_and_every_degraded_twin_fails():
     g, b = B.p3_gate(), B.p3_degraded()
     assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
     assert g["hyperfine"]["lines"] == 3 and b["hyperfine"]["lines"] < 3       # power broadening hides the triplet
+    assert g["hyperfine"]["max_fwhm_mhz"] < g["hyperfine"]["spacing_mhz"]
     assert b["nuclear_rabi"]["transfer"] == pytest.approx(0.5, abs=3 * b["nuclear_rabi"]["transfer_err"])
 
 
 def test_p3_g2_zero_model_and_coverage():
     assert B.g2_zero_expected(1, 1.0) == 0.0 and B.g2_zero_expected(2, 1.0) == 0.5        # ideal one and two emitters
+    assert B.g2_zero_expected(1) == pytest.approx(1 - B.P3_RHO2, rel=1e-9)
+    assert 0.5 < B.g2_zero_expected(2) < 1 - B.P3_RHO2 / 2                     # a second NV adds light, not background
     assert B.P3_TEST_COVERAGE ** B.P3_TESTS == pytest.approx(B.P3_GATE_COVERAGE, rel=1e-9)
 
 
@@ -68,3 +71,9 @@ def test_p3_pass_rates_meet_the_design():
 def test_p3_json_has_no_nan():
     import json
     json.dumps(B.to_json()["p3"], allow_nan=False)
+
+
+def test_p3_tests_draw_independent_noise():
+    import numpy as np
+    a, b, c = (B._rng(7, i).normal(size=5) for i in range(3))
+    assert not (np.allclose(a, b) or np.allclose(b, c))

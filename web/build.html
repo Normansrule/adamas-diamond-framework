@@ -90,19 +90,19 @@ function detail() {
       ${row('<b>Gate: all pass</b>', '', '', g.verdict === 'go', r.gate)}</table>
       <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates). Each fit must land within ${r.k.toFixed(2)} of its own standard errors of the value it should find (E_A: the value put in plus the method bias ${ar.method_bias_ev.toFixed(4)} eV, Student-t factor ${ar.k.toFixed(2)}), so a correct setup gets "go" about 95 % of the time; rates over ${r.runs} simulated runs. T₁ has no model yet, so no criterion.</p>`; }
   else if (sel === 'P3') { const g = D.p3, ab = g.antibunching, hf = g.hyperfine, nr = g.nuclear_rabi, b = g.degraded, r = g.pass_rates, pc = v => (100 * v).toFixed(1) + ' %';
-    const num = (v, e, d) => v === null ? 'not resolved' : `${v.toFixed(d)} ± ${e.toFixed(d)}`;
+    const num = (v, e, d) => v === null ? 'not resolved' : e === null ? `${v.toFixed(d)} (no error estimate)` : `${v.toFixed(d)} ± ${e.toFixed(d)}`;
     const lines = h => h.lines === 3 ? num(h.spacing_mhz, h.err, 3) + ' MHz' : `${h.lines} line(s), not resolved`;
     const row = (t, fit, ok, rate, word) => `<tr><td>${t}</td><td class="n">${fit}</td><td>${V(word === 'caught' ? !ok : ok, word === 'caught' ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${pc(rate)}</td></tr>`;
-    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><table class="tests"><tr><th>Test</th><th>Fitted</th><th></th><th>Correct setups passing</th></tr>
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Test</th><th>Fitted</th><th></th><th>Correct setups passing</th></tr>
       ${row('One emitter: g⁽²⁾(0) + kσ < 0.5', num(ab.g2_zero, ab.err, 3), ab.pass, r.antibunching)}
-      ${row(`Hyperfine triplet, spacing ${hf.put_in} MHz`, lines(hf), hf.pass, r.hyperfine)}
+      ${row(`Hyperfine triplet resolved (|A∥| ${hf.reference} MHz)`, lines(hf), hf.pass, r.hyperfine)}
       ${row('Nuclear Rabi, full transfer', num(nr.transfer, nr.transfer_err, 3), nr.pass, r.nuclear_rabi)}
-      ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table>
-      <h3>Degraded twins: one fault each, must fail</h3><table class="tests"><tr><th>Fault</th><th>Fitted</th><th></th><th>Faulty setups passing</th></tr>
+      ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table></div>
+      <h3>Degraded twins: one fault each, must fail</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Fault</th><th>Fitted</th><th></th><th>Faulty setups passing</th></tr>
       ${row('Two NVs in the focus', num(b.antibunching.g2_zero, b.antibunching.err, 3), b.antibunching.pass, r.degraded.antibunching, 'caught')}
       ${row('Power-broadened line', lines(b.hyperfine), b.hyperfine.pass, r.degraded.hyperfine, 'caught')}
-      ${row('RF detuned by one Rabi frequency', num(b.nuclear_rabi.transfer, b.nuclear_rabi.transfer_err, 3), b.nuclear_rabi.pass, r.degraded.nuclear_rabi, 'caught')}</table>
-      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the nuclear-spin RF source is not priced yet). Illustrative inputs except the ¹⁴N hyperfine constant [felton2009]. Each test uses k = ${r.k.toFixed(2)} standard errors so a correct setup gets "go" at least 95 % of the time; rates over ${r.runs} simulated runs. Single-shot readout and the charge state have no criterion yet.</p>`; }
+      ${row('RF detuned by one Rabi frequency', num(b.nuclear_rabi.transfer, b.nuclear_rabi.transfer_err, 3), b.nuclear_rabi.pass, r.degraded.nuclear_rabi, 'caught')}</table></div>
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the nuclear-spin RF source and the charge-state laser are not priced yet). Illustrative inputs except the ¹⁴N hyperfine constant [felton2009]. Tests are set (k = ${ab.k.toFixed(2)} one-sided, ${r.k.toFixed(2)} two-sided; the hyperfine test asks for resolved lines) so a correct setup gets "go" at least 95 % of the time; rates over ${r.runs} simulated runs. Single-shot readout and the charge state have no criterion yet.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>
