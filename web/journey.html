@@ -1,0 +1,140 @@
+<!doctype html><html lang="en" data-base="."><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Fab Journey · ADAMAS</title>
+<style>
+/* Process Plate, as the Device Library: a manual you follow. Big step number, parts tray, before/after, checkpoint. */
+.plate{background-color:#060a12;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px;border:1px solid var(--line);border-radius:4px}
+.eyebrow{font:600 12.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 8px}
+.tab{font:600 13px var(--mono);padding:8px 12px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.02);color:var(--mute);cursor:pointer}
+.tab[aria-pressed="true"]{color:var(--ink);border-color:var(--teal);background:rgba(45,226,230,.10)}
+.tab:focus-visible,.sbtn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.jgrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start}@media(max-width:900px){.jgrid{grid-template-columns:minmax(0,1fr)}}
+.slist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.sbtn{all:unset;box-sizing:border-box;display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px;width:100%;padding:8px;border:1px solid var(--line);border-radius:3px;cursor:pointer;font-size:13px;color:var(--mute)}
+.sbtn b{font:600 12px var(--mono);color:var(--teal)}.sbtn[aria-current="step"]{color:var(--ink);border-color:var(--teal);background:rgba(45,226,230,.08)}
+@media(max-width:900px){.slist{grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);overflow-x:auto;padding-bottom:6px}}
+#view{padding:20px;display:grid;gap:16px;min-width:0}
+.shead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:end}
+.stepno{font:700 clamp(56px,9vw,96px)/.85 var(--mono);color:var(--teal);letter-spacing:-.04em}
+.shead h2{font:600 clamp(20px,2.6vw,28px)/1.2 var(--mono);margin:0}
+.st{display:inline-block;font:600 11px var(--mono);padding:2px 7px;border-radius:3px;border:1px solid}
+.st.demonstrated{color:var(--green);border-color:rgba(72,229,163,.5)}.st.reported{color:var(--gold);border-color:rgba(255,196,107,.5)}
+.st.simulated{color:var(--cyan);border-color:rgba(111,243,255,.5)}.st.proposed{color:var(--violet);border-color:rgba(157,123,255,.6);border-style:dashed}
+.box{border:1px solid var(--line);background:rgba(5,8,14,.88);border-radius:3px;padding:14px;min-width:0}
+.box h3{font:600 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin:0 0 8px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}@media(max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.tray{display:flex;flex-wrap:wrap;gap:6px}.part{font:500 12px var(--mono);border:1px solid var(--line);border-radius:3px;padding:5px 8px}.part b{color:var(--teal)}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0;padding:0;list-style:none}
+.chain li{font:500 12.5px var(--mono);border:1px solid rgba(45,226,230,.45);border-radius:3px;padding:8px 10px;background:rgba(45,226,230,.06)}
+.chain li+li::before{content:"→ ";color:var(--mute)}
+.xs{width:100%;display:block}.xs text{fill:var(--ink);font:500 11.5px Inter}
+.ba{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}@media(max-width:560px){.ba{grid-template-columns:minmax(0,1fr)}}
+.ba figure{margin:0}.ba figcaption{font:600 11.5px var(--mono);color:var(--mute);margin-bottom:4px}
+.note{font-size:13px;color:var(--mute);margin:6px 0 0}
+.safety{border:1px solid rgba(255,93,108,.5);background:rgba(255,93,108,.06);border-radius:3px;padding:12px;font-size:13.5px}
+.safety h3{font:600 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin:0 0 6px}
+.verdict{font:600 11.5px var(--mono);padding:2px 7px;border-radius:3px}.verdict.go{background:rgba(72,229,163,.18);color:var(--green)}.verdict.stop{background:rgba(255,93,108,.18);color:var(--red)}.verdict.out{background:rgba(255,255,255,.06);color:var(--mute)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl td,.tbl th{padding:6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.tbl th{color:var(--mute);font-weight:500;font-size:12px}
+.tscroll{overflow-x:auto}
+.navrow{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.gate label{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.gate input{background:#0a1120;color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:6px;font:500 13px var(--mono)}
+.gate output{font:600 18px var(--mono);color:var(--ink)}
+#printAll{display:none}
+@media print{
+  nav.top,.aurora,.gridbg,footer,.tabs,.navrow,#steps,#lede,#view,.noprint{display:none!important}
+  body{background:#fff;color:#000}#printAll{display:block}
+  #printAll section{break-after:page;padding:8px 0}#printAll .box,#printAll .safety{background:#fff;border-color:#999;color:#000}
+  #printAll .plate{background:#fff}#printAll .xs text{fill:#000}#printAll .note{color:#333}
+}
+</style></head><body>
+<main class="wrap">
+<section class="block" style="padding:50px 0 4px" id="lede"><p class="eyebrow">Fab Journey</p>
+  <h1 style="font-size:clamp(30px,4.6vw,56px);margin:6px 0 10px">Build it, <span class="grad">one step at a time</span></h1>
+  <p class="lead" style="max-width:860px">Four scopes, from a kitchen-table magnetometer to a wafer of placed nitrogen-vacancy (NV) centers. Each step has one action, its parts with Machine Atlas IDs, a code-drawn diagram, a checkpoint, and safety notes. Checkpoints are computed where the package has a model; elsewhere they list the criteria you measure on your own sample.</p>
+  <div class="tabs" role="group" aria-label="Choose a scope">
+    <button class="tab" type="button" id="lvL0" data-l="L0">L0 Kitchen table</button><button class="tab" type="button" id="lvL1" data-l="L1">L1 Teaching lab</button>
+    <button class="tab" type="button" id="lvL2" data-l="L2">L2 Cleanroom device</button><button class="tab" type="button" id="lvL3" data-l="L3">L3 Wafer scale</button>
+  </div>
+  <p class="note" id="scope" aria-live="polite"></p>
+</section>
+<section class="block" style="padding-top:4px">
+  <div class="jgrid"><nav aria-label="Steps"><ol class="slist" id="steps"></ol></nav>
+    <div><div class="plate" id="view" tabindex="-1" aria-labelledby="stepTitle"></div>
+      <div class="navrow" style="margin-top:10px"><button class="btn" id="prevStep" data-icon="prev">Previous step</button>
+        <button class="btn" id="printLv" data-icon="print">Print this scope (PDF)</button><button class="btn primary" id="nextStep" data-icon-end="next">Next step</button></div></div></div>
+</section>
+<div id="printAll"></div>
+</main>
+<script type="module">
+import { boot, data } from './assets/site.js';
+boot('Fab Journey');
+const $ = id => document.getElementById(id), J = (await data()).journey;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const badge = s => `<span class="st ${esc(s)}">${esc(s)}</span>`;
+let lv = 'L0', k = 0;
+const hash = (window.location.hash || '').slice(1).split('-');
+if (J.levels.some(L => L.id === hash[0])) { lv = hash[0]; k = Math.max(0, (+hash[1] || 1) - 1); }
+const level = () => J.levels.find(L => L.id === lv);
+
+function section(layers) {
+  const n = layers.length, h = 30, dx = 22, dy = 12, x0 = 10, w = 150, y0 = 18;
+  const fills = ['#2de2e6', '#9d7bff', '#ffc46b', '#48e5a3', '#ff5d8f', '#6ff3ff'];
+  let s = `<svg class="xs" viewBox="0 0 470 ${y0 + n * h + dy + 4}" role="img" aria-label="Schematic cross-section, top to bottom: ${esc(layers.join(', '))}">`;
+  layers.forEach((L, i) => { const y = y0 + i * h, c = fills[i % fills.length];
+    if (i === 0) s += `<path d="M${x0} ${y} l${dx} ${-dy} h${w} l${-dx} ${dy}z" fill="${c}" fill-opacity=".35" stroke="${c}" stroke-opacity=".7"/>`;
+    s += `<path d="M${x0} ${y} h${w} v${h} h${-w}z" fill="${c}" fill-opacity=".16" stroke="${c}" stroke-opacity=".6"/><path d="M${x0 + w} ${y} l${dx} ${-dy} v${h} l${-dx} ${dy}z" fill="${c}" fill-opacity=".26" stroke="${c}" stroke-opacity=".6"/>`;
+    s += `<text x="${x0 + w + dx + 10}" y="${y + h / 2 + 2}">${esc(L)}</text>`; });
+  return s + '</svg>';
+}
+function diagram(d) {
+  if (d.kind === 'setup') return `<ol class="chain" aria-label="Setup in signal order">${d.chain.map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="note">Schematic setup, in signal order.</p>`;
+  if (d.kind === 'section') return `<div class="ba"><figure><figcaption>BEFORE</figcaption>${section(d.before)}</figure><figure><figcaption>AFTER</figcaption>${section(d.after)}</figure></div><p class="note">Schematic, not to scale. Implant depth from the rule of thumb in adamas.coupling (about 1.5 nm per keV, straggle about 40 %); use SRIM for design work.</p>`;
+  if (d.kind === 'yield') { const mx = Math.max(...d.rows.map(r => r.yield)) || 1;
+    return `<div class="tscroll"><table class="tbl"><tr><th>Ions per site</th><th>Working two-site cells</th><th></th></tr>${d.rows.map(r => `<tr><td>${r.ions_per_site}</td><td>${r.yield.toFixed(4)}</td><td style="width:45%"><div style="height:10px;background:var(--teal);width:${(100 * r.yield / mx).toFixed(1)}%" aria-hidden="true"></div></td></tr>`).join('')}</table></div>
+      <p class="note">Simulated by adamas.coupling.pair_yield. Illustrative inputs: conversion ${d.conv} per ion (about 1 % for keV implants [pezzagna2010]), ${d.sigma_nm} nm placement spread per axis, ${d.target_nm} nm design spacing; a cell works if each site holds exactly one NV and the pair is within the 0.99-gate horizon of the Device Library.</p>`; }
+  if (d.kind === 'spc') return `<div class="tscroll"><table class="tbl"><tr><th>Step</th><th>Check</th><th>Limits</th><th>Source</th></tr>${d.limits.map(x => `<tr><td>${esc(x.step)}</td><td>${esc(x.check)}</td><td>${x.min !== null ? '≥ ' + x.min : ''}${x.max !== null ? ' ≤ ' + x.max : ''} ${esc(x.unit)}</td><td>${esc(x.src)}</td></tr>`).join('')}</table></div><p class="note">Each row becomes a control chart when you log your own wafers. No data are shown because none have been measured yet.</p>`;
+  if (d.kind === 'gate') { const y = J.levels.find(L => L.id === 'L3').steps.find(s => s.id === 'W7').diagram.rows.reduce((a, r) => Math.max(a, r.yield), 0);
+    return `<div class="gate"><label>Working cells the array needs <input type="number" min="1" step="1" value="100" data-g="cells" aria-label="Working cells needed"></label>
+      <p class="note">With the best simulated yield of step W7 (${y.toFixed(4)} per site pair):</p><p>Sites to write: <output data-g="out">–</output></p>
+      <p class="note">Expected value only, from the illustrative inputs of W7; whether that is "good enough" is your decision (build-program P5 question), so the page gives no verdict.</p></div>`; }
+  return '';
+}
+function stepHTML(s, n, total, print = false) {
+  const cks = s.checkpoints.map(c => `<tr><td>${esc(c.what)}<div class="note"><code>${esc(c.python)}</code></div></td><td>${esc(c.value)}</td><td><span class="verdict ${c.pass === null ? 'out' : c.pass ? 'go' : 'stop'}">${c.pass === null ? 'computed' : c.pass ? 'pass' : 'fail'}</span></td></tr>`).join('');
+  const crit = s.criteria.map(c => `<tr><td>${esc(c.check)}</td><td>${c.min !== null ? '≥ ' + c.min : ''}${c.max !== null ? ' ≤ ' + c.max : ''} ${esc(c.unit)}</td><td>${esc(c.src)}</td></tr>`).join('');
+  return `<div class="shead"><div class="stepno" aria-hidden="true">${String(n).padStart(2, '0')}</div><div><p class="note" style="margin:0">${esc(lv)} · step ${n} of ${total} · ${esc(s.id)} ${badge(s.label)}</p><h2${print ? '' : ' id="stepTitle"'}>${esc(s.title)}</h2></div></div>
+    <div class="box"><h3>Do this</h3><p style="margin:0">${esc(s.action)}</p>${s.refs.length ? `<p class="note">Sources: ${s.refs.map(r => `[${esc(r)}]`).join(' ')}</p>` : ''}</div>
+    ${s.parts.length || (s.equipment || []).length ? `<div class="box"><h3>Parts and machines</h3><div class="tray">${s.parts.map(p => `<span class="part"><b>${esc(p.id)}</b> ${esc(p.name)}</span>`).join('')}</div>${s.equipment ? `<p class="note">Traveler equipment: ${esc(s.equipment.join('; '))}</p>` : ''}</div>` : ''}
+    <div class="box"><h3>${s.diagram.kind === 'section' ? 'Cross-section' : s.diagram.kind === 'setup' ? 'Setup' : s.diagram.kind === 'yield' ? 'Placement yield' : s.diagram.kind === 'spc' ? 'Control limits' : 'Decision'}</h3>${diagram(s.diagram)}
+      <p class="note">${s.photo.status === 'photo' ? `Photo: ${esc(s.photo.title)}, ${esc(s.photo.author)}, ${esc(s.photo.license)}` : esc(s.photo.note)}</p></div>
+    ${cks || crit ? `<div class="box"><h3>Checkpoint</h3>${cks ? `<div class="tscroll"><table class="tbl"><tr><th>Test (simulated)</th><th>Result</th><th></th></tr>${cks}</table></div>` : ''}${crit ? `<p class="note">Measure on your sample:</p><div class="tscroll"><table class="tbl"><tr><th>Criterion</th><th>Limits</th><th>Source</th></tr>${crit}</table></div>` : ''}</div>` : ''}
+    ${s.safety.length ? `<div class="safety"><h3 class="box-h">Safety</h3>${esc(s.safety.join(' '))}<p class="note" style="color:inherit">${esc(J.training)}</p></div>` : ''}
+    ${s.time || s.cost ? `<p class="note">Whole experiment: ${esc(s.time)}${s.cost ? `; US$${s.cost[0].toLocaleString('en-US')} to ${s.cost[1].toLocaleString('en-US')} (estimates from the experiment card, not quotes)` : ''}</p>` : ''}
+    ${s.troubleshoot.length ? `<div class="box"><h3>Troubleshooting</h3><div class="tscroll"><table class="tbl"><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>${s.troubleshoot.map(t => `<tr><td>${esc(t.symptom)}</td><td>${esc(t.cause)}</td><td>${esc(t.fix)}</td></tr>`).join('')}</table></div></div>` : ''}`;
+}
+function wireGate(root) {
+  const inp = root.querySelector('[data-g="cells"]'); if (!inp) return;
+  const y = J.levels.find(L => L.id === 'L3').steps.find(s => s.id === 'W7').diagram.rows.reduce((a, r) => Math.max(a, r.yield), 0);
+  const upd = () => { const n = Math.max(1, Math.round(+inp.value || 1)); root.querySelector('[data-g="out"]').textContent = y > 0 ? Math.ceil(n / y).toLocaleString('en-US') : '∞'; };
+  inp.oninput = upd; upd();
+}
+function render(focus) {
+  const L = level(), S = L.steps; k = Math.min(Math.max(k, 0), S.length - 1);
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === lv)));
+  $('scope').textContent = L.scope;
+  $('steps').innerHTML = S.map((s, i) => `<li><button class="sbtn" type="button" data-i="${i}"${i === k ? ' aria-current="step"' : ''}><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(s.title)}</span></button></li>`).join('');
+  $('steps').querySelectorAll('.sbtn').forEach(b => b.onclick = () => { k = +b.dataset.i; render(true); });
+  $('view').innerHTML = stepHTML(S[k], k + 1, S.length); wireGate($('view'));
+  $('prevStep').disabled = k === 0; $('nextStep').disabled = k === S.length - 1;
+  try { window.history.replaceState(null, '', `#${lv}-${k + 1}`); } catch (e) { /* file:// */ }
+  if (focus) $('view').focus();
+}
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => { lv = b.dataset.l; k = 0; render(false); b.focus(); });
+$('prevStep').onclick = () => { k--; render(true); }; $('nextStep').onclick = () => { k++; render(true); };
+$('printLv').onclick = () => { const L = level();
+  $('printAll').innerHTML = `<h1>Fab Journey ${esc(L.id)}: ${esc(L.name)}</h1><p>${esc(L.scope)}</p>` + L.steps.map((s, i) => `<section class="plate">${stepHTML(s, i + 1, L.steps.length, true)}</section>`).join('');
+  if (typeof window.print === 'function') window.print(); };
+render(false);
+</script></body></html>

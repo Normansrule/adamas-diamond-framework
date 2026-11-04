@@ -62,6 +62,8 @@ def site_data() -> dict:
     data["build"] = build_program.to_json()
     from . import qdl
     data["qdl"] = qdl.to_json()
+    from . import journey
+    data["journey"] = journey.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -191,6 +193,7 @@ PAGES = [  # (title, href, kind, description) for the search index; labs and too
     ("Experiments", "experiments.html", "page", "ten experiments US$100 and up, parts, prices, 3-D apparatus, ODMR kit"),
     ("Data Lab", "datalab.html", "page", "fit CSV data: ODMR, Rabi, Ramsey, echo, Arrhenius, transistor, g2"),
     ("Device Library", "devices.html", "page", "Quantum Device Library: 28 room-temperature diamond devices, gates, entanglement, use cases, figures of merit, build route, pass/fail checks"),
+    ("Fab Journey", "journey.html", "page", "build step by step at four scopes: kitchen table, teaching lab, cleanroom qubit pair, wafer scale; parts, cross-sections, checkpoints, safety, print to PDF"),
     ("Build program", "build.html", "page", "phases P0 to P8, decision gates, P1 magnetometer and thermometer, simulated kits"),
     ("Confidence", "confidence.html", "page", "validation matrix, uncertainty, Monte Carlo, tornado, Sobol, value of information, what to measure next"),
     ("Preprint (PDF)", "paper/adamas.pdf", "page", "paper, results, references"), ("Talk (PDF)", "paper/talk.pdf", "page", "12 slides"), ("Poster (PDF)", "paper/poster.pdf", "page", "A0 poster"),

@@ -424,7 +424,7 @@ DEVICES = [
           "r_max": _fom("Largest spacing for a 0.99 coherence-limited gate", "nm", "higher", None,
                         _tgt(r_max_nm(), "From ν = 52 MHz nm³/r³ and T₂ = 1.8 ms [balasubramanian2009], single-spin exponential bound; the two-spin stretched-echo model (adamas.gate_budget) allows wider spacings", "adamas.qdl.r_max_nm"))},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S04", "S05", "S06", "S07", "S13", "S16", "S18", "S19"],
-            "overrides": {"S06": "Two apertures 10 to 15 nm apart, or one aperture with a dose that leaves two NVs inside (adamas.coupling.pair_yield).",
+            "overrides": {"S06": "One aperture with a dose that leaves about two NVs inside, so a pair 10 to 15 nm apart can form (adamas.coupling.pair_yield); two separate apertures that close are below the traveler's 20 to 50 nm aperture size.",
                           "S18": "Find a coupled pair by double electron-electron resonance (DEER) and measure ν."},
             "extra": [], "atlas": ["M12", "M20", "M21", "M22", "M24", "M25", "M47", "M51"]},
   "layers": ["Microwave line", "Two NVs 10 to 25 nm apart", "¹²C diamond"],

@@ -2,7 +2,19 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.31.0 (2026-11-03).
+Last updated: v0.32.0 (2026-11-04).
+
+## Open in v0.32.0: Fab Journey
+
+The Fab Journey ([docs/journey/README.md](journey/README.md), `adamas/journey.py`) shows code-drawn diagrams only. What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Photos | references/images.psv is empty: Wikimedia Commons could not be reached from the build container to check licenses | Check each candidate by hand and log it: S01 "Single-crystal CVD diamond disc"; S03 "CVD Reaction Chamber, GPN-2000-001466" (NASA; a CVD chamber, not a diamond reactor, and must be captioned so); S05 "JEOL Electron Beam Lithography (EBL)" (Flickr upload); S19 "TF78 60 – Wire bonding". Owner-made build photos for L0 (CC BY) are welcome |
+| L3 control charts | No wafer has been measured; the page shows the traveler limits only, with no invented data | Log measured wafers |
+| W7 placement yield | Uses illustrative inputs (5 nm spread per axis, 10 nm design spacing) with the sourced 1 % conversion [pezzagna2010] | Measured placement spread and conversion |
+| W8 array gate | No sourced threshold for "good enough"; the page computes sites needed for a target the reader sets and gives no verdict | A decision in build phase P5 |
+| Step times and costs for L2 and L3 | Not sourced, so not shown | Facility quotes |
 
 ## Open in v0.31.0: Quantum Device Library
 
