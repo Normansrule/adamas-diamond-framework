@@ -2,7 +2,7 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.34.0 (2026-11-04).
+Last updated: v0.34.0 (2026-11-05).
 
 ## Open in v0.34.0: build phase P4 (devices)
 

@@ -105,18 +105,19 @@ function detail() {
       <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the nuclear-spin RF source and the charge-state laser are not priced yet). Illustrative inputs except the ¹⁴N hyperfine constant [felton2009]. Tests are set (k = ${ab.k.toFixed(2)} one-sided, ${r.k.toFixed(2)} two-sided; the hyperfine test asks for resolved lines) so a correct setup gets "go" at least 95 % of the time; rates over ${r.runs} simulated runs. Single-shot readout and the charge state have no criterion yet.</p>`; }
   else if (sel === 'P4') { const g = D.p4, t = g.tlm, m = g.matching, e = g.extraction, b = g.degraded, r = g.pass_rates, pc = v => (100 * v).toFixed(1) + ' %';
     const pm = (v, err, d) => v === null ? 'not measured' : err === null ? `${v.toFixed(d)} (no error estimate)` : `${v.toFixed(d)} ± ${err.toFixed(d)}`;
-    const row = (txt, fit, ok, rate, caught) => `<tr><td>${txt}</td><td class="n">${fit}</td><td>${V(caught ? !ok : ok, caught ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${pc(rate)}</td></tr>`;
+    const f0 = v => v === null || v === undefined ? '—' : v.toFixed(0);
+    const row = (txt, fit, ok, rate, caught) => `<tr><td>${txt}</td><td class="n">${fit}</td><td>${V(caught ? !ok : ok, caught ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${rate === null ? '—' : pc(rate)}</td></tr>`;
     right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Check</th><th>Measured</th><th></th><th>Correct runs passing</th></tr>
       ${row('Contact resistance (TLM), R_c + kσ ≤ 10 Ω·mm', pm(t.rc_ohm_mm, t.rc_err, 2) + ' Ω·mm', t.pass, r.tlm)}
-      ${row(`Threshold matching, bound ≤ ${m.limit_mv.toFixed(0)} mV`, `s ${m.s_mv.toFixed(0)}, bound ${m.upper_mv.toFixed(0)} mV`, m.pass, r.matching)}
-      ${row(`Mobility, PDK-0 ${e.mu_model} cm²/V·s`, pm(e.mu, e.mu_err, 1), e.mu_pass, r.mu)}
-      ${row(`Threshold, PDK-0 ${e.vt_model} V`, pm(e.vt, e.vt_err, 3) + ' V', e.vt_pass, r.vt)}
+      ${row(`Threshold matching, σ(V_T) bound of the 4/2 FET ≤ ${f0(m.limit_mv)} mV`, `σ ${f0(m.s_mv)}, bound ${f0(m.upper_mv)} mV`, m.pass, r.matching)}
+      ${row(`Mobility of the 16/2 FET, model ${e.mu_model} cm²/V·s`, pm(e.mu, e.mu_err, 1), e.mu_pass, r.mu)}
+      ${row(`Threshold, model ${e.vt_model} V`, pm(e.vt, e.vt_err, 3) + ' V', e.vt_pass, r.vt)}
       ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table></div>
       <h3>Degraded twins: one process fault each, must fail</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Fault</th><th>Measured</th><th></th><th>Faulty runs passing</th></tr>
       ${row('Residue under the gold contacts', pm(b.tlm.rc_ohm_mm, b.tlm.rc_err, 1) + ' Ω·mm', b.tlm.pass, r.degraded.tlm, true)}
-      ${row('Patchy hydrogen termination', `bound ${b.matching.upper_mv.toFixed(0)} mV`, b.matching.pass, r.degraded.matching, true)}
+      ${row('Patchy hydrogen termination', `bound ${f0(b.matching.upper_mv)} mV`, b.matching.pass, r.degraded.matching, true)}
       ${row(`Al₂O₃ ${b.extraction.tox_nm} nm thick, analysis assumes 30`, pm(b.extraction.mu, b.extraction.mu_err, 1) + ' cm²/V·s', b.extraction.mu_pass && b.extraction.vt_pass, r.degraded.extraction, true)}</table></div>
-      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the curve tracer and the photoelectric readout chain are not priced yet). Illustrative inputs; limits from traveler steps S08 and S17. Rates over ${r.runs} simulated runs. Hot operation, breakdown, on/off ratio and ring oscillators have no criterion yet.</p>`; }
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the curve tracer and the photoelectric readout chain are not priced yet). Illustrative inputs; limits are ADAMAS targets from traveler steps S08 and S17. The extraction uses the contact resistance the TLM measured, so those checks are correlated. Rates over ${r.runs} simulated runs. Hot operation, breakdown, on/off ratio and ring oscillators have no criterion yet.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>

@@ -83,7 +83,18 @@ def test_p4_gate_passes_and_every_degraded_twin_fails():
     g, b = B.p4_gate(), B.p4_degraded()
     assert g["verdict"] == "go"
     assert not (b["tlm"]["pass"] or b["matching"]["pass"] or (b["extraction"]["mu_pass"] and b["extraction"]["vt_pass"]))
-    assert b["extraction"]["mu"] == pytest.approx(150 * 30 / B.P4_TOX_BAD_NM, rel=0.03)      # the oxide ratio, as the doc says
+    e = b["extraction"]
+    assert e["mu"] == pytest.approx(150 * 30 / B.P4_TOX_BAD_NM, abs=3 * e["mu_err"])      # the oxide ratio, as the doc says
+
+
+def test_p4_extraction_is_exact_on_noise_free_model_data():
+    from adamas.logic import Fet
+    from scipy.optimize import brentq
+    import numpy as np
+    fet = Fet(w_um=B.P4_FET_W_UM, l_um=B.P4_FET_L_UM); r1 = B.P4_RC_OHM_MM / (fet.w_um * 1e-3); vgs = np.linspace(2, 8, 25)
+    i = np.array([brentq(lambda x: fet.current(v - x * r1, B.P4_VDS_V - 2 * x * r1) - x, 0, B.P4_VDS_V / (2 * r1)) for v in vgs])
+    mu, vt = B._extract(vgs, i, B.P4_RC_OHM_MM)[:2]
+    assert mu == pytest.approx(fet.mu_cm2_vs, rel=1e-9) and vt == pytest.approx(fet.vth, rel=1e-9)
 
 
 def test_p4_tlm_model_is_the_textbook_line():

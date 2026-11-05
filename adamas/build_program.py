@@ -520,10 +520,12 @@ P4_RC_BAD_OHM_MM = 20.0      # degraded twin: residue under the gold contacts
 P4_TLM_W_UM = 100.0          # pad width of the PDK-0 TLM ladder (adamas.pdk0.tlm_ladder)
 P4_TLM_GAPS_UM = (2.0, 4.0, 8.0, 16.0, 32.0)               # its gaps (adamas.pdk0.tlm_ladder)
 P4_TLM_NOISE = 0.02          # relative, per resistance (illustrative)
-P4_VT_SIGMA_V = 0.06         # threshold spread within a 4-device group (illustrative)
-P4_VT_SIGMA_BAD_V = 0.4      # degraded twin: patchy hydrogen termination
-P4_VT_GROUPS, P4_VT_GROUP_SIZE = 4, 4                       # the PDK-0 FET array: four groups of four
-P4_VT_LIMIT_V = 0.2          # traveler S17 limit on sigma(V_T) in 4-device groups [pelgrom1989]
+P4_AVT_MV_UM = 226.0         # Pelgrom coefficient A_VT: sigma(V_T) = A_VT / sqrt(W L), so 40 mV at 16/2 µm (illustrative)
+P4_AVT_BAD_MV_UM = 1130.0    # degraded twin: patchy hydrogen termination, five times the spread
+P4_MATCH_GEOMS = ((4.0, 2.0), (8.0, 2.0), (16.0, 2.0), (32.0, 2.0))   # PDK-0 enhancement FETs with L = 2 µm, 4 copies each (adamas.pdk0)
+P4_VT_GROUP_SIZE = 4
+P4_VT_LIMIT_V = 0.2          # traveler S17 limit on sigma(V_T) in 4-device groups (an ADAMAS target, with Pelgrom area scaling [pelgrom1989])
+P4_FET_W_UM, P4_FET_L_UM = 16.0, 2.0                       # the PDK-0 cell PFET_W16_L2_E used for extraction
 P4_TOX_BAD_NM = 45.0         # degraded twin: an Al2O3 gate 1.5 times too thick (ALD cycle count off)
 P4_ID_NOISE = 0.01           # relative, per drain-current reading (illustrative)
 P4_VDS_V = 0.1               # linear-regime drain bias of the transfer curve
@@ -566,53 +568,75 @@ def p4_tlm(seed: int = 4, rc_ohm_mm: float = P4_RC_OHM_MM) -> dict:
             "pass": bool(rc + k * rc_e <= 10.0 and 3.0 <= rsh <= 30.0)}
 
 
-def p4_matching(seed: int = 4, sigma_v: float = P4_VT_SIGMA_V) -> dict:
-    """Threshold matching on the PDK-0 FET array: four groups of four nominally identical FETs. The pooled
-    within-group standard deviation s (12 degrees of freedom) is compared with the traveler S17 limit, 200 mV
-    [pelgrom1989]. Pass when the one-sided upper confidence bound s sqrt(dof / chi2_(1 - c)(dof)) at the per-check
-    coverage c stays below the limit. The degraded twin has patchy hydrogen termination (sigma = P4_VT_SIGMA_BAD_V)."""
+def p4_matching(seed: int = 4, avt_mv_um: float = P4_AVT_MV_UM) -> dict:
+    """Threshold matching on the four PDK-0 enhancement FETs with L = 2 µm (W = 4, 8, 16, 32 µm), four copies each.
+    Pelgrom scaling, sigma(V_T) = A_VT / sqrt(W L) [pelgrom1989] (valid for closely spaced, identical devices), lets the
+    four geometries be pooled: each deviation from its group mean is multiplied by sqrt(W L), giving one estimate of A_VT
+    with 12 degrees of freedom. The check applies the traveler S17 limit (200 mV, an ADAMAS target) to the smallest
+    device, sigma(4/2) = A_VT / sqrt(8 µm²), using the one-sided upper confidence bound of A_VT at the per-check coverage.
+    The degraded twin has patchy hydrogen termination (A_VT = P4_AVT_BAD_MV_UM)."""
     from scipy.stats import chi2
-    r = _rng4(seed, 1)
-    vt = 1.0 + r.normal(0, sigma_v, (P4_VT_GROUPS, P4_VT_GROUP_SIZE))
-    dof = P4_VT_GROUPS * (P4_VT_GROUP_SIZE - 1)
-    s = float(math.sqrt(np.sum((vt - vt.mean(axis=1, keepdims=True)) ** 2) / dof))
-    upper = s * math.sqrt(dof / chi2.ppf(1 - P4_TEST_COVERAGE, dof))
-    return {"sigma_put_in_mv": 1e3 * sigma_v, "s_mv": 1e3 * s, "upper_mv": 1e3 * upper, "dof": dof, "limit_mv": 1e3 * P4_VT_LIMIT_V,
-            "pass": bool(upper <= P4_VT_LIMIT_V)}
-
-
-def _transfer_data(seed: int, tox_nm: float, rc_ohm_mm: float = P4_RC_OHM_MM):
-    """Linear-regime transfer curve |I_D|(|V_GS|) at |V_DS| = P4_VDS_V of the PDK-0 FET (adamas.logic.Fet), with the two
-    contacts in series: I = k Vov V_DS / (1 + k Vov R_s), R_s = 2 Rc / W (the triode law at small V_DS, V_DS << Vov)."""
-    from .logic import Fet
-    fet = Fet(tox_nm=tox_nm); rs = 2 * rc_ohm_mm / (fet.w_um * 1e-3)
-    vgs = np.linspace(2.0, 8.0, 25); vov = vgs - fet.vth
-    i = fet.k * vov * P4_VDS_V / (1 + fet.k * vov * rs)
-    return vgs, i * (1 + _rng4(seed, 2).normal(0, P4_ID_NOISE, vgs.size)), rs
-
-
-def p4_extraction(seed: int = 4, tox_nm: float | None = None) -> dict:
-    """Mobility and threshold from the linear-regime transfer curve. The series resistance measured on the TLM
-    (R_s = 2 Rc / W, here the value put in) is removed first: g = I / (V_DS - I R_s) = k (V_GS - V_T); a weighted straight
-    line gives k (slope) and V_T (intercept / slope), and mu = k L / (C_ox W) with C_ox from the PDK-0 oxide (30 nm,
-    relative permittivity 9). Pass when both lie within k sigma of the PDK-0 values: the device matches the model.
-    The degraded twin's Al2O3 is P4_TOX_BAD_NM thick while the analysis assumes 30 nm, so mu comes out 30/45 too low."""
-    from .logic import Fet
-    nominal = Fet(); tox = nominal.tox_nm if tox_nm is None else tox_nm
-    vgs, i, rs = _transfer_data(seed, tox)
-    g = i / (P4_VDS_V - i * rs)
-    g_err = P4_ID_NOISE * g * P4_VDS_V / (P4_VDS_V - i * rs)       # dg/g = (dI/I) V_DS / (V_DS - I R_s): the correction amplifies noise
-    (m, b), cov = np.polyfit(vgs, g, 1, w=1 / g_err, cov="unscaled")
-    cox = nominal.eps_ox * EPS0_F_CM / (nominal.tox_nm * 1e-7)
-    mu = m * nominal.l_um / (cox * nominal.w_um); mu_e = math.sqrt(cov[0, 0]) * nominal.l_um / (cox * nominal.w_um)
-    vt = -b / m
-    jac = np.array([b / m ** 2, -1 / m]); vt_e = float(math.sqrt(jac @ cov @ jac))
-    k = _k4()
-    return {"tox_nm": tox, "mu": float(mu), "mu_err": float(mu_e), "mu_model": nominal.mu_cm2_vs, "vt": float(vt), "vt_err": vt_e,
-            "vt_model": nominal.vth, "k": k, "mu_pass": _within(mu, nominal.mu_cm2_vs, mu_e, k), "vt_pass": _within(vt, nominal.vth, vt_e, k)}
+    r = _rng4(seed, 1); ss = 0.0; dof = 0; vts = []
+    for w, l in P4_MATCH_GEOMS:
+        vt = 1.0 + r.normal(0, avt_mv_um / 1e3 / math.sqrt(w * l), P4_VT_GROUP_SIZE); vts.append(vt.tolist())
+        ss += w * l * float(np.sum((vt - vt.mean()) ** 2)); dof += P4_VT_GROUP_SIZE - 1
+    a_hat = math.sqrt(ss / dof); a_up = a_hat * math.sqrt(dof / chi2.ppf(1 - P4_TEST_COVERAGE, dof))
+    smallest = min(w * l for w, l in P4_MATCH_GEOMS)
+    return {"avt_put_in_mv_um": avt_mv_um, "avt_mv_um": 1e3 * a_hat, "avt_upper_mv_um": 1e3 * a_up, "dof": dof, "vt": vts,
+            "s_mv": 1e3 * a_hat / math.sqrt(smallest), "upper_mv": 1e3 * a_up / math.sqrt(smallest), "limit_mv": 1e3 * P4_VT_LIMIT_V,
+            "pass": bool(a_up / math.sqrt(smallest) <= P4_VT_LIMIT_V)}
 
 
 EPS0_F_CM = 8.8541878128e-14     # vacuum permittivity in F/cm (adamas.constants.EPS0 is in F/m)
+
+
+def _fet(tox_nm: float | None = None):
+    from .logic import Fet
+    return Fet(w_um=P4_FET_W_UM, l_um=P4_FET_L_UM) if tox_nm is None else Fet(w_um=P4_FET_W_UM, l_um=P4_FET_L_UM, tox_nm=tox_nm)
+
+
+def _transfer_data(seed: int, tox_nm: float, rc_ohm_mm: float = P4_RC_OHM_MM):
+    """Linear-regime transfer curve |I_D|(|V_GS|) at |V_DS| = P4_VDS_V of PFET_W16_L2_E, from the square law of
+    adamas.logic.Fet with each contact (R_c / W) in series: the device sees V_GS - I R_c/W and V_DS - 2 I R_c/W, and I is
+    solved self-consistently. Relative noise P4_ID_NOISE per reading."""
+    from scipy.optimize import brentq
+    fet = _fet(tox_nm); rc1 = rc_ohm_mm / (fet.w_um * 1e-3)
+    vgs = np.linspace(2.0, 8.0, 25)
+    i = np.array([brentq(lambda x: fet.current(v - x * rc1, P4_VDS_V - 2 * x * rc1) - x, 0.0, P4_VDS_V / (2 * rc1)) for v in vgs])
+    return vgs, i * (1 + _rng4(seed, 2).normal(0, P4_ID_NOISE, vgs.size))
+
+
+def _extract(vgs, i, rc_ohm_mm: float):
+    """Remove the contacts, then fit the triode law. With R1 = R_c / W per contact: V_DS' = V_DS - 2 I R1,
+    V_GS' = V_GS - I R1, g = I / V_DS' = k (V_GS' - V_T - V_DS'/2), a straight line in x = V_GS' - V_DS'/2 with slope k
+    and intercept -k V_T [sze2006]. Returns (mu, V_T, cov of the line, k)."""
+    nom = _fet(); r1 = rc_ohm_mm / (nom.w_um * 1e-3)
+    vds_i = P4_VDS_V - 2 * i * r1; x = vgs - i * r1 - vds_i / 2; g = i / vds_i
+    g_err = P4_ID_NOISE * g * P4_VDS_V / vds_i              # dg/g = (dI/I) V_DS / V_DS': removing the contacts amplifies noise
+    (m, b), cov = np.polyfit(x, g, 1, w=1 / g_err, cov="unscaled")
+    cox = nom.eps_ox * EPS0_F_CM / (nom.tox_nm * 1e-7)
+    return m * nom.l_um / (cox * nom.w_um), -b / m, cov, m, b, cox
+
+
+def p4_extraction(seed: int = 4, tox_nm: float | None = None) -> dict:
+    """Mobility and threshold of PFET_W16_L2_E from the linear-regime transfer curve, with the contacts removed using
+    the contact resistance MEASURED on the TLM ladder of the same run (p4_tlm). Its uncertainty is propagated (numerical
+    derivative of mu and V_T with respect to R_c, added in quadrature to the fit's errors), so the TLM and extraction
+    checks are correlated. mu = k L / (C_ox W) with C_ox from the PDK-0 oxide (30 nm, relative permittivity 9). Pass when
+    both lie within k sigma of the PDK-0 values: the device matches the model. The degraded twin's Al2O3 is
+    P4_TOX_BAD_NM thick while the analysis assumes 30 nm, so mu comes out at 30/45 (two thirds) of its true value."""
+    nom = _fet(); tox = nom.tox_nm if tox_nm is None else tox_nm
+    tlm = p4_tlm(seed); rc, rc_e = tlm["rc_ohm_mm"], tlm["rc_err"]
+    vgs, i = _transfer_data(seed, tox)
+    mu, vt, cov, m, b, cox = _extract(vgs, i, rc)
+    h = 0.01 * rc_e
+    mu_p, vt_p = _extract(vgs, i, rc + h)[:2]; mu_m, vt_m = _extract(vgs, i, rc - h)[:2]
+    dmu, dvt = (mu_p - mu_m) / (2 * h), (vt_p - vt_m) / (2 * h)
+    mu_e = math.hypot(math.sqrt(cov[0, 0]) * nom.l_um / (cox * nom.w_um), dmu * rc_e)
+    jac = np.array([b / m ** 2, -1 / m]); vt_e = math.hypot(math.sqrt(float(jac @ cov @ jac)), dvt * rc_e)
+    k = _k4()
+    return {"tox_nm": tox, "rc_used_ohm_mm": rc, "mu": float(mu), "mu_err": float(mu_e), "mu_model": nom.mu_cm2_vs, "vt": float(vt), "vt_err": float(vt_e),
+            "vt_model": nom.vth, "k": k, "mu_pass": _within(mu, nom.mu_cm2_vs, mu_e, k), "vt_pass": _within(vt, nom.vth, vt_e, k)}
 
 
 def p4_gate(seed: int = 4) -> dict:
@@ -623,7 +647,7 @@ def p4_gate(seed: int = 4) -> dict:
 
 def p4_degraded(seed: int = 4) -> dict:
     """Each test on its degraded twin (one process fault each); every one must fail."""
-    return {"tlm": p4_tlm(seed, rc_ohm_mm=P4_RC_BAD_OHM_MM), "matching": p4_matching(seed, sigma_v=P4_VT_SIGMA_BAD_V),
+    return {"tlm": p4_tlm(seed, rc_ohm_mm=P4_RC_BAD_OHM_MM), "matching": p4_matching(seed, avt_mv_um=P4_AVT_BAD_MV_UM),
             "extraction": p4_extraction(seed, tox_nm=P4_TOX_BAD_NM)}
 
 
@@ -653,7 +677,7 @@ def p4_bill() -> dict:
     return {"rows": rows, "low": sum(r[3] for r in rows), "high": sum(r[4] for r in rows), "headline": by["C2"]["cost"], "unpriced": ["M18", "M55"]}
 
 
-P4_MACHINES = ("M10", "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M55")
+P4_MACHINES = ("M01", "M10", "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19")
 
 
 def p4_figure(out: str | Path = "docs/img") -> Path:
@@ -671,22 +695,37 @@ def p4_figure(out: str | Path = "docs/img") -> Path:
     a.set_title("1. Contacts (TLM): pass when Rc + kσ ≤ 10 Ω·mm", fontsize=10.5); a.set_xlabel("gap between pads (µm)"); a.set_ylabel("resistance (Ω), pads 100 µm wide")
     a = ax[1]
     for r, col, off, lab in ((g["matching"], COLORS["Diamond"], -0.12, "uniform termination"), (b["matching"], RED, 0.12, "patchy termination (degraded twin)")):
-        sig = r["sigma_put_in_mv"] / 1e3; vt = 1.0 + _rng4(4, 1).normal(0, sig, (P4_VT_GROUPS, P4_VT_GROUP_SIZE))
-        for grp in range(P4_VT_GROUPS):
-            a.plot(np.full(P4_VT_GROUP_SIZE, grp + 1 + off), vt[grp], "o", ms=5, color=col, label=f"{lab}: upper bound {r['upper_mv']:.0f} mV" if grp == 0 else None)
-    a.set_ylim(0.4, 2.2); a.legend(fontsize=8, loc="upper left"); a.set_xticks(range(1, P4_VT_GROUPS + 1))
-    a.set_title(f"2. Threshold matching: pass when the σ(V_T) bound ≤ {P4_VT_LIMIT_V * 1e3:.0f} mV", fontsize=10.5); a.set_xlabel("4-device group"); a.set_ylabel("|V_T| (V)")
+        for grp, vt in enumerate(r["vt"]):
+            a.plot(np.full(len(vt), grp + 1 + off), vt, "o", ms=5, color=col, label=f"{lab}: σ(4/2) bound {r['upper_mv']:.0f} mV" if grp == 0 else None)
+    a.set_ylim(0.2, 2.1); a.legend(fontsize=8, loc="upper left"); a.set_xticks(range(1, len(P4_MATCH_GEOMS) + 1), [f"{w:g}/{l:g}" for w, l in P4_MATCH_GEOMS])
+    a.set_title(f"2. Threshold matching: pass when the σ(V_T) bound ≤ {P4_VT_LIMIT_V * 1e3:.0f} mV", fontsize=10.5); a.set_xlabel("FET W/L (µm), four copies each"); a.set_ylabel("|V_T| (V)")
     a = ax[2]
     for tox, col, lab in ((30.0, COLORS["Diamond"], "30 nm Al₂O₃"), (P4_TOX_BAD_NM, RED, f"{P4_TOX_BAD_NM:g} nm Al₂O₃ (degraded twin)")):
-        vgs, i, rs = _transfer_data(4, tox); gch = i / (P4_VDS_V - i * rs); e = p4_extraction(4, None if tox == 30.0 else tox)
-        a.plot(vgs, 1e3 * gch, "o", ms=3.5, color=col)
-        from .logic import Fet
-        nom = Fet(); k_fit = e["mu"] * nom.eps_ox * EPS0_F_CM / (nom.tox_nm * 1e-7) * nom.w_um / nom.l_um
-        a.plot(vgs, 1e3 * k_fit * (vgs - e["vt"]), color=col, lw=1.5, label=f"{lab}: µ = {e['mu']:.1f} ± {e['mu_err']:.1f} cm²/V·s")
+        vgs, i = _transfer_data(4, tox); e = p4_extraction(4, None if tox == 30.0 else tox)
+        r1 = e["rc_used_ohm_mm"] / (P4_FET_W_UM * 1e-3); vds_i = P4_VDS_V - 2 * i * r1; x = vgs - i * r1 - vds_i / 2
+        _, _, _, m_fit, b_fit, _ = _extract(vgs, i, e["rc_used_ohm_mm"])
+        a.plot(x, 1e3 * i / vds_i, "o", ms=3.5, color=col)
+        a.plot(x, 1e3 * (m_fit * x + b_fit), color=col, lw=1.5, label=f"{lab}: µ = {e['mu']:.0f} ± {e['mu_err']:.0f} cm²/V·s")
     a.axhline(0, color=INK, lw=.6); a.legend(fontsize=8, loc="upper left")
-    a.set_title("3. Mobility and threshold: match the PDK-0 model (150 cm²/V·s, 1.0 V)", fontsize=10.5)
-    a.set_xlabel("|V_GS| (V)"); a.set_ylabel("channel conductance, contacts removed (mS)")
+    a.set_title("3. Mobility and threshold of the 16/2 FET: match the model (150 cm²/V·s, 1.0 V)", fontsize=10.5)
+    a.set_xlabel("|V_GS'| − |V_DS'|/2 at the channel (V)"); a.set_ylabel("channel conductance, contacts removed (mS)")
     return _finish(fig, out, "fig57_build_p4.png", "simulated and fitted by adamas.build_program (illustrative inputs; FET model adamas.logic); [sze2006] [pelgrom1989]")
+
+
+def _p4_rates_note(rates: dict) -> str:
+    """The sentences under the P4 pass/fail table, written from the computed rates so they cannot go stale."""
+    design = P4_TEST_COVERAGE; se = rates["se_test"]
+    out = []
+    for key, name in (("tlm", "contact"), ("matching", "matching"), ("mu", "mobility"), ("vt", "threshold")):
+        v = rates[key]
+        word = "more often than" if v > design + 3 * se else "less often than" if v < design - 3 * se else "about as often as"
+        out.append(f"the {name} check passes correct runs {word} designed ({100 * v:.1f} %)")
+    text = "Against the {:.2f} % design per check: ".format(100 * design) + "; ".join(out) + ". "
+    text += ("A check whose value sits far inside its limit passes almost always, so the gate rate is set by the others; the mobility and threshold checks are correlated (one fit gives both). "
+             "Departures from the design come from removing the contacts (a nonlinear correction) and from weights computed from noisy currents. ")
+    text += (f"Over {rates['runs']} runs the gate passes {100 * rates['gate']:.1f} % of correct runs" +
+             (", at least the 95 % it is designed for." if rates["gate"] >= P4_GATE_COVERAGE - 3 * rates["se_gate"] else ", below the 95 % it is designed for: the tolerances need widening."))
+    return text
 
 
 def _p4_md() -> str:
@@ -699,12 +738,13 @@ def _p4_md() -> str:
     yes = lambda v: "yes" if v else "no"   # noqa: E731
     pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
     parts = {"Cleanroom access": "M10 to M16", "Hydrogen plasma": "M01", "Probe station and analyzer": "M17"}
+    acr = {"MPCVD": "microwave plasma chemical vapor deposition (MPCVD)"}
     rows = "\n".join(f"| {parts.get(r[1], '(not in the Atlas)')} | {r[1]} ({r[0]}) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
     use = {"M18": "breakdown tests (not yet simulated)", "M55": "photoelectric NV readout (not yet simulated)"}
-    rows += "\n" + "\n".join(f"| {k} | {atlas.tool(k)} | {use[k]} | not priced (no source yet) |" for k in bill["unpriced"])
+    rows += "\n" + "\n".join(f"| {k} | {acr['MPCVD'] if k == 'M01' else atlas.tool(k)} | {use[k]} | not priced (no source yet) |" for k in bill["unpriced"])
     machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P4_MACHINES)
     steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["C2"]["steps"]))
-    hazards = " ".join(dict.fromkeys(h for sid in ("S02", "S08", "S12", "S13", "S17") for h in st[sid]["safety"] if not h.startswith("As ")))
+    hazards = " ".join(dict.fromkeys(h for sid in ("S02", "S03", "S09", "S12", "S13", "S15", "S17") for h in st[sid]["safety"] if not h.startswith("As ")))
     verdict = ("All simulated checks pass and every degraded twin fails, so the analysis can tell a good run from a faulty one; the gate is decided by the measured values on your wafer."
                if g["verdict"] == "go" and not (bt["pass"] or bm["pass"] or (be["mu_pass"] and be["vt_pass"]))
                else "On this run a simulated check fails or a degraded twin passes; a correct run fails about one time in twenty, so repeat it before changing the analysis.")
@@ -714,19 +754,19 @@ def _p4_md() -> str:
 
 **Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C2 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,}). The high-voltage curve tracer and the photoelectric readout chain are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
 
-Every input below is **illustrative**: the transistor values are the PDK-0 design values of `adamas.logic` (the ones the Transistor Lab and the SPICE models use, chosen inside published ranges), and the rest are chosen to look like a typical run. The pass limits come from the process traveler (S08 and S17). The phase is **simulated**: no ADAMAS hardware has run it.
+Every input below is **illustrative**: the transistor values are the design values of `adamas.logic` for process design kit 0 (PDK-0), the ones the Transistor Lab and the circuit-simulator (SPICE) models use, chosen inside published ranges; the rest are chosen to look like a typical run. The pass limits are **ADAMAS engineering targets** written into process traveler T1 (steps S08 and S17), not values from the literature. The phase is **simulated**: no ADAMAS hardware has run it.
 
 ## Goal
 
-Run process traveler T1 on one or two plates in a university cleanroom (experiment C2) and turn the PDK-0 monitor die into numbers: contact and sheet resistance, threshold matching, and the channel mobility and threshold of the field-effect transistor (FET). P4 is the classical track; it meets the quantum track (P3, P5) at P6.
+Run process traveler T1 (hydrogen-terminated transistors) on one or two plates in a university cleanroom (experiment C2) and turn the PDK-0 monitor die into numbers: contact and sheet resistance, threshold matching, and the channel mobility and threshold of the field-effect transistor (FET). P4 is the classical track; it meets the quantum track of nitrogen-vacancy (NV) centers (P3, P5) at P6.
 
 ## Physics and equations
 
 - **Transfer length method (TLM):** pads of width W at gaps d give R(d) = 2R_c/W + R_sh·d/W, two contacts in series with the channel [sze2006]. A straight line through R(d) gives the sheet resistance R_sh from the slope and the contact resistance R_c from the intercept. Valid for contacts longer than the transfer length and a uniform sheet. The PDK-0 ladder has pads {P4_TLM_W_UM:g} µm wide and gaps of {', '.join(f'{x:g}' for x in P4_TLM_GAPS_UM)} µm (`adamas.pdk0`).
-- **Threshold matching:** the spread of V_T between nominally identical, closely spaced transistors falls with gate area [pelgrom1989]; the traveler (S17) limits σ(V_T) in 4-device groups to {P4_VT_LIMIT_V * 1e3:.0f} mV. Four groups of four give a pooled estimate s with 12 degrees of freedom; its upper confidence bound is s·√(12/χ²), using the χ² quantile at the per-check coverage.
-- **Mobility and threshold:** in the linear (triode) region at small V_DS the square law gives I_D = k(V_GS − V_T)V_DS, k = µC_ox·W/L [sze2006], with C_ox = ε_ox ε₀/t_ox. The two contacts add R_s = 2R_c/W in series, so the channel conductance is g = I_D/(V_DS − I_D R_s), straight in V_GS: slope k, intercept −kV_T. Valid at V_DS much smaller than V_GS − V_T and for a long channel. The PDK-0 FET: µ = 150 cm²/V·s, |V_T| = 1.0 V, 30 nm Al₂O₃ (relative permittivity 9), W/L = 100/2 µm (`adamas.logic`, illustrative).
+- **Threshold matching:** the spread of V_T between nominally identical, closely spaced transistors falls with gate area, σ(V_T) = A_VT/√(WL) [pelgrom1989]. The monitor die has four copies of each FET geometry (`adamas.pdk0`); the four enhancement-mode geometries with L = 2 µm (W = {', '.join(f'{w:g}' for w, _ in P4_MATCH_GEOMS)} µm) are pooled by scaling each deviation by √(WL), which gives one estimate of A_VT with {m['dof']} degrees of freedom. Its one-sided upper confidence bound, Â·√(dof/χ²) with the χ² quantile at the per-check coverage, is converted back to σ(V_T) of the smallest device (4/2 µm) and compared with the traveler's {P4_VT_LIMIT_V * 1e3:.0f} mV, an ADAMAS target motivated by this area scaling.
+- **Mobility and threshold:** in the linear (triode) region the square law gives I_D = k[(V_GS − V_T)V_DS − V_DS²/2], k = µC_ox·W/L [sze2006], with C_ox = ε_ox ε₀/t_ox. Each contact adds R_c/W, so the channel sees V_DS' = V_DS − 2I_D R_c/W and V_GS' = V_GS − I_D R_c/W. Then g = I_D/V_DS' = k(V_GS' − V_T − V_DS'/2) is a straight line in x = V_GS' − V_DS'/2: slope k, intercept −kV_T. Leaving out the V_DS/2 term would bias V_T by V_DS/2. R_c is the value **measured on the TLM** of the same run, and its uncertainty is carried into µ and V_T, so the contact and extraction checks are correlated. Valid for a long channel below saturation. The device is PFET_W16_L2_E of the monitor die; the model values are µ = 150 cm²/V·s, |V_T| = 1.0 V and 30 nm of Al₂O₃ with relative permittivity 9 (`adamas.logic`, illustrative; 30 nm lies between the traveler's thin option A, about 10 nm, and thick option B, 100 to 200 nm, at step S13).
 
-Diamond FETs are p-channel; magnitudes are used throughout, as in `adamas.logic`. The Transistor Lab runs the same square law.
+Diamond FETs are p-channel; magnitudes are used throughout, as in `adamas.logic`. The simulated curves come from `adamas.logic.Fet`, the square law the Transistor Lab runs, and a test checks that the analysis returns its µ and V_T exactly from noise-free data.
 
 ## Machines and consumables
 
@@ -738,7 +778,7 @@ Atlas machines for this phase: {machines}.
 
 ## Facility and safety
 
-A university cleanroom with wet benches, lithography, evaporation, atomic layer deposition (ALD), plasma tools and a probe station. {hazards} Hydrofluoric and perchloric acids, nitrogen dioxide, trimethylaluminium and high-voltage tests each need your institution's specific training and sign-off before first use; this page does not replace that training.
+A university cleanroom with wet benches, lithography, evaporation, atomic layer deposition (ALD), plasma tools, a {acr['MPCVD']} reactor for the hydrogen plasma, and a probe station. {hazards} Hydrofluoric and perchloric acids, nitrogen dioxide, trimethylaluminium and high-voltage tests each need your institution's specific training and sign-off before first use; this page does not replace that training.
 
 ## Procedure
 
@@ -746,7 +786,7 @@ C2:
 
 {steps}
 
-On the monitor die (traveler S17): measure the TLM ladder first, so its contact resistance is available when you extract the FET; then the four 4-device FET groups (transfer curve at |V_DS| = {P4_VDS_V:g} V, |V_GS| from 2 to 8 V); then the MOS capacitor (C–V), which measures C_ox directly instead of assuming the oxide thickness.
+On the monitor die (traveler S17): measure the TLM ladder first, so its contact resistance is available when you extract the FET; then V_T on the four copies of each enhancement-mode FET with L = 2 µm; then the transfer curve of PFET_W16_L2_E at |V_DS| = {P4_VDS_V:g} V, |V_GS| from 2 to 8 V; then the metal-oxide-semiconductor (MOS) capacitor, whose capacitance–voltage (C–V) curve measures C_ox directly instead of assuming the oxide thickness.
 
 ## Expected results (simulated)
 
@@ -756,14 +796,14 @@ Each test is shown with its **degraded twin**: the same simulation with one proc
 
 ## Pass/fail
 
-The gate needs all {P4_CHECKS} checks to pass, so each is set for {100 * P4_TEST_COVERAGE:.2f} % coverage: k = {rates['k_one']:.2f} for the one-sided contact-resistance check and {rates['k']:.2f} for the two-sided mobility and threshold checks; the matching check uses the χ² bound at the same coverage. Each test draws its own noise. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per check, {100 * rates['se_gate']:.1f} for the gate).
+The gate needs all {P4_CHECKS} checks to pass, so each is set for {100 * P4_TEST_COVERAGE:.2f} % coverage: k = {rates['k_one']:.2f} for the one-sided contact-resistance check and {rates['k']:.2f} for the two-sided mobility and threshold checks; the matching check uses the χ² bound at the same coverage. Each test draws its own noise, but the extraction uses the contact resistance measured by the TLM, so those two checks are correlated. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per check, {100 * rates['se_gate']:.1f} for the gate).
 
 | Check | Criterion | Put in | Measured | Pass? | Correct runs passing |
 |---|---|---|---|---|---|
-| Contact resistance (TLM) | R_c + kσ ≤ 10 Ω·mm (S17); R_sh in 3 to 30 kΩ/sq (S08) | R_c {t['rc_put_in']:g} Ω·mm, R_sh {P4_RSH_KOHM:g} kΩ/sq | R_c {t['rc_ohm_mm']:.2f} ± {t['rc_err']:.2f} Ω·mm, R_sh {t['rsh_kohm']:.2f} ± {t['rsh_err']:.2f} kΩ/sq | {yes(t['pass'])} | {pct(rates['tlm'])} |
-| Threshold matching | upper bound on σ(V_T) ≤ {m['limit_mv']:.0f} mV (S17) [pelgrom1989] | σ = {m['sigma_put_in_mv']:.0f} mV | s = {m['s_mv']:.0f} mV, bound {m['upper_mv']:.0f} mV | {yes(m['pass'])} | {pct(rates['matching'])} |
-| Mobility | within kσ of {e['mu_model']:g} cm²/V·s (PDK-0) | {e['mu_model']:g} | {e['mu']:.1f} ± {e['mu_err']:.1f} | {yes(e['mu_pass'])} | {pct(rates['mu'])} |
-| Threshold | within kσ of {e['vt_model']:g} V (PDK-0) | {e['vt_model']:g} V | {e['vt']:.3f} ± {e['vt_err']:.3f} V | {yes(e['vt_pass'])} | {pct(rates['vt'])} |
+| Contact resistance (TLM) | R_c + kσ ≤ 10 Ω·mm (S17, ADAMAS); R_sh in 3 to 30 kΩ/sq (S08, ADAMAS) | R_c {t['rc_put_in']:g} Ω·mm, R_sh {P4_RSH_KOHM:g} kΩ/sq | R_c {t['rc_ohm_mm']:.2f} ± {t['rc_err']:.2f} Ω·mm, R_sh {t['rsh_kohm']:.2f} ± {t['rsh_err']:.2f} kΩ/sq | {yes(t['pass'])} | {pct(rates['tlm'])} |
+| Threshold matching | upper bound on σ(V_T) of the 4/2 FET ≤ {m['limit_mv']:.0f} mV (S17, ADAMAS) | A_VT = {m['avt_put_in_mv_um']:.0f} mV·µm | A_VT {m['avt_mv_um']:.0f} mV·µm; σ(4/2) {m['s_mv']:.0f} mV, bound {m['upper_mv']:.0f} mV | {yes(m['pass'])} | {pct(rates['matching'])} |
+| Mobility | within kσ of {e['mu_model']:g} cm²/V·s (model) | {e['mu_model']:g} | {e['mu']:.1f} ± {e['mu_err']:.1f} | {yes(e['mu_pass'])} | {pct(rates['mu'])} |
+| Threshold | within kσ of {e['vt_model']:g} V (model) | {e['vt_model']:g} V | {e['vt']:.3f} ± {e['vt_err']:.3f} V | {yes(e['vt_pass'])} | {pct(rates['vt'])} |
 | **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
 
 The degraded twins, one process fault each. The last column is how often the faulty run wrongly passes.
@@ -771,19 +811,23 @@ The degraded twins, one process fault each. The last column is how often the fau
 | Test | Fault | Measured | Pass? | Faulty runs passing |
 |---|---|---|---|---|
 | Contact resistance | residue under the gold contacts (R_c = {P4_RC_BAD_OHM_MM:g} Ω·mm) | {bt['rc_ohm_mm']:.1f} ± {bt['rc_err']:.1f} Ω·mm | {yes(bt['pass'])} | {pct(rates['degraded']['tlm'])} |
-| Threshold matching | patchy hydrogen termination (σ = {bm['sigma_put_in_mv']:.0f} mV) | s = {bm['s_mv']:.0f} mV, bound {bm['upper_mv']:.0f} mV | {yes(bm['pass'])} | {pct(rates['degraded']['matching'])} |
+| Threshold matching | patchy hydrogen termination (A_VT = {bm['avt_put_in_mv_um']:.0f} mV·µm) | σ(4/2) {bm['s_mv']:.0f} mV, bound {bm['upper_mv']:.0f} mV | {yes(bm['pass'])} | {pct(rates['degraded']['matching'])} |
 | Mobility and threshold | Al₂O₃ {P4_TOX_BAD_NM:g} nm thick, analysis assumes 30 nm | µ {be['mu']:.1f} ± {be['mu_err']:.1f} cm²/V·s, V_T {be['vt']:.3f} V | {yes(be['mu_pass'] and be['vt_pass'])} | {pct(rates['degraded']['extraction'])} |
 
-The contact and matching checks pass correct runs more often than {100 * P4_TEST_COVERAGE:.2f} %, because the values put in sit well inside their limits. The mobility and threshold checks pass slightly less often than designed ({pct(rates['mu'])} and {pct(rates['vt'])}): the conductance is computed from noisy currents, and the weights use the measured rather than the true currents. The two are also correlated (one fit gives both), so the gate rate is not the product of the rows. The gate still passes correct runs at least {100 * P4_GATE_COVERAGE:.0f} % of the time.
+{_p4_rates_note(rates)}
 
 A failed mobility or threshold check on real devices says the device and the model disagree. The MOS capacitor tells you which: if C_ox matches 30 nm of Al₂O₃, the mobility is really different, and the model should be recalibrated with the measured value (C2, step 4); if not, the oxide is off.
+
+A thicker oxide in a real device also moves V_T (through the oxide charge); the twin changes only C_ox, so the threshold check is not what catches it.
+
+The sheet-resistance window is the one traveler step S08 sets for the bare hydrogen-terminated surface in air, reused here for the finished channel under Al₂O₃ without nitrogen dioxide (NO₂). With the NO₂ option (S12) the expected sheet resistance is 0.5 to 5 kΩ/sq, so use that window instead.
 
 ## Not yet simulated
 
 - **Hot operation** (traveler S17 tests at 25, 200 and 300 °C [kawarada2014]): the FET model has no temperature dependence yet.
 - **Breakdown** (Atlas M18): the breakdown field versus dislocation density has a proposed fit in `adamas.power`, but no simulated test structure here.
 - **On/off ratio** (S17: at least 10⁶) and **ring-oscillator delay** (S17: within a factor of 2 of the model): no noise model for the off current or the oscillator yet.
-- **Photoelectric NV readout** (Atlas M55): belongs to the quantum track and P6.
+- **Photoelectric NV readout** (Atlas M55, listed in the outline for P4 and P6): belongs with the quantum track and is left to P6.
 
 ## Failure modes
 
