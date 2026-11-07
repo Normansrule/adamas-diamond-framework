@@ -4,6 +4,9 @@ first use of each term on every page of the website."""
 from __future__ import annotations
 
 TERMS = {
+    "CHSH": ("Clauser–Horne–Shimony–Holt inequality", "A Bell test: any local hidden-variable account of two parties' results keeps S at or below 2; entangled qubits reach 2√2."),
+    "E91": ("Ekert 1991 key distribution", "Quantum key distribution using entangled pairs and a Bell test; the parties still compare settings over a classical channel."),
+    "BBM92": ("Bennett–Brassard–Mermin 1992 key distribution", "Quantum key distribution with entangled pairs measured in two bases; needs a classical channel too."),
     "NV": ("nitrogen-vacancy center", "A nitrogen atom next to a missing carbon atom in diamond; its electron spin is a qubit that works at room temperature."),
     "ODMR": ("optically detected magnetic resonance", "Reading a spin with light: the NV glow dims when a microwave field is tuned to its resonance."),
     "ZPL": ("zero-phonon line", "The sharp optical line of a color center without lattice vibrations: 637 nm for NV⁻, 575 nm for NV⁰."),

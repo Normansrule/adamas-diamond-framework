@@ -64,6 +64,8 @@ def site_data() -> dict:
     data["qdl"] = qdl.to_json()
     from . import journey
     data["journey"] = journey.to_json()
+    from . import entangle
+    data["entangle"] = entangle.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))
@@ -201,7 +203,7 @@ PAGES = [  # (title, href, kind, description) for the search index; labs and too
     ("Wafer Lab", "labs/wafer.html", "lab", "yield, defects, dies per wafer, Poisson, Murphy"), ("Fab Walkthrough", "labs/fab.html", "lab", "process, layers, cleanroom"),
     ("Transistor Lab", "labs/transistor.html", "lab", "I-V curves, inverter, ring oscillator, SPICE"), ("Power Lab", "labs/power.html", "lab", "EV inverter, switch loss, SiC, GaN"),
     ("Diamond CPU", "labs/cpu.html", "lab", "DIA-4 processor, assembly, emulator, Verilog"), ("Qubit Lab", "labs/qubit.html", "lab", "Bloch sphere, Rabi, Ramsey, echo"),
-    ("Photon Lab", "labs/photon.html", "lab", "optical cycle, fluorescence, readout contrast, measured contrast"), ("Addressing Lab", "labs/addressing.html", "lab", "two NV centers in one laser spot, spectral addressing, field gradient, crosstalk, Airy spot"), ("Gate Bias Lab", "labs/bias.html", "lab", "CZ versus CNOT, noise bias, Pauli propagation, XZZX, hook errors"), ("Break the Code", "labs/qec.html", "lab", "surface code, error correction, decoder"),
+    ("Photon Lab", "labs/photon.html", "lab", "optical cycle, fluorescence, readout contrast, measured contrast"), ("Addressing Lab", "labs/addressing.html", "lab", "two NV centers in one laser spot, spectral addressing, field gradient, crosstalk, Airy spot"), ("Gate Bias Lab", "labs/bias.html", "lab", "CZ versus CNOT, noise bias, Pauli propagation, XZZX, hook errors"), ("Entanglement Lab", "labs/entangle.html", "lab", "entanglement communication, no-communication theorem, no faster-than-light signaling, teleportation needs classical bits, Bell CHSH test, NV quantum network Delft"), ("Break the Code", "labs/qec.html", "lab", "surface code, error correction, decoder"),
     ("Machine Builder", "labs/machine.html", "lab", "resource estimate, qubits, runtime, code distance"), ("The Chip Stack", "labs/stack.html", "lab", "architecture, layers"),
     ("Who is building it", "labs/globe.html", "lab", "globe, labs, companies"),
 ]

@@ -2,7 +2,18 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.34.0 (2026-11-05).
+Last updated: v0.35.0 (2026-11-07).
+
+## Open in v0.35.0: Entanglement Lab
+
+The [Entanglement Lab](../web/labs/entangle.html) and [ENTANGLEMENT.md](ENTANGLEMENT.md) answer one question: can entanglement alone, with no physical connection, carry a message? It cannot (a theorem, checked numerically). What remains open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Six classic references in refs_m.psv (ghirardi1980, clauser1969, cirelson1980, ekert1991, bennett1992, wootters1982) | Entered by hand; Crossref was not reachable from the build machine | `make verify` then `make apply-verify` |
+| Distributing entanglement between room-temperature NV devices | Every NV network result is cryogenic; spin-photon entanglement needs the cold zero-phonon line | A sourced room-temperature mechanism, or keep it out of scope |
+| Pre-shared entanglement stored in room-temperature ¹³C memories | Proposed only: the more-than-1-s memory [maurer2012] is one local spin, not half of a remote pair | A demonstration, then a model with storage decoherence |
+| Photon loss, heralding rate and memory decay in the lab | The lab models the pair only as a Werner state | Rates from [humphreys2018] and [stolk2024] in a link model |
 
 ## Open in v0.34.0: build phase P4 (devices)
 

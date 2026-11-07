@@ -120,12 +120,13 @@ def cmd_findings(a) -> int:
 
 def cmd_build(a) -> int:
     if a.what == "docs":
-        from . import action, build_program, experiments, glossary, journey, loop, qdl, readme, traveler, validation
+        from . import action, build_program, entangle, experiments, glossary, journey, loop, qdl, readme, traveler, validation
         print("wrote", action.write_golden())
         print("wrote", loop.write())
         print("wrote", ", ".join(build_program.write()))
         print("wrote", ", ".join(qdl.write()))
         print("wrote", ", ".join(journey.write()))
+        print("wrote", entangle.write())
         for m in (traveler, experiments, glossary, validation, action, readme):
             print("wrote", m.write())
         return 0

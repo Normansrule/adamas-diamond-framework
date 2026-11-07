@@ -59,7 +59,7 @@ function menu() {
     { label: 'File', submenu: [{ label: 'New window', accelerator: 'CmdOrCtrl+N', click: () => createWindow() }, { type: 'separator' }, process.platform === 'darwin' ? { role: 'close' } : { role: 'quit' }] },
     { label: 'Go', submenu: [go('Home', 'index.html', 'CmdOrCtrl+H'), go('Equations in Action', 'action.html', 'CmdOrCtrl+E'), go('Experiments', 'experiments.html', 'CmdOrCtrl+X'),
       go('Device Library', 'devices.html'), go('Fab Journey', 'journey.html'), go('Process traveler', 'process.html'), go('Course', 'course/index.html', 'CmdOrCtrl+L'), go('Explorer', 'explorer.html'), go('Gallery', 'gallery.html'), go('Glossary', 'glossary.html'),
-      { type: 'separator' }, go('Qubit Lab', 'labs/qubit.html'), go('Lattice Lab', 'labs/lattice.html'), go('Heat Race', 'labs/heat.html'), go('Machine Builder', 'labs/machine.html'), go('Break the Code', 'labs/qec.html'),
+      { type: 'separator' }, go('Qubit Lab', 'labs/qubit.html'), go('Lattice Lab', 'labs/lattice.html'), go('Heat Race', 'labs/heat.html'), go('Machine Builder', 'labs/machine.html'), go('Break the Code', 'labs/qec.html'), go('Entanglement Lab', 'labs/entangle.html'),
       { type: 'separator' }, { label: 'Back', accelerator: 'Alt+Left', click: (_, w) => w && w.webContents.navigationHistory.canGoBack() && w.webContents.navigationHistory.goBack() },
       { label: 'Forward', accelerator: 'Alt+Right', click: (_, w) => w && w.webContents.navigationHistory.canGoForward() && w.webContents.navigationHistory.goForward() }] },
     { label: 'View', submenu: [{ role: 'reload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }] },

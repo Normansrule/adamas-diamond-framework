@@ -9,8 +9,10 @@ _Generated from `adamas/glossary.py`. On the website, hover the dotted underline
 | AOM | acousto-optic modulator | A crystal driven by sound waves that switches a laser beam on and off in nanoseconds. |
 | APD | avalanche photodiode | A photodiode with internal gain; in Geiger mode it counts single photons. |
 | AWG | arbitrary waveform generator | An instrument that outputs any programmed voltage waveform, used for qubit control pulses. |
+| BBM92 | Bennett–Brassard–Mermin 1992 key distribution | Quantum key distribution with entangled pairs measured in two bases; needs a classical channel too. |
 | BFOM | Baliga's figure of merit | εμE_c³: how low a power switch's on-resistance can be for a given blocking voltage. |
 | BOE | buffered oxide etch | A buffered hydrofluoric-acid solution that etches oxides. |
+| CHSH | Clauser–Horne–Shimony–Holt inequality | A Bell test: any local hidden-variable account of two parties' results keeps S at or below 2; entangled qubits reach 2√2. |
 | CMOS | complementary metal-oxide-semiconductor | Logic that pairs n- and p-channel transistors so no current flows when idle. |
 | CSS | Calderbank–Shor–Steane code | A quantum code with separate checks for bit flips and phase flips; the standard surface code is one. |
 | CVD | chemical vapor deposition | Growing a solid from reactive gases; diamond grows from methane and hydrogen. |
@@ -18,6 +20,7 @@ _Generated from `adamas/glossary.py`. On the website, hover the dotted underline
 | DIA-4 | DIA-4 processor | This repository's 4-bit teaching processor, synthesized onto diamond logic cells. |
 | DRC | design rule check | Automatic checking that a layout obeys the minimum widths and spacings of a process. |
 | E/D | enhancement/depletion | Logic built from normally-off (enhancement) drivers and normally-on (depletion) loads, used when only one transistor polarity exists. |
+| E91 | Ekert 1991 key distribution | Quantum key distribution using entangled pairs and a Bell test; the parties still compare settings over a classical channel. |
 | EUV | extreme ultraviolet | 13.5 nm light used by the most advanced lithography tools. |
 | EV | electric vehicle | A car driven by electric motors; its inverter is a key market for wide-bandgap power switches. |
 | FET | field-effect transistor | A transistor controlled by an electric field from its gate. |

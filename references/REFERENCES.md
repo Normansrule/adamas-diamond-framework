@@ -1,6 +1,6 @@
 # References
 
-**584 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**590 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -409,8 +409,10 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[etxezarreta2025]`** Etxezarreta Martinez, J.; Schnabl, P.; Oliva del Moral, J.; et al. (2026). Leveraging biased noise for more efficient quantum error correction at the circuit level with two-level qubits. *Physical Review Applied*, 25(1), 014021.
 - 📚 **`[jager2026]`** Jäger, T.; Kwon, M.; Keller, M.; et al. (2026). Modeling quantum volume using randomized benchmarking of room-temperature NV center quantum registers. *npj Quantum Information*, 12(1), 6.
 
-## Photonics, other color centers, and quantum networks (37)
+## Photonics, other color centers, and quantum networks (39)
 
+- 📚 **`[ekert1991]`** Ekert, A. K. (1991). Quantum cryptography based on Bell's theorem. *Physical Review Letters*, 67, 661.
+- 📚 **`[bennett1992]`** Bennett, C. H.; Brassard, G.; Mermin, N. D. (1992). Quantum cryptography without Bell's theorem. *Physical Review Letters*, 68, 557.
 - ✅ **`[babinec2010]`** Babinec, T. M.; Hausmann, B. J. M.; Khan, M.; et al. (2010). A diamond nanowire single-photon source. *Nature Nanotechnology*, 5, 195. [doi:10.1038/nnano.2010.6](https://doi.org/10.1038/nnano.2010.6)
 - ✅ **`[hadden2010]`** Hadden, J. P.; Harrison, J. P.; Stanley-Clarke, A. C.; et al. (2010). Strongly enhanced photon collection from diamond defect centers under microfabricated integrated solid immersion lenses. *Applied Physics Letters*, 97, 241901. [doi:10.1063/1.3519847](https://doi.org/10.1063/1.3519847)
 - ✅ **`[togan2010]`** Togan, E.; Chu, Y.; Trifonov, A. S.; et al. (2010). Quantum entanglement between an optical photon and a solid-state spin qubit. *Nature*, 466, 730. [doi:10.1038/nature09256](https://doi.org/10.1038/nature09256)
@@ -612,8 +614,12 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[higgott2022]`** Higgott, O. (2022). PyMatching: a Python package for decoding quantum codes with minimum-weight perfect matching. *ACM Transactions on Quantum Computing*, 3, 16. [doi:10.1145/3505637](https://doi.org/10.1145/3505637)
 - ✅ **`[bravyi2024]`** Bravyi, S.; Cross, A. W.; Gambetta, J. M.; et al. (2024). High-threshold and low-overhead fault-tolerant quantum memory. *Nature*, 627, 778. [doi:10.1038/s41586-024-07107-7](https://doi.org/10.1038/s41586-024-07107-7)
 
-## Beyond: adjacent platforms and frontier applications (31)
+## Beyond: adjacent platforms and frontier applications (35)
 
+- 📚 **`[clauser1969]`** Clauser, J. F.; Horne, M. A.; Shimony, A.; Holt, R. A. (1969). Proposed experiment to test local hidden-variable theories. *Physical Review Letters*, 23, 880.
+- 📚 **`[cirelson1980]`** Cirel'son, B. S. (1980). Quantum generalizations of Bell's inequality. *Letters in Mathematical Physics*, 4, 93.
+- 📚 **`[ghirardi1980]`** Ghirardi, G. C.; Rimini, A.; Weber, T. (1980). A general argument against superluminal transmission through the quantum mechanical measurement process. *Lettere al Nuovo Cimento*, 27, 293.
+- 📚 **`[wootters1982]`** Wootters, W. K.; Zurek, W. H. (1982). A single quantum cannot be cloned. *Nature*, 299, 802.
 - ✅ **`[bennett1993]`** Bennett, C. H.; Brassard, G.; Crepeau, C.; Jozsa, R.; Peres, A.; Wootters, W. K. (1993). Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels. *Physical Review Letters*, 70, 1895. [doi:10.1103/physrevlett.70.1895](https://doi.org/10.1103/physrevlett.70.1895)
 - ✅ **`[briegel1998]`** Briegel, H.-J.; Dur, W.; Cirac, J. I.; Zoller, P. (1998). Quantum repeaters: the role of imperfect local operations in quantum communication. *Physical Review Letters*, 81, 5932. [doi:10.1103/physrevlett.81.5932](https://doi.org/10.1103/physrevlett.81.5932)
 - ✅ **`[kimble2008]`** Kimble, H. J. (2008). The quantum internet. *Nature*, 453, 1023. [doi:10.1038/nature07127](https://doi.org/10.1038/nature07127)
