@@ -22,9 +22,9 @@
 <aside class="panel">
   <h1>Entanglement Lab</h1>
   <p>Alice and Bob share entangled pairs and no wire. Can Alice send Bob a message through the entanglement alone? Try, then see what the pairs are really good for.</p>
-  <div class="ctl"><label>Alice's message bit</label><div class="seg" id="bit" role="group" aria-label="Alice's message bit"><button class="on" id="bit0" data-b="0">0 (she measures along Z)</button><button id="bit1" data-b="1">1 (she measures along X)</button></div></div>
-  <div class="ctl"><label>Bob measures along <b id="bobV"></b></label><input type="range" id="bob" min="0" max="180" value="0" aria-label="Bob's measurement angle in degrees"></div>
-  <div class="ctl"><label>Pair quality (visibility v) <b id="vV"></b></label><input type="range" id="v" min="0" max="100" value="100" aria-label="Visibility of the entangled pairs, percent"></div>
+  <div class="ctl"><label>Alice's message bit</label><div class="seg" id="bit" role="group" aria-label="Alice's message bit"><button class="on" id="bit0" data-b="0" aria-pressed="true">0 (she measures along Z)</button><button id="bit1" data-b="1" aria-pressed="false">1 (she measures along X)</button></div></div>
+  <div class="ctl"><label for="bob">Bob measures along <b id="bobV"></b></label><input type="range" id="bob" min="0" max="180" value="0" aria-label="Bob's measurement angle in degrees"></div>
+  <div class="ctl"><label for="v">Pair quality (visibility v) <b id="vV"></b></label><input type="range" id="v" min="0" max="100" value="100" aria-label="Visibility of the entangled pairs, percent"></div>
   <div class="ctl" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="go" data-icon="play">Send 200 pairs</button><button class="btn" id="reset">Reset</button></div>
   <div class="kpis" id="kpis"></div>
 </aside>
@@ -40,8 +40,8 @@
   </section>
   <section class="card en-card" aria-labelledby="h2s">
     <h2 id="h2s">2. Teleport a qubit: the pairs plus two ordinary bits</h2>
-    <div class="ctl"><div class="seg" id="bits" role="group" aria-label="Classical bits"><button class="on" data-w="1">Alice phones the 2 bits</button><button data-w="0">No phone call</button></div></div>
-    <div class="ctl"><label>Distance <b id="kmV"></b></label><input type="range" id="km" min="-1" max="4" step="0.05" value="0.11" aria-label="Distance between Alice and Bob, log scale, kilometres"></div>
+    <div class="ctl"><div class="seg" id="bits" role="group" aria-label="Classical bits"><button class="on" data-w="1" aria-pressed="true">Alice phones the 2 bits</button><button data-w="0" aria-pressed="false">No phone call</button></div></div>
+    <div class="ctl"><label for="km">Distance <b id="kmV"></b></label><input type="range" id="km" min="-1" max="4" step="0.05" value="0.11" aria-label="Distance between Alice and Bob, log scale, kilometres"></div>
     <div class="en-bars" id="tpBars"></div>
     <p class="en-note" id="tpNote"></p>
   </section>
@@ -123,14 +123,14 @@ function update() {
     [EN.teleportFidelity(s.v, true).toFixed(3), 'teleport fidelity with the 2 bits'], [EN.chsh(s.v).toFixed(3), 'CHSH value S']]
     .map(([b, t]) => `<div class="kpi"><b>${b}</b><span>${t}</span></div>`).join('');
 }
-$('bit').onclick = e => { const b = e.target.closest('button'); if (!b) return; bit = +b.dataset.b; $('bit').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
-$('bits').onclick = e => { const b = e.target.closest('button'); if (!b) return; withBits = b.dataset.w === '1'; $('bits').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); update(); };
+$('bit').onclick = e => { const b = e.target.closest('button'); if (!b) return; bit = +b.dataset.b; $('bit').querySelectorAll('button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); }); update(); };
+$('bits').onclick = e => { const b = e.target.closest('button'); if (!b) return; withBits = b.dataset.w === '1'; $('bits').querySelectorAll('button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); }); update(); };
 $('go').onclick = () => send(200);
 $('reset').onclick = () => { for (const k of [0, 1]) Object.assign(tally[k], { n: 0, bob0: 0, same: 0 }); revealed = false; update(); };
 $('reveal').onclick = () => { revealed = true; update(); };
 ['bob', 'v', 'km'].forEach(i => $(i).oninput = update);
 update();
-const D = await data();
-const tag = l => l.startsWith('demonstrated') ? 'tag' : l === 'theorem' ? 'tag violet' : l === 'proposed' ? 'tag red' : 'tag gold';
-$('tl').innerHTML += D.entangle.timeline.map(r => `<tr><td>${r.year ?? 'next'}</td><td>${r.what} <span class="src">[${r.ref}]</span></td><td><span class="${tag(r.label)}">${r.label}</span></td></tr>`).join('');
+const D = await data().catch(() => null);
+const tag = l => l.startsWith('demonstrated') ? 'tag' : l === 'theorem' ? 'tag violet' : l.startsWith('proposed') ? 'tag red' : 'tag gold';
+$('tl').innerHTML += (D?.entangle?.timeline ?? []).map(r => `<tr><td>${r.year ?? 'next'}</td><td>${r.what} <span class="src">[${r.ref}]</span></td><td><span class="${tag(r.label)}">${r.label}</span></td></tr>`).join('');
 </script></body></html>

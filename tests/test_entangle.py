@@ -80,9 +80,19 @@ def test_light_time_and_pre_shared_reach():
 
 def test_timeline_labels_and_sources():
     labels = {lab for *_, lab in E.TIMELINE}
-    assert labels <= {"theorem", "proposed then", "demonstrated, cryogenic", "proposed"}
-    assert E.TIMELINE[-1][-1] == "proposed"                # room-temperature pre-shared memories: not demonstrated
+    assert labels <= {"theorem", "theory proposal, demonstrated since", "demonstrated, cryogenic", "proposed (this program)"}
+    assert E.TIMELINE[-1][-1] == "proposed (this program)"                # room-temperature pre-shared memories: not demonstrated
     assert all(lab != "demonstrated" for *_, lab in E.TIMELINE)   # nothing room-temperature is claimed as shown
+
+
+def test_document_states_light_time_in_microseconds():
+    assert f"{1e6 * 1300.0 / E.C_M_S:.2f} µs" in E.document() and "4.34 µs" in E.document()
+
+
+def test_teleport_with_zero_probability_outcome_does_not_divide_by_zero():
+    rho = E.dm(E.ket(0, 0))                                           # product resource: some Bell outcomes can vanish
+    out = E.teleport(np.array([1, 0], dtype=complex), True, rho)
+    assert sum(p for p, _ in out) == pytest.approx(1.0) and all(np.all(np.isfinite(s)) for _, s in out)
 
 
 def test_generated_document_and_golden_are_current():

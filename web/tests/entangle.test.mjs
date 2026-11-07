@@ -11,7 +11,8 @@ test('joint probabilities and Bob\'s marginal match the density-matrix calculati
   for (const [v, a, b, P] of G.joint) {
     const J = EN.joint(v, a, b);
     for (const k of [0, 1]) for (const l of [0, 1]) assert.ok(close(J[k][l], P[k][l]), `v=${v} a=${a} b=${b} ${k}${l}`);
-    assert.ok(close(EN.bobP0(v, a, b), 0.5), 'Bob sees 50/50 whatever Alice does');
+    assert.ok(close(EN.bobP0(v, a, b), P[0][0] + P[1][0]), 'Bob\'s marginal matches the density matrix');
+    assert.ok(close(P[0][0] + P[1][0], 0.5), 'and it is 1/2 whatever Alice does');
   }
 });
 test('teleportation fidelity with and without the two classical bits', () => {
@@ -19,6 +20,7 @@ test('teleportation fidelity with and without the two classical bits', () => {
 });
 test('CHSH value, bounds, and light time', () => {
   for (const [v, s] of G.chsh) assert.ok(close(EN.chsh(v), s), `chsh v=${v}`);
+  for (const [v, a, a2, b, b2, s] of G.chsh_angles) assert.ok(close(EN.chsh(v, a, a2, b, b2), s), `chsh angles v=${v}`);
   assert.ok(close(EN.wernerThreshold(), 1 / Math.SQRT2));
   for (const [km, ms] of G.light_ms) assert.ok(close(EN.lightMs(km), ms), `light ${km} km`);
 });

@@ -16,10 +16,10 @@ What entanglement does give, with a classical channel alongside:
 |---|---|---|
 | Teleportation of an unknown qubit [bennett1993] | 2 classical bits per qubit | Demonstrated between NV centers, cryogenic only [hermans2022] |
 | Entanglement-based key distribution (E91 by Ekert, BBM92 by Bennett, Brassard and Mermin) [ekert1991] [bennett1992] | A public classical channel to compare settings | Proposed for NV nodes here; not built |
-| Certified randomness and Bell tests [clauser1969] | A classical channel to compare results | Loophole-free with NV centers 1.3 km apart, cryogenic [hensen2015] |
+| Bell tests [clauser1969] | A classical channel to compare results | Loophole-free with NV centers 1.3 km apart, cryogenic [hensen2015] |
 | Sending a message with no classical channel | Impossible [ghirardi1980] | Theorem |
 
-And the entangled pairs themselves have to be delivered first: in every NV network so far by photons through fiber,
+And the entangled pairs themselves have to be delivered first: in every network of nitrogen-vacancy (NV) centers so far by photons through fiber,
 heralded by a detection at a station between the nodes [bernien2013] [humphreys2018] [pompili2021] [stolk2024].
 
 ## 1. No-signaling, checked numerically
@@ -45,10 +45,10 @@ Over 10,000 simulated rounds Bob guessed right 49.9 % of the time (sampling erro
   state is the maximally mixed state I/2 (largest difference 6.7e-16). He learns nothing.
 * With a noisy pair (a Werner state of visibility v) and the bits: (1 + v)/2.
 * No entanglement at all, measure in Z and phone the result: **0.6671 ± 0.0011** over 20,000
-  random inputs (exactly 2/3). A noisy pair beats this only when v > 1/3.
+  random inputs (exactly 2/3 for this strategy). A noisy pair beats it only when v > 1/3.
 
 The bits travel at most at the speed of light, so teleporting across 1.3 km (the [hensen2015] separation) takes at least
-0.00 µs. Nothing arrives before the classical message does.
+4.34 µs. Nothing arrives before the classical message does.
 
 ## 3. Bell test (CHSH, Clauser–Horne–Shimony–Holt): why the correlation is not a hidden message
 
@@ -62,20 +62,20 @@ results stay 50/50: the violation is a property of the comparison.
 | Year | What | Label | Source |
 |---|---|---|---|
 | 1980 | No-communication theorem: measuring one half of an entangled pair cannot send a signal | theorem | [ghirardi1980] |
-| 1991 | Entanglement-based key distribution (E91): a shared secret key, with a classical channel to compare settings | proposed then | [ekert1991] |
-| 1992 | BBM92 key distribution with entangled pairs, again with a classical channel | proposed then | [bennett1992] |
-| 1993 | Teleportation: one shared pair plus two classical bits moves an unknown qubit | proposed then | [bennett1993] |
+| 1991 | Entanglement-based key distribution (E91): a shared secret key, with a classical channel to compare settings | theory proposal, demonstrated since | [ekert1991] |
+| 1992 | BBM92 key distribution with entangled pairs, again with a classical channel | theory proposal, demonstrated since | [bennett1992] |
+| 1993 | Teleportation: one shared pair plus two classical bits moves an unknown qubit | theory proposal, demonstrated since | [bennett1993] |
 | 2013 | Heralded entanglement of two NV centers 3 m apart, through photons | demonstrated, cryogenic | [bernien2013] |
 | 2015 | Loophole-free Bell violation with NV electron spins 1.3 km apart | demonstrated, cryogenic | [hensen2015] |
 | 2017 | Entanglement distillation between two NV network nodes | demonstrated, cryogenic | [kalb2017] |
 | 2018 | Deterministic delivery of remote entanglement (entanglement ready before it is needed) | demonstrated, cryogenic | [humphreys2018] |
-| 2021 | Three-node network of NV qubits | demonstrated, cryogenic | [pompili2021] |
+| 2021 | Multinode (three-node) network of NV qubits | demonstrated, cryogenic | [pompili2021] |
 | 2022 | Teleportation between non-neighbouring nodes (classical bits still sent) | demonstrated, cryogenic | [hermans2022] |
 | 2024 | Metropolitan-scale heralded entanglement of solid-state qubits | demonstrated, cryogenic | [stolk2024] |
-| next | Pre-share entanglement, store it in room-temperature nuclear memories (more than 1 s of memory reported for one ¹³C spin), use it later with a classical message only | proposed | [maurer2012] |
+| next | Pre-share entanglement, store it in room-temperature nuclear memories, use it later with a classical message only (the cited source reports more than 1 s of memory for one local ¹³C spin, not a shared pair) | proposed (this program) | [maurer2012] |
 
-Every NV network experiment in the table ran at cryogenic temperature, because spin-photon entanglement needs the
-narrow zero-phonon line of a cold NV. This program's room-temperature devices do not distribute entanglement.
+Every NV network experiment in the table ran at cryogenic temperature; none has been reported at room temperature.
+This program's room-temperature devices do not distribute entanglement.
 
 The last row is the only room-temperature idea: distribute pairs ahead of time (still through photons), park each half
 in a ¹³C nuclear memory, and later use them with only a classical message. During one second of storage a classical

@@ -7,8 +7,8 @@ Everything here is computed with small density matrices (numpy), so each claim i
   is unchanged. `no_signaling_check` tests this on random states and random operations; `signaling_game` plays the
   natural attempt (Alice picks her measurement basis to encode a bit) and shows Bob guesses at exactly 50 %.
 * Teleportation [bennett1993]: a shared pair plus Alice's two classical bits moves an unknown qubit to Bob with
-  fidelity 1. Without the bits Bob holds I/2 (fidelity 1/2 for every input); the best classical strategy without
-  entanglement (measure, send the result, re-prepare) reaches 2/3 on average, computed here for a fixed basis.
+  fidelity 1. Without the bits Bob holds I/2 (fidelity 1/2 for every input); a classical strategy without
+  entanglement (measure in Z, send the result, re-prepare) reaches 2/3 on average, computed here.
 * Bell test (CHSH [clauser1969]): local hidden variables give |S| <= 2; quantum mechanics reaches 2 sqrt(2)
   [cirelson1980]; a Werner state of visibility v gives S = 2 sqrt(2) v, so a violation needs v > 1/sqrt(2).
 * Light-time: the classical bits travel no faster than light, so teleportation over a distance L takes at least L / c.
@@ -123,7 +123,7 @@ def signaling_game(rounds: int = 10_000, seed: int = 1) -> dict:
     p0 = {b: float(bob_view(rho, "measure", bases[b])[0, 0].real) for b in (0, 1)}
     r = np.random.default_rng(seed); bits = r.integers(0, 2, rounds)
     seen = (r.random(rounds) >= np.array([p0[b] for b in bits])).astype(int)      # Bob's outcome
-    correct = float(np.mean(seen == bits))                                        # best rule "guess my outcome"
+    correct = float(np.mean(seen == bits))                                        # rule "guess my outcome" (any rule gives 1/2)
     return {"p_bob0_given_bit": p0, "rounds": rounds, "correct": correct, "se": math.sqrt(0.25 / rounds)}
 
 
@@ -141,7 +141,10 @@ def teleport(psi: np.ndarray, use_bits: bool = True, resource: np.ndarray | None
     out = []
     for name, (m1, m2) in BELL_OUTCOMES:
         m = np.kron(bell(name).conj()[None, :], I2)              # (<Bell|_01 (x) I_2), a 2 x 8 map
-        bob = m @ rho @ m.conj().T; pr = float(np.trace(bob).real); bob = bob / pr
+        bob = m @ rho @ m.conj().T; pr = float(np.trace(bob).real)
+        if pr < 1e-15:
+            out.append((0.0, np.zeros((2, 2), complex))); continue
+        bob = bob / pr
         if use_bits:
             c = np.linalg.matrix_power(Z, m1) @ np.linalg.matrix_power(X, m2); bob = c @ bob @ c.conj().T
         out.append((pr, bob))
@@ -209,19 +212,19 @@ def werner_threshold() -> float:
 
 
 # ------------------------------------------------------------------ timeline ----------------------------------------
-TIMELINE = [  # (year, ref, what, label); numbers are only those in the paper titles
+TIMELINE = [  # (year, ref, what, label); distances and counts as in the cited papers
     (1980, "ghirardi1980", "No-communication theorem: measuring one half of an entangled pair cannot send a signal", "theorem"),
-    (1991, "ekert1991", "Entanglement-based key distribution (E91): a shared secret key, with a classical channel to compare settings", "proposed then"),
-    (1992, "bennett1992", "BBM92 key distribution with entangled pairs, again with a classical channel", "proposed then"),
-    (1993, "bennett1993", "Teleportation: one shared pair plus two classical bits moves an unknown qubit", "proposed then"),
+    (1991, "ekert1991", "Entanglement-based key distribution (E91): a shared secret key, with a classical channel to compare settings", "theory proposal, demonstrated since"),
+    (1992, "bennett1992", "BBM92 key distribution with entangled pairs, again with a classical channel", "theory proposal, demonstrated since"),
+    (1993, "bennett1993", "Teleportation: one shared pair plus two classical bits moves an unknown qubit", "theory proposal, demonstrated since"),
     (2013, "bernien2013", "Heralded entanglement of two NV centers 3 m apart, through photons", "demonstrated, cryogenic"),
     (2015, "hensen2015", "Loophole-free Bell violation with NV electron spins 1.3 km apart", "demonstrated, cryogenic"),
     (2017, "kalb2017", "Entanglement distillation between two NV network nodes", "demonstrated, cryogenic"),
     (2018, "humphreys2018", "Deterministic delivery of remote entanglement (entanglement ready before it is needed)", "demonstrated, cryogenic"),
-    (2021, "pompili2021", "Three-node network of NV qubits", "demonstrated, cryogenic"),
+    (2021, "pompili2021", "Multinode (three-node) network of NV qubits", "demonstrated, cryogenic"),
     (2022, "hermans2022", "Teleportation between non-neighbouring nodes (classical bits still sent)", "demonstrated, cryogenic"),
     (2024, "stolk2024", "Metropolitan-scale heralded entanglement of solid-state qubits", "demonstrated, cryogenic"),
-    (None, "maurer2012", "Pre-share entanglement, store it in room-temperature nuclear memories (more than 1 s of memory reported for one ¹³C spin), use it later with a classical message only", "proposed"),
+    (None, "maurer2012", "Pre-share entanglement, store it in room-temperature nuclear memories, use it later with a classical message only (the cited source reports more than 1 s of memory for one local ¹³C spin, not a shared pair)", "proposed (this program)"),
 ]
 
 
@@ -250,7 +253,9 @@ def golden() -> dict:
     for v in vs:
         psi = random_qubit(r)
         tele.append([v, teleport_fidelity(psi, True, werner(v)), teleport_fidelity(psi, False, werner(v))])
+    odd = (0.3, 1.2, -0.4, 2.0)
     return {"joint": joint, "teleport": tele, "chsh": [[v, chsh(werner(v))] for v in vs],
+            "chsh_angles": [[v, *odd, chsh(werner(v), *odd)] for v in vs],
             "light_ms": [[km, 1e3 * light_time_s(km * 1e3)] for km in (1.3, 10.0, 1000.0)]}
 
 
@@ -283,10 +288,10 @@ What entanglement does give, with a classical channel alongside:
 |---|---|---|
 | Teleportation of an unknown qubit [bennett1993] | 2 classical bits per qubit | Demonstrated between NV centers, cryogenic only [hermans2022] |
 | Entanglement-based key distribution (E91 by Ekert, BBM92 by Bennett, Brassard and Mermin) [ekert1991] [bennett1992] | A public classical channel to compare settings | Proposed for NV nodes here; not built |
-| Certified randomness and Bell tests [clauser1969] | A classical channel to compare results | Loophole-free with NV centers 1.3 km apart, cryogenic [hensen2015] |
+| Bell tests [clauser1969] | A classical channel to compare results | Loophole-free with NV centers 1.3 km apart, cryogenic [hensen2015] |
 | Sending a message with no classical channel | Impossible [ghirardi1980] | Theorem |
 
-And the entangled pairs themselves have to be delivered first: in every NV network so far by photons through fiber,
+And the entangled pairs themselves have to be delivered first: in every network of nitrogen-vacancy (NV) centers so far by photons through fiber,
 heralded by a detection at a station between the nodes [bernien2013] [humphreys2018] [pompili2021] [stolk2024].
 
 ## 1. No-signaling, checked numerically
@@ -312,10 +317,10 @@ Over {game['rounds']:,} simulated rounds Bob guessed right {100 * game['correct'
   state is the maximally mixed state I/2 (largest difference {tp['bob_without_bits_vs_mixed']:.1e}). He learns nothing.
 * With a noisy pair (a Werner state of visibility v) and the bits: (1 + v)/2.
 * No entanglement at all, measure in Z and phone the result: **{mp['mean']:.4f} ± {mp['se']:.4f}** over {mp['trials']:,}
-  random inputs (exactly 2/3). A noisy pair beats this only when v > 1/3.
+  random inputs (exactly 2/3 for this strategy). A noisy pair beats it only when v > 1/3.
 
 The bits travel at most at the speed of light, so teleporting across 1.3 km (the [hensen2015] separation) takes at least
-{1e3 * light_time_s(1300.0):.2f} µs. Nothing arrives before the classical message does.
+{1e6 * light_time_s(1300.0):.2f} µs. Nothing arrives before the classical message does.
 
 ## 3. Bell test (CHSH, Clauser–Horne–Shimony–Holt): why the correlation is not a hidden message
 
@@ -330,8 +335,8 @@ results stay 50/50: the violation is a property of the comparison.
 |---|---|---|---|
 {rows}
 
-Every NV network experiment in the table ran at cryogenic temperature, because spin-photon entanglement needs the
-narrow zero-phonon line of a cold NV. This program's room-temperature devices do not distribute entanglement.
+Every NV network experiment in the table ran at cryogenic temperature; none has been reported at room temperature.
+This program's room-temperature devices do not distribute entanglement.
 
 The last row is the only room-temperature idea: distribute pairs ahead of time (still through photons), park each half
 in a ¹³C nuclear memory, and later use them with only a classical message. During one second of storage a classical
