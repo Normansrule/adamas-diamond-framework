@@ -12,11 +12,11 @@ and the decision gate. Phases P0 and P1 are written in full here, and their gate
   pass/fail tolerances come from those fits and from the published uncertainty of dD/dT, -74.2(7) kHz/K
   [acosta2010], not from a typed-in number.
 
-* P2 Teaching lab, P3 Single NV, P4 Devices and P5 Placement are written in full too; their tests are set so a correct
-  setup passes the whole gate 95 % of the time, and P3 to P5 run each test on a degraded twin (one physical or process
+* P2 Teaching lab, P3 Single NV, P4 Devices, P5 Placement and P6 Integration are written in full too; their tests are set so a correct
+  setup passes the whole gate 95 % of the time, and P3 to P6 run each test on a degraded twin (one physical or process
   fault) that must fail.
 
-Phases P6 to P8 stay at outline level until their sources are in (docs/STATUS.md says why).
+Phases P7 and P8 stay at outline level until their sources are in (docs/STATUS.md says why).
 """
 from __future__ import annotations
 
@@ -50,9 +50,9 @@ PHASES = [
     {"id": "P5", "name": "Placement", "budget": "shared facility", "status": "written",
      "goal": "Implant through masks, anneal, conversion statistics, NV pairs closer than 30 nm.",
      "metric": "Conversion yield measured; coupled pairs found; Bell fidelity above 0.5.", "gate": "Is placement yield good enough to plan arrays?"},
-    {"id": "P6", "name": "Integration", "budget": "packaging line or MPW partner", "status": "outline",
+    {"id": "P6", "name": "Integration", "budget": "packaging line or MPW partner", "status": "written",
      "goal": "Diamond chiplets bonded to silicon CMOS control; multi-cell arrays.",
-     "metric": "Chiplet works after bonding; repetition-code gain (criterion to define).", "gate": "Does integration keep coherence and yield?"},
+     "metric": "T₂ kept through bonding (ratio at least 0.8); on-chip Rabi within 5 % of design; repetition-code gain above zero.", "gate": "Does integration keep coherence and yield?"},
     {"id": "P7", "name": "Pilot line and products", "budget": "fab", "status": "outline",
      "goal": "Wafer-scale flow, statistical process control, first products.",
      "metric": "Defect density and yield on control charts; first product qualified.", "gate": "Which product line pays for the line?"},
@@ -1214,6 +1214,287 @@ Sources: SOURCES_LINE
     return text.replace("SOURCES_LINE", " ".join(f"[{k}]" for k in keys))
 
 
+# ---------------------------------------------------------------- P6 ------------------------------------------------
+P6_CHECKS = 3                # coherence kept through bonding, on-chip drive, repetition-code gain: the gate needs all three
+P6_GATE_COVERAGE = 0.95
+P6_TEST_COVERAGE = P6_GATE_COVERAGE ** (1 / P6_CHECKS)     # so each check covers 98.30 %
+P6_RUNS = 1000
+# Illustrative inputs: the echo and Rabi data reuse the B1 noise model of adamas.experiments (amplitude 0.1; 0.004 per Rabi point, and
+# 0.0015 per echo point, which is B1's 0.003 averaged four times longer); the design Rabi frequency, its 5 % tolerance and the twin's half current are
+# those of Quantum Device Library entry QDL-27 (adamas.qdl). The coherence-loss limit and the repetition-code numbers are
+# this project's choices, labeled ADAMAS or illustrative.
+P6_T2_US = 300.0             # echo T2 before bonding (the B1 value of adamas.experiments.PULSED_TRUTH; illustrative)
+P6_STRETCH = 1.5             # echo stretch exponent (B1 value; illustrative)
+P6_ECHO_NOISE = 0.0015       # per echo point: four times B1's averaging, so half its noise (illustrative)
+P6_T2_BAD_US = 150.0         # degraded twin: bonding damaged the diamond surface and halved T2 (illustrative)
+P6_T2_RATIO_MIN = 0.8        # ADAMAS target: bonding may cost at most 20 % of T2 (one-sided lower bound of the ratio)
+P6_RABI_DESIGN_MHZ = 10.0    # on-chip driver design Rabi frequency (QDL-27 check)
+P6_RABI_BAD_MHZ = 5.0        # degraded twin: the driver gives half the current (QDL-27 check)
+P6_RABI_TOL = 0.05           # QDL-27: within 5 % of the design value, including k sigma (an ADAMAS design threshold)
+P6_RABI_DECAY_US = 0.8       # B1 value; illustrative
+P6_P_INJECT = 0.25           # bit-flip probability injected on each qubit of the code (as in the protocol of [waldherr2014])
+P6_F0 = 0.90                 # fidelity of encoding plus decoding through the chiplet (illustrative)
+P6_F0_BAD = 0.70             # degraded twin: drive crosstalk from the chiplet spoils the encoding gates (illustrative)
+P6_FID_NOISE = 0.01          # error of each measured fidelity (illustrative)
+
+
+def _k6() -> float:
+    return _k_normal(P6_TEST_COVERAGE)
+
+
+def _k6_one_sided() -> float:
+    from scipy.stats import norm
+    return float(norm.ppf(P6_TEST_COVERAGE))
+
+
+def _rng6(seed: int, test: int) -> np.random.Generator:
+    """Independent stream per test (0 echo before, 1 echo after, 2 Rabi, 3 repetition code); twins reuse their streams."""
+    return np.random.default_rng([seed, 6, test])
+
+
+def _echo_data(rng: np.random.Generator, t2_us: float):
+    te = np.linspace(0, 600, 61)
+    return te, 0.1 * np.exp(-(te / t2_us) ** P6_STRETCH) + rng.normal(0, P6_ECHO_NOISE, te.size)
+
+
+def p6_coherence(seed: int = 6, t2_after_us: float = P6_T2_US) -> dict:
+    """Echo T2 of the same NV before bonding (external drive) and after (through the chiplet), each fitted with
+    adamas.fitting.fit_echo (stretched exponential). Pass when the one-sided lower bound of T2_after / T2_before, ratio
+    minus k sigma with the two fit errors propagated, is at least P6_T2_RATIO_MIN (an ADAMAS target). The degraded
+    twin's bonding halves T2."""
+    from . import fitting
+    xb, yb = _echo_data(_rng6(seed, 0), P6_T2_US); xa, ya = _echo_data(_rng6(seed, 1), t2_after_us)
+    fb, fa = fitting.fit_echo(xb, yb), fitting.fit_echo(xa, ya)
+    tb, eb, ta, ea = fb.params["T2_us"], fb.errors["T2_us"], fa.params["T2_us"], fa.errors["T2_us"]
+    ratio = ta / tb; r_err = ratio * math.hypot(ea / ta, eb / tb); k = _k6_one_sided()
+    return {"t2_before_us": tb, "t2_before_err": eb, "t2_after_us": ta, "t2_after_err": ea, "t2_after_put_in": t2_after_us,
+            "ratio": ratio, "ratio_err": r_err, "ratio_lower": ratio - k * r_err, "limit": P6_T2_RATIO_MIN, "k": k,
+            "x": xa.tolist(), "y_before": yb.tolist(), "y_after": ya.tolist(), "pass": bool(ratio - k * r_err >= P6_T2_RATIO_MIN)}
+
+
+def p6_drive(seed: int = 6, rabi_mhz: float = P6_RABI_DESIGN_MHZ) -> dict:
+    """Rabi oscillation driven by the chiplet's on-chip microwave driver, fitted with adamas.fitting.fit_rabi. Pass when
+    |Omega - Omega_design| + k sigma <= 5 % of the design (the QDL-27 criterion). The degraded twin's driver gives half
+    the current, so half the Rabi frequency."""
+    from . import fitting
+    t = np.linspace(0, 1.0, 101)
+    y = 0.05 * (1 - np.cos(2 * np.pi * rabi_mhz * t) * np.exp(-t / P6_RABI_DECAY_US)) + _rng6(seed, 2).normal(0, 0.004, t.size)
+    f = fitting.fit_rabi(t, y); om, om_e = abs(f.params["rabi_MHz"]), f.errors["rabi_MHz"]; k = _k6()
+    return {"rabi_put_in": rabi_mhz, "rabi_mhz": om, "rabi_err": om_e, "design": P6_RABI_DESIGN_MHZ, "k": k, "t": t.tolist(), "y": y.tolist(),
+            "pass": bool(abs(om - P6_RABI_DESIGN_MHZ) + k * om_e <= P6_RABI_TOL * P6_RABI_DESIGN_MHZ)}
+
+
+def repetition_fidelity(p: float, f0: float = P6_F0) -> float:
+    """Three-qubit repetition code with bit flips of probability p on each qubit: the majority vote fails with
+    p_L = 3p^2 - 2p^3 [shor1995] (adamas.qec). Encoding and decoding succeed with probability f0; when they fail the
+    result is random (fidelity 1/2). A model of this repository; f0 is illustrative."""
+    from .qec import repetition_logical_error
+    return f0 * (1 - repetition_logical_error(p)) + (1 - f0) / 2
+
+
+def repetition_break_even(f0: float = P6_F0) -> float | None:
+    """Smallest p > 0 at which the corrected fidelity reaches 1 - p (None if correction never helps)."""
+    from scipy.optimize import brentq
+    h = lambda p: repetition_fidelity(p, f0) - (1 - p)   # noqa: E731
+    grid = np.linspace(1e-6, 0.5 - 1e-6, 2000); v = np.array([h(x) for x in grid]); idx = np.nonzero(v > 0)[0]
+    if idx.size == 0:
+        return None
+    i = idx[0]
+    return float(grid[0]) if i == 0 else float(brentq(h, grid[i - 1], grid[i]))
+
+
+def p6_repetition(seed: int = 6, f0: float = P6_F0) -> dict:
+    """Error-injection test of the repetition code run through the chiplet (the protocol of [waldherr2014]): inject bit
+    flips with probability P6_P_INJECT on each qubit and measure the fidelity with and without correction. Without
+    correction one qubit keeps fidelity 1 - p. Pass when the gain F_corrected - F_uncorrected exceeds k sigma (one-sided).
+    The degraded twin's encoding gates are spoiled by drive crosstalk (f0 = P6_F0_BAD), so correction no longer helps."""
+    r = _rng6(seed, 3); p = P6_P_INJECT
+    fc = repetition_fidelity(p, f0) + r.normal(0, P6_FID_NOISE); fu = 1 - p + r.normal(0, P6_FID_NOISE)
+    gain, g_err = fc - fu, math.sqrt(2) * P6_FID_NOISE; k = _k6_one_sided()
+    return {"p": p, "f0": f0, "f_corrected": fc, "f_uncorrected": fu, "gain": gain, "gain_err": g_err, "k": k,
+            "pass": bool(gain - k * g_err > 0)}
+
+
+def p6_gate(seed: int = 6) -> dict:
+    c, d, q = p6_coherence(seed), p6_drive(seed), p6_repetition(seed)
+    return {"coherence": c, "drive": d, "repetition": q, "verdict": "go" if c["pass"] and d["pass"] and q["pass"] else "stop"}
+
+
+def p6_degraded(seed: int = 6) -> dict:
+    """Each test on its degraded twin (one fault each); every one must fail."""
+    return {"coherence": p6_coherence(seed, P6_T2_BAD_US), "drive": p6_drive(seed, P6_RABI_BAD_MHZ), "repetition": p6_repetition(seed, P6_F0_BAD)}
+
+
+def p6_pass_rates(runs: int = P6_RUNS) -> dict:
+    """Pass rates over simulated runs (seeds 6000 + i) for correct setups, and wrong-pass rates for the degraded twins."""
+    keys = ("coherence", "drive", "repetition"); c = dict.fromkeys(keys + ("gate",), 0); d = dict.fromkeys(keys, 0)
+    for i in range(runs):
+        g = p6_gate(6000 + i); b = p6_degraded(6000 + i)
+        for k in keys:
+            c[k] += g[k]["pass"]; d[k] += b[k]["pass"]
+        c["gate"] += g["verdict"] == "go"
+    out = {k: v / runs for k, v in c.items()}
+    out["degraded"] = {k: v / runs for k, v in d.items()}
+    out.update(runs=runs, k=_k6(), k_one=_k6_one_sided(), se_test=math.sqrt(P6_TEST_COVERAGE * (1 - P6_TEST_COVERAGE) / runs),
+               se_gate=math.sqrt(P6_GATE_COVERAGE * (1 - P6_GATE_COVERAGE) / runs))
+    return out
+
+
+P6_MACHINES = ("M00", "M26", "M27", "M28", "M29", "M47", "M53", "M55")
+
+
+def p6_figure(out: str | Path = "docs/img") -> Path:
+    """Figure 59: expected P6 results (nominal and degraded twin), simulated and fitted here."""
+    import matplotlib.pyplot as plt
+    from .figures import COLORS, INK, RED, _finish
+    out = Path(out); g, b = p6_gate(), p6_degraded()
+    fig, ax = plt.subplots(1, 3, figsize=(19, 4.8)); plt.subplots_adjust(wspace=.3)
+    a = ax[0]; x = np.array(g["coherence"]["x"]); xx = np.linspace(0, 600, 200)
+    a.plot(x, g["coherence"]["y_before"], "o", ms=3.5, color=INK, alpha=.6, label=f"before bonding: T₂ = {g['coherence']['t2_before_us']:.0f} ± {g['coherence']['t2_before_err']:.0f} µs")
+    for r, col, lab in ((g["coherence"], COLORS["Diamond"], "after bonding"), (b["coherence"], RED, "after a damaging bond (twin)")):
+        a.plot(x, r["y_after"], "o", ms=3.5, color=col)
+        a.plot(xx, 0.1 * np.exp(-(xx / r["t2_after_us"]) ** P6_STRETCH), color=col, lw=1.8,
+               label=f"{lab}: ratio {r['ratio']:.2f}, bound {r['ratio_lower']:.2f}")
+    a.legend(fontsize=8, loc="upper right"); a.set_ylim(-0.01, 0.14)
+    a.set_title(f"1. Coherence kept: pass when the T₂ ratio bound ≥ {P6_T2_RATIO_MIN:g} (ADAMAS)", fontsize=10.5)
+    a.set_xlabel("echo free time 2τ (µs)"); a.set_ylabel("echo contrast")
+    a = ax[1]; t = np.array(g["drive"]["t"])
+    for r, col, lab in ((g["drive"], COLORS["Diamond"], "on-chip driver"), (b["drive"], RED, "driver at half current (twin)")):
+        a.plot(t, r["y"], "o", ms=3.5, color=col)
+        tt = np.linspace(0, 0.4, 400)
+        a.plot(tt, 0.05 * (1 - np.cos(2 * np.pi * r["rabi_mhz"] * tt) * np.exp(-tt / P6_RABI_DECAY_US)), color=col, lw=1.5,
+               label=f"{lab}: Ω = {r['rabi_mhz']:.2f} ± {r['rabi_err']:.2f} MHz")
+    a.legend(fontsize=8, loc="upper right"); a.set_ylim(-0.02, 0.16); a.set_xlim(0, 0.4)
+    a.set_title(f"2. On-chip drive: within {100 * P6_RABI_TOL:g} % of {P6_RABI_DESIGN_MHZ:g} MHz (QDL-27)", fontsize=10.5)
+    a.set_xlabel("pulse length (µs; first 0.4 µs of the 1 µs record)"); a.set_ylabel("population transferred (contrast)")
+    a = ax[2]; pp = np.linspace(0, 0.5, 101)
+    a.plot(pp, 1 - pp, color=INK, lw=1.5, ls="--", label="one qubit, no correction: 1 − p")
+    a.plot(pp, [repetition_fidelity(x) for x in pp], color=COLORS["Diamond"], lw=2, label=f"corrected, encoding fidelity {P6_F0:g}")
+    a.plot(pp, [repetition_fidelity(x, P6_F0_BAD) for x in pp], color=RED, lw=2, label=f"corrected, crosstalk ({P6_F0_BAD:g}, twin)")
+    for r, col in ((g["repetition"], COLORS["Diamond"]), (b["repetition"], RED)):
+        a.errorbar([r["p"]], [r["f_corrected"]], yerr=[P6_FID_NOISE], fmt="o", color=col, ms=6, capsize=3)
+    a.errorbar([g["repetition"]["p"]], [g["repetition"]["f_uncorrected"]], yerr=[P6_FID_NOISE], fmt="s", color=INK, ms=5, capsize=3)
+    a.axvline(P6_P_INJECT, color=INK, lw=.6, alpha=.5); a.legend(fontsize=8, loc="upper right"); a.set_ylim(0.45, 1.02)
+    a.set_title("3. Repetition code: corrected beats uncorrected by kσ", fontsize=10.5)
+    a.set_xlabel("injected bit-flip probability p per qubit"); a.set_ylabel("fidelity of the stored state")
+    return _finish(fig, out, "fig59_build_p6.png", "simulated and fitted by adamas.build_program and adamas.fitting (illustrative inputs); [shor1995] [waldherr2014]")
+
+
+def _p6_rates_note(rates: dict) -> str:
+    design = P6_TEST_COVERAGE; se = rates["se_test"]; out = []
+    for key, name in (("coherence", "coherence"), ("drive", "drive"), ("repetition", "repetition-code")):
+        v = rates[key]
+        word = "more often than" if v > design + 3 * se else "less often than" if v < design - 3 * se else "about as often as"
+        out.append(f"the {name} check passes correct runs {word} designed ({100 * v:.1f} %)")
+    text = "Against the {:.2f} % design per check: ".format(100 * design) + "; ".join(out) + ". "
+    text += ("The coherence and drive checks compare with fixed limits that a correct run clears with room to spare (the limit is not the value put in), "
+             "so they almost never fail a correct run; the repetition-code gain is the check that decides the rate. ")
+    text += (f"Over {rates['runs']} runs the gate passes {100 * rates['gate']:.1f} % of correct runs" +
+             (", at least the 95 % it is designed for." if rates["gate"] >= P6_GATE_COVERAGE - 3 * rates["se_gate"] else ", below the 95 % it is designed for: the tolerances need widening."))
+    return text
+
+
+def _p6_md() -> str:
+    import re
+    from . import atlas
+    from .traveler import STEPS
+    st = {s["id"]: s for s in STEPS}
+    g, b, rates = p6_gate(), p6_degraded(), p6_pass_rates(P6_RUNS)
+    c, d, q = g["coherence"], g["drive"], g["repetition"]; bc, bd, bq = b["coherence"], b["drive"], b["repetition"]
+    yes = lambda v: "yes" if v else "no"   # noqa: E731
+    pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
+    from .qec import repetition_logical_error
+    pl = repetition_logical_error(P6_P_INJECT)
+    machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P6_MACHINES)
+    hazards = " ".join(dict.fromkeys(h for sid in ("S18", "S19") for h in st[sid]["safety"]))
+    verdict = ("All simulated checks pass and every degraded twin fails, so the analysis can tell a good chiplet from a faulty one; the gate is decided by the numbers measured on your assembly."
+               if g["verdict"] == "go" and not (bc["pass"] or bd["pass"] or bq["pass"])
+               else "On this run a simulated check fails or a degraded twin passes; a correct run fails about one time in twenty, so repeat it before changing the analysis.")
+    text = f"""# P6 · Integration: diamond chiplets on silicon control
+
+{GEN}
+
+**Status: written in full.** Budget: **not priced.** No sourced price exists yet for a multi-project wafer (MPW) shuttle, die bonding or packaging, so this page lists the machines without prices ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
+
+Every input is **illustrative** except where a source or a device-library entry is named: the echo and Rabi data reuse the B1 noise model of `adamas.experiments`; the design Rabi frequency, its 5 % tolerance and the twin's half current come from Quantum Device Library entry QDL-27 (`adamas.qdl`); the T₂ limit and the repetition-code numbers are this project's choices. The phase is **simulated**: no ADAMAS hardware has run it. Silicon complementary metal-oxide-semiconductor (CMOS) chips that drive and read NV centers in a diamond placed on them are **demonstrated** for magnetometry [kim2019cmos] [ibrahim2021]; driving a qubit register through such a chip is **proposed** here.
+
+## Goal
+
+Bond a diamond chiplet carrying characterized NV centers (from P3 and P5) to a CMOS control die, and show that the assembly keeps what the bare diamond had: the same coherence, a drive that delivers its design Rabi frequency, and a small error-correcting code that still helps. P6 answers whether integration keeps coherence and yield, before arrays of cells are planned.
+
+## Physics and equations
+
+- **Coherence through bonding:** the Hahn-echo signal decays as exp[−(2τ/T₂)ⁿ] (stretch exponent n set by the spin bath; `adamas.fitting.fit_echo`). The same NV is measured before bonding with an external drive and after bonding through the chiplet; the ratio R = T₂,after/T₂,before has error R√[(σ_a/T₂,a)² + (σ_b/T₂,b)²]. Pass when R − kσ_R ≥ {P6_T2_RATIO_MIN:g} (an ADAMAS target: bonding may cost at most {100 * (1 - P6_T2_RATIO_MIN):.0f} % of T₂).
+- **On-chip drive:** a resonant drive gives P(t) = ½[1 − cos(2πΩt) e^(−t/τ)] (`adamas.fitting.fit_rabi`); Ω is proportional to the driver's current. Pass when |Ω − Ω_design| + kσ ≤ {100 * P6_RABI_TOL:g} % of Ω_design = {P6_RABI_DESIGN_MHZ:g} MHz (the QDL-27 criterion, an ADAMAS design threshold).
+- **Repetition-code gain:** three qubits (the electron and two nuclear spins of one cell, as in the room-temperature demonstration [waldherr2014]) store one bit; each flips with probability p and majority voting fails with p_L = 3p² − 2p³ [shor1995]. If encoding and decoding succeed with probability f₀ and give a random result otherwise, the corrected fidelity is f₀(1 − p_L) + (1 − f₀)/2, against 1 − p for one unprotected qubit. At the injected p = {P6_P_INJECT:g}, p_L = {pl:.4f}. With f₀ = {P6_F0:g} the code helps only above p = {repetition_break_even():.3f}: imperfect encoding costs more than it saves when errors are rare, which is why the test injects errors. With the twin's f₀ = {P6_F0_BAD:g} the break-even moves to p = {repetition_break_even(P6_F0_BAD):.3f}, beyond the injected {P6_P_INJECT:g}. Pass when the measured gain exceeds kσ (one-sided). This model is this repository's; f₀ = {P6_F0:g} is illustrative, and a real code also corrects only bit flips, not phase errors.
+
+## Machines and facility
+
+Atlas machines for this phase: {machines}. Design the CMOS die with open tools (M00) and order it on an MPW shuttle (M29); flip-chip or wire-bond the diamond onto it (M26, M28; traveler S19). A packaging line or an MPW partner provides the bonding.
+
+## Facility and safety
+
+{hazards} Laser dicing and Class 3B/4 lasers each need your institution's specific training and sign-off before first use; this page does not replace that training.
+
+## Procedure
+
+1. **Characterize before bonding.** On the chosen NV (from P3 or P5): echo T₂ with an external drive, and the nuclear spins of the register.
+2. **Bond** the diamond chiplet onto the CMOS die (S19): flip-chip or wire bonds; check wire-bond pull strength (S19, at least 3 gf, an ADAMAS target).
+3. **Drive through the chip.** Rabi oscillation from the on-chip driver at its design current; compare with the design.
+4. **Re-measure coherence** of the same NV through the chiplet.
+5. **Run the repetition code** with injected bit flips of probability p on each qubit, with and without correction (the protocol of [waldherr2014]).
+
+## Expected results (simulated)
+
+Each test is shown with its **degraded twin**: the same simulation with one fault, which the test must catch.
+
+![Expected P6 results](../img/fig59_build_p6.png)
+
+## Pass/fail
+
+The gate needs all {P6_CHECKS} checks to pass, so each is set for {100 * P6_TEST_COVERAGE:.2f} % coverage: k = {rates['k_one']:.2f} (one-sided) for the coherence ratio and the repetition-code gain, k = {rates['k']:.2f} (two-sided) for the drive. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per check, {100 * rates['se_gate']:.1f} for the gate).
+
+| Check | Criterion | Put in | Measured | Pass? | Correct runs passing |
+|---|---|---|---|---|---|
+| Coherence kept through bonding | R − kσ ≥ {P6_T2_RATIO_MIN:g} (ADAMAS) | T₂ {P6_T2_US:g} µs before and after | before {c['t2_before_us']:.0f} ± {c['t2_before_err']:.0f} µs, after {c['t2_after_us']:.0f} ± {c['t2_after_err']:.0f} µs; R = {c['ratio']:.3f} ± {c['ratio_err']:.3f} | {yes(c['pass'])} | {pct(rates['coherence'])} |
+| On-chip drive | within {100 * P6_RABI_TOL:g} % of {P6_RABI_DESIGN_MHZ:g} MHz with kσ (QDL-27) | {d['rabi_put_in']:g} MHz | {d['rabi_mhz']:.3f} ± {d['rabi_err']:.3f} MHz | {yes(d['pass'])} | {pct(rates['drive'])} |
+| Repetition-code gain at p = {P6_P_INJECT:g} | gain − kσ > 0 | f₀ = {P6_F0:g} | corrected {q['f_corrected']:.3f}, uncorrected {q['f_uncorrected']:.3f}; gain {q['gain']:.3f} ± {q['gain_err']:.3f} | {yes(q['pass'])} | {pct(rates['repetition'])} |
+| **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
+
+The degraded twins, one fault each. The last column is how often the faulty run wrongly passes.
+
+| Test | Fault | Measured | Pass? | Faulty runs passing |
+|---|---|---|---|---|
+| Coherence | bonding damaged the surface and halved T₂ (illustrative) | R = {bc['ratio']:.3f}, bound {bc['ratio_lower']:.3f} | {yes(bc['pass'])} | {pct(rates['degraded']['coherence'])} |
+| Drive | driver gives half the current (QDL-27) | {bd['rabi_mhz']:.3f} ± {bd['rabi_err']:.3f} MHz | {yes(bd['pass'])} | {pct(rates['degraded']['drive'])} |
+| Repetition code | drive crosstalk spoils the encoding gates, f₀ = {P6_F0_BAD:g} (illustrative) | gain {bq['gain']:.3f} ± {bq['gain_err']:.3f} | {yes(bq['pass'])} | {pct(rates['degraded']['repetition'])} |
+
+{_p6_rates_note(rates)}
+
+## Not yet simulated
+
+- **Multi-cell arrays:** P6's outline includes them; no model links two cells yet (P5 gives the pair yield, the link between cells is open, [STATUS.md](../STATUS.md)).
+- **Photoelectric readout** (Atlas M55) through the chiplet: no noise model yet; the checks here assume optical readout.
+- **Heating by the on-chip driver** and **green light leaking through the filter** (QDL-27 failure modes): no thermal or optical model of the assembly.
+- **Phase errors** in the repetition code: the three-qubit code corrects bit flips only.
+
+## Failure modes
+
+- **Coherence lost at bonding:** surface damage, contamination or stress from the bond; compare T₂ of an unbonded reference chiplet from the same plate.
+- **Driver below design:** current limit, a bad bond in the drive loop, or impedance mismatch; measure the driver's current on a test structure.
+- **No code gain:** encoding gates spoiled by crosstalk from the chip's drive lines, or by heating; repeat with the external drive to locate the cause.
+- **Die-attach voids** (S19): metallize the diamond's back side (Ti/Pt/Au).
+
+## Decision gate
+
+*Does integration keep coherence and yield?* {verdict} Yield across many chiplets needs the same three checks on every bonded die; go to P7 when a batch of chiplets passes at a rate that the pilot-line economics (P7) can afford.
+
+Sources: SOURCES_LINE
+"""
+    keys = list(dict.fromkeys(re.findall(r"\[([a-z][a-z0-9]*\d{4}[a-z0-9]*)\]", text)))
+    return text.replace("SOURCES_LINE", " ".join(f"[{k}]" for k in keys))
+
+
 # ---------------------------------------------------------------- documents ----------------------------------------
 GEN = "_Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._"
 
@@ -1377,7 +1658,7 @@ Sources: [doherty2013] [acosta2010] [stegemann2023] [williams2026] [gruber1997]
 """
 
 
-DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md", "P5": "P5_placement.md"}
+DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md", "P5": "P5_placement.md", "P6": "P6_integration.md"}
 
 
 def _index_md() -> str:
@@ -1608,19 +1889,20 @@ Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [jelezko2004b] [jacques200
 def write(folder: str = "docs/build") -> list[str]:
     d = ROOT / folder; d.mkdir(parents=True, exist_ok=True)
     out = []
-    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md())):
+    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md()), (DOCS["P6"], _p6_md())):
         (d / name).write_text(text, encoding="utf-8"); out.append(str(d / name))
     return out
 
 
 def to_json() -> dict:
-    """For the website: the ladder, the P0 gate, and the P1 to P5 simulated results."""
+    """For the website: the ladder, the P0 gate, and the P1 to P6 simulated results."""
     g1, b1, g2, b2, b3, b4, b5 = p1_gate(), p1_bill(), p2_gate(), p2_bill(), p3_bill(), p4_bill(), p5_bill()
     return {"phases": PHASES, "docs": DOCS, "p0": p0_gate(), "p1": {**g1, "bill": {"low": b1["low"], "high": b1["high"]}, "pass_rate": p1_pass_rate()},
             "p2": {**g2, "bill": {"low": b2["low"], "high": b2["high"]}, "pass_rates": p2_pass_rates()},
             "p3": _finite({**p3_gate(), "degraded": p3_degraded(), "bill": {"low": b3["low"], "high": b3["high"]}, "pass_rates": p3_pass_rates()}),
             "p4": _finite({**p4_gate(), "degraded": p4_degraded(), "bill": {"low": b4["low"], "high": b4["high"]}, "pass_rates": p4_pass_rates()}),
-            "p5": _finite({**p5_gate(), "degraded": p5_degraded(), "bill": {"low": b5["low"], "high": b5["high"]}, "pass_rates": p5_pass_rates()})}
+            "p5": _finite({**p5_gate(), "degraded": p5_degraded(), "bill": {"low": b5["low"], "high": b5["high"]}, "pass_rates": p5_pass_rates()}),
+            "p6": _finite({**p6_gate(), "degraded": p6_degraded(), "pass_rates": p6_pass_rates()})}
 
 
 def _finite(o):

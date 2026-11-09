@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.37.0 (build phase P6)
+
+P6 (integration) is written with three code-evaluated checks (coherence kept through bonding, on-chip drive, repetition-code gain). The drive criterion comes from QDL-27, the logical error rate from [shor1995] and the protocol from [waldherr2014]; every other input is labeled illustrative or an ADAMAS target; each check has a degraded twin that must fail. The code's break-even error rate is computed and tested, and the page states that the code helps only above it. The phase is not priced. Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.36.0 (build phase P5)
 
 P5 (placement) is written with three code-evaluated checks (conversion yield, coupled pairs, Bell fidelity). The yield, its limit and the fidelity put in are sourced; every other input is labeled illustrative; each check has a degraded twin that must fail. The Bell threshold of 1/2 and the parity estimator are checked by tests rather than asserted. The coherence-limited budget's known discrepancy with the published 0.67 is carried, not resolved. Open items are in [STATUS.md](STATUS.md).

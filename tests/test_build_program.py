@@ -43,7 +43,7 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md()), (B.DOCS["P6"], B._p6_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
 
 
@@ -157,3 +157,27 @@ def test_p5_pass_rates_meet_the_design():
 def test_p5_local_fluence_is_stated():
     assert B.p5_local_fluence_cm2() == pytest.approx(50 / (3.141592653589793 * (10e-7) ** 2), rel=1e-12)
     assert "cm⁻²" in B._p5_md() and "[dolde2014]" not in B._p5_md()
+
+
+
+def test_p6_gate_passes_and_every_degraded_twin_fails():
+    g, b = B.p6_gate(), B.p6_degraded()
+    assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
+    assert b["drive"]["rabi_mhz"] == pytest.approx(B.P6_RABI_BAD_MHZ, rel=0.05)     # the fit recovers the half-current Rabi
+
+
+def test_p6_repetition_model():
+    from adamas.qec import repetition_logical_error
+    for p in (0.01, 0.1, 0.25):
+        assert repetition_logical_error(p) == pytest.approx(3 * p ** 2 - 2 * p ** 3, rel=1e-12)
+        assert B.repetition_fidelity(p, 1.0) == pytest.approx(1 - repetition_logical_error(p), rel=1e-12)
+    for f0, pe in ((B.P6_F0, 0.0590), (B.P6_F0_BAD, 0.3110)):
+        p = B.repetition_break_even(f0)
+        assert p == pytest.approx(pe, abs=5e-4) and B.repetition_fidelity(p, f0) == pytest.approx(1 - p, abs=1e-9)
+    assert B.P6_P_INJECT < B.repetition_break_even(B.P6_F0_BAD)                    # so the twin's correction cannot help
+
+
+def test_p6_pass_rates_meet_the_design():
+    r = B.p6_pass_rates(300)
+    assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
+    assert all(v <= 0.05 for v in r["degraded"].values()), r

@@ -22,7 +22,7 @@
 </style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
-<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P5 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P6 to P8 are outlines until their sources are in.</p></section>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P6 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P7 and P8 are outlines until their sources are in.</p></section>
 <section class="block" style="padding-top:6px">
   <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
   <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
@@ -132,6 +132,19 @@ function detail() {
       ${row(`Apertures ${b.pairs.aperture_nm} nm, over-developed`, `${b.pairs.found} found, ${fx(b.pairs.predicted, 1)} predicted`, b.pairs.pass, r.degraded.pairs, true)}
       ${row('Uncoupled "pair": classical correlations only', bell(b.bell), b.bell.pass, r.degraded.bell, true)}</table></div>
       <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the annealing furnace and SIMS are not priced yet). Sourced: yield put in (about 1 % [pezzagna2010]; the 0.5 % limit is an ADAMAS target, S07) and fidelity put in (0.67 [dolde2013]); everything else illustrative. Rates over ${r.runs} simulated runs. The Bell twin sits exactly at 1/2, so it passes at about the one-sided rate the check allows.</p>`; }
+  else if (sel === 'P6') { const g = D.p6, c = g.coherence, d = g.drive, q = g.repetition, b = g.degraded, r = g.pass_rates, pc = v => (100 * v).toFixed(1) + ' %';
+    const fx = (v, n) => v === null || v === undefined ? '—' : v.toFixed(n);
+    const row = (txt, fit, ok, rate, caught) => `<tr><td>${txt}</td><td class="n">${fit}</td><td>${V(caught ? !ok : ok, caught ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${rate === null || rate === undefined ? '—' : pc(rate)}</td></tr>`;
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Check</th><th>Measured</th><th></th><th>Correct runs passing</th></tr>
+      ${row(`Coherence kept through bonding, T₂ ratio bound ≥ ${fx(c.limit, 1)}`, `R ${fx(c.ratio, 3)} ± ${fx(c.ratio_err, 3)}`, c.pass, r.coherence)}
+      ${row(`On-chip drive within 5 % of ${fx(d.design, 0)} MHz`, `${fx(d.rabi_mhz, 3)} ± ${fx(d.rabi_err, 3)} MHz`, d.pass, r.drive)}
+      ${row(`Repetition-code gain at p = ${fx(q.p, 2)}`, `${fx(q.gain, 3)} ± ${fx(q.gain_err, 3)}`, q.pass, r.repetition)}
+      ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table></div>
+      <h3>Degraded twins: one fault each, must fail</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Fault</th><th>Measured</th><th></th><th>Faulty runs passing</th></tr>
+      ${row('Bond damage halves T₂', `R ${fx(b.coherence.ratio, 3)}, bound ${fx(b.coherence.ratio_lower, 3)}`, b.coherence.pass, r.degraded.coherence, true)}
+      ${row('Driver at half current', `${fx(b.drive.rabi_mhz, 3)} MHz`, b.drive.pass, r.degraded.drive, true)}
+      ${row('Drive crosstalk spoils the encoding', `gain ${fx(b.repetition.gain, 3)}`, b.repetition.pass, r.degraded.repetition, true)}</table></div>
+      <p class="src">Not priced: no sourced price for the multi-project wafer shuttle or bonding yet. Illustrative inputs; the drive criterion is the one of device-library entry QDL-27, the T₂ limit an ADAMAS target, the repetition code as in [waldherr2014]. CMOS-driven NV magnetometers are demonstrated [kim2019cmos]; driving a qubit register through one is proposed. Rates over ${r.runs} simulated runs.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>
