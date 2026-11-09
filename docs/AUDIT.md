@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.36.0 (build phase P5)
+
+P5 (placement) is written with three code-evaluated checks (conversion yield, coupled pairs, Bell fidelity). The yield, its limit and the fidelity put in are sourced; every other input is labeled illustrative; each check has a degraded twin that must fail. The Bell threshold of 1/2 and the parity estimator are checked by tests rather than asserted. The coherence-limited budget's known discrepancy with the published 0.67 is carried, not resolved. Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.35.0 (Entanglement Lab)
 
 The request to communicate "purely through entanglement" is answered as impossible, with the no-communication theorem [ghirardi1980] checked by code rather than asserted. Teleportation and entanglement-based key distribution are presented with their classical channel; every NV network experiment cited is labeled cryogenic; the room-temperature memory idea is labeled proposed. The six new references await Crossref verification ([STATUS.md](STATUS.md)).

@@ -22,7 +22,7 @@
 </style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
-<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P4 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P5 to P8 are outlines until their sources are in.</p></section>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P5 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P6 to P8 are outlines until their sources are in.</p></section>
 <section class="block" style="padding-top:6px">
   <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
   <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
@@ -118,6 +118,20 @@ function detail() {
       ${row('Patchy hydrogen termination', `bound ${f0(b.matching.upper_mv)} mV`, b.matching.pass, r.degraded.matching, true)}
       ${row(`Al₂O₃ ${b.extraction.tox_nm} nm thick, analysis assumes 30`, pm(b.extraction.mu, b.extraction.mu_err, 1) + ' cm²/V·s', b.extraction.mu_pass && b.extraction.vt_pass, r.degraded.extraction, true)}</table></div>
       <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the curve tracer and the photoelectric readout chain are not priced yet). Illustrative inputs; limits are ADAMAS targets from traveler steps S08 and S17. The extraction uses the contact resistance the TLM measured, so those checks are correlated. Rates over ${r.runs} simulated runs. Hot operation, breakdown, on/off ratio and ring oscillators have no criterion yet.</p>`; }
+  else if (sel === 'P5') { const g = D.p5, y = g.yield, q = g.pairs, e = g.bell, b = g.degraded, r = g.pass_rates, pc = v => (100 * v).toFixed(1) + ' %';
+    const fx = (v, d) => v === null || v === undefined ? '—' : v.toFixed(d);
+    const row = (txt, fit, ok, rate, caught) => `<tr><td>${txt}</td><td class="n">${fit}</td><td>${V(caught ? !ok : ok, caught ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${rate === null || rate === undefined ? '—' : pc(rate)}</td></tr>`;
+    const bell = x => x.f === null ? 'not measured (no pair)' : `F ${fx(x.f, 3)} ± ${fx(x.f_err, 3)}`;
+    right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Check</th><th>Measured</th><th></th><th>Correct runs passing</th></tr>
+      ${row(`Conversion yield, lower bound ≥ ${fx(100 * y.limit, 1)} % (S07)`, `${fx(100 * y.eta, 2)} %, bound ${fx(100 * y.eta_lower, 2)} %`, y.pass, r.yield)}
+      ${row('Coupled pairs (5 to 120 kHz), found vs predicted', `${q.found} found, ${fx(q.predicted, 1)} ± ${fx(q.predicted_err, 1)}`, q.pass, r.pairs)}
+      ${row('Bell fidelity, F − kσ > 1/2', bell(e), e.pass, r.bell)}
+      ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table></div>
+      <h3>Degraded twins: one fault each, must fail</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Fault</th><th>Measured</th><th></th><th>Faulty runs passing</th></tr>
+      ${row('Surface etched during the anneal', `${fx(100 * b.yield.eta, 2)} %, bound ${fx(100 * b.yield.eta_lower, 2)} %`, b.yield.pass, r.degraded.yield, true)}
+      ${row(`Apertures ${b.pairs.aperture_nm} nm, over-developed`, `${b.pairs.found} found, ${fx(b.pairs.predicted, 1)} predicted`, b.pairs.pass, r.degraded.pairs, true)}
+      ${row('Uncoupled "pair": classical correlations only', bell(b.bell), b.bell.pass, r.degraded.bell, true)}</table></div>
+      <p class="src">Parts US$${g.bill.low.toLocaleString('en-US')} to ${g.bill.high.toLocaleString('en-US')} (estimates; the annealing furnace and SIMS are not priced yet). Sourced: yield and its limit (traveler S07 [pezzagna2010]), fidelity put in (0.67 [dolde2013]); everything else illustrative. Rates over ${r.runs} simulated runs. The Bell twin sits exactly at 1/2, so it passes at about the one-sided rate the check allows.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>

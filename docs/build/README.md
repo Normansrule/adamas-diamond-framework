@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3 and P4 are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
+A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3, P4 and P5 are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
 
 | Phase | Name | Budget | Goal | Gate question | Status |
 |---|---|---|---|---|---|
@@ -11,7 +11,7 @@ A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, 
 | P2 | Teaching lab | computed from the B1, B2, and B3 part lists | Pulsed control (Rabi, Ramsey, echo), vector magnetometry, boron activation energy. | Can we hold a spin coherent and measure deep dopants reliably? | [written](P2_teaching_lab.md) |
 | P3 | Single NV | computed from the C1 part list | Confocal microscope, antibunching, single-spin control, nuclear-spin register. | Do we have single, addressable registers? | [written](P3_single_nv.md) |
 | P4 | Devices | computed from the C2 part list | Hydrogen-terminated FETs with Al2O3: contact resistance, threshold matching, mobility and threshold on the PDK-0 monitor die (breakdown and hot tests are not simulated yet). | Do our devices match the models, run to run? | [written](P4_devices.md) |
-| P5 | Placement | shared facility | Implant through masks, anneal, conversion statistics, NV pairs closer than 30 nm. | Is placement yield good enough to plan arrays? | outline |
+| P5 | Placement | shared facility | Implant through masks, anneal, conversion statistics, NV pairs closer than 30 nm. | Is placement yield good enough to plan arrays? | [written](P5_placement.md) |
 | P6 | Integration | packaging line or MPW partner | Diamond chiplets bonded to silicon CMOS control; multi-cell arrays. | Does integration keep coherence and yield? | outline |
 | P7 | Pilot line and products | fab | Wafer-scale flow, statistical process control, first products. | Which product line pays for the line? | outline |
 | P8 | Frontier and humanity | application-specific | Grid and EV efficiency, space electronics, medical magnetometry, navigation. | Where does diamond beat the incumbent, with evidence? | outline |

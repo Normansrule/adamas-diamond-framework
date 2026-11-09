@@ -12,14 +12,16 @@ and the decision gate. Phases P0 and P1 are written in full here, and their gate
   pass/fail tolerances come from those fits and from the published uncertainty of dD/dT, -74.2(7) kHz/K
   [acosta2010], not from a typed-in number.
 
-* P2 Teaching lab, P3 Single NV and P4 Devices are written in full too; their tests are set so a correct setup passes the whole gate
-  95 % of the time, and P3 and P4 run each test on a degraded twin (one physical or process fault) that must fail.
+* P2 Teaching lab, P3 Single NV, P4 Devices and P5 Placement are written in full too; their tests are set so a correct
+  setup passes the whole gate 95 % of the time, and P3 to P5 run each test on a degraded twin (one physical or process
+  fault) that must fail.
 
-Phases P5 to P8 stay at outline level until their sources are in (docs/STATUS.md says why).
+Phases P6 to P8 stay at outline level until their sources are in (docs/STATUS.md says why).
 """
 from __future__ import annotations
 
 import math
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -45,7 +47,7 @@ PHASES = [
     {"id": "P4", "name": "Devices", "budget": "computed from the C2 part list", "status": "written",
      "goal": "Hydrogen-terminated FETs with Al2O3: contact resistance, threshold matching, mobility and threshold on the PDK-0 monitor die (breakdown and hot tests are not simulated yet).",
      "metric": "Contact resistance (TLM) at most 10 ohm mm; threshold spread within 200 mV; mobility and threshold match the PDK-0 model; each degraded twin fails.", "gate": "Do our devices match the models, run to run?"},
-    {"id": "P5", "name": "Placement", "budget": "shared facility", "status": "outline",
+    {"id": "P5", "name": "Placement", "budget": "shared facility", "status": "written",
      "goal": "Implant through masks, anneal, conversion statistics, NV pairs closer than 30 nm.",
      "metric": "Conversion yield measured; coupled pairs found; Bell fidelity above 0.5.", "gate": "Is placement yield good enough to plan arrays?"},
     {"id": "P6", "name": "Integration", "budget": "packaging line or MPW partner", "status": "outline",
@@ -844,6 +846,362 @@ Sources: [sze2006] [pelgrom1989] [kawarada2014] [kawarada2023] [kasu2012] [liu20
 """
 
 
+# ---------------------------------------------------------------- P5 ------------------------------------------------
+P5_CHECKS = 3                # conversion yield, coupled pairs, Bell fidelity: the gate needs all of them
+P5_GATE_COVERAGE = 0.95
+P5_TEST_COVERAGE = P5_GATE_COVERAGE ** (1 / P5_CHECKS)     # so each check covers 98.30 %
+P5_RUNS = 1000
+# Sourced values: conversion yield about 1 % at 2.5 to 5 keV and the 0.5 % acceptance limit (traveler S07, [pezzagna2010]);
+# the published room-temperature Bell fidelity 0.67 [dolde2013]; the 5 to 120 kHz coupling window of experiment D1.
+# Everything else is illustrative and labeled so.
+P5_ETA = 0.01                # nitrogen-to-NV conversion yield put in (S07: about 1 % at 2.5 to 5 keV [pezzagna2010])
+P5_ETA_MIN = 0.005           # S07 acceptance: yield at least 0.5 % [pezzagna2010]
+P5_ETA_BAD = 0.002           # degraded twin: residual oxygen etched the surface during the anneal (S07 failure mode; illustrative value)
+P5_WITNESS_SITES = 200       # witness (calibration) array: apertures counted by confocal microscopy (illustrative)
+P5_WITNESS_IONS = 50         # ions per witness aperture (illustrative; S06 dose window)
+P5_PAIR_SITES = 1000         # pair field: apertures searched for coupled pairs (illustrative)
+P5_PAIR_IONS = 50            # ions per pair aperture (illustrative)
+P5_ENERGY_KEV = 5.0          # implant energy, inside the S06 window of 2.5 to 10 keV
+P5_APERTURE_NM = 20.0        # aperture diameter, inside the S06 window of 10 to 60 nm (illustrative)
+P5_APERTURE_BAD_NM = 120.0   # degraded twin: PMMA over-developed, apertures outside the S06 window
+P5_WINDOW_KHZ = (5.0, 120.0) # couplings kept for gates (experiment D1)
+P5_BELL_F = 0.67             # Bell-state fidelity put in: the published room-temperature value [dolde2013]
+P5_POP_NOISE = 0.03          # error of the measured population sum p00 + p11 (illustrative)
+P5_PARITY_NOISE = 0.06       # per point of the parity oscillation, 16 analysis phases (illustrative)
+P5_PARITY_PHASES = 16
+NV_AXIS = np.array([1.0, 1.0, 1.0]) / math.sqrt(3)         # [111]; the implant comes in along [001]
+
+
+def _k5() -> float:
+    return _k_normal(P5_TEST_COVERAGE)
+
+
+def _k5_one_sided() -> float:
+    from scipy.stats import norm
+    return float(norm.ppf(P5_TEST_COVERAGE))
+
+
+def _rng5(seed: int, test: int) -> np.random.Generator:
+    """Independent stream per test (0 witness array, 1 pair field, 2 Bell tomography); a twin reuses its test's stream."""
+    return np.random.default_rng([seed, 5, test])
+
+
+def p5_yield(seed: int = 5, eta: float = P5_ETA) -> dict:
+    """Witness array (traveler S06, S07): P5_WITNESS_SITES apertures with P5_WITNESS_IONS ions each; each ion becomes an NV
+    with probability eta, so NVs per aperture are binomial. Confocal counting (with the antibunching test of P3 to tell
+    one, two or three NVs apart) gives eta_hat = NVs / ions. Pass when the one-sided Clopper-Pearson lower bound at the
+    per-check coverage is at least 0.5 % (S07 [pezzagna2010]). Assumes every NV in an aperture is counted and native
+    nitrogen is told apart by the ¹⁵N hyperfine lines (S06)."""
+    from scipy.stats import beta
+    counts = _rng5(seed, 0).binomial(P5_WITNESS_IONS, eta, P5_WITNESS_SITES)
+    n, x = P5_WITNESS_SITES * P5_WITNESS_IONS, int(counts.sum())
+    lo = float(beta.ppf(1 - P5_TEST_COVERAGE, x, n - x + 1)) if x > 0 else 0.0
+    return {"eta_put_in": eta, "counts": counts.tolist(), "nv": x, "ions": n, "eta": x / n, "eta_err": math.sqrt(max(x, 1) * (n - x) / n) / n,
+            "eta_lower": lo, "limit": P5_ETA_MIN, "pass": bool(lo >= P5_ETA_MIN)}
+
+
+def _pair_geometry(rng: np.random.Generator, size: int, aperture_nm: float) -> np.ndarray:
+    """Separation vectors (nm) of two ions through one aperture: uniform on the aperture disc in the surface plane, plus
+    Gaussian straggle in all three axes with the rule-of-thumb sigma of adamas.coupling (0.4 x depth at P5_ENERGY_KEV)."""
+    from .coupling import implant_rule_of_thumb
+    _, sig = implant_rule_of_thumb(P5_ENERGY_KEV)
+    def one():
+        rad = aperture_nm / 2 * np.sqrt(rng.random(size)); ang = 2 * np.pi * rng.random(size)
+        return np.stack([rad * np.cos(ang), rad * np.sin(ang), np.zeros(size)], 1) + rng.normal(0, sig, (size, 3))
+    return one() - one()
+
+
+def pair_couplings_khz(sep_nm: np.ndarray) -> np.ndarray:
+    """Secular dipolar coupling 52 MHz nm^3 |1 - 3 cos^2 theta| / r^3 (adamas.coupling), theta between the separation
+    and a common [111] quantization axis. An approximation: NVs on different axes change the angular factor."""
+    from .coupling import dipolar_coupling_khz
+    r = np.linalg.norm(sep_nm, axis=1); cos = np.abs(sep_nm @ NV_AXIS) / r
+    return np.asarray(dipolar_coupling_khz(r, np.arccos(np.clip(cos, 0, 1))), float)
+
+
+@lru_cache(maxsize=8)
+def p5_window_fraction(aperture_nm: float = P5_APERTURE_NM, samples: int = 200_000) -> float:
+    """Probability that a two-NV aperture has its coupling inside the D1 window (fixed-seed Monte Carlo)."""
+    c = pair_couplings_khz(_pair_geometry(np.random.default_rng(55), samples, aperture_nm))
+    return float(np.mean((c >= P5_WINDOW_KHZ[0]) & (c <= P5_WINDOW_KHZ[1])))
+
+
+def _p_two(eta: float, n: int = P5_PAIR_IONS) -> float:
+    return math.comb(n, 2) * eta ** 2 * (1 - eta) ** (n - 2)
+
+
+def p5_pairs(seed: int = 5, aperture_nm: float = P5_APERTURE_NM, eta: float = P5_ETA, eta_measured: dict | None = None) -> dict:
+    """Pair field: P5_PAIR_SITES apertures with P5_PAIR_IONS ions each. Apertures with exactly two NVs are candidates;
+    a double electron-electron resonance (DEER) measurement gives each candidate's coupling, and pairs inside the D1
+    window (5 to 120 kHz) are kept. The prediction uses the yield MEASURED on the witness array of the same run and the
+    designed aperture: N_pred = M P2(eta_hat) f_window, with P2 the binomial probability of exactly two NVs. Pass when at
+    least one pair is found and N_found lies within k sigma of N_pred (binomial counting error plus the yield's error,
+    propagated). Assumes couplings are measured exactly (DEER resolution far finer than the window). The degraded twin's
+    apertures are P5_APERTURE_BAD_NM wide while the analysis assumes the design."""
+    w = eta_measured or p5_yield(seed)
+    r = _rng5(seed, 1)
+    nv = r.binomial(P5_PAIR_IONS, eta, P5_PAIR_SITES); two = int(np.sum(nv == 2))
+    coup = pair_couplings_khz(_pair_geometry(r, two, aperture_nm)) if two else np.array([])
+    found = coup[(coup >= P5_WINDOW_KHZ[0]) & (coup <= P5_WINDOW_KHZ[1])]
+    f = p5_window_fraction(); e, e_err = w["eta"], w["eta_err"]
+    p = _p_two(e) * f; pred = P5_PAIR_SITES * p
+    h = 1e-6; dp = (_p_two(e + h) - _p_two(e - h)) / (2 * h) * f * P5_PAIR_SITES
+    sig = math.sqrt(P5_PAIR_SITES * p * (1 - p) + (dp * e_err) ** 2)
+    k = _k5()
+    return {"aperture_nm": aperture_nm, "two_nv_sites": two, "couplings_khz": coup.tolist(), "found": int(found.size),
+            "found_khz": sorted(found.tolist(), reverse=True), "window_fraction": f, "predicted": pred, "predicted_err": sig, "k": k,
+            "pass": bool(found.size >= 1 and abs(found.size - pred) <= k * sig)}
+
+
+def parity_after_analysis(rho: np.ndarray, phi: float) -> float:
+    """<Z1 Z2> after a pi/2 analysis pulse of phase phi on each NV, U = exp(-i pi/4 (cos phi X + sin phi Y)). Its cos 2phi
+    part is -2 Re rho(00,11), so A = -2 <P cos 2phi> over equally spaced phases and F = (p00 + p11 + A)/2 is the exact
+    fidelity with |Phi+> for any two-qubit state (tests/test_build_program.py checks it on random states)."""
+    from .entangle import X, Y, Z
+    c, s = math.cos(math.pi / 4), math.sin(math.pi / 4)
+    u = c * np.eye(2) - 1j * s * (math.cos(phi) * X + math.sin(phi) * Y); w = np.kron(u, u)
+    return float(np.trace(w @ rho @ w.conj().T @ np.kron(Z, Z)).real)
+
+
+def bell_fidelity_estimate(pop: float, phi, parity) -> tuple[float, float]:
+    """(F, A) from the population sum and the parity at equally spaced phases over [0, pi)."""
+    a = float(-2 * np.mean(np.asarray(parity) * np.cos(2 * np.asarray(phi))))
+    return (pop + a) / 2, a
+
+
+def bell_tomography_expected(f: float) -> tuple[float, float]:
+    """Population sum p00 + p11 and parity amplitude A of a Bell pair mixed with white noise (a Werner state, as in
+    adamas.entangle) of fidelity F: visibility v = (4F - 1)/3, p00 + p11 = (1 + v)/2, A = v, and F = (p00 + p11 + A)/2."""
+    v = (4 * f - 1) / 3
+    return (1 + v) / 2, v
+
+
+def p5_bell(seed: int = 5, f_true: float | None = P5_BELL_F, pairs: dict | None = None) -> dict:
+    """Bell-state tomography on the strongest coupled pair found (gate time 1 / (2 nu)): measure the population sum with
+    error P5_POP_NOISE, and the parity oscillation P(phi) = -A cos(2 phi) (parity_after_analysis) over P5_PARITY_PHASES analysis
+    phases with P5_PARITY_NOISE per point; A comes from the cos 2phi component (the phase reference is fixed by the sequence). F = (p00 + p11 + A)/2. Pass when
+    F - k sigma > 1/2 (one-sided): a fidelity with a Bell state above 1/2 proves entanglement, because no separable
+    state exceeds 1/2 (tests/test_build_program.py checks this numerically). Charge-state pre-selected runs, as in
+    experiment D1. f_true=None is the degraded twin: the 'pair' is not coupled, so the gate leaves at most classical
+    correlations; the twin uses the best such state, 1/2 (|00><00| + |11><11|), which has p00 + p11 = 1, A = 0, F = 1/2."""
+    pairs = pairs or p5_pairs(seed)
+    if f_true is not None and not pairs["found"]:
+        return {"pair_khz": None, "gate_us": None, "f": None, "f_err": None, "pass": False, "f_put_in": f_true}
+    nu = pairs["found_khz"][0] if pairs["found"] else None
+    pop, amp = (1.0, 0.0) if f_true is None else bell_tomography_expected(f_true)
+    r = _rng5(seed, 2)
+    pop_m = pop + r.normal(0, P5_POP_NOISE)
+    phi = np.linspace(0, np.pi, P5_PARITY_PHASES, endpoint=False)
+    par = -amp * np.cos(2 * phi) + r.normal(0, P5_PARITY_NOISE, phi.size)    # parity_after_analysis of the state, plus noise
+    f, a = bell_fidelity_estimate(pop_m, phi, par)       # fixed phase reference: a free-phase fit, sqrt(c^2 + s^2), is biased upward near A = 0
+    a_err = P5_PARITY_NOISE * math.sqrt(2 / phi.size); f_err = 0.5 * math.hypot(P5_POP_NOISE, a_err)
+    k = _k5_one_sided()
+    return {"pair_khz": nu, "gate_us": (1e3 / (2 * nu)) if nu else None, "f_put_in": 0.5 if f_true is None else f_true,
+            "pop": float(pop_m), "amp": float(a), "phi": phi.tolist(), "parity": par.tolist(), "f": float(f), "f_err": float(f_err), "k": k,
+            "pass": bool(f - k * f_err > 0.5)}
+
+
+def p5_gate(seed: int = 5) -> dict:
+    y = p5_yield(seed); p = p5_pairs(seed, eta_measured=y); b = p5_bell(seed, pairs=p)
+    ok = y["pass"] and p["pass"] and b["pass"]
+    return {"yield": y, "pairs": p, "bell": b, "verdict": "go" if ok else "stop"}
+
+
+def p5_degraded(seed: int = 5) -> dict:
+    """Each test on its degraded twin (one fault each); every one must fail."""
+    return {"yield": p5_yield(seed, eta=P5_ETA_BAD), "pairs": p5_pairs(seed, aperture_nm=P5_APERTURE_BAD_NM), "bell": p5_bell(seed, f_true=None)}
+
+
+def p5_pass_rates(runs: int = P5_RUNS) -> dict:
+    """Pass rates over simulated runs (seeds 5000 + i) for correct setups, and wrong-pass rates for the degraded twins."""
+    keys = ("yield", "pairs", "bell"); c = dict.fromkeys(keys + ("gate",), 0); d = dict.fromkeys(keys, 0)
+    for i in range(runs):
+        g = p5_gate(5000 + i); b = p5_degraded(5000 + i)
+        for k in keys:
+            c[k] += g[k]["pass"]; d[k] += b[k]["pass"]
+        c["gate"] += g["verdict"] == "go"
+    out = {k: v / runs for k, v in c.items()}
+    out["degraded"] = {k: v / runs for k, v in d.items()}
+    out.update(runs=runs, k=_k5(), k_one=_k5_one_sided(), se_test=math.sqrt(P5_TEST_COVERAGE * (1 - P5_TEST_COVERAGE) / runs),
+               se_gate=math.sqrt(P5_GATE_COVERAGE * (1 - P5_GATE_COVERAGE) / runs))
+    return out
+
+
+def p5_bill() -> dict:
+    """Parts and price range for P5: the D1 part list (estimates from adamas.experiments, not quotes). The annealing
+    furnace (Atlas M22) and SIMS (M23) have no sourced price and are listed without one."""
+    from .experiments import EXPERIMENTS
+    by = {e["id"]: e for e in EXPERIMENTS}
+    rows = [("D1", *p) for p in by["D1"]["parts"]]
+    return {"rows": rows, "low": sum(r[3] for r in rows), "high": sum(r[4] for r in rows), "headline": by["D1"]["cost"], "unpriced": ["M22", "M23"]}
+
+
+P5_MACHINES = ("M08", "M10", "M12", "M20", "M21", "M22", "M23", "M24", "M47", "M51", "M52", "M54")
+
+
+def p5_figure(out: str | Path = "docs/img") -> Path:
+    """Figure 58: expected P5 results (nominal and degraded twin), simulated and analyzed here."""
+    import matplotlib.pyplot as plt
+    from scipy.stats import binom
+    from .figures import COLORS, INK, RED, _finish
+    out = Path(out); g, b = p5_gate(), p5_degraded()
+    fig, ax = plt.subplots(1, 3, figsize=(19, 4.8)); plt.subplots_adjust(wspace=.3)
+    a = ax[0]; kk = np.arange(0, 5)
+    for r, col, off, lab in ((g["yield"], COLORS["Diamond"], -0.18, "good anneal"), (b["yield"], RED, 0.18, "etched surface (twin)")):
+        h = np.bincount(r["counts"], minlength=5)[:5]
+        a.bar(kk + off, h, width=0.36, color=col, alpha=.85, label=f"{lab}: η = {100 * r['eta']:.2f} %, bound {100 * r['eta_lower']:.2f} %")
+    a.plot(kk, P5_WITNESS_SITES * binom.pmf(kk, P5_WITNESS_IONS, P5_ETA), "k_", ms=22, mew=2, label=f"expected, η = {100 * P5_ETA:g} %")
+    a.set_ylim(0, 1.5 * P5_WITNESS_SITES); a.legend(fontsize=8, loc="upper right", borderaxespad=0.3); a.set_xticks(kk)
+    a.set_title(f"1. Conversion yield: pass when the lower bound ≥ {100 * P5_ETA_MIN:g} % (S07)", fontsize=10.5)
+    a.set_xlabel(f"NV centers per aperture ({P5_WITNESS_IONS} ions each)"); a.set_ylabel(f"apertures (of {P5_WITNESS_SITES})")
+    a = ax[1]; bins = np.logspace(-2, 4, 37)
+    for r, col, lab in ((g["pairs"], COLORS["Diamond"], f"{P5_APERTURE_NM:g} nm apertures"), (b["pairs"], RED, f"{P5_APERTURE_BAD_NM:g} nm apertures (degraded twin)")):
+        a.hist(np.clip(r["couplings_khz"], 1e-2, 1e4), bins=bins, histtype="step", lw=2, color=col,
+               label=f"{lab}: {r['found']} in window, {r['predicted']:.0f} ± {r['predicted_err']:.0f} predicted")
+    a.axvspan(*P5_WINDOW_KHZ, color=COLORS["Diamond"], alpha=.08); a.set_xscale("log")
+    a.set_ylim(0, 1.45 * a.get_ylim()[1])
+    a.legend(fontsize=8, loc="upper left"); a.set_title("2. Coupled pairs: found within kσ of the prediction", fontsize=10.5)
+    a.set_xlabel("dipolar coupling of two-NV apertures (kHz); shaded: 5 to 120 kHz kept (D1)"); a.set_ylabel("apertures")
+    a = ax[2]; phi = np.array(g["bell"]["phi"]); xx = np.linspace(0, np.pi, 200)
+    for r, col, lab in ((g["bell"], COLORS["Diamond"], "coupled pair"), (b["bell"], RED, "uncoupled pair, classical correlations (degraded twin)")):
+        a.plot(phi, r["parity"], "o", ms=5, color=col)
+        a.plot(xx, -r["amp"] * np.cos(2 * xx), color=col, lw=1.8, label=f"{lab}: F = {r['f']:.3f} ± {r['f_err']:.3f}")
+    a.axhline(0, color=INK, lw=.6); a.legend(fontsize=8, loc="lower left"); a.set_ylim(-1, 1)
+    a.set_title("3. Bell fidelity: pass when F − kσ > 1/2 (entanglement proved)", fontsize=10.5)
+    a.set_xlabel("analysis phase φ (rad)"); a.set_ylabel("parity ⟨Z₁Z₂⟩ after the analysis pulses")
+    return _finish(fig, out, "fig58_build_p5.png", "simulated by adamas.build_program (illustrative inputs except the sourced yield and fidelity); [pezzagna2010] [dolde2013]")
+
+
+def _p5_rates_note(rates: dict) -> str:
+    """The sentences under the P5 pass/fail table, written from the computed rates."""
+    design = P5_TEST_COVERAGE; se = rates["se_test"]; out = []
+    for key, name in (("yield", "yield"), ("pairs", "pair-search"), ("bell", "Bell")):
+        v = rates[key]
+        word = "more often than" if v > design + 3 * se else "less often than" if v < design - 3 * se else "about as often as"
+        out.append(f"the {name} check passes correct runs {word} designed ({100 * v:.1f} %)")
+    text = "Against the {:.2f} % design per check: ".format(100 * design) + "; ".join(out) + ". "
+    text += ("The yield and Bell checks sit far inside their limits (a 1 % yield against 0.5 %, a fidelity of 0.67 against 1/2), so they almost never fail a correct run, and the pair-search check sets the gate rate. "
+             "The Bell twin sits exactly on the limit (F = 1/2), so it passes at about the one-sided rate the check allows, "
+             f"{100 * (1 - design):.1f} %; that is the price of a test that never rejects real entanglement for noise. ")
+    text += (f"Over {rates['runs']} runs the gate passes {100 * rates['gate']:.1f} % of correct runs" +
+             (", at least the 95 % it is designed for." if rates["gate"] >= P5_GATE_COVERAGE - 3 * rates["se_gate"] else ", below the 95 % it is designed for: the tolerances need widening."))
+    return text
+
+
+def _p5_md() -> str:
+    from . import atlas, gate_budget
+    from .coupling import implant_rule_of_thumb
+    from .experiments import EXPERIMENTS
+    from .traveler import STEPS
+    by = {e["id"]: e for e in EXPERIMENTS}; st = {s["id"]: s for s in STEPS}
+    g, b, bill, rates = p5_gate(), p5_degraded(), p5_bill(), p5_pass_rates(P5_RUNS)
+    y, p, be = g["yield"], g["pairs"], g["bell"]; by_, bp, bb = b["yield"], b["pairs"], b["bell"]
+    yes = lambda v: "yes" if v else "no"   # noqa: E731
+    pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
+    depth, strag = implant_rule_of_thumb(P5_ENERGY_KEV)
+    lo, hi = gate_budget.coherence_limited_range()
+    parts = {"Implantation": "M20, M21", "Confocal setups": "M47, M54", "Control electronics": "M51", "Materials": "M52"}
+    rows = "\n".join(f"| {parts.get(r[1], '(not in the Atlas)')} | {r[1]} (D1) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
+    use = {"M22": "vacancy anneal (S07)", "M23": "implant depth profile (S06)"}
+    rows += "\n" + "\n".join(f"| {k} | {atlas.tool(k)} | {use[k]} | not priced (no source yet) |" for k in bill["unpriced"])
+    machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P5_MACHINES)
+    steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["D1"]["steps"]))
+    hazards = " ".join(dict.fromkeys([h for sid in ("S02", "S06", "S07", "S18") for h in st[sid]["safety"] if not h.startswith("As ")] + by["D1"]["safety"]))
+    pair_txt = f"{be['pair_khz']:.1f} kHz, gate time 1/(2ν) = {be['gate_us']:.1f} µs" if be["pair_khz"] else "none found"
+    verdict = ("All simulated checks pass and every degraded twin fails, so the analysis can tell a good run from a faulty one; the gate is decided by the numbers measured on your sample."
+               if g["verdict"] == "go" and not (by_["pass"] or bp["pass"] or bb["pass"])
+               else "On this run a simulated check fails or a degraded twin passes; a correct run fails about one time in twenty, so repeat it before changing the analysis.")
+    return f"""# P5 · Placement: implanted NV pairs, coupled and entangled
+
+{GEN}
+
+**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the D1 parts listed below (estimates from the experiment list, not quotes). The annealing furnace and secondary-ion mass spectrometry (SIMS) are not priced yet ([STATUS.md](../STATUS.md)); most groups rent them in a shared facility. Gate verdict in simulation: **{g['verdict']}**.
+
+Sourced inputs: the conversion yield put in ({100 * P5_ETA:g} %) and its acceptance limit ({100 * P5_ETA_MIN:g} %) come from traveler step S07 [pezzagna2010]; the Bell-state fidelity put in ({P5_BELL_F}) is the published room-temperature value for an NV pair [dolde2013]; the 5 to 120 kHz coupling window is experiment D1's. Every other input (aperture counts, ions per aperture, noise levels) is **illustrative**. The phase is **simulated**: no ADAMAS hardware has run it.
+
+## Goal
+
+Place nitrogen-vacancy (NV) centers with nanometre control: implant ¹⁵N through apertures (traveler S06), anneal so vacancies find the nitrogen (S07), count how many ions became NV centers, find apertures that hold exactly two NVs coupled strongly enough for a two-qubit gate, and entangle one such pair at room temperature. P5 answers whether placement is good enough to plan arrays (P6).
+
+## Physics and equations
+
+- **Conversion yield η:** each implanted nitrogen becomes an NV with probability η, so an aperture with n ions holds k NVs with the binomial probability C(n,k) η^k (1 − η)^(n−k). Counting NVs on a witness array of M apertures gives η̂ = (NVs counted)/(M n); its one-sided Clopper–Pearson lower bound at the per-check coverage is compared with the S07 limit. About 1 % is reported at 2.5 to 5 keV, rising with energy [pezzagna2010]. Valid when every NV in an aperture is counted (confocal counting, with antibunching from P3 to tell one, two and three apart) and implanted ¹⁵N is told from native ¹⁴N by its hyperfine lines.
+- **Where the ions stop:** at {P5_ENERGY_KEV:g} keV the rule of thumb of `adamas.coupling` gives a depth of about {depth:.1f} nm with {strag:.1f} nm straggle, per axis [pezzagna2010] [oforiokai2012]; replace it with a SRIM run [ziegler2010] for design work (channeling makes real profiles deeper). Each ion enters at a uniformly random point of a {P5_APERTURE_NM:g} nm aperture.
+- **Coupling:** two NVs at separation r couple with ν = 52 MHz·nm³ |1 − 3cos²θ| / r³ [neumann2010natphys] [dolde2013], θ between the separation and the quantization axis (taken here as [111] for both; NVs on different axes, as experiment D1 selects for addressing, change the angular factor). A controlled-phase gate takes 1/(2ν). Pairs between 5 and 120 kHz are kept (experiment D1's window).
+- **Pair count:** an aperture with n ions holds exactly two NVs with P₂ = C(n,2) η² (1 − η)^(n−2), and a fraction f of such pairs falls in the window (Monte Carlo over the geometry above; f = {p['window_fraction']:.3f} for the design). The expected number of usable pairs in M apertures is N = M P₂ f, computed with the yield **measured** on the witness array of the same run; its error combines binomial counting and the yield's error, so the yield and pair checks are correlated.
+- **Bell fidelity:** after the gate, measure the populations p00 + p11 and the parity ⟨Z₁Z₂⟩ after a π/2 analysis pulse of phase φ on each NV. Its cos 2φ part is −A cos 2φ with A = 2 Re ρ(00,11), so F = (p00 + p11 + A)/2 is the exact fidelity with the Bell state |Φ⁺⟩ for any two-qubit state (a test checks it on random states). A fidelity above 1/2 proves entanglement: no unentangled (separable) state reaches more than 1/2 with a Bell state, which a test checks numerically. The simulated state is a Bell pair mixed with white noise (a Werner state, as in `adamas.entangle`); real errors are not white, but the estimator does not depend on that.
+
+## Machines and consumables
+
+Atlas machines for this phase: {machines}. Optional: M25 (laser writing of vacancies) to raise the yield, and M08 for photoluminescence maps of the witness array.
+
+| Atlas | Part (experiment) | Specification | US$ |
+|---|---|---|---|
+{rows}
+
+## Facility and safety
+
+A shared ion-beam facility with a low-energy implanter, an electron-beam lithography tool for the aperture mask, a high-vacuum furnace, a wet bench, and a confocal microscope with microwave control. {hazards} Ion implanters, furnaces, strong acids and Class 3B/4 lasers each need your institution's specific training and sign-off before first use; this page does not replace that training.
+
+## Procedure
+
+Traveler steps S06 (implant through apertures) and S07 (anneal, tri-acid clean, oxygen termination), then D1:
+
+{steps}
+
+On the sample, keep two fields side by side: a **witness array** ({P5_WITNESS_SITES} apertures, {P5_WITNESS_IONS} ions each) that is only counted, and a **pair field** ({P5_PAIR_SITES} apertures, {P5_PAIR_IONS} ions each) that is searched for coupled pairs. Count the witness array first, so its yield is available when you predict the pair count.
+
+## Expected results (simulated)
+
+Each test is shown with its **degraded twin**: the same simulation with one fault, which the test must catch.
+
+![Expected P5 results](../img/fig58_build_p5.png)
+
+## Pass/fail
+
+The gate needs all {P5_CHECKS} checks to pass, so each is set for {100 * P5_TEST_COVERAGE:.2f} % coverage: k = {rates['k_one']:.2f} for the one-sided yield and Bell checks and {rates['k']:.2f} for the two-sided pair count. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per check, {100 * rates['se_gate']:.1f} for the gate).
+
+| Check | Criterion | Put in | Measured | Pass? | Correct runs passing |
+|---|---|---|---|---|---|
+| Conversion yield (witness array) | lower bound ≥ {100 * P5_ETA_MIN:g} % (S07 [pezzagna2010]) | η = {100 * y['eta_put_in']:g} % | {y['nv']} NVs from {y['ions']:,} ions: {100 * y['eta']:.2f} ± {100 * y['eta_err']:.2f} %, bound {100 * y['eta_lower']:.2f} % | {yes(y['pass'])} | {pct(rates['yield'])} |
+| Coupled pairs (pair field) | at least 1 found, and within kσ of the prediction | design aperture {P5_APERTURE_NM:g} nm | {p['two_nv_sites']} two-NV apertures, {p['found']} in the window; predicted {p['predicted']:.1f} ± {p['predicted_err']:.1f} | {yes(p['pass'])} | {pct(rates['pairs'])} |
+| Bell fidelity (strongest pair: {pair_txt}) | F − kσ > 1/2 | F = {be['f_put_in']} [dolde2013] | {'not measured' if be['f'] is None else f"{be['f']:.3f} ± {be['f_err']:.3f}"} | {yes(be['pass'])} | {pct(rates['bell'])} |
+| **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
+
+The degraded twins, one fault each. The last column is how often the faulty run wrongly passes.
+
+| Test | Fault | Measured | Pass? | Faulty runs passing |
+|---|---|---|---|---|
+| Conversion yield | residual oxygen etched the surface during the anneal (S07 failure mode; η = {100 * P5_ETA_BAD:g} %, illustrative) | {100 * by_['eta']:.2f} %, bound {100 * by_['eta_lower']:.2f} % | {yes(by_['pass'])} | {pct(rates['degraded']['yield'])} |
+| Coupled pairs | PMMA over-developed: apertures {P5_APERTURE_BAD_NM:g} nm, outside the S06 window of 10 to 60 nm | {bp['found']} in the window, {bp['predicted']:.1f} ± {bp['predicted_err']:.1f} predicted | {yes(bp['pass'])} | {pct(rates['degraded']['pairs'])} |
+| Bell fidelity | the "pair" is not coupled: at best classical correlations, F = 1/2 | {bb['f']:.3f} ± {bb['f_err']:.3f} | {yes(bb['pass'])} | {pct(rates['degraded']['bell'])} |
+
+{_p5_rates_note(rates)}
+
+The simulation puts in the published fidelity rather than computing it. The coherence-limited budget of `adamas.gate_budget` gives {lo:.2f} to {hi:.2f} for the published pair, above the measured 0.67: a known discrepancy carried here from P0 ([VALIDATION.md](../VALIDATION.md)). P5 is where it gets measured: compare your fidelity with the budget for your pair's coupling and coherence times, and attribute the gap (D1, step 5).
+
+## Not yet simulated
+
+- **Depth-dependent coherence:** shallow NVs lose coherence to surface spins [oforiokai2012]; S07 asks for an echo T₂ of at least 10 µs (an ADAMAS target), and the budget needs the measured value.
+- **Charge state:** the Bell check assumes charge-state pre-selected runs (D1, step 3). Without pre-selection an unprepared fraction 1 − q² of runs drags the fidelity toward 1/4 (`adamas.gate_budget`).
+- **Addressing:** pairs on the same crystal axis cannot be driven one at a time (Addressing Lab); the pair search here does not reject them.
+- **Deterministic placement** (laser writing, M25; single-ion detection): not modelled.
+
+## Failure modes
+
+- **Low yield, dark surface layer:** residual oxygen etched the surface during the anneal (S07); improve the vacuum or use forming gas.
+- **Too few or too many NVs per aperture:** dose or aperture size off (S06); recalibrate on the witness array.
+- **Pairs too far apart:** apertures wider than designed (check them by scanning electron microscopy, S06) or straggle larger than planned (deeper or channeled ions; SIMS).
+- **Fidelity at or below 1/2:** weak coupling, short T₂ near the surface, pulse errors, or a mis-identified pair; repeat the coupling measurement and the coherence times before blaming the gate.
+
+## Decision gate
+
+*Is placement yield good enough to plan arrays?* {verdict} An array of N cells needs N usable pairs; with the measured yield and window fraction, about 1/(P₂ f) = {1 / (_p_two(y['eta']) * p['window_fraction']):.0f} apertures are searched per usable pair at this dose. That number, not the gate verdict alone, decides whether P6 plans arrays of aperture-implanted pairs or waits for deterministic placement.
+
+Sources: [pezzagna2010] [oforiokai2012] [ziegler2010] [neumann2010natphys] [dolde2013] [dolde2014]
+"""
+
+
 # ---------------------------------------------------------------- documents ----------------------------------------
 GEN = "_Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._"
 
@@ -1007,7 +1365,7 @@ Sources: [doherty2013] [acosta2010] [stegemann2023] [williams2026] [gruber1997]
 """
 
 
-DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md"}
+DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md", "P5": "P5_placement.md"}
 
 
 def _index_md() -> str:
@@ -1238,18 +1596,19 @@ Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [jelezko2004b] [jacques200
 def write(folder: str = "docs/build") -> list[str]:
     d = ROOT / folder; d.mkdir(parents=True, exist_ok=True)
     out = []
-    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md())):
+    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md())):
         (d / name).write_text(text, encoding="utf-8"); out.append(str(d / name))
     return out
 
 
 def to_json() -> dict:
-    """For the website: the ladder, the P0 gate, and the P1 to P4 simulated results."""
-    g1, b1, g2, b2, b3, b4 = p1_gate(), p1_bill(), p2_gate(), p2_bill(), p3_bill(), p4_bill()
+    """For the website: the ladder, the P0 gate, and the P1 to P5 simulated results."""
+    g1, b1, g2, b2, b3, b4, b5 = p1_gate(), p1_bill(), p2_gate(), p2_bill(), p3_bill(), p4_bill(), p5_bill()
     return {"phases": PHASES, "docs": DOCS, "p0": p0_gate(), "p1": {**g1, "bill": {"low": b1["low"], "high": b1["high"]}, "pass_rate": p1_pass_rate()},
             "p2": {**g2, "bill": {"low": b2["low"], "high": b2["high"]}, "pass_rates": p2_pass_rates()},
             "p3": _finite({**p3_gate(), "degraded": p3_degraded(), "bill": {"low": b3["low"], "high": b3["high"]}, "pass_rates": p3_pass_rates()}),
-            "p4": _finite({**p4_gate(), "degraded": p4_degraded(), "bill": {"low": b4["low"], "high": b4["high"]}, "pass_rates": p4_pass_rates()})}
+            "p4": _finite({**p4_gate(), "degraded": p4_degraded(), "bill": {"low": b4["low"], "high": b4["high"]}, "pass_rates": p4_pass_rates()}),
+            "p5": _finite({**p5_gate(), "degraded": p5_degraded(), "bill": {"low": b5["low"], "high": b5["high"]}, "pass_rates": p5_pass_rates()})}
 
 
 def _finite(o):

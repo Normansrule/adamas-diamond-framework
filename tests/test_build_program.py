@@ -43,7 +43,7 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
 
 
@@ -107,3 +107,47 @@ def test_p4_pass_rates_meet_the_design():
     r = B.p4_pass_rates(300)
     assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
     assert all(v <= 0.03 for v in r["degraded"].values()), r
+
+
+def test_p5_gate_passes_and_every_degraded_twin_fails():
+    g, b = B.p5_gate(), B.p5_degraded()
+    assert g["verdict"] == "go"
+    assert not (b["yield"]["pass"] or b["pairs"]["pass"] or b["bell"]["pass"])
+    assert b["pairs"]["found"] < b["pairs"]["predicted"]              # wide apertures: pairs too far apart to couple
+
+
+def test_p5_parity_estimator_is_the_exact_bell_fidelity():
+    import numpy as np
+    from adamas import entangle as E
+    rng = np.random.default_rng(3); phi = np.linspace(0, np.pi, B.P5_PARITY_PHASES, endpoint=False)
+    for _ in range(20):
+        rho = E.random_state(rng)
+        f, _ = B.bell_fidelity_estimate(float((rho[0, 0] + rho[3, 3]).real), phi, [B.parity_after_analysis(rho, x) for x in phi])
+        assert f == pytest.approx(float((E.bell("phi+").conj() @ rho @ E.bell("phi+")).real), abs=1e-12)
+    # the simulated Werner data follow the same model: parity -A cos 2phi with A = v
+    pop, a = B.bell_tomography_expected(0.67); v = (4 * 0.67 - 1) / 3
+    for x in phi[:4]:
+        assert B.parity_after_analysis(E.werner(v), x) == pytest.approx(-a * np.cos(2 * x), abs=1e-12)
+    assert pop == pytest.approx(float((E.werner(v)[0, 0] + E.werner(v)[3, 3]).real), rel=1e-12)
+
+
+def test_no_separable_state_beats_one_half():
+    """The Bell check's threshold: product states (and so their mixtures) never exceed fidelity 1/2 with |Phi+>."""
+    import numpy as np
+    from adamas import entangle as E
+    rng = np.random.default_rng(4); best = 0.0
+    for _ in range(4000):
+        v = np.kron(E.random_qubit(rng), E.random_qubit(rng)); best = max(best, abs(np.vdot(E.bell("phi+"), v)) ** 2)
+    assert best <= 0.5 + 1e-12 and best > 0.49
+
+
+def test_p5_pair_count_follows_the_binomial_model():
+    assert B._p_two(0.01, 50) == pytest.approx(1225 * 1e-4 * 0.99 ** 48, rel=1e-12)
+    assert 0.3 < B.p5_window_fraction() < 0.9
+    assert B.p5_window_fraction(B.P5_APERTURE_BAD_NM) < 0.2 * B.p5_window_fraction()
+
+
+def test_p5_pass_rates_meet_the_design():
+    r = B.p5_pass_rates(300)
+    assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
+    assert all(v <= 0.05 for v in r["degraded"].values()), r
