@@ -151,11 +151,11 @@ function detail() {
     const row = (txt, fit, ok, rate, caught) => `<tr><td>${txt}</td><td class="n">${fit}</td><td>${V(caught ? !ok : ok, caught ? (ok ? 'passed' : 'caught') : (ok ? 'pass' : 'fail'))}</td><td class="n">${pc(rate)}</td></tr>`;
     const gd = (g.good_dies || []).map(t => `<tr><td class="n">${fx(t.area_mm2, 0)}</td><td class="n">${t.gross}</td><td class="n">${pc(t.yield)}</td><td class="n">${fx(t.good, 0)}</td></tr>`).join('');
     right = `<h3 style="margin-top:0">Gate, simulated ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Check</th><th>Measured</th><th></th><th>Correct runs passing</th></tr>
-      ${row(`Process in control: 20 wafers inside limits ${fx(s.lcl, 2)} to ${fx(s.ucl, 2)} Ω·mm`, `${(s.out_of_control || []).length} outside`, s.pass, r.spc)}
-      ${row('Yield explained by killer defects (Murphy)', `${pc(y.y_meas)} vs ${pc(y.y_pred)}`, y.pass, r.yield)}
+      ${row(`Process in control: ${s.n_monitor ?? '—'} phase II wafers judged against limits ${fx(s.lcl, 2)} to ${fx(s.ucl, 2)} Ω·mm`, `${(s.out_of_control || []).length} outside`, s.pass, r.spc)}
+      ${row('Product yield explained by monitor-wafer defect density (Murphy)', `${pc(y.y_meas)} vs ${pc(y.y_pred)}`, y.pass, r.yield)}
       ${row('<b>Gate: all pass</b>', '', g.verdict === 'go', r.gate)}</table></div>
       <h3>Degraded twins: one fault each, must fail</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Fault</th><th>Measured</th><th></th><th>Faulty runs passing</th></tr>
-      ${row('Contact residue from wafer 31', `first alarm at wafer ${b.spc.first_alarm ?? '—'}`, b.spc.pass, r.degraded.spc, true)}
+      ${row(`Contact residue from wafer ${b.spc.shift_wafer ?? '—'}`, `first alarm at wafer ${b.spc.first_alarm ?? '—'}`, b.spc.pass, r.degraded.spc, true)}
       ${row('Edge ring of non-uniform growth', `${pc(b.yield.y_meas)} vs ${pc(b.yield.y_pred)}`, b.yield.pass, r.degraded.yield, true)}</table></div>
       <h3>Good dies per 2-inch wafer at D₀ = ${fx(y.d0_cm2, 2)} cm⁻²</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Die area (mm²)</th><th>Gross</th><th>Yield</th><th>Good</th></tr>${gd}</table></div>
       <p class="src">Not priced per die: no sourced wafer cost yet. Illustrative inputs except the 2-inch wafer [kim2021], the 3 mm monitor die and P4's contact resistance. Control chart after [shewhart1931]; yield model [murphy1964]. Rates over ${r.runs} simulated runs.</p>`; }

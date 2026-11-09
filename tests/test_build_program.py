@@ -210,13 +210,23 @@ def test_p7_control_limits_are_a_prediction_interval():
     import numpy as np
     from scipy.stats import t
     base = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    lim = B.p7_control_limits(base, n_monitor=10, coverage=0.9)
+    lim = B.p7_control_limits(base, n_monitor=10, coverage=0.9)        # the formula as documented; run coverage: test below
     a = 1 - 0.9 ** 0.1; half = t.ppf(1 - a / 2, 4) * base.std(ddof=1) * (1 + 1 / 5) ** 0.5
     assert (lim["lcl"], lim["ucl"]) == pytest.approx((3 - half, 3 + half), rel=1e-12)
     assert B.p7_die_sites().shape[0] == pytest.approx(B.p7_good_dies_table(1.0, (9.0,))[0]["gross"], rel=0.05)
 
 
+def test_p7_sampler_reproduces_murphy():
+    """The simulated product dies' mean yield over seeds is Murphy's yield at the true D0 (not just the formula)."""
+    import numpy as np
+    from adamas.wafer import murphy_yield
+    ys = [B.p7_yield(9000 + i)["y_meas"] for i in range(40)]
+    y = murphy_yield(B.P7_DIE_MM ** 2, B.P7_D0_CM2); n = 40 * B.p7_yield()["dies"]
+    assert np.mean(ys) == pytest.approx(y, abs=4 * (y * (1 - y) / n) ** 0.5)
+
+
 def test_p7_pass_rates_meet_the_design():
-    r = B.p7_pass_rates(300)
+    r = B.p7_pass_rates(300); c = B.P7_TEST_COVERAGE; se = (c * (1 - c) / 300) ** 0.5
     assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
+    assert r["spc"] >= c - 3 * se and r["yield"] >= c - 3 * se, r              # each check's false-alarm rate
     assert all(v <= 0.05 for v in r["degraded"].values()), r

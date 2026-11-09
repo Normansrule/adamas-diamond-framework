@@ -55,7 +55,7 @@ def numbers() -> dict:
     refs = load(); N["NumRefs"] = str(len(refs)); N["NumVerified"] = str(sum(r.status == "V" for r in refs))
     # count the figures the code draws (not the files on disk, which lag until  make figures  runs)
     names = set()
-    for f in ("figures.py", "figures_expert.py", "figures_apps.py"):
+    for f in ("figures.py", "figures_expert.py", "figures_apps.py", "build_program.py"):
         names |= set(re.findall(r'"(fig\d\d_\w+\.png)"', (ROOT / "adamas" / f).read_text(encoding="utf-8")))
     N["NumFigures"] = str(len(names))
     from . import uncertainty

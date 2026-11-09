@@ -267,7 +267,7 @@ Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin
 
 ### Status after v0.38.0 (build phase P7)
 
-P7 (pilot line) is written with two code-evaluated checks (process in statistical control, yield explained by killer defects). The wafer size is sourced [kim2021], the chart follows [shewhart1931] with limits widened and stated, and the yield model is [murphy1964], which the simulation reproduces exactly (tested by quadrature); every other input is labeled illustrative; each check has a degraded twin that must fail. The product question is answered only as good dies per wafer: no price is sourced, so no product is called profitable. Open items are in [STATUS.md](STATUS.md).
+P7 (pilot line) is written with two code-evaluated checks (process in statistical control, yield explained by killer defects). The wafer size is sourced [kim2021], the chart follows [shewhart1931] with limits widened and stated, and the yield model is [murphy1964], which the simulation reproduces exactly (formula checked by quadrature, sampler by Monte Carlo); D₀ comes from separate defect-monitor wafers so the yield check is not circular; every other input is labeled illustrative; each check has a degraded twin that must fail. The product question is answered only as good dies per wafer: no price is sourced, so no product is called profitable. Open items are in [STATUS.md](STATUS.md).
 
 ### Status after v0.37.0 (build phase P6)
 

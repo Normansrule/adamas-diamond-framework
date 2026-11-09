@@ -10,7 +10,7 @@ Last updated: v0.38.0 (2026-11-09).
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| Illustrative inputs | The wafer-to-wafer spread of contact resistance, the killer-defect density (2 cm⁻²), the edge exclusion and both faults are chosen, not measured. The 2-inch wafer [kim2021], the 3 mm monitor die and P4's contact resistance are the only fixed inputs | Values from a pilot-line run |
+| Illustrative inputs | The wafer-to-wafer spread of contact resistance, the killer-defect density (2 cm⁻²), the edge exclusion and both faults are chosen, not measured. The 2-inch wafer size [kim2021] and the 3 mm monitor die are the only fixed inputs; P4's contact resistance is itself illustrative | Values from a pilot-line run |
 | Cost per good die and the product decision | No sourced wafer, test or product price; D2's part list is a planning estimate | Quotes and product prices |
 | Clustered defects | Each die's density is drawn independently; real defects cluster [stapper1983] | A negative-binomial wafer-map model fitted to inspection data |
 | Small drifts and several parameters | Only a Shewhart chart of one parameter | CUSUM or EWMA charts over every traveler check |
