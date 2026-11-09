@@ -1,6 +1,6 @@
 # References
 
-**590 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**591 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -88,9 +88,10 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[fendt2025]`** Fendt, J.; Schreck, M. (2025). Maskless epitaxial overgrowth of diamond on 3D patterns formed by self-organization in an oxidation process. *Journal of Applied Physics*, 137(23), 235107.
 - 📚 **`[schreck2025]`** Schreck, M.; Peter, T. (2025). Wafer bow in diamond heteroepitaxy: causes, their analytical description, and viable solutions. *Journal of Applied Physics*, 137(1), 015108.
 
-## Silicon baseline (12)
+## Silicon baseline (13)
 
 - ✅ **`[czochralski1918]`** Czochralski, J. (1918). Ein neues Verfahren zur Messung der Kristallisationsgeschwindigkeit der Metalle. *Zeitschrift fuer Physikalische Chemie*, 92, 219. [doi:10.1515/zpch-1918-9212](https://doi.org/10.1515/zpch-1918-9212)
+- 📚 **`[shewhart1931]`** Shewhart, W. A. (1931). Economic Control of Quality of Manufactured Product. *D. Van Nostrand*.
 - 📚 **`[teal1950]`** Teal, G. K.; Little, J. B. (1950). Growth of germanium single crystals. *Physical Review*, 78, 647.
 - ✅ **`[murphy1964]`** Murphy, B. T. (1964). Cost-size optima of monolithic integrated circuits. *Proceedings of the IEEE*, 52, 1537. [doi:10.1109/proc.1964.3442](https://doi.org/10.1109/proc.1964.3442)
 - ✅ **`[dealgrove1965]`** Deal, B. E.; Grove, A. S. (1965). General relationship for the thermal oxidation of silicon. *Journal of Applied Physics*, 36, 3770. [doi:10.1063/1.1713945](https://doi.org/10.1063/1.1713945)

@@ -2,7 +2,21 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.37.0 (2026-11-09).
+Last updated: v0.38.0 (2026-11-09).
+
+## Open in v0.38.0: build phase P7 (pilot line)
+
+[P7](build/P7_pilot_line.md) is written in full, with its gate evaluated by code (`adamas.build_program.p7_gate`). What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Illustrative inputs | The wafer-to-wafer spread of contact resistance, the killer-defect density (2 cm⁻²), the edge exclusion and both faults are chosen, not measured. The 2-inch wafer [kim2021], the 3 mm monitor die and P4's contact resistance are the only fixed inputs | Values from a pilot-line run |
+| Cost per good die and the product decision | No sourced wafer, test or product price; D2's part list is a planning estimate | Quotes and product prices |
+| Clustered defects | Each die's density is drawn independently; real defects cluster [stapper1983] | A negative-binomial wafer-map model fitted to inspection data |
+| Small drifts and several parameters | Only a Shewhart chart of one parameter | CUSUM or EWMA charts over every traveler check |
+| Defect density to leakage and coherence | No model links dislocation density to leakage current or T₂ | Measured leakage and T₂ against etch-pit density |
+| Product qualification | No sourced reliability criteria per product | Qualification standards for each product line |
+| Verification of shewhart1931 | Entered by hand; Crossref is not reachable from the build container | `make verify` |
 
 ## Open in v0.37.0: build phase P6 (integration)
 
@@ -146,7 +160,7 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 |---|---|---|
 | Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
 | Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
-| Build program P7–P8 full write-ups and the Machines and Facilities Atlas (P0 to P6 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| Build program P8 full write-up and the Machines and Facilities Atlas (P0 to P7 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
 | GitHub Actions major versions (checkout, setup-node, setup-python, artifacts, pages) | GitHub warns that these target Node.js 20; it already runs them on Node.js 24, and every workflow passes. Newer majors exist (up to v7 and v8) and some change artifact behaviour, so each bump needs its release notes read and a test run. | Bump one workflow at a time and confirm the desktop release still uploads its installers. |
 | Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
 

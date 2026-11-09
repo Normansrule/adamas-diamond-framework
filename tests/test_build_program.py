@@ -43,7 +43,7 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md()), (B.DOCS["P6"], B._p6_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md()), (B.DOCS["P6"], B._p6_md()), (B.DOCS["P7"], B._p7_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
 
 
@@ -187,3 +187,36 @@ def test_p6_pass_rates_meet_the_design():
 
 def test_p6_limit_twin_sits_on_the_limit():
     assert B.repetition_fidelity(B.P6_P_INJECT, B.p6_f0_at_limit()) == pytest.approx(1 - B.P6_P_INJECT, rel=1e-12)
+
+
+
+def test_p7_gate_passes_and_every_degraded_twin_fails():
+    g, b = B.p7_gate(), B.p7_degraded()
+    assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
+    assert b["yield"]["ring_yield"] < b["yield"]["centre_yield"] - 0.2       # the twin's loss sits at the edge
+
+
+def test_p7_murphy_is_the_expected_yield_of_the_simulation():
+    """Triangular densities on [0, 2 D0] plus Poisson defects give Murphy's yield exactly; checked by quadrature."""
+    import numpy as np
+    from scipy.integrate import quad
+    from adamas.wafer import murphy_yield
+    for ad in (0.05, 0.18, 1.0, 3.0):
+        y, _ = quad(lambda x: np.exp(-ad * x) * (x if x <= 1 else 2 - x), 0, 2)   # D = x D0, triangular density on [0, 2]
+        assert y == pytest.approx(murphy_yield(100 * ad, 1.0), rel=1e-10)
+
+
+def test_p7_control_limits_are_a_prediction_interval():
+    import numpy as np
+    from scipy.stats import t
+    base = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    lim = B.p7_control_limits(base, n_monitor=10, coverage=0.9)
+    a = 1 - 0.9 ** 0.1; half = t.ppf(1 - a / 2, 4) * base.std(ddof=1) * (1 + 1 / 5) ** 0.5
+    assert (lim["lcl"], lim["ucl"]) == pytest.approx((3 - half, 3 + half), rel=1e-12)
+    assert B.p7_die_sites().shape[0] == pytest.approx(B.p7_good_dies_table(1.0, (9.0,))[0]["gross"], rel=0.05)
+
+
+def test_p7_pass_rates_meet_the_design():
+    r = B.p7_pass_rates(300)
+    assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
+    assert all(v <= 0.05 for v in r["degraded"].values()), r

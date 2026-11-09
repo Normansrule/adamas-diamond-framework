@@ -12,11 +12,11 @@ and the decision gate. Phases P0 and P1 are written in full here, and their gate
   pass/fail tolerances come from those fits and from the published uncertainty of dD/dT, -74.2(7) kHz/K
   [acosta2010], not from a typed-in number.
 
-* P2 Teaching lab, P3 Single NV, P4 Devices, P5 Placement and P6 Integration are written in full too; their tests are set so a correct
-  setup passes the whole gate 95 % of the time, and P3 to P6 run each test on a degraded twin (one physical or process
+* P2 Teaching lab, P3 Single NV, P4 Devices, P5 Placement, P6 Integration and P7 Pilot line are written in full too; their tests are set so a correct
+  setup passes the whole gate 95 % of the time, and P3 to P7 run each test on a degraded twin (one physical or process
   fault) that must fail.
 
-Phases P7 and P8 stay at outline level until their sources are in (docs/STATUS.md says why).
+Phase P8 stays at outline level until their sources are in (docs/STATUS.md says why).
 """
 from __future__ import annotations
 
@@ -53,9 +53,9 @@ PHASES = [
     {"id": "P6", "name": "Integration", "budget": "packaging line or MPW partner", "status": "written",
      "goal": "Diamond chiplets bonded to silicon CMOS control; multi-cell arrays.",
      "metric": "T₂ kept through bonding (ratio at least 0.8); on-chip Rabi within 5 % of design; repetition-code gain above zero.", "gate": "Does integration keep coherence and yield?"},
-    {"id": "P7", "name": "Pilot line and products", "budget": "fab", "status": "outline",
+    {"id": "P7", "name": "Pilot line and products", "budget": "fab", "status": "written",
      "goal": "Wafer-scale flow, statistical process control, first products.",
-     "metric": "Defect density and yield on control charts; first product qualified.", "gate": "Which product line pays for the line?"},
+     "metric": "Process in statistical control on a monitor-die chart; yield explained by counted killer defects.", "gate": "Which product line pays for the line?"},
     {"id": "P8", "name": "Frontier and humanity", "budget": "application-specific", "status": "outline",
      "goal": "Grid and EV efficiency, space electronics, medical magnetometry, navigation.",
      "metric": "Honest technology readiness level per application.", "gate": "Where does diamond beat the incumbent, with evidence?"},
@@ -1516,6 +1516,325 @@ Sources: SOURCES_LINE
     return text.replace("SOURCES_LINE", " ".join(f"[{k}]" for k in keys))
 
 
+
+# ---------------------------------------------------------------- P7 ------------------------------------------------
+P7_CHECKS = 2                # the line is in statistical control, and its yield is explained by its killer defects
+P7_GATE_COVERAGE = 0.95
+P7_TEST_COVERAGE = P7_GATE_COVERAGE ** (1 / P7_CHECKS)     # so each check covers 97.47 %
+P7_RUNS = 1000
+# Wafer and die: 2-inch heteroepitaxial wafers are the largest with published quality data [kim2021]; the die is the
+# 3 mm PDK-0 monitor die (adamas.pdk0). Contact resistance is P4's value (adamas.build_program.P4_RC_OHM_MM). Every
+# other number below is illustrative.
+P7_WAFER_MM = 51.0           # 2-inch wafer [kim2021]
+P7_EDGE_MM = 2.0             # edge exclusion: no die closer than this to the rim (illustrative)
+P7_DIE_MM = 3.0              # PDK-0 monitor die (adamas.pdk0.monitor_die)
+P7_BASELINE_WAFERS = 20      # phase I: wafers that set the control limits (illustrative)
+P7_MONITOR_WAFERS = 20       # phase II: wafers judged against them (illustrative)
+P7_RC_SIGMA = 0.3            # wafer-to-wafer spread of the wafer-mean contact resistance, Ω·mm (illustrative)
+P7_RC_SHIFT_SIGMA = 4.0      # degraded twin: from wafer 31 on, contact residue raises Rc by 4 sigma (illustrative)
+P7_SHIFT_FROM = 10           # index within phase II where the twin's shift starts (wafer 31 of 40)
+P7_D0_CM2 = 2.0              # mean killer-defect density, cm^-2 (illustrative; inspection counts killer defects only)
+P7_RING_MM = 4.0             # degraded twin: dies whose centre is within this of the edge exclusion lose growth uniformity
+P7_RING_FAIL = 0.5           # ... and fail with this extra probability (illustrative)
+
+
+def _k7() -> float:
+    return _k_normal(P7_TEST_COVERAGE)
+
+
+def _rng7(seed: int, test: int) -> np.random.Generator:
+    """Independent stream per test (0 control chart, 1 wafer maps); twins reuse their streams."""
+    return np.random.default_rng([seed, 7, test])
+
+
+def p7_die_sites(wafer_mm: float = P7_WAFER_MM, die_mm: float = P7_DIE_MM, edge_mm: float = P7_EDGE_MM) -> np.ndarray:
+    """Centres (mm) of the whole dies on a square grid, centred on the wafer, that lie entirely inside the usable
+    radius wafer/2 - edge."""
+    r = wafer_mm / 2 - edge_mm; n = int(wafer_mm // die_mm) + 2
+    c = (np.arange(n) - (n - 1) / 2) * die_mm
+    xx, yy = np.meshgrid(c, c); h = die_mm / 2
+    far = np.hypot(np.abs(xx) + h, np.abs(yy) + h)          # the farthest corner from the wafer centre
+    keep = far <= r
+    return np.column_stack([xx[keep], yy[keep]])
+
+
+def p7_control_limits(baseline: np.ndarray, n_monitor: int = P7_MONITOR_WAFERS, coverage: float = P7_TEST_COVERAGE) -> dict:
+    """Shewhart individuals chart [shewhart1931] with limits from phase I. Shewhart's 3 sigma gives a false alarm on
+    0.27 % of points; to keep the whole phase II run at 1 - coverage, the per-point false-alarm rate is
+    1 - coverage^(1/n) and the limits are mean +- t s sqrt(1 + 1/m) with the Student t quantile for m - 1 degrees of
+    freedom (a prediction interval for a new wafer, which accounts for limits estimated from m wafers). Each point is
+    then covered exactly and the run, by the union bound, at least at the coverage."""
+    from scipy.stats import t as student
+    m = baseline.size; mean = float(baseline.mean()); s = float(baseline.std(ddof=1))
+    a_pt = 1 - coverage ** (1 / n_monitor); k = float(student.ppf(1 - a_pt / 2, m - 1))
+    half = k * s * math.sqrt(1 + 1 / m)
+    return {"mean": mean, "s": s, "k": k, "alpha_point": a_pt, "lcl": mean - half, "ucl": mean + half}
+
+
+def p7_spc(seed: int = 7, shift_sigma: float = 0.0) -> dict:
+    """Wafer-mean contact resistance of the monitor die (TLM, as in P4) on 40 wafers in a row: 20 set the limits,
+    20 are judged. Pass when no judged wafer falls outside the limits. The degraded twin's last 10 wafers carry
+    contact residue that raises Rc by P7_RC_SHIFT_SIGMA standard deviations."""
+    r = _rng7(seed, 0)
+    base = P4_RC_OHM_MM + r.normal(0, P7_RC_SIGMA, P7_BASELINE_WAFERS)
+    mon = P4_RC_OHM_MM + r.normal(0, P7_RC_SIGMA, P7_MONITOR_WAFERS)
+    mon[P7_SHIFT_FROM:] += shift_sigma * P7_RC_SIGMA
+    lim = p7_control_limits(base)
+    out = [int(i) for i in np.nonzero((mon < lim["lcl"]) | (mon > lim["ucl"]))[0]]
+    return {**lim, "baseline": base.tolist(), "monitor": mon.tolist(), "out_of_control": out, "shift_sigma": shift_sigma,
+            "first_alarm": (P7_BASELINE_WAFERS + out[0] + 1) if out else None, "pass": not out}
+
+
+def p7_yield(seed: int = 7, ring: bool = False) -> dict:
+    """Wafer maps of the 20 judged wafers. Each die gets a killer-defect density drawn from Murphy's triangular
+    distribution on [0, 2 D0], and a Poisson number of killer defects for its area; it works when it has none. So the
+    expected yield is Murphy's ((1 - e^(-A D0)) / (A D0))^2 [murphy1964] exactly. Inspection counts the killer defects
+    (D0 estimate); electrical test counts the working dies. Pass when the measured yield agrees with the Murphy
+    prediction from the measured D0 within k sigma (two-sided). sigma comes from the per-die values
+    g_i - Y'(D0) c_i / A (delta method on paired data: the same dies are inspected and tested). The degraded twin adds
+    a ring of non-uniform growth near the edge whose dies fail with probability P7_RING_FAIL whatever their defects."""
+    r = _rng7(seed, 1); sites = p7_die_sites(); n_w = P7_MONITOR_WAFERS; n = sites.shape[0] * n_w
+    a_cm2 = (P7_DIE_MM / 10) ** 2
+    d = r.triangular(0, P7_D0_CM2, 2 * P7_D0_CM2, n); c = r.poisson(a_cm2 * d)
+    good = c == 0
+    rad = np.tile(np.hypot(sites[:, 0], sites[:, 1]), n_w)
+    in_ring = rad > P7_WAFER_MM / 2 - P7_EDGE_MM - P7_RING_MM
+    if ring:
+        good = good & ~(in_ring & (r.random(n) < P7_RING_FAIL))
+    from .wafer import murphy_yield
+    d0 = float(c.sum() / (n * a_cm2)); y_meas = float(good.mean()); y_pred = murphy_yield(P7_DIE_MM ** 2, d0)
+    h = 1e-6; slope = (murphy_yield(P7_DIE_MM ** 2, d0 + h) - murphy_yield(P7_DIE_MM ** 2, d0 - h)) / (2 * h)
+    per_die = good.astype(float) - slope * c / a_cm2
+    sigma = float(per_die.std(ddof=1) / math.sqrt(n)); k = _k7()
+    ring_yield = float(good[in_ring].mean()); centre_yield = float(good[~in_ring].mean())
+    return {"dies_per_wafer": int(sites.shape[0]), "dies": int(n), "d0_cm2": d0, "d0_err": float(c.std(ddof=1) / math.sqrt(n) / a_cm2),
+            "y_meas": y_meas, "y_pred": y_pred, "y_poisson": math.exp(-a_cm2 * d0), "diff": y_meas - y_pred, "sigma": sigma, "k": k,
+            "ring_yield": ring_yield, "centre_yield": centre_yield, "ring": ring,
+            "map": [[float(x), float(y), bool(g)] for (x, y), g in zip(sites, good[:sites.shape[0]])],
+            "pass": bool(abs(y_meas - y_pred) <= k * sigma)}
+
+
+def p7_gate(seed: int = 7) -> dict:
+    s, y = p7_spc(seed), p7_yield(seed)
+    return {"spc": s, "yield": y, "verdict": "go" if s["pass"] and y["pass"] else "stop"}
+
+
+def p7_degraded(seed: int = 7) -> dict:
+    """Each test on its degraded twin (one fault each); every one must fail."""
+    return {"spc": p7_spc(seed, P7_RC_SHIFT_SIGMA), "yield": p7_yield(seed, ring=True)}
+
+
+@lru_cache(maxsize=4)
+def p7_pass_rates(runs: int = P7_RUNS) -> dict:
+    """Pass rates over simulated runs (seeds 7000 + i) for correct lines, and wrong-pass rates for the degraded twins."""
+    keys = ("spc", "yield"); c = dict.fromkeys(keys + ("gate",), 0); d = dict.fromkeys(keys, 0)
+    for i in range(runs):
+        g = p7_gate(7000 + i); b = p7_degraded(7000 + i)
+        for k in keys:
+            c[k] += g[k]["pass"]; d[k] += b[k]["pass"]
+        c["gate"] += g["verdict"] == "go"
+    out = {k: v / runs for k, v in c.items()}
+    out["degraded"] = {k: v / runs for k, v in d.items()}
+    out.update(runs=runs, k=_k7(), se_test=math.sqrt(P7_TEST_COVERAGE * (1 - P7_TEST_COVERAGE) / runs),
+               se_gate=math.sqrt(P7_GATE_COVERAGE * (1 - P7_GATE_COVERAGE) / runs))
+    return out
+
+
+def p7_good_dies_table(d0_cm2: float, areas_mm2=(1.0, 9.0, 25.0, 100.0)) -> list[dict]:
+    """Good dies per 2-inch wafer against die area at a measured D0 (Murphy yield, gross dies from the edge-loss formula
+    of adamas.wafer). Cost per good die is the wafer cost divided by this number; no wafer cost is sourced yet."""
+    from .wafer import dies_per_wafer, murphy_yield
+    return [{"area_mm2": a, "gross": dies_per_wafer(P7_WAFER_MM - 2 * P7_EDGE_MM, a), "yield": murphy_yield(a, d0_cm2),
+             "good": dies_per_wafer(P7_WAFER_MM - 2 * P7_EDGE_MM, a) * murphy_yield(a, d0_cm2)} for a in areas_mm2]
+
+
+
+def p7_bill() -> dict:
+    """Parts and price range for P7: the D2 part list (estimates from adamas.experiments, not quotes)."""
+    from .experiments import EXPERIMENTS
+    by = {e["id"]: e for e in EXPERIMENTS}
+    rows = [("D2", *p) for p in by["D2"]["parts"]]
+    return {"rows": rows, "low": sum(r[3] for r in rows), "high": sum(r[4] for r in rows), "headline": by["D2"]["cost"]}
+
+
+P7_MACHINES = ("M01", "M03", "M05", "M06", "M07", "M09", "M16", "M17", "M18", "M23")
+
+
+def p7_figure(out: str | Path = "docs/img") -> Path:
+    """Figure 60: expected P7 results (nominal and degraded twin), simulated and analyzed here."""
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle, Rectangle
+    from .figures import COLORS, INK, RED, _finish
+    from .wafer import murphy_yield
+    out = Path(out); g, b = p7_gate(), p7_degraded()
+    fig, ax = plt.subplots(1, 4, figsize=(23, 5.2), gridspec_kw={"width_ratios": [1.5, 1, 1, 1.15]}); plt.subplots_adjust(wspace=.28)
+    a = ax[0]; s, t = g["spc"], b["spc"]; m = P7_BASELINE_WAFERS
+    xb = np.arange(1, m + 1); xm = np.arange(m + 1, m + P7_MONITOR_WAFERS + 1)
+    a.plot(xb, s["baseline"], "o-", ms=4, lw=.8, color=INK, alpha=.6, label="phase I: sets the limits")
+    a.plot(xm, s["monitor"], "o-", ms=4, lw=.8, color=COLORS["Diamond"], label="phase II, correct line: in control")
+    a.plot(xm, t["monitor"], "s-", ms=4, lw=.8, color=RED, label=f"twin: contact residue from wafer {m + P7_SHIFT_FROM + 1} (+{P7_RC_SHIFT_SIGMA:g}σ)")
+    for v in (s["lcl"], s["ucl"]):
+        a.axhline(v, color=INK, ls="--", lw=1)
+    a.axhline(s["mean"], color=INK, lw=.6, alpha=.6); a.axvline(m + .5, color=INK, lw=.6, alpha=.4)
+    a.legend(fontsize=8, loc="upper left"); a.set_ylim(min(s["lcl"], min(s["baseline"])) - 0.4, max(t["monitor"]) + 1.2)
+    a.set_title(f"1. Control chart: limits ±{s['k']:.2f}·s·√(1+1/m) from phase I [shewhart1931]", fontsize=10.5)
+    a.set_xlabel("wafer in the order processed"); a.set_ylabel("wafer-mean contact resistance (Ω·mm)")
+    r_use = P7_WAFER_MM / 2 - P7_EDGE_MM
+    for a, y, title in ((ax[1], g["yield"], "2. Wafer map, correct line"), (ax[2], b["yield"], "3. Wafer map, twin: edge ring")):
+        a.add_patch(Circle((0, 0), P7_WAFER_MM / 2, fill=False, color=INK, lw=1.2))
+        a.add_patch(Circle((0, 0), r_use, fill=False, color=INK, lw=.6, ls=":"))
+        if y["ring"]:
+            a.add_patch(Circle((0, 0), r_use - P7_RING_MM, fill=False, color=RED, lw=.8, ls="--"))
+        h = P7_DIE_MM / 2
+        for x0, y0, ok in y["map"]:
+            a.add_patch(Rectangle((x0 - h + .1, y0 - h + .1), P7_DIE_MM - .2, P7_DIE_MM - .2, color=COLORS["Diamond"] if ok else RED, alpha=.85 if ok else .95))
+        a.set_xlim(-27, 27); a.set_ylim(-27, 27); a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
+        a.set_title(f"{title}\nfirst wafer; lot yield {100 * y['y_meas']:.1f} % (Murphy predicts {100 * y['y_pred']:.1f} %)", fontsize=10.5)
+        for sp in a.spines.values():
+            sp.set_visible(False)
+    a = ax[3]; xx = np.linspace(0.01, 2.0, 200)
+    a.plot(xx, np.exp(-xx), color=INK, lw=1.2, ls="--", label="Poisson e^(−AD₀)")
+    a.plot(xx, [murphy_yield(100 * x, 1.0) for x in xx], color=INK, lw=1.8, label="Murphy [murphy1964]")
+    for y, col, lab in ((g["yield"], COLORS["Diamond"], "correct line"), (b["yield"], RED, "edge-ring twin")):
+        ad = (P7_DIE_MM / 10) ** 2 * y["d0_cm2"]
+        a.errorbar([ad], [y["y_meas"]], yerr=[y["k"] * y["sigma"]], fmt="o", color=col, ms=6, capsize=3, label=f"{lab}: measured, ±kσ")
+    a.legend(fontsize=8, loc="upper right"); a.set_ylim(0, 1.05)
+    a.set_title("4. Yield against A·D₀ from inspection", fontsize=10.5)
+    a.set_xlabel("die area × killer-defect density, A·D₀"); a.set_ylabel("yield")
+    return _finish(fig, out, "fig60_build_p7.png", "simulated and analyzed by adamas.build_program (illustrative inputs; 2-inch wafer [kim2021]); [shewhart1931] [murphy1964]")
+
+
+def _p7_rates_note(rates: dict) -> str:
+    design = P7_TEST_COVERAGE; se = rates["se_test"]; out = []
+    for key, name in (("spc", "control-chart"), ("yield", "yield")):
+        v = rates[key]
+        word = "more often than" if v > design + 3 * se else "less often than" if v < design - 3 * se else "about as often as"
+        out.append(f"the {name} check passes correct runs {word} designed ({100 * v:.1f} %)")
+    text = "Against the {:.2f} % design per check: ".format(100 * design) + "; ".join(out) + ". "
+    text += ("Here a correct run sits exactly on the model the check tests (a stable process; a yield set by random killer defects), "
+             "so the pass rate of a correct run is the check's coverage and k sets it directly. ")
+    text += (f"Over {rates['runs']} runs the gate passes {100 * rates['gate']:.1f} % of correct runs" +
+             (", consistent with the 95 % it is designed for." if rates["gate"] >= P7_GATE_COVERAGE - 3 * rates["se_gate"] else ", below the 95 % it is designed for: the limits need widening."))
+    return text
+
+
+def _p7_md() -> str:
+    import re
+    from . import atlas
+    from .traveler import STEPS
+    from .wafer import dies_per_wafer
+    st = {s["id"]: s for s in STEPS}
+    g, b, rates = p7_gate(), p7_degraded(), p7_pass_rates(P7_RUNS)
+    s, y = g["spc"], g["yield"]; bs, by = b["spc"], b["yield"]
+    yes = lambda v: "yes" if v else "no"   # noqa: E731
+    pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
+    money = lambda v: f"${v / 1e6:g} M"   # noqa: E731
+    bill = p7_bill(); table = p7_good_dies_table(y["d0_cm2"])
+    machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P7_MACHINES)
+    hazards = " ".join(dict.fromkeys(h for sid in ("S03", "S17") for h in st[sid]["safety"]))
+    verdict = ("Both simulated checks pass and both degraded twins fail, so the analysis can tell a stable, defect-limited line from a drifting or edge-limited one; the gate is decided by the numbers measured on your line."
+               if g["verdict"] == "go" and not (bs["pass"] or by["pass"])
+               else f"On this run a simulated check fails or a degraded twin passes; a correct line fails about {100 * (1 - rates['gate']):.1f} % of the time, so repeat it before changing the analysis.")
+    parts = "\n".join(f"| {r[1]} | {r[2]} | {money(r[3])} to {money(r[4])} |" for r in bill["rows"])
+    good = "\n".join(f"| {t['area_mm2']:g} | {t['gross']} | {pct(t['yield'])} | {t['good']:.0f} |" for t in table)
+    text = f"""# P7 · Pilot line and products: statistical control and yield
+
+{GEN}
+
+**Status: written in full.** Budget: **{money(bill['low'])} to {money(bill['high'])}** (experiment D2's part list: planning estimates, not quotes). Gate verdict in simulation: **{g['verdict']}**.
+
+Every input is **illustrative** except where a source is cited: the wafer is 2 inches, the largest heteroepitaxial single-crystal diamond wafer with published quality data [kim2021] (3-inch wafers are an industry announcement without published data [e6orbray2026]); the die is the {P7_DIE_MM:g} mm PDK-0 monitor die (`adamas.pdk0`); the contact resistance is P4's. The process spread, the defect density and both faults are chosen to look like a typical line, not measured. The phase is **simulated**: no diamond pilot line runs PDK-0 today, so the whole phase is **proposed**.
+
+## Goal
+
+Run the PDK-0 flow on many wafers in a row and show two things a pilot line needs before any product: that the process is **stable** (a monitor-die parameter stays inside control limits wafer after wafer) and that its **yield is understood** (the fraction of working dies is what its counted killer defects predict). Then rank products by good dies per wafer, which with a wafer cost gives the cost per good die.
+
+## Physics and equations
+
+- **Control chart:** each wafer's mean contact resistance R_c (from the transfer-length method, TLM, on the monitor die, as in P4) is plotted in processing order. Shewhart's chart [shewhart1931] flags a wafer outside mean ± 3σ, which a stable process does on 0.27 % of points. Here {P7_BASELINE_WAFERS} wafers (phase I) set the limits and the next {P7_MONITOR_WAFERS} (phase II) are judged. To keep the whole phase II run's false-alarm rate at 1 − {100 * P7_TEST_COVERAGE:.2f} %, each point gets α = 1 − {P7_TEST_COVERAGE:.4f}^(1/{P7_MONITOR_WAFERS}) = {s['alpha_point']:.2e}, and because the limits are estimated from m = {P7_BASELINE_WAFERS} wafers they are a prediction interval: mean ± t·s·√(1 + 1/m) with the Student t quantile for m − 1 degrees of freedom, t = {s['k']:.2f}. Pass when no phase II wafer is outside. Assumes independent, normally distributed wafer means; wider limits than Shewhart's catch large shifts quickly but small drifts slowly.
+- **Yield:** a die works when it carries no killer defect. If killer defects fall at random with density D, a die of area A works with probability e^(−AD) (Poisson). Densities vary across a wafer and between wafers; Murphy took a triangular distribution of D on [0, 2D₀] and found Y = [(1 − e^(−AD₀))/(AD₀)]² [murphy1964]; Stapper's clustered models generalize this [stapper1983] (`adamas.wafer`). Inspection counts the killer defects on every die and gives D₀; electrical test counts the working dies. Pass when the measured yield agrees with Murphy's prediction from the measured D₀ within k = {y['k']:.2f} standard errors (two-sided). The error comes from the per-die values gᵢ − Y′(D₀)·cᵢ/A (g: works, c: killer defects counted), because the same dies are inspected and tested. At A·D₀ = {(P7_DIE_MM / 10) ** 2 * y['d0_cm2']:.2f} the Poisson and Murphy yields differ by only {100 * (y['y_pred'] - y['y_poisson']):.1f} percentage points, so this check tests whether killer defects explain the yield, not which model is right; telling the models apart needs larger dies.
+- **Cost per good die:** gross dies per wafer N = π(d/2)²/A − πd/√(2A) (the edge-loss approximation of `adamas.wafer`, with d the usable diameter) times the yield gives the good dies; the wafer's cost divided by that number is the cost per good die. No wafer cost is sourced yet, so this page gives the good dies, not the cost.
+
+## Machines and facility
+
+Atlas machines for this phase: {machines}, plus every P4 machine for the device flow. Experiment D2 lists the line: {"; ".join(f"{r[1].lower()} ({r[2]})" for r in bill['rows'])}. A fab or a consortium pilot line, not a university cleanroom.
+
+| Part (D2) | What | Price range (estimate) |
+|---|---|---|
+{parts}
+
+## Facility and safety
+
+A pilot line needs a full semiconductor-fab environmental health and safety (EHS) program. {hazards} Each hazardous process needs your institution's or company's specific training and sign-off before first use; this page does not replace that training.
+
+## Procedure
+
+1. **Baseline.** Run the PDK-0 traveler on {P7_BASELINE_WAFERS} wafers without changing recipes; measure the monitor die on each (S17) and set the control limits.
+2. **Monitor.** Keep running; plot every new wafer on the chart before releasing it. A point outside the limits stops the line until its cause is found.
+3. **Inspect and test.** Map killer defects on every die (birefringence, etch pits, optical inspection; Atlas M09) and test every die electrically.
+4. **Compare.** Predict the yield from the counted killer defects with Murphy's model and compare with the measured yield. Map where the failing dies are: a pattern (edge, centre, a quadrant) means a systematic cause, not random defects.
+5. **Rank products** by good dies per wafer at your D₀ and die size, then by cost per good die once wafer costs are known.
+
+## Expected results (simulated)
+
+Each test is shown with its **degraded twin**: the same simulation with one fault, which the test must catch.
+
+![Expected P7 results](../img/fig60_build_p7.png)
+
+## Pass/fail
+
+The gate needs both checks to pass, so each is set for {100 * P7_TEST_COVERAGE:.2f} % coverage. Rates are over {rates['runs']} simulated runs (binomial standard error at the design rate: {100 * rates['se_test']:.1f} percentage points per check, {100 * rates['se_gate']:.1f} for the gate).
+
+| Check | Criterion | Put in | Measured | Pass? | Correct runs passing |
+|---|---|---|---|---|---|
+| Process in control | no phase II wafer outside mean ± {s['k']:.2f}·s·√(1+1/m) | R_c {P4_RC_OHM_MM:g} ± {P7_RC_SIGMA:g} Ω·mm per wafer | limits {s['lcl']:.2f} to {s['ucl']:.2f} Ω·mm; {len(s['out_of_control'])} wafers outside | {yes(s['pass'])} | {pct(rates['spc'])} |
+| Yield explained by killer defects | \\|Y − Y_Murphy(D₀)\\| ≤ kσ | D₀ = {P7_D0_CM2:g} cm⁻² | D₀ = {y['d0_cm2']:.2f} ± {y['d0_err']:.2f} cm⁻²; Y = {pct(y['y_meas'])} against {pct(y['y_pred'])} predicted (σ {100 * y['sigma']:.2f} points), {y['dies']} dies | {yes(y['pass'])} | {pct(rates['yield'])} |
+| **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
+
+The degraded twins, one fault each. The last column is how often the faulty run wrongly passes.
+
+| Test | Fault | Measured | Pass? | Faulty runs passing |
+|---|---|---|---|---|
+| Control chart | contact residue raises R_c by {P7_RC_SHIFT_SIGMA:g}σ from wafer {P7_BASELINE_WAFERS + P7_SHIFT_FROM + 1} (illustrative) | {len(bs['out_of_control'])} wafers outside; first alarm at wafer {bs['first_alarm']} | {yes(bs['pass'])} | {pct(rates['degraded']['spc'])} |
+| Yield | non-uniform growth near the edge: dies within {P7_RING_MM:g} mm of the edge exclusion fail half the time (illustrative) | Y = {pct(by['y_meas'])} against {pct(by['y_pred'])} predicted; edge ring {pct(by['ring_yield'])}, centre {pct(by['centre_yield'])} | {yes(by['pass'])} | {pct(rates['degraded']['yield'])} |
+
+{_p7_rates_note(rates)} The chart's twin shifts by {P7_RC_SHIFT_SIGMA:g}σ because limits this wide catch a 1σ drift only slowly; small drifts need a cumulative-sum or moving-average chart (not yet simulated).
+
+## Products: good dies per 2-inch wafer
+
+At the measured D₀ = {y['d0_cm2']:.2f} cm⁻², usable diameter {P7_WAFER_MM - 2 * P7_EDGE_MM:g} mm. Gross dies come from the edge-loss formula; the simulated wafer's square grid fits {y['dies_per_wafer']} whole {P7_DIE_MM:g} mm dies, close to the formula's {dies_per_wafer(P7_WAFER_MM - 2 * P7_EDGE_MM, P7_DIE_MM ** 2)}.
+
+| Die area (mm²) | Gross dies | Murphy yield | Good dies |
+|---|---|---|---|
+{good}
+
+Yield falls steeply with die area, so at this D₀ small dies (sensors, discrete switches) get by far the most good dies per wafer, and large dies (qubit arrays, large power switches) need a lower D₀. Which product pays for the line also needs each product's price and test cost, which are not sourced ([STATUS.md](../STATUS.md)).
+
+## Not yet simulated
+
+- **Spatially clustered defects:** each die's density is drawn independently; real defects cluster (Stapper's negative-binomial model [stapper1983]), which raises yield at a given D₀ and widens wafer-to-wafer spread.
+- **Small drifts:** cumulative-sum (CUSUM) or exponentially weighted moving-average (EWMA) charts.
+- **Several parameters at once:** only R_c is charted; a line charts every traveler check (threshold, sheet resistance, leakage, NV yield).
+- **Defect density's effect on leakage and coherence:** dislocation densities by substrate class are in `adamas.wafer`, but no model links them to leakage current or T₂ yet.
+- **Product qualification:** reliability tests per product (temperature, humidity, high-voltage life) need sourced criteria.
+
+## Failure modes
+
+- **Out-of-control point:** a recipe, chamber or source-gas change; stop, find the cause, and decide whether the wafers since the last good point are usable.
+- **Yield below prediction:** a systematic loss (edge ring, a bad mask area, a probe-card fault); look at where failing dies sit on the map.
+- **Yield above prediction:** the inspection counts defects that do not kill; recalibrate which defect classes are killers against electrical test.
+- **D₀ too high for the product:** grow on lower-dislocation substrates (homoepitaxial on HPHT) or reduce particles; compare substrate classes in `adamas.wafer`.
+
+## Decision gate
+
+*Which product line pays for the line?* {verdict} The simulation can rank products by good dies per wafer, which favours small dies; the economic answer needs sourced wafer, test and product prices. Go to P8 when one product's measured cost per good die is below its price.
+
+Sources: SOURCES_LINE
+"""
+    keys = list(dict.fromkeys(re.findall(r"\[([a-z][a-z0-9]*\d{4}[a-z0-9]*)\]", text)))
+    return text.replace("SOURCES_LINE", " ".join(f"[{k}]" for k in keys))
+
+
 # ---------------------------------------------------------------- documents ----------------------------------------
 GEN = "_Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._"
 
@@ -1679,7 +1998,7 @@ Sources: [doherty2013] [acosta2010] [stegemann2023] [williams2026] [gruber1997]
 """
 
 
-DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md", "P5": "P5_placement.md", "P6": "P6_integration.md"}
+DOCS = {"P0": "P0_simulation.md", "P1": "P1_proof_of_concept.md", "P2": "P2_teaching_lab.md", "P3": "P3_single_nv.md", "P4": "P4_devices.md", "P5": "P5_placement.md", "P6": "P6_integration.md", "P7": "P7_pilot_line.md"}
 
 
 def _index_md() -> str:
@@ -1910,7 +2229,7 @@ Sources: [kurtsiefer2000] [gruber1997] [jelezko2004a] [jelezko2004b] [jacques200
 def write(folder: str = "docs/build") -> list[str]:
     d = ROOT / folder; d.mkdir(parents=True, exist_ok=True)
     out = []
-    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md()), (DOCS["P6"], _p6_md())):
+    for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md()), (DOCS["P6"], _p6_md()), (DOCS["P7"], _p7_md())):
         (d / name).write_text(text, encoding="utf-8"); out.append(str(d / name))
     return out
 
@@ -1923,7 +2242,8 @@ def to_json() -> dict:
             "p3": _finite({**p3_gate(), "degraded": p3_degraded(), "bill": {"low": b3["low"], "high": b3["high"]}, "pass_rates": p3_pass_rates()}),
             "p4": _finite({**p4_gate(), "degraded": p4_degraded(), "bill": {"low": b4["low"], "high": b4["high"]}, "pass_rates": p4_pass_rates()}),
             "p5": _finite({**p5_gate(), "degraded": p5_degraded(), "bill": {"low": b5["low"], "high": b5["high"]}, "pass_rates": p5_pass_rates()}),
-            "p6": _finite({**p6_gate(), "degraded": p6_degraded(), "pass_rates": p6_pass_rates()})}
+            "p6": _finite({**p6_gate(), "degraded": p6_degraded(), "pass_rates": p6_pass_rates()}),
+            "p7": _finite({**p7_gate(), "degraded": p7_degraded(), "pass_rates": p7_pass_rates(), "good_dies": p7_good_dies_table(p7_gate()["yield"]["d0_cm2"])})}
 
 
 def _finite(o):

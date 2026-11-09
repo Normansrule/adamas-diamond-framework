@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.38.0 (build phase P7)
+
+P7 (pilot line) is written with two code-evaluated checks (process in statistical control, yield explained by killer defects). The wafer size is sourced [kim2021], the chart follows [shewhart1931] with limits widened and stated, and the yield model is [murphy1964], which the simulation reproduces exactly (tested by quadrature); every other input is labeled illustrative; each check has a degraded twin that must fail. The product question is answered only as good dies per wafer: no price is sourced, so no product is called profitable. Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.37.0 (build phase P6)
 
 P6 (integration) is written with three code-evaluated checks (coherence kept through bonding, on-chip drive, repetition-code gain). The drive criterion is an ADAMAS design value from QDL-27, the logical error rate from [shor1995] and the protocol from [waldherr2014]; every other input is labeled illustrative or an ADAMAS target; each check has a degraded twin that must fail. The code's break-even error rate is computed and tested, and the page states that the code helps only above it. Each check's wrong-pass rate with the truth on its limit is simulated and tested against what k allows. The phase is not priced. Open items are in [STATUS.md](STATUS.md).
