@@ -181,3 +181,9 @@ def test_p6_pass_rates_meet_the_design():
     r = B.p6_pass_rates(300)
     assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
     assert all(v <= 0.05 for v in r["degraded"].values()), r
+    a = 1 - B.P6_TEST_COVERAGE                          # k's promise: with the truth on the limit, at most a wrong passes
+    assert all(v <= a + 3 * (a * (1 - a) / 300) ** 0.5 for v in r["at_limit"].values()), r["at_limit"]
+
+
+def test_p6_limit_twin_sits_on_the_limit():
+    assert B.repetition_fidelity(B.P6_P_INJECT, B.p6_f0_at_limit()) == pytest.approx(1 - B.P6_P_INJECT, rel=1e-12)

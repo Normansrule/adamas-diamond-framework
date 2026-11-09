@@ -267,7 +267,7 @@ Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin
 
 ### Status after v0.37.0 (build phase P6)
 
-P6 (integration) is written with three code-evaluated checks (coherence kept through bonding, on-chip drive, repetition-code gain). The drive criterion comes from QDL-27, the logical error rate from [shor1995] and the protocol from [waldherr2014]; every other input is labeled illustrative or an ADAMAS target; each check has a degraded twin that must fail. The code's break-even error rate is computed and tested, and the page states that the code helps only above it. The phase is not priced. Open items are in [STATUS.md](STATUS.md).
+P6 (integration) is written with three code-evaluated checks (coherence kept through bonding, on-chip drive, repetition-code gain). The drive criterion is an ADAMAS design value from QDL-27, the logical error rate from [shor1995] and the protocol from [waldherr2014]; every other input is labeled illustrative or an ADAMAS target; each check has a degraded twin that must fail. The code's break-even error rate is computed and tested, and the page states that the code helps only above it. Each check's wrong-pass rate with the truth on its limit is simulated and tested against what k allows. The phase is not priced. Open items are in [STATUS.md](STATUS.md).
 
 ### Status after v0.36.0 (build phase P5)
 

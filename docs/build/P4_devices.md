@@ -85,7 +85,7 @@ The sheet-resistance window is the one traveler step S08 sets for the bare hydro
 - **Hot operation** (traveler S17 tests at 25, 200 and 300 °C [kawarada2014]): the FET model has no temperature dependence yet.
 - **Breakdown** (Atlas M18): the breakdown field versus dislocation density has a proposed fit in `adamas.power`, but no simulated test structure here.
 - **On/off ratio** (S17: at least 10⁶) and **ring-oscillator delay** (S17: within a factor of 2 of the model): no noise model for the off current or the oscillator yet.
-- **Photoelectric NV readout** (Atlas M55, listed in the outline for P4 and P6): belongs with the quantum track and is left to P6.
+- **Photoelectric NV readout** (Atlas M55, listed in the outline for P4 and P6): belongs with the quantum track; P6 still assumes optical readout and lists the photoelectric chain as open ([STATUS.md](../STATUS.md)).
 
 ## Failure modes
 
