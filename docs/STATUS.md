@@ -11,6 +11,7 @@ Last updated: v0.36.0 (2026-11-09).
 | Item | Why it waits | What would close it |
 |---|---|---|
 | Illustrative inputs | Aperture counts, ions per aperture, the 20 nm aperture, and the noise of the population and parity measurements are chosen to look like a typical run, not measured. The yield (1 %, limit 0.5 %) and the fidelity put in (0.67) are sourced | Values from a P5 run |
+| Yield at high local fluence | 50 ions through a 20 nm aperture is about 1.6×10¹³ cm⁻², above S06's single-center range; the about 1 % yield [pezzagna2010] is extrapolated to it | The witness-array yield at the chosen fluence |
 | Ion stopping | Depth and straggle use the rule of thumb of `adamas.coupling` (0.4 x depth), not a SRIM calculation | A SRIM run [ziegler2010] at the chosen energy, checked by SIMS |
 | Coupling geometry | Both NVs are taken as quantized along [111]; pairs on different axes have a different angular factor | The full secular dipolar tensor for two NV axes |
 | Coherence, charge state and addressing in the Bell check | The fidelity is put in as the published value; T₂ near the surface, charge-state preparation and same-axis pairs are not simulated | The `adamas.gate_budget` model driven by measured T₂, q and coupling |

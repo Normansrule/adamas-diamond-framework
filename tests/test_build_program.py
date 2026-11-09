@@ -112,6 +112,7 @@ def test_p4_pass_rates_meet_the_design():
 def test_p5_gate_passes_and_every_degraded_twin_fails():
     g, b = B.p5_gate(), B.p5_degraded()
     assert g["verdict"] == "go"
+    # the Bell twin sits at F = 1/2, so about 2 % of seeds would pass it; the default seed is one that fails (rates: test below)
     assert not (b["yield"]["pass"] or b["pairs"]["pass"] or b["bell"]["pass"])
     assert b["pairs"]["found"] < b["pairs"]["predicted"]              # wide apertures: pairs too far apart to couple
 
@@ -131,7 +132,7 @@ def test_p5_parity_estimator_is_the_exact_bell_fidelity():
     assert pop == pytest.approx(float((E.werner(v)[0, 0] + E.werner(v)[3, 3]).real), rel=1e-12)
 
 
-def test_no_separable_state_beats_one_half():
+def test_p5_no_separable_state_beats_one_half():
     """The Bell check's threshold: product states (and so their mixtures) never exceed fidelity 1/2 with |Phi+>."""
     import numpy as np
     from adamas import entangle as E
@@ -151,3 +152,8 @@ def test_p5_pass_rates_meet_the_design():
     r = B.p5_pass_rates(300)
     assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
     assert all(v <= 0.05 for v in r["degraded"].values()), r
+
+
+def test_p5_local_fluence_is_stated():
+    assert B.p5_local_fluence_cm2() == pytest.approx(50 / (3.141592653589793 * (10e-7) ** 2), rel=1e-12)
+    assert "cm⁻²" in B._p5_md() and "[dolde2014]" not in B._p5_md()
