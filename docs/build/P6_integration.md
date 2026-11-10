@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-**Status: written in full.** Budget: **not priced.** No sourced price exists yet for a multi-project wafer (MPW) shuttle, die bonding or packaging, so this page lists the machines without prices ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **go**.
+**Status: written in full.** Budget: **not totalled.** Published prices now exist for a multi-project wafer (MPW) shuttle (70 EUR per Tiny Tapeout tile [tinytapeout2026]; 1,080 to 1,126 EUR/mm² for X-FAB XH018 0.18 µm through EUROPRACTICE, minimum 10 mm² [europractice2026]) and hourly rates for wafer bonding, dicing and wire bonding [wnf2026] (see the [Atlas](ATLAS.md)). They are not added up because the die area and the tool hours are not modelled, and no die or flip-chip bonder rate is sourced ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **go**.
 
 Every input is **illustrative** except where a source is cited: the echo and Rabi data reuse the B1 noise model of `adamas.experiments`; the design Rabi frequency, its 5 % tolerance and the twin's half current are ADAMAS design values from Quantum Device Library entry QDL-27 (`adamas.qdl`), not measured numbers; the T₂ limit and the repetition-code numbers are this project's choices. The phase is **simulated**: no ADAMAS hardware has run it. Silicon complementary metal-oxide-semiconductor (CMOS) chips that drive and read nitrogen-vacancy (NV) centers in a diamond placed on them are **demonstrated** for magnetometry [kim2019cmos] [ibrahim2021]; driving a qubit register through such a chip is **proposed** here.
 
@@ -77,4 +77,4 @@ Here k sets what each check lets through when the true value sits exactly on its
 
 *Does integration keep coherence and yield?* All simulated checks pass and every degraded twin fails, so the analysis can tell a good chiplet from a faulty one; the gate is decided by the numbers measured on your assembly. Yield across many chiplets needs the same three checks on every bonded die; go to P7 when a batch of chiplets passes at a rate that the pilot-line economics (P7) can afford.
 
-Sources: [kim2019cmos] [ibrahim2021] [waldherr2014] [shor1995]
+Sources: [tinytapeout2026] [europractice2026] [wnf2026] [kim2019cmos] [ibrahim2021] [waldherr2014] [shor1995]

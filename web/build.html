@@ -18,6 +18,7 @@
 .tests th{color:var(--mute);font-weight:500;font-size:12.5px}.tests td.n{font:500 13px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:600px){.tests td.n{white-space:normal;font-size:12px}.tests td,.tests th{padding:7px 4px}}
 .verdict{font:600 12px var(--mono);padding:3px 8px;border-radius:7px}.verdict.go{background:rgba(72,229,163,.18);color:var(--green)}.verdict.stop{background:rgba(255,93,108,.18);color:var(--red)}
+.mute{color:var(--mute);font-size:12.5px}select{background:var(--bg,#0b1117);color:inherit;border:1px solid var(--line);border-radius:8px;padding:4px 8px;margin-left:6px}
 .verdict.out{background:rgba(255,255,255,.06);color:var(--mute)}
 </style></head><body>
 <main class="wrap">
@@ -40,6 +41,14 @@
     <div class="lvl" data-l="s">D(T) ≈ 2870 MHz + (dD/dT)(T − 300 K). Each spectrum is fitted with Lorentzians (Levenberg–Marquardt); the slope is a weighted least-squares line through the five centers. The pass band is ±2√(σ_fit² + σ_ref²), with σ_ref = 0.7 kHz/K from the published measurement, so a correct kit passes more often than the 95 % a band on the fit alone would give.</div>
     <div class="lvl" data-l="r">Noise model: contrast 1.2 %, 6 MHz full width, 0.12 % white noise per 0.25 MHz step (adamas.experiments; illustrative kit values, not a measurement). The browser draws its own random numbers, so individual runs differ from Python's; the tests compare the mean slope, the error-bar calibration, and the pass rate. The Python reference is adamas.build_program.p1_thermometer; the written phase is docs/build/P1_proof_of_concept.md.</div>
     <p class="src">Sources: [acosta2010] [doherty2013]</p></div>
+</section>
+<section class="block" id="atlas" style="padding-top:6px">
+  <h2 style="font-size:30px">Machines and Facilities Atlas</h2>
+  <p class="lead" style="max-width:860px">Every machine the phases name, where it lives, how you get time on it, and what it costs. Each price says what it is: <b>sourced</b> from a published rate sheet or store page (with the date it was read), an <b>estimate</b> from the experiment parts lists, <b>included</b> in another line, or <b>unpriced</b> with the reason. Cleanroom prices are per hour of tool time and differ several-fold between academic and industry users.</p>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 14px"><label>Phase <select id="atPhase"><option value="">all</option></select></label><label>Kind <select id="atKind"><option value="">all</option><option>sourced</option><option>estimate</option><option>included</option><option>unpriced</option></select></label></div>
+  <div class="kpis" id="atKpis"></div>
+  <div class="card" style="overflow-x:auto;margin-top:12px"><table class="tests" id="atTable"></table></div>
+  <p class="src" id="atSrc"></p>
 </section>
 </main>
 <script type="module">
@@ -220,4 +229,23 @@ function batch(total) {
 $('go').onclick = () => batch(200); $('one').onclick = () => batch(1); $('clear').onclick = () => { if (busy) return; runs = []; drawHist(); drawRun(null); kpis(); $('runHud').textContent = 'The latest run'; };
 addEventListener('resize', () => { drawHist(); drawRun(runs[runs.length - 1]); });
 drawHist(); kpis();
+// ---- Machines and Facilities Atlas ----
+const AT = D.atlas || { rows: [], summary: { by_phase: {}, keys: [] }, facility: {}, access: {} };
+const money = (c, v) => (c === 'USD' ? 'US$' + v.toLocaleString('en-US') : v.toLocaleString('en-US') + ' ' + c);
+function atPrice(x) {
+  if (x.kind === 'sourced') return x.quotes.map(q => `${esc(q.listed_as)}: ${Object.entries(q.prices).map(([k, v]) => `${money(q.currency, v)} ${esc(k)}`).join(', ')} per ${esc(q.unit)} [${esc(q.key)}]${q.note ? ` <span class="mute">(${esc(q.note)})</span>` : ''}`).join('<br>');
+  if (x.kind === 'estimate') return `US$${x.estimate.usd_low.toLocaleString('en-US')} to ${x.estimate.usd_high.toLocaleString('en-US')} <span class="mute">(estimate: ${esc(x.estimate.from.join(', '))})</span>`;
+  if (x.kind === 'included') return `in ${esc(x.within)} <span class="mute">(${esc(x.reason)})</span>`;
+  return `<span class="mute">${esc(x.reason)}</span>`;
+}
+Object.keys(AT.summary.by_phase).forEach(ph => { const o = document.createElement('option'); o.value = o.textContent = ph; $('atPhase').appendChild(o); });
+function atlasTable() {
+  const ph = $('atPhase').value, kd = $('atKind').value;
+  const rows = AT.rows.filter(x => (!ph || x.phases.includes(ph)) && (!kd || x.kind === kd));
+  const cnt = k => rows.filter(x => x.kind === k).length;
+  $('atKpis').innerHTML = ['sourced', 'estimate', 'included', 'unpriced'].map(k => `<div class="kpi"><b>${cnt(k)}</b><span>${k}</span></div>`).join('');
+  $('atTable').innerHTML = `<thead><tr><th>ID</th><th>Machine</th><th>Facility</th><th>Phases</th><th>Kind</th><th>Price</th></tr></thead><tbody>${rows.map(x => `<tr><td>${x.id}</td><td>${esc(x.tool)}</td><td>${esc((AT.facility[x.facility] || '').split(',')[0])}<br><span class="mute">${esc(AT.access[x.access] || '')}</span></td><td>${x.phases.join(', ') || '—'}</td><td>${x.kind}</td><td>${atPrice(x)}</td></tr>`).join('')}</tbody>`;
+  $('atSrc').textContent = `Sourced pages read on ${AT.read_on || '—'}; rates change every fiscal year. Python reference: adamas.atlas_prices; written page: docs/build/ATLAS.md. Sources: ${AT.summary.keys.map(k => '[' + k + ']').join(' ')}`;
+}
+$('atPhase').onchange = atlasTable; $('atKind').onchange = atlasTable; atlasTable();
 </script></body></html>

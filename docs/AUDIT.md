@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.40.0 (Machines and Facilities Atlas)
+
+The Atlas closes most of the long-open "Atlas prices" item without inventing a number: 22 machines carry prices read from published rate sheets and store pages (each a reference with the date read), 20 carry the experiment parts-list estimates, labeled as such, and 17 are unpriced with a stated reason. A test fails if a machine has no price kind or two, if a sourced price cites a reference that is not in the database as fetched, or if an estimate does not match its parts list. Where the published tool is not the Atlas tool (rapid thermal anneal for the high-vacuum furnace, time-of-flight for dynamic SIMS, a research implanter for the low-energy ¹⁵N implanter), the row says so. Rates come mostly from one university, so they are examples, not ranges; [STATUS.md](STATUS.md) lists what is left.
+
 ### Status after v0.39.0 (build phase P8)
 
 P8 (frontier) completes the build program as an evidence ledger. Every win it claims is backed by a comparison computed over sourced parameter ranges or by a cited measurement, and code rejects claims that contradict a decisive comparison, wins without evidence, and readiness levels above what the evidence allows; three inflated-claim twins check each rule. The ledger reports that an idealized bulk-doped diamond switch loses to silicon carbide at room temperature and wins only with both at silicon carbide's 250 °C ceiling; that win is computed for an undemonstrated device, is undecided against cooled silicon carbide, and the demonstrated diamond device still loses. Five twins check the rules, including point values used as proof and citations pointing the wrong way. Open items are in [STATUS.md](STATUS.md).

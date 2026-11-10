@@ -15,3 +15,5 @@ A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, 
 | P6 | Integration | packaging line or MPW partner | Diamond chiplets bonded to silicon CMOS control; multi-cell arrays. | Does integration keep coherence and yield? | [written](P6_integration.md) |
 | P7 | Pilot line and products | fab | Wafer-scale flow, statistical process control, first products. | Which product line pays for the line? | [written](P7_pilot_line.md) |
 | P8 | Frontier and humanity | application-specific | Grid and EV efficiency, space electronics, medical magnetometry, navigation. | Where does diamond beat the incumbent, with evidence? | [written](P8_frontier.md) |
+
+Every machine these phases name (M00 to M59), with its facility, access mode and a published, estimated or missing price, is in the [Machines and Facilities Atlas](ATLAS.md).

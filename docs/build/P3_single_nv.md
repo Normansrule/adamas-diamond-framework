@@ -31,8 +31,8 @@ Atlas machines for this phase: M47 High numerical-aperture objective, M48 Galvo 
 | (not in the Atlas) | Laser and optics (C1) | 532 nm, fiber coupling, pinhole, filters | 3,000 to 15,000 |
 | M52 | Electronic-grade diamond (C1) | Low-nitrogen CVD with sparse NV | 500 to 3,000 |
 | M51 | Microwave and control (C1) | Arbitrary waveform generator, amplifier | 5,000 to 30,000 |
-| M53 | RF source for nuclear spins (MHz range) | needed for the nuclear-spin test | not priced (no source yet) |
-| M54 | Two-color excitation for charge-state readout (orange or red laser) | for the charge-state check (not yet simulated) | not priced (no source yet) |
+| M53 | RF source for nuclear spins (MHz range) | needed for the nuclear-spin test | not priced (no source yet; see the [Atlas](ATLAS.md)) |
+| M54 | Two-color excitation for charge-state readout (orange or red laser) | for the charge-state check (not yet simulated) | not priced (no source yet; see the [Atlas](ATLAS.md)) |
 
 ## Facility and safety
 

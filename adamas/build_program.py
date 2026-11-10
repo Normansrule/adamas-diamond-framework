@@ -732,7 +732,7 @@ def _p4_rates_note(rates: dict) -> str:
 
 
 def _p4_md() -> str:
-    from . import atlas
+    from . import atlas, atlas_prices
     from .experiments import EXPERIMENTS
     from .traveler import STEPS
     by = {e["id"]: e for e in EXPERIMENTS}; st = {s["id"]: s for s in STEPS}
@@ -744,7 +744,7 @@ def _p4_md() -> str:
     acr = {"MPCVD": "microwave plasma chemical vapor deposition (MPCVD)"}
     rows = "\n".join(f"| {parts.get(r[1], '(not in the Atlas)')} | {r[1]} ({r[0]}) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
     use = {"M18": "breakdown tests (not yet simulated)", "M55": "photoelectric NV readout (not yet simulated)"}
-    rows += "\n" + "\n".join(f"| {k} | {acr['MPCVD'] if k == 'M01' else atlas.tool(k)} | {use[k]} | not priced (no source yet) |" for k in bill["unpriced"])
+    rows += "\n" + "\n".join(f"| {k} | {acr['MPCVD'] if k == 'M01' else atlas.tool(k)} | {use[k]} | {atlas_prices.short_price(k)} |" for k in bill["unpriced"])
     machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P4_MACHINES)
     steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["C2"]["steps"]))
     hazards = " ".join(dict.fromkeys(h for sid in ("S02", "S03", "S09", "S12", "S13", "S15", "S17") for h in st[sid]["safety"] if not h.startswith("As ")))
@@ -1036,7 +1036,7 @@ def p5_pass_rates(runs: int = P5_RUNS) -> dict:
 
 def p5_bill() -> dict:
     """Parts and price range for P5: the D1 part list (estimates from adamas.experiments, not quotes). The annealing
-    furnace (Atlas M22) and SIMS (M23) have no sourced price and are listed without one."""
+    furnace (Atlas M22) and SIMS (M23) are rented by the hour; their rates are in adamas.atlas_prices."""
     from .experiments import EXPERIMENTS
     by = {e["id"]: e for e in EXPERIMENTS}
     rows = [("D1", *p) for p in by["D1"]["parts"]]
@@ -1099,7 +1099,7 @@ def _p5_rates_note(rates: dict) -> str:
 
 
 def _p5_md() -> str:
-    from . import atlas, gate_budget
+    from . import atlas, atlas_prices, gate_budget
     from .coupling import implant_rule_of_thumb
     from .experiments import EXPERIMENTS
     from .traveler import STEPS
@@ -1113,7 +1113,7 @@ def _p5_md() -> str:
     parts = {"Implantation": "M20, M21", "Confocal setups": "M47, M54", "Control electronics": "M51", "Materials": "M52"}
     rows = "\n".join(f"| {parts.get(r[1], '(not in the Atlas)')} | {r[1]} (D1) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
     use = {"M22": "vacancy anneal (S07)", "M23": "implant depth profile (S06)"}
-    rows += "\n" + "\n".join(f"| {k} | {atlas.tool(k)} | {use[k]} | not priced (no source yet) |" for k in bill["unpriced"])
+    rows += "\n" + "\n".join(f"| {k} | {atlas.tool(k)} | {use[k]} | {atlas_prices.short_price(k)} |" for k in bill["unpriced"])
     machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P5_MACHINES).replace("CVD diamond", "chemical vapor deposition (CVD) diamond")
     steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["D1"]["steps"]))
     hazards = " ".join(dict.fromkeys([h for sid in ("S02", "S06", "S07", "S18") for h in st[sid]["safety"] if not h.startswith("As ")] + by["D1"]["safety"]))
@@ -1125,7 +1125,7 @@ def _p5_md() -> str:
 
 {GEN}
 
-**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the D1 parts listed below (estimates from the experiment list, not quotes). The annealing furnace and secondary-ion mass spectrometry (SIMS) are not priced yet ([STATUS.md](../STATUS.md)); most groups rent them in a shared facility. Gate verdict in simulation: **{g['verdict']}**.
+**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the D1 parts listed below (estimates from the experiment list, not quotes). The annealing furnace and secondary-ion mass spectrometry (SIMS) are rented by the hour in a shared facility; the table gives published hourly rates, which are not added to the total because the hours are not modelled. Gate verdict in simulation: **{g['verdict']}**.
 
 Sourced inputs: the conversion yield put in ({100 * P5_ETA:g} %) come from [pezzagna2010], and its acceptance limit ({100 * P5_ETA_MIN:g} %, traveler step S07) is an ADAMAS target set from it; the Bell-state fidelity put in ({P5_BELL_F}) is the published room-temperature value for an NV pair [dolde2013]; the 5 to 120 kHz coupling window is experiment D1's. Every other input (aperture counts, ions per aperture, noise levels) is **illustrative**. The phase is **simulated**: no ADAMAS hardware has run it.
 
@@ -1418,7 +1418,7 @@ def _p6_rates_note(rates: dict) -> str:
 
 def _p6_md() -> str:
     import re
-    from . import atlas
+    from . import atlas, atlas_prices
     from .traveler import STEPS
     st = {s["id"]: s for s in STEPS}
     g, b, rates = p6_gate(), p6_degraded(), p6_pass_rates(P6_RUNS)
@@ -1436,7 +1436,7 @@ def _p6_md() -> str:
 
 {GEN}
 
-**Status: written in full.** Budget: **not priced.** No sourced price exists yet for a multi-project wafer (MPW) shuttle, die bonding or packaging, so this page lists the machines without prices ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
+**Status: written in full.** Budget: **not totalled.** Published prices now exist for a multi-project wafer (MPW) shuttle ({atlas_prices.mpw_prices()}) and hourly rates for wafer bonding, dicing and wire bonding [wnf2026] (see the [Atlas](ATLAS.md)). They are not added up because the die area and the tool hours are not modelled, and no die or flip-chip bonder rate is sourced ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
 
 Every input is **illustrative** except where a source is cited: the echo and Rabi data reuse the B1 noise model of `adamas.experiments`; the design Rabi frequency, its 5 % tolerance and the twin's half current are ADAMAS design values from Quantum Device Library entry QDL-27 (`adamas.qdl`), not measured numbers; the T₂ limit and the repetition-code numbers are this project's choices. The phase is **simulated**: no ADAMAS hardware has run it. Silicon complementary metal-oxide-semiconductor (CMOS) chips that drive and read nitrogen-vacancy (NV) centers in a diamond placed on them are **demonstrated** for magnetometry [kim2019cmos] [ibrahim2021]; driving a qubit register through such a chip is **proposed** here.
 
@@ -2354,6 +2354,8 @@ A ladder from a laptop to a pilot line. Each phase ends at a decision gate. {', 
 | Phase | Name | Budget | Goal | Gate question | Status |
 |---|---|---|---|---|---|
 {rows}
+
+Every machine these phases name (M00 to M59), with its facility, access mode and a published, estimated or missing price, is in the [Machines and Facilities Atlas](ATLAS.md).
 """
 
 
@@ -2454,7 +2456,7 @@ Sources: [rabi1937] [ramsey1950] [hahn1950] [childress2006] [barry2020] [rondin2
 
 
 def _p3_md() -> str:
-    from . import atlas, nv
+    from . import atlas, atlas_prices, nv
     from .experiments import EXPERIMENTS
     by = {e["id"]: e for e in EXPERIMENTS}
     g, b, bill, rates = p3_gate(), p3_degraded(), p3_bill(), p3_pass_rates(P3_RUNS)
@@ -2465,7 +2467,7 @@ def _p3_md() -> str:
     rows = "\n".join(f"| {parts.get(r[1], '')} | {r[1]} ({r[0]}) | {r[2]} | {r[3]:,} to {r[4]:,} |" for r in bill["rows"])
     use = {"M53": "needed for the nuclear-spin test", "M54": "for the charge-state check (not yet simulated)"}
     rows = rows.replace("|  | Laser and optics", "| (not in the Atlas) | Laser and optics")
-    rows += "\n" + "\n".join(f"| {m} | {atlas.tool(m)} | {use[m]} | not priced (no source yet) |" for m in bill["unpriced"])
+    rows += "\n" + "\n".join(f"| {m} | {atlas.tool(m)} | {use[m]} | {atlas_prices.short_price(m)} |" for m in bill["unpriced"])
     machines = ", ".join(f"{m} {atlas.tool(m)}" for m in P3_MACHINES)
     steps = "\n".join(f"{i + 1}. **{s[0]}.** {s[1]}" for i, s in enumerate(by["C1"]["steps"]))
     safety = " ".join(by["C1"]["safety"])
@@ -2572,11 +2574,13 @@ def write(folder: str = "docs/build") -> list[str]:
     out = []
     for name, text in (("README.md", _index_md()), (DOCS["P0"], _p0_md()), (DOCS["P1"], _p1_md()), (DOCS["P2"], _p2_md()), (DOCS["P3"], _p3_md()), (DOCS["P4"], _p4_md()), (DOCS["P5"], _p5_md()), (DOCS["P6"], _p6_md()), (DOCS["P7"], _p7_md()), (DOCS["P8"], _p8_md())):
         (d / name).write_text(text, encoding="utf-8"); out.append(str(d / name))
+    from . import atlas_prices
+    out.append(atlas_prices.write(f"{folder}/ATLAS.md"))
     return out
 
 
 def to_json() -> dict:
-    """For the website: the ladder, the P0 gate, and the P1 to P8 results."""
+    """For the website: the ladder, the P0 gate, the P1 to P8 results, and the priced Machines and Facilities Atlas."""
     g1, b1, g2, b2, b3, b4, b5 = p1_gate(), p1_bill(), p2_gate(), p2_bill(), p3_bill(), p4_bill(), p5_bill()
     return {"phases": PHASES, "docs": DOCS, "p0": p0_gate(), "p1": {**g1, "bill": {"low": b1["low"], "high": b1["high"]}, "pass_rate": p1_pass_rate()},
             "p2": {**g2, "bill": {"low": b2["low"], "high": b2["high"]}, "pass_rates": p2_pass_rates()},
@@ -2585,7 +2589,12 @@ def to_json() -> dict:
             "p5": _finite({**p5_gate(), "degraded": p5_degraded(), "bill": {"low": b5["low"], "high": b5["high"]}, "pass_rates": p5_pass_rates()}),
             "p6": _finite({**p6_gate(), "degraded": p6_degraded(), "pass_rates": p6_pass_rates()}),
             "p7": _finite({**p7_gate(), "degraded": p7_degraded(), "pass_rates": p7_pass_rates(), "good_dies": p7_good_dies_table(p7_gate()["yield"]["d0_cm2"])}),
-            "p8": _finite({**p8_gate(), "degraded": p8_degraded(), "apps": P8_APPS})}
+            "p8": _finite({**p8_gate(), "degraded": p8_degraded(), "apps": P8_APPS}), "atlas": _atlas_json()}
+
+
+def _atlas_json() -> dict:
+    from . import atlas_prices
+    return atlas_prices.to_json()
 
 
 def _finite(o):

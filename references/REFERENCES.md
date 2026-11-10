@@ -1,6 +1,6 @@
 # References
 
-**592 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**600 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -50,7 +50,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[kageura2024]`** Kageura, T.; Sasama, Y.; Yamada, K.; Kimura, K.; Onoda, S.; Yamaguchi, T. (2024). Surface transfer doping of hydrogen-terminated diamond probed by shallow nitrogen-vacancy centers. *Carbon*, 229, 119404.
 - 📚 **`[oshnik2025]`** Oshnik, N.; Westrich, S.; Burmeister, N.; et al. (2025). Nitrogen-vacancy centers in epitaxial laterally overgrown diamond: towards up-scaling of color center-based quantum technologies. *Materials for Quantum Technology*, 5(2), 025201.
 
-## Diamond growth and wafers (35)
+## Diamond growth and wafers (36)
 
 - ✅ **`[bundy1955]`** Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. (1955). Man-made diamonds. *Nature*, 176, 51. [doi:10.1038/176051a0](https://doi.org/10.1038/176051a0)
 - ✅ **`[angus1968]`** Angus, J. C.; Will, H. A.; Stanko, W. S. (1968). Growth of diamond seed crystals by vapor deposition. *Journal of Applied Physics*, 39, 2915. [doi:10.1063/1.1656693](https://doi.org/10.1063/1.1656693)
@@ -87,6 +87,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[qu2024]`** Qu, P.; Jin, P.; Zhou, G.; Wang, Z.; Wang, Z. (2024). Growth of two-inch free-standing heteroepitaxial diamond on Ir/YSZ/Si (001) substrates via laser-patterned templates. *Journal of Semiconductors*, 45(9), 090501.
 - 📚 **`[fendt2025]`** Fendt, J.; Schreck, M. (2025). Maskless epitaxial overgrowth of diamond on 3D patterns formed by self-organization in an oxidation process. *Journal of Applied Physics*, 137(23), 235107.
 - 📚 **`[schreck2025]`** Schreck, M.; Peter, T. (2025). Wafer bow in diamond heteroepitaxy: causes, their analytical description, and viable solutions. *Journal of Applied Physics*, 137(1), 015108.
+- ✅ **`[e6cvd2026]`** Element Six (2026). Element Six CVD online store: electronic-grade single-crystal plates. *e6cvd.com*, accessed 10 November 2026.
 
 ## Silicon baseline (13)
 
@@ -290,7 +291,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (37)
+## NV center fabrication and placement (39)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -329,6 +330,8 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[luhmann2019]`** Lühmann, T.; John, R.; Wunderlich, R.; Meijer, J.; Pezzagna, S. (2019). Coulomb-driven single defect engineering for scalable qubits and spin sensors in diamond. *Nature Communications*, 10, 4956. [doi:10.1038/s41467-019-12556-0](https://doi.org/10.1038/s41467-019-12556-0)
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
+- ✅ **`[mibl2024]`** Michigan Ion Beam Laboratory, University of Michigan (2024). Approved rates for use of the Michigan Ion Beam Laboratory (starting 1 September 2024). *mibl.engin.umich.edu*, accessed 10 November 2026.
+- ✅ **`[lattispec2026]`** Adámas Nanotechnologies (sold through LattiSpec) (2026). High NV content plates, 3.2 × 2.4 × 1.2 mm, HPHT type Ib (store listing). *lattispec.com*, accessed 10 November 2026.
 
 ## Quantum computing with diamond spins (77)
 
@@ -468,7 +471,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 
 - ✅ **`[sewani2020]`** Sewani, V. K.; Vallabhapurapu, H. H.; Yang, Y.; et al. (2020). Coherent control of NV- centers in diamond in a quantum teaching lab. *American Journal of Physics*, 88, 1156. [doi:10.1119/10.0001905](https://doi.org/10.1119/10.0001905)
 
-## Lithography and nanofabrication (29)
+## Lithography and nanofabrication (32)
 
 - ✅ **`[kanaya1972]`** Kanaya, K.; Okayama, S. (1972). Penetration and energy-loss theory of electrons in solid targets. *Journal of Physics D: Applied Physics*, 5, 43. [doi:10.1088/0022-3727/5/1/308](https://doi.org/10.1088/0022-3727/5/1/308)
 - ✅ **`[chang1975]`** Chang, T. H. P. (1975). Proximity effect in electron-beam lithography. *Journal of Vacuum Science and Technology*, 12, 1271. [doi:10.1116/1.568515](https://doi.org/10.1116/1.568515)
@@ -496,9 +499,12 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[vanschoot2017]`** van Schoot, J.; Troost, K.; Bornebroek, F.; et al. (2017). High-numerical aperture extreme ultraviolet scanner for 8-nm lithography and beyond. *Journal of Micro/Nanolithography, MEMS, and MOEMS*, 16(4), 041010. [doi:10.1117/1.jmm.16.4.041010](https://doi.org/10.1117/1.jmm.16.4.041010)
 - 📚 **`[bakshi2018]`** Bakshi, V. (Ed.) (2018). EUV Lithography (2nd ed.). *SPIE Press*.
 - 📚 **`[levinson2019]`** Levinson, H. J. (2019). Principles of Lithography (4th ed.). *SPIE Press*.
+- ✅ **`[maf2023]`** Molecular Analysis Facility, University of Washington (2023). Molecular Analysis Facility rates, effective 1 September 2023. *moles.washington.edu*, accessed 10 November 2026.
 - ✅ **`[asmleuv2026]`** ASML (2026). EUV lithography systems (product page: 0.33 and 0.55 numerical aperture platforms). *asml.com*, accessed September 2026.
 - ✅ **`[asmlhighna2026]`** ASML (2026). High NA EUV reaches new readiness milestone with first high-volume logic product (press release). *asml.com*, 15 July 2026.
+- ✅ **`[ccmr2026]`** Cornell Center for Materials Research (2026). CCMR shared facility rates, internal Cornell use, fiscal year 2027 (effective 1 July 2026). *ccmr.cornell.edu*, accessed 10 November 2026.
 - ✅ **`[imec2026]`** imec (2026). Imec receives the world's most advanced High NA EUV system (press release). *imec-int.com*, 18 March 2026.
+- ✅ **`[wnf2026]`** Washington Nanofabrication Facility, University of Washington (2026). Washington Nanofabrication Facility rate structure, effective 1 March 2026 (hourly tool rates and access fees). *wnf.washington.edu*, accessed 10 November 2026.
 
 ## Power electronics and applications (20)
 
@@ -539,7 +545,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[webb2019]`** Webb, J. L.; Clement, J. D.; Troise, L.; et al. (2019). Nanotesla sensitivity magnetic field sensing using a compact diamond nitrogen-vacancy magnetometer. *Applied Physics Letters*, 114, 231103. [doi:10.1063/1.5095241](https://doi.org/10.1063/1.5095241)
 - ✅ **`[masanet2020]`** Masanet, E.; Shehabi, A.; Lei, N.; Smith, S.; Koomey, J. (2020). Recalibrating global data center energy-use estimates. *Science*, 367, 984. [doi:10.1126/science.aba3758](https://doi.org/10.1126/science.aba3758)
 
-## Digital design, processors, and design automation (21)
+## Digital design, processors, and design automation (23)
 
 - ✅ **`[elmore1948]`** Elmore, W. C. (1948). The transient response of damped linear networks with particular regard to wideband amplifiers. *Journal of Applied Physics*, 19, 55. [doi:10.1063/1.1697872](https://doi.org/10.1063/1.1697872)
 - ✅ **`[landauer1961]`** Landauer, R. (1961). Irreversibility and heat generation in the computing process. *IBM Journal of Research and Development*, 5, 183. [doi:10.1147/rd.53.0183](https://doi.org/10.1147/rd.53.0183)
@@ -562,6 +568,8 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[shalan2020]`** Shalan, M.; Edwards, T. (2020). Building OpenLANE: a 130nm OpenROAD-based tapeout-proven flow. *Proceedings of the International Conference on Computer-Aided Design (ICCAD)*, invited paper.
 - ✅ **`[biggs2021]`** Biggs, J.; Myers, J.; Kufel, J.; et al. (2021). A natively flexible 32-bit Arm microprocessor. *Nature*, 595, 532. [doi:10.1038/s41586-021-03625-w](https://doi.org/10.1038/s41586-021-03625-w)
 - ✅ **`[ozer2024]`** Ozer, E.; Kufel, J.; Prakash, S.; et al. (2024). Bendable non-silicon RISC-V microprocessor. *Nature*, 634, 341. [doi:10.1038/s41586-024-07976-y](https://doi.org/10.1038/s41586-024-07976-y)
+- ✅ **`[europractice2026]`** EUROPRACTICE (2026). Schedules and prices 2026 (multi-project wafer runs). *europractice-ic.com*, accessed 10 November 2026.
+- ✅ **`[tinytapeout2026]`** Tiny Tapeout (2026). Analog specs: pricing for the sky130A shuttle. *tinytapeout.com*, accessed 10 November 2026.
 
 ## Analog design and compact models (13)
 

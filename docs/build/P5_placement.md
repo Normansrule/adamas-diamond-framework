@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-**Status: written in full.** Budget: **US$370,000 to 1,600,000** for the D1 parts listed below (estimates from the experiment list, not quotes). The annealing furnace and secondary-ion mass spectrometry (SIMS) are not priced yet ([STATUS.md](../STATUS.md)); most groups rent them in a shared facility. Gate verdict in simulation: **go**.
+**Status: written in full.** Budget: **US$370,000 to 1,600,000** for the D1 parts listed below (estimates from the experiment list, not quotes). The annealing furnace and secondary-ion mass spectrometry (SIMS) are rented by the hour in a shared facility; the table gives published hourly rates, which are not added to the total because the hours are not modelled. Gate verdict in simulation: **go**.
 
 Sourced inputs: the conversion yield put in (1 %) come from [pezzagna2010], and its acceptance limit (0.5 %, traveler step S07) is an ADAMAS target set from it; the Bell-state fidelity put in (0.67) is the published room-temperature value for an NV pair [dolde2013]; the 5 to 120 kHz coupling window is experiment D1's. Every other input (aperture counts, ions per aperture, noise levels) is **illustrative**. The phase is **simulated**: no ADAMAS hardware has run it.
 
@@ -28,8 +28,8 @@ Atlas machines for this phase: M08 Photoluminescence (PL) and NV-density mapping
 | M47, M54 | Confocal setups (D1) | Two-color, with charge-state readout | 150,000 to 400,000 |
 | M51 | Control electronics (D1) | Multi-channel arbitrary waveform generators, amplifiers | 100,000 to 300,000 |
 | M52 | Materials (D1) | Isotopically purified ¹²C diamond | 20,000 to 100,000 |
-| M22 | High-vacuum annealing furnace (800–1200 °C) | vacancy anneal (S07) | not priced (no source yet) |
-| M23 | Secondary-ion mass spectrometry (SIMS) | implant depth profile (S06) | not priced (no source yet) |
+| M22 | High-vacuum annealing furnace (800–1200 °C) | vacancy anneal (S07) | US$63 to 189 per hour, RTA (closest listed tool) [wnf2026] ([Atlas](ATLAS.md)) |
+| M23 | Secondary-ion mass spectrometry (SIMS) | implant depth profile (S06) | US$90 to 225 per hour, ToF-SIMS [maf2023] ([Atlas](ATLAS.md)) |
 
 ## Facility and safety
 
@@ -94,4 +94,4 @@ The simulation puts in the published fidelity rather than computing it. The cohe
 
 *Is placement yield good enough to plan arrays?* All simulated checks pass and every degraded twin fails, so the analysis can tell a good run from a faulty one; the gate is decided by the numbers measured on your sample. An array of N cells needs N usable pairs; with the measured yield and window fraction, about 1/(P₂ f) = 22 apertures are searched per usable pair at this dose. That is optimistic: D1 also needs the two NVs on different axes so each can be driven alone, which for random orientations keeps 3 of 4 pairs (about 29 apertures per pair), and the [111]-only angular factor is an approximation. That number, not the gate verdict alone, decides whether P6 plans arrays of aperture-implanted pairs or waits for deterministic placement.
 
-Sources: [pezzagna2010] [dolde2013] [oforiokai2012] [ziegler2010] [neumann2010natphys] [joas2025]
+Sources: [pezzagna2010] [dolde2013] [oforiokai2012] [ziegler2010] [neumann2010natphys] [wnf2026] [maf2023] [joas2025]

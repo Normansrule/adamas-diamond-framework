@@ -2,7 +2,20 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.39.0 (2026-11-10).
+Last updated: v0.40.0 (2026-11-10).
+
+## Open in v0.40.0: Machines and Facilities Atlas
+
+The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with published rate sheets and store pages, each read on 10 November 2026, and labels everything else. What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Unpriced machines (17) | No published price for MPCVD reactors, HPHT presses, heteroepitaxy, laser cutting, polishing, PL mapping, defect inspection, curve tracers, laser writing, the nuclear-spin RF source, the charge-state laser, the photoelectric readout chain, or the P8 application facilities | Quotes or facility rate sheets, entry by entry; each reason is in the Atlas |
+| Lab optics and detectors are estimates | Thorlabs pages did not render for an automated reader; single-photon detector and time-tagger makers do not publish prices | List prices read by a person, or quotes |
+| Phase totals from hourly rates | Cleanroom and characterization prices are per hour, and the tool hours per phase are not modelled | An hours estimate per traveler step |
+| Currency and fiscal year | Prices stay in their own currency (US$ or EUR) and year; no exchange rate is sourced, and rate sheets change every year | A dated exchange rate, and re-reading the pages each year |
+| Per-machine acceptance tests | The Atlas links each machine to the phases (and so the gates) that use it; it does not give a buy-time acceptance test per tool | Acceptance criteria from vendor specifications |
+| One facility per tool class | Most hourly rates come from one university (UW) and one internal rate sheet (Cornell); rates elsewhere differ | More rate sheets, to give ranges |
 
 ## Open in v0.39.0: build phase P8 (frontier)
 
@@ -39,7 +52,7 @@ Last updated: v0.39.0 (2026-11-10).
 | Item | Why it waits | What would close it |
 |---|---|---|
 | Illustrative inputs | T2, the stretch exponent and the noise reuse experiment B1's model; the T2 limit (0.8), the encoding fidelity f0 = 0.9 and the fidelity noise are chosen, not measured. The 10 MHz design and its 5 % tolerance come from QDL-27 | Values from a P6 run |
-| Prices of the bonder, dicing, wire bonding and MPW shuttle (M26 to M29) | No sourced price, so P6's budget is "not priced" | Quotes or facility rates |
+| Die or flip-chip bonder price, and the P6 total (M26 to M29) | Partly closed in v0.40.0: the [Atlas](build/ATLAS.md) has published hourly rates for wafer bonding, dicing and wire bonding [wnf2026] and shuttle prices [tinytapeout2026] [europractice2026]. No die or flip-chip bonder rate is sourced, and no total is given because the die area and tool hours are not modelled | A bonder rate, and an hours and area estimate for the P6 run |
 | Multi-cell arrays | No model links two cells yet | A cell-to-cell link model (photonic or dipolar) driven by P5's pair yield |
 | Photoelectric readout through the chiplet (M55) | No noise model of the readout chain | A photocurrent noise model checked against a measurement |
 | Heating and green-light leakage (QDL-27 failure modes) | No thermal or optical model of the assembly | A thermal model of the driver and a filter-leakage measurement |
@@ -56,7 +69,7 @@ Last updated: v0.39.0 (2026-11-10).
 | Ion stopping | Depth and straggle use the rule of thumb of `adamas.coupling` (0.4 x depth), not a SRIM calculation | A SRIM run [ziegler2010] at the chosen energy, checked by SIMS |
 | Coupling geometry | Both NVs are taken as quantized along [111]; pairs on different axes have a different angular factor | The full secular dipolar tensor for two NV axes |
 | Coherence, charge state and addressing in the Bell check | The fidelity is put in as the published value; T₂ near the surface, charge-state preparation and same-axis pairs are not simulated | The `adamas.gate_budget` model driven by measured T₂, q and coupling |
-| Prices of the annealing furnace (M22) and SIMS (M23) | No sourced price | Quotes or facility rates |
+| High-vacuum furnace (M22) and dynamic SIMS (M23) rates | Partly closed in v0.40.0: the [Atlas](build/ATLAS.md) gives the closest published rates, a rapid thermal anneal [wnf2026] and time-of-flight SIMS [maf2023], which are not the same tools | Rates for a high-vacuum 1200 °C furnace and for dynamic SIMS depth profiling |
 
 ## Open in v0.35.0: Entanglement Lab
 
@@ -174,7 +187,7 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 |---|---|---|
 | Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
 | Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
-| Machines and Facilities Atlas prices (P0 to P8 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion; several phases list machines without prices. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | Quotes or facility rates, entry by entry. |
+| Machines and Facilities Atlas prices | Mostly closed in v0.40.0: [build/ATLAS.md](build/ATLAS.md) gives every machine a facility, an access mode and a price kind (sourced, estimate, included or unpriced with a reason); see "Open in v0.40.0" for what is left | Quotes or facility rates for the unpriced entries |
 | GitHub Actions major versions (checkout, setup-node, setup-python, artifacts, pages) | GitHub warns that these target Node.js 20; it already runs them on Node.js 24, and every workflow passes. Newer majors exist (up to v7 and v8) and some change artifact behaviour, so each bump needs its release notes read and a test run. | Bump one workflow at a time and confirm the desktop release still uploads its installers. |
 | Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
 
