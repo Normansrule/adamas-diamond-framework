@@ -12,11 +12,12 @@ and the decision gate. Phases P0 and P1 are written in full here, and their gate
   pass/fail tolerances come from those fits and from the published uncertainty of dD/dT, -74.2(7) kHz/K
   [acosta2010], not from a typed-in number.
 
-* P2 Teaching lab, P3 Single NV, P4 Devices, P5 Placement, P6 Integration, P7 Pilot line and P8 Frontier are written in full too; their tests are set so a correct
+* P2 Teaching lab, P3 Single NV, P4 Devices, P5 Placement, P6 Integration and P7 Pilot line are written in full too; their tests are set so a correct
   setup passes the whole gate 95 % of the time, and P3 to P7 run each test on a degraded twin (one physical or process
   fault) that must fail.
 
-P8 is an evidence ledger: its claims and readiness levels are checked by rules in code (docs/STATUS.md lists what is not sourced).
+P8 Frontier is written as an evidence ledger: its claims and readiness levels are checked by deterministic rules in code,
+each tested on inflated-claim twins (docs/STATUS.md lists what is not sourced).
 """
 from __future__ import annotations
 
@@ -1850,71 +1851,106 @@ Sources: SOURCES_LINE
 # ---------------------------------------------------------------- P8 ------------------------------------------------
 # P8 is not one experiment: it asks, application by application, whether diamond beats the incumbent, with evidence.
 # The answer is an evidence ledger whose rules are evaluated by code, so an inflated claim cannot be typed in:
-#   R1  a "beats" or "does not beat" claim needs a computed comparison over sourced parameter ranges (decisive when its
-#       10th percentile is above 1, or its 90th below 1) or a cited measured comparison; and a claim may not
-#       contradict a decisive computed comparison (no hiding a loss, no hiding a win).
-#   R2  the technology readiness level (TRL) [mankins1995] may not exceed the cap of the strongest evidence cited.
+#   R1  a "beats" or "does not beat" claim needs either a computed comparison that is decisive over a sourced parameter
+#       RANGE (10th percentile above 1, or 90th below 1; a single point value is never decisive) or a cited measured
+#       comparison (both values and their source) pointing the same way; and a claim may not contradict a decisive
+#       computed comparison (no hiding a loss, no hiding a win). "not compared" is allowed only where no comparison
+#       is attempted on purpose.
+#   R2  the technology readiness level (TRL) [mankins1995] may not exceed the cap of the strongest evidence cited, and a
+#       claim resting on a computed comparison is capped at 3 (analytical proof of concept).
 #   R3  every application names its key unsolved problem.
-P8_TRL_CAP = {"proposed": 2, "simulated": 3, "demonstrated": 4, "relevant environment": 6, "commercial": 9}
-P8_TRL_WORDS = {1: "basic principles observed", 2: "concept formulated", 3: "proof of concept", 4: "component validated in the lab",
-                5: "component validated in a relevant environment", 6: "prototype in a relevant environment",
-                7: "prototype in an operational environment", 8: "system complete and qualified", 9: "system proven in operation"}
+P8_TRL_CAP = {"proposed": 2, "simulated": 2, "demonstrated": 4, "relevant environment": 5, "prototype": 6, "commercial": 9}
+P8_COMPUTED_CAP = 3
+P8_TRL_WORDS = {1: "basic principles observed", 2: "concept formulated", 3: "analytical and experimental proof of concept",
+                4: "component validated in the lab", 5: "component validated in a relevant environment",
+                6: "prototype in a relevant environment", 7: "prototype in an operational environment",
+                8: "system complete and qualified", 9: "system proven in operation"}
 P8_SAMPLES = 2000            # Latin-hypercube samples of the sourced parameter ranges (adamas.uncertainty.POWER)
-P8_T_HOT_K = 523.0           # 250 °C junction, inside diamond's demonstrated 400 °C operation [kawarada2014]
+P8_T_HOT_K = 523.0           # 250 °C: silicon carbide's package-limited junction ceiling today [she2017]
+P8_T_SIC_COOLED_K = 373.0    # a cooled silicon carbide switch at 100 °C, for the fairer hot comparison (illustrative)
 
 
-def p8_loss_ratio_percentiles(t_k: float, n: int = P8_SAMPLES, seed: int = 11) -> dict:
-    """SiC loss / diamond loss of a 1200 V switch at its area optimum, both at junction temperature t_k, over the
-    sourced parameter ranges of adamas.uncertainty.POWER (critical fields, mobilities, permittivity). The diamond
-    drift is bulk boron-doped, so its resistance carries the ionized fraction at t_k (adamas.converter). Above 1:
-    diamond loses less. Assumes the same topology and the same thermal design; packaging, gate drive and reliability
-    are not in the model."""
-    from .uncertainty import POWER, power_ratio, sample
-    r = np.array([power_ratio(p, t_k) for p in sample(POWER, n, seed)])
-    return {"t_k": t_k, "p10": float(np.percentile(r, 10)), "p50": float(np.percentile(r, 50)), "p90": float(np.percentile(r, 90))}
+def _p8_ratio(p: dict, t_diamond_k: float, t_sic_k: float) -> float:
+    """adamas.uncertainty.power_ratio with each switch at its own junction temperature (equal temperatures give
+    exactly power_ratio)."""
+    from dataclasses import replace
+    from . import converter, materials, power
+    d = replace(materials.MATERIALS["Diamond"], ec_mv_cm=p["Diamond critical field"], mu_p=p["Diamond hole mobility"], eps_r=p["Diamond permittivity"])
+    s = replace(materials.MATERIALS["4H-SiC"], ec_mv_cm=p["SiC critical field"], mu_n=p["SiC electron mobility"])
+    rc = lambda m, name, car, t: (power.ron_sp_mohm_cm2(m, 1200.0, car) * converter.ron_temperature_factor(name, t, 1200.0, m=m)  # noqa: E731
+                                  * converter.coss_sp_f_cm2(m, 1200.0))
+    return math.sqrt(rc(s, "4H-SiC", "n", t_sic_k) / rc(d, "Diamond", "p", t_diamond_k))
+
+
+def p8_loss_ratio_percentiles(t_k: float, n: int = P8_SAMPLES, seed: int = 11, t_sic_k: float | None = None) -> dict:
+    """SiC loss / diamond loss of a 1200 V switch at its area optimum over the sourced parameter ranges of
+    adamas.uncertainty.POWER, diamond at junction temperature t_k and silicon carbide at t_sic_k (default: the same).
+    Above 1: diamond loses less. The diamond drift is idealized bulk boron-doped (uncompensated), so its resistance
+    carries the ionized fraction at t_k (adamas.converter); the hole-mobility range is that of intrinsic material, an
+    upper bound for a doped drift. Same topology and thermal design; linear output capacitance, hard switching;
+    packaging, gate drive and reliability are not in the model."""
+    from .uncertainty import POWER, sample
+    ts = t_k if t_sic_k is None else t_sic_k
+    r = np.array([_p8_ratio(p, t_k, ts) for p in sample(POWER, n, seed)])
+    return {"t_k": t_k, "t_sic_k": ts, "p10": float(np.percentile(r, 10)), "p50": float(np.percentile(r, 50)), "p90": float(np.percentile(r, 90))}
 
 
 def p8_crossover_k(pct: str = "p50", lo: float = 300.0, hi: float = 600.0) -> float | None:
-    """Junction temperature at which the chosen percentile of the loss ratio reaches 1 (None if it does not in range)."""
+    """Equal junction temperature at which the chosen percentile of the loss ratio reaches 1 (None if not in range)."""
     from scipy.optimize import brentq
-    f = lambda t: p8_loss_ratio_percentiles(t, 400)[pct] - 1.0   # noqa: E731
+    f = lambda t: p8_loss_ratio_percentiles(t)[pct] - 1.0   # noqa: E731
     return None if f(lo) * f(hi) > 0 else float(brentq(f, lo, hi, xtol=0.5))
+
+
+def p8_measured_device_ratio(t_k: float) -> float:
+    """SiC loss / diamond loss with the best demonstrated diamond device (the 3.66 kV NO2-doped MOSFET [saha2023],
+    scaled to 1200 V by BV^2; a lateral 2DHG device, no ionization factor) against ideal-limit silicon carbide, both at
+    t_k. A point comparison of one measured device with an ideal limit, so unfavourable to diamond."""
+    from .converter import material_switch
+    d = material_switch("Diamond", 1200.0, 800.0, 200.0, 2e4, t_k, measured="saha2023")
+    s = material_switch("4H-SiC", 1200.0, 800.0, 200.0, 2e4, t_k)
+    return s.p_total_w / d.p_total_w
 
 
 def _p8_kappa() -> dict:
     from .materials import MATERIALS
     r = MATERIALS["Diamond"].kappa_w_cmk / MATERIALS["4H-SiC"].kappa_w_cmk
-    return {"p10": r, "p50": r, "p90": r, "t_k": 300.0}
+    return {"p10": r, "p50": r, "p90": r, "t_k": 300.0, "point": True}
 
 
 def p8_comparisons() -> dict:
     """The computed comparisons the ledger uses; each value is a ratio where above 1 favours diamond."""
-    return {"loss_300k": p8_loss_ratio_percentiles(300.0), "loss_hot": p8_loss_ratio_percentiles(P8_T_HOT_K), "kappa": _p8_kappa()}
+    return {"loss_300k": p8_loss_ratio_percentiles(300.0), "loss_hot": p8_loss_ratio_percentiles(P8_T_HOT_K),
+            "loss_hot_cooled_sic": p8_loss_ratio_percentiles(P8_T_HOT_K, t_sic_k=P8_T_SIC_COOLED_K), "kappa": _p8_kappa()}
 
 
 # Each row: the claim this program makes, the evidence behind it, and its TRL. Claims and TRLs are this repository's
-# judgment; the rules below check them against the evidence.
+# judgment; the rules below check them against the evidence. "undecided" means no decisive comparison is sourced.
 P8_APPS = [
     {"id": "ev300", "name": "EV traction inverter switch, 300 K junction", "incumbent": "silicon carbide MOSFET [reimers2019]",
-     "metric": "switch loss at the area optimum", "computed": "loss_300k", "cited": None, "claim": "does not beat",
-     "evidence": "demonstrated", "evidence_text": "3.66 kV diamond MOSFETs on heteroepitaxial wafers [saha2023]", "trl": 3,
-     "problem": "boron is only partly ionized at room temperature, so a bulk-doped drift region has a high resistance; a drift region that avoids it is not demonstrated"},
-    {"id": "hot", "name": "Hot power switch, 523 K (250 °C) junction", "incumbent": "silicon carbide MOSFET at the same junction temperature",
-     "metric": "switch loss at the area optimum", "computed": "loss_hot", "cited": None, "claim": "beats",
-     "evidence": "demonstrated", "evidence_text": "hydrogen-terminated diamond FETs operating at 400 °C and 500 V [kawarada2014]", "trl": 3,
-     "problem": "no diamond converter has run at this temperature; gate insulator, contacts and package must survive it for years"},
+     "metric": "switch loss at the area optimum (idealized bulk-doped diamond drift)", "computed": "loss_300k", "cited": None, "claim": "does not beat",
+     "evidence": "demonstrated", "evidence_text": "3.66 kV NO₂-doped lateral diamond MOSFETs on heteroepitaxial wafers [saha2023]", "trl": 3,
+     "problem": "boron is only partly ionized at room temperature, so a bulk-doped vertical drift has a high resistance; surface-doped lateral devices avoid it but are not demonstrated at traction-inverter current"},
+    {"id": "hot", "name": "Hot power switch, both junctions at 250 °C", "incumbent": "silicon carbide MOSFET at its package ceiling [she2017]",
+     "metric": "switch loss at the area optimum (idealized bulk-doped diamond drift)", "computed": "loss_hot", "cited": None, "claim": "beats",
+     "evidence": "simulated", "evidence_text": "model only: the bulk-doped vertical drift is not demonstrated; the demonstrated hot devices are lateral FETs at 400 °C [kawarada2014]", "trl": 2,
+     "problem": "the win needs silicon carbide forced to its ceiling; a vertical bulk-doped diamond switch, and a package and gate insulator that last years at 250 °C, do not exist yet"},
+    {"id": "hot_cooled", "name": "Hot diamond (250 °C) against cooled silicon carbide (100 °C)", "incumbent": "silicon carbide MOSFET with more cooling",
+     "metric": "switch loss at the area optimum (idealized bulk-doped diamond drift)", "computed": "loss_hot_cooled_sic", "cited": None, "claim": "undecided",
+     "evidence": "simulated", "evidence_text": "model only", "trl": 2,
+     "problem": "the value of running hot is a smaller cooling system, which this loss model does not price"},
     {"id": "spreader", "name": "Heat spreader under GaN transistors", "incumbent": "silicon carbide substrate",
-     "metric": "thermal conductivity", "computed": "kappa", "cited": None, "claim": "beats",
+     "metric": "substrate thermal conductivity (single-crystal point values; the channel temperature also depends on the interface)", "computed": "kappa", "cited": None, "claim": "undecided",
      "evidence": "demonstrated", "evidence_text": "4-inch GaN-on-diamond substrates [francis2010]", "trl": 4,
-     "problem": "the thermal boundary resistance at the GaN–diamond interface and wafer bow limit the gain"},
+     "problem": "the thermal boundary resistance at the GaN–diamond interface and polycrystalline diamond's lower conductivity can erase the gain; no sourced channel-temperature comparison"},
     {"id": "detector", "name": "Radiation detector and beam monitor", "incumbent": "silicon detector",
-     "metric": "radiation hardness", "computed": None, "cited": "diamond detectors tolerate higher radiation doses than silicon ones [tapper2000]",
-     "claim": "beats", "evidence": "relevant environment", "evidence_text": "detectors operated in particle-physics experiments [tapper2000]", "trl": 6,
-     "problem": "charge-collection distance of polycrystalline material and the cost of single-crystal plates"},
-    {"id": "rf", "name": "RF power amplifier", "incumbent": "GaN transistor", "metric": "output power density",
+     "metric": "radiation hardness (dose to failure)", "computed": None, "cited": None, "claim": "undecided",
+     "evidence": "relevant environment", "evidence_text": "diamond detectors for particle physics, including beam tests and irradiation studies, reviewed in [tapper2000]", "trl": 5,
+     "problem": "no sourced dose-to-failure numbers for diamond and silicon here; charge-collection distance of polycrystalline material and the cost of single-crystal plates"},
+    {"id": "rf", "name": "RF power amplifier", "incumbent": "GaN transistor", "metric": "output power density at matched frequency and efficiency",
      "computed": None, "cited": None, "claim": "undecided",
-     "evidence": "demonstrated", "evidence_text": "3.8 W/mm at saturation velocity [imanishi2019]", "trl": 4,
-     "problem": "no like-for-like comparison with GaN at the same frequency and efficiency is sourced here; surface-conductivity stability"},
+     "evidence": "demonstrated", "evidence_text": "3.8 W/mm RF power density from an Al₂O₃-gated diamond MOSFET [imanishi2019]", "trl": 4,
+     "problem": "no GaN number at matched conditions is sourced here; surface-conductivity stability under RF drive"},
     {"id": "magnetometer", "name": "NV magnetometer (field, medical, geophysical)", "incumbent": "fluxgate, optically pumped or SQUID magnetometers",
      "metric": "sensitivity at room temperature", "computed": None, "cited": None, "claim": "undecided",
      "evidence": "demonstrated", "evidence_text": "compact nanotesla-sensitivity NV magnetometer [webb2019]; sensitivity limits reviewed in [barry2020]", "trl": 4,
@@ -1927,24 +1963,41 @@ P8_APPS = [
      "metric": "position error over time", "computed": None, "cited": None, "claim": "undecided",
      "evidence": "proposed", "evidence_text": "no diamond navigation result is sourced here", "trl": 2,
      "problem": "a vector magnetometer with sourced sensitivity, drift and vehicle-noise rejection; anomaly-map resolution"},
-    {"id": "register", "name": "Room-temperature few-qubit register", "incumbent": "superconducting and trapped-ion processors (no comparison is made)",
-     "metric": "none: this program does not claim parity", "computed": None, "cited": None, "claim": "undecided",
+    {"id": "register", "name": "Room-temperature few-qubit register", "incumbent": "none: no comparison with superconducting or trapped-ion processors is made, and none is implied",
+     "metric": "none", "computed": None, "cited": None, "claim": "not compared",
      "evidence": "demonstrated", "evidence_text": "two-NV entanglement at room temperature [dolde2013]", "trl": 3,
      "problem": "coupling more than a few spins with high fidelity; readout time (P3 to P6 of this program)"},
 ]
+
+
+def _p8_cited_direction(cited: dict | None) -> str | None:
+    """A cited measured comparison {'diamond': x, 'incumbent': y, 'higher_is_better': bool, 'key': ...} -> its verdict."""
+    if not isinstance(cited, dict) or cited.get("diamond") is None or cited.get("incumbent") is None or not cited.get("key"):
+        return None
+    better = cited["diamond"] > cited["incumbent"] if cited.get("higher_is_better", True) else cited["diamond"] < cited["incumbent"]
+    return "beats" if better else "does not beat"
 
 
 def p8_check(app: dict, comps: dict | None = None) -> dict:
     """Apply rules R1 to R3 to one ledger row."""
     comps = comps if comps is not None else p8_comparisons()
     c = comps.get(app["computed"]) if app["computed"] else None
-    decisive = None if c is None else ("beats" if c["p10"] > 1 else "does not beat" if c["p90"] < 1 else "undecided")
-    claim = app["claim"]
-    if claim in ("beats", "does not beat"):
-        r1 = (decisive == claim) or (decisive is None and bool(app["cited"]))
+    if c is None:
+        decisive = None
+    elif c.get("point") or c["p10"] == c["p90"]:
+        decisive = "undecided"                       # a point value is never decisive
     else:
-        r1 = decisive in (None, "undecided")
+        decisive = "beats" if c["p10"] > 1 else "does not beat" if c["p90"] < 1 else "undecided"
+    cited = _p8_cited_direction(app.get("cited")); claim = app["claim"]
+    if claim in ("beats", "does not beat"):
+        r1 = (decisive == claim) or (decisive is None and cited == claim)
+    elif claim == "not compared":
+        r1 = c is None and not app.get("cited")
+    else:
+        r1 = decisive in (None, "undecided") and cited is None
     cap = P8_TRL_CAP[app["evidence"]]
+    if claim in ("beats", "does not beat") and decisive in ("beats", "does not beat"):
+        cap = min(cap, P8_COMPUTED_CAP)
     r2 = 1 <= app["trl"] <= cap; r3 = bool(app["problem"].strip())
     return {"id": app["id"], "computed": c, "decisive": decisive, "r1": bool(r1), "r2": bool(r2), "r3": r3, "cap": cap, "pass": bool(r1 and r2 and r3)}
 
@@ -1953,57 +2006,64 @@ def p8_gate() -> dict:
     comps = p8_comparisons(); rows = [p8_check(a, comps) for a in P8_APPS]
     beats = [a["id"] for a, r in zip(P8_APPS, rows) if r["pass"] and a["claim"] == "beats"]
     return {"rows": rows, "comparisons": comps, "beats": beats, "crossover_p50_k": p8_crossover_k("p50"),
-            "crossover_p10_k": p8_crossover_k("p10"), "verdict": "go" if all(r["pass"] for r in rows) else "stop"}
+            "crossover_p10_k": p8_crossover_k("p10"), "measured_ratio_300k": p8_measured_device_ratio(300.0),
+            "measured_ratio_hot": p8_measured_device_ratio(P8_T_HOT_K), "verdict": "go" if all(r["pass"] for r in rows) else "stop"}
 
 
 def p8_degraded() -> dict:
-    """Three inflated claims (one fault each); the rules must reject every one."""
+    """Five inflated claims (one fault each); the rules must reject every one."""
     by = {a["id"]: a for a in P8_APPS}; comps = p8_comparisons()
+    wrong = {"diamond": 1.0, "incumbent": 2.0, "higher_is_better": True, "key": "illustrative"}
     return {"hidden_loss": p8_check({**by["ev300"], "claim": "beats"}, comps),
             "inflated_trl": p8_check({**by["magnetometer"], "trl": 6}, comps),
-            "unsupported_win": p8_check({**by["rf"], "claim": "beats"}, comps)}
-
+            "unsupported_win": p8_check({**by["rf"], "claim": "beats"}, comps),
+            "point_value_win": p8_check({**by["spreader"], "claim": "beats"}, comps),
+            "wrong_way_citation": p8_check({**by["detector"], "claim": "beats", "cited": wrong}, comps)}
 
 
 P8_MACHINES = ("M56", "M57", "M58", "M59")
+P8_CLAIM_COLORS = {"beats": "#0fa3b1", "does not beat": "#e63946", "undecided": "#9aa6b2", "not compared": "#d9dee4"}
 
 
 def p8_figure(out: str | Path = "docs/img") -> Path:
     """Figure 61: P8's computed comparison (switch loss against junction temperature) and the evidence ledger."""
     import matplotlib.pyplot as plt
+    from matplotlib.patches import Patch
     from .figures import COLORS, INK, RED, _finish
     out = Path(out); g = p8_gate()
-    fig, ax = plt.subplots(1, 2, figsize=(19, 6), gridspec_kw={"width_ratios": [1, 1.25]}); plt.subplots_adjust(wspace=.62)
+    fig, ax = plt.subplots(1, 2, figsize=(20, 6.4), gridspec_kw={"width_ratios": [1, 1.3]}); plt.subplots_adjust(wspace=.62)
     a = ax[0]; ts = np.linspace(300, 600, 25); pc = [p8_loss_ratio_percentiles(t, 400) for t in ts]
-    a.fill_between(ts, [p["p10"] for p in pc], [p["p90"] for p in pc], color=COLORS["Diamond"], alpha=.25, label="10th to 90th percentile over sourced ranges")
-    a.plot(ts, [p["p50"] for p in pc], color=COLORS["Diamond"], lw=2, label="median")
+    a.fill_between(ts, [p["p10"] for p in pc], [p["p90"] for p in pc], color=COLORS["Diamond"], alpha=.25, label="10th to 90th percentile, sourced ranges")
+    a.plot(ts, [p["p50"] for p in pc], color=COLORS["Diamond"], lw=2, label="median (idealized bulk-doped drift)")
     a.axhline(1, color=INK, lw=1, ls="--"); a.text(305, 1.04, "above: diamond loses less than SiC", fontsize=8.5, color=INK)
+    a.axvline(P8_T_HOT_K, color=RED, lw=1, ls="-"); a.text(P8_T_HOT_K + 3, 2.75, "SiC package\nceiling [she2017]", fontsize=8, color=RED, va="top")
     for key, ls in (("crossover_p50_k", ":"), ("crossover_p10_k", "-.")):
-        if g[key]:
-            a.axvline(g[key], color=INK, lw=.8, ls=ls)
+        a.axvline(g[key], color=INK, lw=.8, ls=ls)
     a.text(g["crossover_p50_k"] + 3, 0.18, f"median crosses 1\nat {g['crossover_p50_k']:.0f} K", fontsize=8)
     a.text(g["crossover_p10_k"] + 3, 0.5, f"90 % of samples\nabove 1 from {g['crossover_p10_k']:.0f} K", fontsize=8)
-    for key, col in (("loss_300k", RED), ("loss_hot", COLORS["Diamond"])):
-        c = g["comparisons"][key]; a.errorbar([c["t_k"]], [c["p50"]], yerr=[[c["p50"] - c["p10"]], [c["p90"] - c["p50"]]], fmt="o", color=col, ms=7, capsize=4)
-    a.set_ylim(0, 2.9); a.legend(fontsize=8.5, loc="upper left")
-    a.set_title("1. SiC loss ÷ diamond loss, 1200 V switch at its area optimum\n(bulk boron-doped drift; same topology and junction temperature)", fontsize=10.5)
+    for key, col, fmt in (("loss_300k", RED, "o"), ("loss_hot", COLORS["Diamond"], "o"), ("loss_hot_cooled_sic", "#6b7785", "s")):
+        c = g["comparisons"][key]; a.errorbar([c["t_k"] + (6 if fmt == "s" else 0)], [c["p50"]], yerr=[[c["p50"] - c["p10"]], [c["p90"] - c["p50"]]], fmt=fmt, color=col, ms=7, capsize=4)
+    a.text(P8_T_HOT_K - 8, g["comparisons"]["loss_hot_cooled_sic"]["p10"] - 0.12, "SiC cooled to 373 K", fontsize=8, color="#6b7785", ha="right")
+    a.plot([300, P8_T_HOT_K], [g["measured_ratio_300k"], g["measured_ratio_hot"]], "x", color=INK, ms=8, mew=2, label="demonstrated device [saha2023] vs ideal SiC")
+    a.set_ylim(0, 2.9); a.set_xlim(295, 605); a.legend(fontsize=8, loc="upper left", bbox_to_anchor=(0, 0.93))
+    a.set_title("1. SiC loss ÷ diamond loss, 1200 V switch at its area optimum\n(both at the same junction temperature unless marked; simulated)", fontsize=10.5)
     a.set_xlabel("junction temperature (K)"); a.set_ylabel("loss ratio")
-    a = ax[1]; rows = {r["id"]: r for r in g["rows"]}
-    names = [x["name"] for x in P8_APPS][::-1]; apps = P8_APPS[::-1]
-    col = {"beats": COLORS["Diamond"], "does not beat": RED, "undecided": "#9aa6b2"}
+    a = ax[1]; rows = {r["id"]: r for r in g["rows"]}; apps = P8_APPS[::-1]
     for i, x in enumerate(apps):
-        a.barh(i, x["trl"], color=col[x["claim"]], height=.6)
+        a.barh(i, x["trl"], color=P8_CLAIM_COLORS[x["claim"]], height=.6)
         a.plot([rows[x["id"]]["cap"]] * 2, [i - .38, i + .38], color=INK, lw=2)
-        a.text(max(x["trl"], rows[x["id"]]["cap"]) + .15, i, f"{x['claim']} · {x['evidence']}", va="center", fontsize=8)
-    a.set_yticks(range(len(apps)), names, fontsize=8.5); a.set_xlim(0, 11.5); a.set_xticks(range(1, 10))
+        basis = " (simulated)" if x["computed"] and x["claim"] in ("beats", "does not beat") else ""
+        a.text(max(x["trl"], rows[x["id"]]["cap"]) + .15, i, f"{x['claim']}{basis} · {x['evidence']}", va="center", fontsize=8)
+    a.set_yticks(range(len(apps)), [x["name"] for x in apps], fontsize=8.5); a.set_xlim(0, 12); a.set_xticks(range(1, 10))
+    a.legend(handles=[Patch(color=v, label=k) for k, v in P8_CLAIM_COLORS.items()], fontsize=8, loc="lower right", title="claim", title_fontsize=8)
     a.set_xlabel("technology readiness level claimed (bar) and the cap its evidence allows (black tick)")
     a.set_title("2. Evidence ledger: claim, evidence label and readiness [mankins1995]", fontsize=10.5)
     return _finish(fig, out, "fig61_build_p8.png", "computed by adamas.build_program and adamas.uncertainty over sourced parameter ranges; claims and levels are this repository's judgment, checked by rules R1 to R3")
 
 
 def _p8_range(c: dict) -> str:
-    if c["p10"] == c["p90"]:
-        return f"{c['p50']:.2f} (point values; no range sourced)"
+    if c.get("point") or c["p10"] == c["p90"]:
+        return f"{c['p50']:.2f} (point values; not decisive)"
     return f"{c['p10']:.2f} to {c['p90']:.2f} (median {c['p50']:.2f})"
 
 
@@ -2016,40 +2076,42 @@ def _p8_md() -> str:
     by = {a["id"]: a for a in P8_APPS}
     ledger = "\n".join(
         f"| {a['name']} | {a['incumbent']} | {a['metric']} | "
-        + (_p8_range(cmp_[a['computed']]) if a["computed"] else (a["cited"] or "none sourced"))
-        + f" | **{a['claim']}** | {a['evidence']}: {a['evidence_text']} | {a['trl']} (cap {rows[a['id']]['cap']}) | {yes(rows[a['id']]['pass'])} |"
+        + (_p8_range(cmp_[a['computed']]) if a["computed"] else "none sourced")
+        + f" | **{a['claim']}**{' (simulated)' if a['computed'] and a['claim'] in ('beats', 'does not beat') else ''} | {a['evidence']}: {a['evidence_text']} | {a['trl']} (cap {rows[a['id']]['cap']}) | {yes(rows[a['id']]['pass'])} |"
         for a in P8_APPS)
     problems = "\n".join(f"- **{a['name']}:** {a['problem']}." for a in P8_APPS)
     ranges = "; ".join(f"{k} {v[1]:g} to {v[2]:g} {v[4]} {v[5]}".replace("  ", " ") for k, v in POWER.items())
     machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P8_MACHINES)
     twins = (f"| Hide a loss | claims the 300 K inverter switch **beats** SiC | computed ratio {cmp_['loss_300k']['p10']:.2f} to {cmp_['loss_300k']['p90']:.2f}, decisively below 1 | R1 | {yes(b['hidden_loss']['pass'])} |\n"
              f"| Inflate readiness | gives the NV magnetometer TRL 6 | its evidence is a lab demonstration, cap {b['inflated_trl']['cap']} | R2 | {yes(b['inflated_trl']['pass'])} |\n"
-             f"| Unsupported win | claims the RF amplifier **beats** GaN | no computed or cited comparison | R1 | {yes(b['unsupported_win']['pass'])} |")
-    beats = ", ".join(by[i]["name"].lower() for i in g["beats"])
-    hot = cmp_["loss_hot"]; cold = cmp_["loss_300k"]
+             f"| Unsupported win | claims the RF amplifier **beats** GaN | no computed or cited comparison | R1 | {yes(b['unsupported_win']['pass'])} |\n"
+             f"| Point value as proof | claims the heat spreader **beats** SiC from two conductivities | a point value is not decisive | R1 | {yes(b['point_value_win']['pass'])} |\n"
+             f"| Citation the wrong way | claims the detector **beats** silicon with a citation whose numbers favour silicon | the cited direction contradicts the claim | R1 | {yes(b['wrong_way_citation']['pass'])} |")
+    beats = "; ".join(by[i]["name"] for i in g["beats"]) or "none"
+    hot, cold, cool = cmp_["loss_hot"], cmp_["loss_300k"], cmp_["loss_hot_cooled_sic"]
     text = f"""# P8 · Frontier: where diamond beats the incumbent, with evidence
 
 {GEN}
 
 **Status: written in full.** Budget: **not priced** (application-specific test benches, shielded rooms and irradiation facilities; no sourced prices). Gate verdict: **{g['verdict']}**.
 
-P8 is not one experiment. It asks, application by application, whether diamond beats the device it would replace, and answers with an **evidence ledger** whose rules are evaluated by code, so an inflated claim fails the build the way a failed measurement fails the earlier phases. Claims and readiness levels are this repository's judgment; the rules check them against the evidence. Nothing here is a new measurement: the comparisons are **simulated** over sourced parameter ranges, and every result is labeled with the evidence behind it.
+P8 is not one experiment. It asks, application by application, whether diamond beats the device it would replace, and answers with an **evidence ledger** whose rules are evaluated by code, so an inflated claim fails the build the way a failed measurement fails the earlier phases. Claims and readiness levels are this repository's judgment; the rules check them against the evidence. Nothing here is a new measurement: comparisons are **computed** over sourced parameter ranges or **cited**, and every row is labeled with the evidence behind it.
 
 ## Goal
 
-For each application in the outline (grid and electric-vehicle power, hot and harsh-environment electronics, radiation detection, medical and field magnetometry, navigation, room-temperature quantum registers): name the incumbent, compare where a comparison can be computed or is published, assign a technology readiness level (TRL) no higher than the evidence allows, and name the key unsolved problem. Terms in the ledger: EV, electric vehicle; MOSFET, metal-oxide-semiconductor field-effect transistor (FET); GaN, gallium nitride; RF, radio frequency; NV, nitrogen-vacancy center; SQUID, superconducting quantum interference device; GPS, Global Positioning System.
+For each application in the outline (grid and electric-vehicle power, hot and harsh-environment electronics, radiation detection, medical and field magnetometry, navigation, room-temperature quantum registers): name the incumbent, compare where a comparison can be computed or is published, assign a technology readiness level (TRL) no higher than the evidence allows, and name the key unsolved problem. Terms in the ledger: EV, electric vehicle; SiC, silicon carbide; MOSFET, metal-oxide-semiconductor field-effect transistor (FET); 2DHG, two-dimensional hole gas; GaN, gallium nitride; RF, radio frequency; NV, nitrogen-vacancy center; SQUID, superconducting quantum interference device; GPS, Global Positioning System.
 
 ## Rules (evaluated by code)
 
-- **R1 Claim follows evidence.** "Beats" or "does not beat" needs either a computed comparison that is decisive over the sourced parameter ranges (its 10th percentile above 1, or its 90th below 1) or a cited measured comparison. A claim may not contradict a decisive computed comparison: no hiding a loss, and no hiding a win. Otherwise the claim is "undecided".
-- **R2 Readiness follows evidence.** TRL follows the NASA scale [mankins1995]; the cap is set by the strongest cited evidence: proposed ≤ {P8_TRL_CAP['proposed']}, simulated ≤ {P8_TRL_CAP['simulated']}, demonstrated in a lab ≤ {P8_TRL_CAP['demonstrated']}, operated in a relevant environment ≤ {P8_TRL_CAP['relevant environment']}, commercial ≤ {P8_TRL_CAP['commercial']}.
+- **R1 Claim follows evidence.** "Beats" or "does not beat" needs either a computed comparison that is decisive over a sourced parameter **range** (its 10th percentile above 1, or its 90th below 1; a single point value is never decisive) or a cited measured comparison, with both numbers and the source, pointing the same way. A claim may not contradict a decisive computed comparison: no hiding a loss, and no hiding a win. "Undecided" means no decisive comparison is sourced; "not compared" is used only where no comparison is attempted on purpose.
+- **R2 Readiness follows evidence.** TRL follows the NASA scale [mankins1995]; the cap is set by the strongest cited evidence: proposed or simulated ≤ {P8_TRL_CAP['simulated']}, demonstrated in a lab ≤ {P8_TRL_CAP['demonstrated']}, a component in a relevant environment ≤ {P8_TRL_CAP['relevant environment']}, a prototype in a relevant environment ≤ {P8_TRL_CAP['prototype']}, commercial ≤ {P8_TRL_CAP['commercial']}. A claim that rests on a computed comparison is capped at {P8_COMPUTED_CAP}.
 - **R3 Name the problem.** Every application states its key unsolved problem.
 
 ## Physics and equations
 
-- **Power switch loss:** at the area that minimizes conduction plus switching loss, a switch's loss scales as √(R_on,sp · C_oss,sp), so the ratio of silicon carbide's loss to diamond's is √[(R·C)_SiC / (R·C)_diamond] for a 1200 V device (`adamas.uncertainty.power_ratio`, `adamas.converter`). R_on includes the lattice mobility at the junction temperature and, for diamond's bulk boron-doped drift region, the ionized fraction of the boron, which is small at room temperature and grows with temperature. Parameter ranges (Latin-hypercube sampled, {P8_SAMPLES} samples): {ranges}. Assumes the same converter topology and thermal design and ignores packaging, gate drive and reliability.
-- **Result:** at 300 K the ratio is {cold['p10']:.2f} to {cold['p90']:.2f} (10th to 90th percentile): diamond **loses**. At {P8_T_HOT_K:.0f} K it is {hot['p10']:.2f} to {hot['p90']:.2f}: diamond **wins**. The median crosses 1 at {g['crossover_p50_k']:.0f} K and 90 % of the samples are above 1 from {g['crossover_p10_k']:.0f} K. So the computed case for a diamond power switch is a hot one, not a room-temperature one, for this drift-region design.
-- **Heat spreading:** thermal conductivity, diamond {cmp_['kappa']['p50']:.1f} times silicon carbide's (`adamas.materials`, point values).
+- **Power switch loss:** with conduction loss I²R_on,sp/A and hard-switching loss ½C_oss,sp·A·V²·f, the area A that minimizes their sum gives a loss proportional to √(R_on,sp · C_oss,sp), so the ratio of silicon carbide's loss to diamond's is √[(R·C)_SiC / (R·C)_diamond] for a 1200 V device (`adamas.converter.optimum_switch`, `adamas.uncertainty.power_ratio`). Assumes a linear output capacitance (fully depleted drift), hard switching, the same converter topology and thermal design, and ignores packaging, gate drive and reliability. R_on includes the lattice mobility at the junction temperature and, for diamond's idealized bulk boron-doped vertical drift, the ionized fraction of the (uncompensated) boron, which is small at room temperature and grows with temperature. The diamond hole-mobility range is that of intrinsic material, an upper bound for a doped drift. Parameter ranges (Latin-hypercube sampled, {P8_SAMPLES} samples): {ranges}.
+- **Result:** at 300 K the ratio is {cold['p10']:.2f} to {cold['p90']:.2f} (10th to 90th percentile): this diamond switch **loses**. With both junctions at {P8_T_HOT_K:.0f} K, silicon carbide's package-limited ceiling [she2017], it is {hot['p10']:.2f} to {hot['p90']:.2f}: diamond **wins**; the median crosses 1 at {g['crossover_p50_k']:.0f} K and 90 % of the samples are above 1 from {g['crossover_p10_k']:.0f} K. That win needs silicon carbide forced to its ceiling: cooled to {P8_T_SIC_COOLED_K:.0f} K against diamond at {P8_T_HOT_K:.0f} K, the ratio is {cool['p10']:.2f} to {cool['p90']:.2f}, **undecided**. And it is for an idealized device: the best demonstrated diamond switch [saha2023], a lateral 2DHG device scaled to 1200 V, against ideal silicon carbide gives {g['measured_ratio_300k']:.2f} at 300 K and {g['measured_ratio_hot']:.2f} at {P8_T_HOT_K:.0f} K (one device against an ideal limit, so unfavourable to diamond, but measured).
+- **Heat spreading:** single-crystal thermal conductivity, diamond {cmp_['kappa']['p50']:.1f} times silicon carbide's (`adamas.materials`, point values). A point value is not decisive, and the transistor's channel temperature also depends on the GaN–diamond interface.
 - **Readiness:** TRL 1 to 9 [mankins1995]: {"; ".join(f"{k} {v}" for k, v in P8_TRL_WORDS.items())}.
 
 ## Evidence ledger
@@ -2069,7 +2131,7 @@ High-voltage converter tests run behind interlocked shields; irradiation is done
 ## Procedure
 
 1. **For each application,** find the incumbent's number for the metric that matters, from a source.
-2. **Compute** the comparison where a model exists, over sourced parameter ranges, or **cite** a measured one.
+2. **Compute** the comparison where a model exists, over sourced parameter ranges, or **cite** a measured one with both numbers.
 3. **Assign** the TRL from the strongest evidence, not from the hope.
 4. **Run the rules** (`adamas build docs` does it); fix the claim, not the rule, when one fails.
 5. **Test** the leading application on its bench (M56 for power) to turn a computed comparison into a measured one.
@@ -2094,18 +2156,19 @@ The gate passes when every ledger row passes R1 to R3. The rules are determinist
 
 - Incumbent numbers for magnetometry (femtotesla-level medical requirements, fluxgate and optically pumped sensitivities) and for GaN RF power density at matched conditions.
 - Any diamond navigation result, and a magnetic-anomaly navigation requirement.
-- Radiation-hardness numbers (dose to failure) for diamond and silicon devices, beyond the review [tapper2000].
-- Prices of the test benches, shielded rooms and irradiation time.
+- Radiation-hardness numbers (dose to failure) for diamond and silicon devices.
+- A channel-temperature comparison of GaN on diamond and on silicon carbide.
+- Prices of the test benches, shielded rooms and irradiation time, and of the cooling that a hot switch would save.
 
 ## Failure modes
 
 - **A model comparison taken for a measurement:** the loss ratio is simulated; only a bench measurement (M56) at matched junction temperature makes it evidence of the next level.
-- **Unfair comparisons:** an incumbent at a worse operating point, a different topology, or a cherry-picked parameter; the ranges here are sourced and sampled, not chosen.
+- **Unfair comparisons:** an incumbent at a worse operating point (forced hot instead of cooled), a different topology, or a cherry-picked parameter; the ranges here are sourced and sampled, and the cooled case is shown.
 - **Readiness drift:** levels raised by enthusiasm; rule R2 stops that in this repository.
 
 ## Decision gate
 
-*Where does diamond beat the incumbent, with evidence?* With the evidence in this repository, the rows that claim a win and pass the rules are: {beats}. The hot power switch's win is computed, not measured: P4 to P7 devices tested on the converter bench at 250 °C would make it a measurement. Everywhere else the honest answer is "does not beat" or "undecided", and the key problem above says what would change it.
+*Where does diamond beat the incumbent, with evidence?* With the evidence in this repository, the rows that claim a win and pass the rules are: {beats}. That win is computed for an idealized device and needs silicon carbide at its ceiling; the demonstrated diamond device still loses there, and against cooled silicon carbide the comparison is undecided. Everywhere else the honest answer is "does not beat", "undecided" or "not compared", and the key problem above says what would change it. Building a vertical diamond switch and measuring it hot on the converter bench is the experiment that would move the power rows.
 
 Sources: SOURCES_LINE
 """
@@ -2286,7 +2349,7 @@ def _index_md() -> str:
 
 {GEN}
 
-A ladder from a laptop to a pilot line. Each phase ends at a decision gate. {', '.join(done[:-1])} and {done[-1]} are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
+A ladder from a laptop to a pilot line. Each phase ends at a decision gate. {', '.join(done[:-1])} and {done[-1]} are written in full, with their gates evaluated by code; {('the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).' if len(done) < len(PHASES) else 'the outline they started from is [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md), and what is still unsourced is in [STATUS.md](../STATUS.md).')}
 
 | Phase | Name | Budget | Goal | Gate question | Status |
 |---|---|---|---|---|---|

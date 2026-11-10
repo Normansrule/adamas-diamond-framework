@@ -237,7 +237,9 @@ def test_p8_ledger_passes_and_every_inflated_claim_is_rejected():
     g, b = B.p8_gate(), B.p8_degraded()
     assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
     assert not b["hidden_loss"]["r1"] and not b["inflated_trl"]["r2"] and not b["unsupported_win"]["r1"]
-    assert set(g["beats"]) == {"hot", "spreader", "detector"}
+    assert not b["point_value_win"]["r1"] and not b["wrong_way_citation"]["r1"]
+    assert g["beats"] == ["hot"]                                   # the only win, and it is simulated
+    assert g["measured_ratio_hot"] < 1                              # the demonstrated device still loses hot
 
 
 def test_p8_power_comparison_flips_with_temperature():
@@ -248,11 +250,17 @@ def test_p8_power_comparison_flips_with_temperature():
     from adamas import uncertainty as U
     mc = U.monte_carlo("power", B.P8_SAMPLES)                    # the same samples as the uncertainty study
     assert (cold["p10"], cold["p90"]) == pytest.approx((mc["p10"], mc["p90"]), rel=1e-12)
+    cool = B.p8_loss_ratio_percentiles(523.0, t_sic_k=373.0)          # SiC cooled: no longer decisive
+    assert cool["p10"] < 1 < cool["p90"]
 
 
 def test_p8_rules_cover_every_claim_type():
     a = {"id": "x", "computed": None, "cited": None, "claim": "undecided", "evidence": "proposed", "trl": 3, "problem": "p"}
     assert not B.p8_check(a)["r2"] and B.p8_check({**a, "trl": 2})["pass"]
     assert not B.p8_check({**a, "trl": 2, "problem": " "})["r3"]
-    assert B.p8_check({**a, "trl": 2, "claim": "beats", "cited": "a measured comparison [x2000]"})["r1"]
+    good = {"diamond": 2.0, "incumbent": 1.0, "higher_is_better": True, "key": "x2000"}
+    assert B.p8_check({**a, "trl": 2, "claim": "beats", "cited": good})["r1"]
+    assert not B.p8_check({**a, "trl": 2, "claim": "beats", "cited": "a measured comparison [x2000]"})["r1"]   # text is not numbers
+    assert not B.p8_check({**a, "trl": 2, "claim": "beats", "cited": {**good, "higher_is_better": False}})["r1"]
+    assert not B.p8_check({**B.P8_APPS[0], "trl": 4})["r2"]                 # a computed claim is capped at 3
     assert not B.p8_check({**B.P8_APPS[1], "claim": "undecided"})["r1"]          # hiding a decisive win also fails

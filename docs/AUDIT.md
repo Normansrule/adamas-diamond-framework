@@ -267,7 +267,7 @@ Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin
 
 ### Status after v0.39.0 (build phase P8)
 
-P8 (frontier) completes the build program as an evidence ledger. Every win it claims is backed by a comparison computed over sourced parameter ranges or by a cited measurement, and code rejects claims that contradict a decisive comparison, wins without evidence, and readiness levels above what the evidence allows; three inflated-claim twins check each rule. The ledger reports that bulk-doped diamond loses to silicon carbide as a power switch at room temperature and wins only at high junction temperature, and that this win is computed, not measured. Open items are in [STATUS.md](STATUS.md).
+P8 (frontier) completes the build program as an evidence ledger. Every win it claims is backed by a comparison computed over sourced parameter ranges or by a cited measurement, and code rejects claims that contradict a decisive comparison, wins without evidence, and readiness levels above what the evidence allows; three inflated-claim twins check each rule. The ledger reports that an idealized bulk-doped diamond switch loses to silicon carbide at room temperature and wins only with both at silicon carbide's 250 °C ceiling; that win is computed for an undemonstrated device, is undecided against cooled silicon carbide, and the demonstrated diamond device still loses. Five twins check the rules, including point values used as proof and citations pointing the wrong way. Open items are in [STATUS.md](STATUS.md).
 
 ### Status after v0.38.0 (build phase P7)
 

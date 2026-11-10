@@ -12,7 +12,8 @@ Last updated: v0.39.0 (2026-11-10).
 |---|---|---|
 | Incumbent numbers for magnetometry, RF and navigation | No sourced femtotesla medical requirement, fluxgate or optically pumped sensitivity, GaN RF power density at matched conditions, or navigation requirement | Sources for each, then a computed or cited comparison in the ledger |
 | Radiation-hardness numbers | Only the review [tapper2000] is cited | Dose-to-failure data for diamond and silicon devices |
-| Measured power comparison | The 523 K win is computed from a model with bulk-doped drift; no diamond converter is measured | A converter bench (M56) test of P4 to P7 devices at 250 °C |
+| Measured power comparison | The 523 K win is computed for an idealized bulk-doped vertical drift that is not demonstrated, with an intrinsic-material mobility range (an upper bound) and uncompensated boron | A vertical diamond switch measured on a converter bench (M56) at 250 °C, against cooled silicon carbide |
+| Value of running hot | The loss model does not price the smaller cooling system a hot switch allows | A system cost model with sourced cooling costs |
 | Claims and readiness levels | They are this repository's judgment; the rules check consistency with the evidence, not the judgment itself | Review by people working in each application |
 | Prices of benches, shielded rooms and irradiation time | Not sourced | Quotes or facility rates |
 | Verification of mankins1995 | Entered by hand; Crossref is not reachable from the build container | `make verify` |

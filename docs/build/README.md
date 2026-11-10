@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3, P4, P5, P6, P7 and P8 are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
+A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3, P4, P5, P6, P7 and P8 are written in full, with their gates evaluated by code; the outline they started from is [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md), and what is still unsourced is in [STATUS.md](../STATUS.md).
 
 | Phase | Name | Budget | Goal | Gate question | Status |
 |---|---|---|---|---|---|
