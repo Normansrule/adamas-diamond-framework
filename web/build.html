@@ -44,8 +44,8 @@
 </section>
 <section class="block" id="atlas" style="padding-top:6px">
   <h2 style="font-size:30px">Machines and Facilities Atlas</h2>
-  <p class="lead" style="max-width:860px">Every machine the phases name, where it lives, how you get time on it, and what it costs. Each price says what it is: <b>sourced</b> from a published rate sheet or store page (with the date it was read), an <b>estimate</b> from the experiment parts lists, <b>included</b> in another line, or <b>unpriced</b> with the reason. Cleanroom prices are per hour of tool time and differ several-fold between academic and industry users.</p>
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 14px"><label>Phase <select id="atPhase"><option value="">all</option></select></label><label>Kind <select id="atKind"><option value="">all</option><option>sourced</option><option>estimate</option><option>included</option><option>unpriced</option></select></label></div>
+  <p class="lead" style="max-width:860px">Every machine the phases name, where it lives, how you get time on it, and what it costs. Each price says what it is: <b>sourced</b> from a published rate sheet or store page (with the date it was read; a few rows use the closest published tool and say so), an <b>estimate</b> from the experiment parts lists, <b>included</b> in another line, <b>no cost</b>, or <b>unpriced</b> with the reason. Cleanroom prices are per hour of tool time and differ several-fold between academic and industry users.</p>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 14px"><label>Phase <select id="atPhase"><option value="">all</option></select></label><label>Kind <select id="atKind"><option value="">all</option><option>sourced</option><option>estimate</option><option>included</option><option>no cost</option><option>unpriced</option></select></label></div>
   <div class="kpis" id="atKpis"></div>
   <div class="card" style="overflow-x:auto;margin-top:12px"><table class="tests" id="atTable"></table></div>
   <p class="src" id="atSrc"></p>
@@ -231,10 +231,12 @@ addEventListener('resize', () => { drawHist(); drawRun(runs[runs.length - 1]); }
 drawHist(); kpis();
 // ---- Machines and Facilities Atlas ----
 const AT = D.atlas || { rows: [], summary: { by_phase: {}, keys: [] }, facility: {}, access: {} };
-const money = (c, v) => (c === 'USD' ? 'US$' + v.toLocaleString('en-US') : v.toLocaleString('en-US') + ' ' + c);
+const num = v => v.toLocaleString('en-US', Number.isInteger(v) ? {} : { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = (c, v) => (c === 'USD' ? 'US$' + num(v) : num(v) + ' ' + c);
 function atPrice(x) {
-  if (x.kind === 'sourced') return x.quotes.map(q => `${esc(q.listed_as)}: ${Object.entries(q.prices).map(([k, v]) => `${money(q.currency, v)} ${esc(k)}`).join(', ')} per ${esc(q.unit)} [${esc(q.key)}]${q.note ? ` <span class="mute">(${esc(q.note)})</span>` : ''}`).join('<br>');
+  if (x.kind === 'sourced') return (x.substitute ? '<b>Closest listed tool, not the same:</b> ' : '') + x.quotes.map(q => `${esc(q.listed_as)}: ${Object.entries(q.prices).map(([k, v]) => `${money(q.currency, v)} ${esc(k)}`).join(', ')} per ${esc(q.unit)} [${esc(q.key)}]${q.note ? ` <span class="mute">(${esc(q.note)})</span>` : ''}`).join('<br>');
   if (x.kind === 'estimate') return `US$${x.estimate.usd_low.toLocaleString('en-US')} to ${x.estimate.usd_high.toLocaleString('en-US')} <span class="mute">(estimate: ${esc(x.estimate.from.join(', '))})</span>`;
+  if (x.kind === 'no cost') return `<span class="mute">no cost: ${esc(x.reason)}</span>`;
   if (x.kind === 'included') return `in ${esc(x.within)} <span class="mute">(${esc(x.reason)})</span>`;
   return `<span class="mute">${esc(x.reason)}</span>`;
 }
@@ -243,8 +245,8 @@ function atlasTable() {
   const ph = $('atPhase').value, kd = $('atKind').value;
   const rows = AT.rows.filter(x => (!ph || x.phases.includes(ph)) && (!kd || x.kind === kd));
   const cnt = k => rows.filter(x => x.kind === k).length;
-  $('atKpis').innerHTML = ['sourced', 'estimate', 'included', 'unpriced'].map(k => `<div class="kpi"><b>${cnt(k)}</b><span>${k}</span></div>`).join('');
-  $('atTable').innerHTML = `<thead><tr><th>ID</th><th>Machine</th><th>Facility</th><th>Phases</th><th>Kind</th><th>Price</th></tr></thead><tbody>${rows.map(x => `<tr><td>${x.id}</td><td>${esc(x.tool)}</td><td>${esc((AT.facility[x.facility] || '').split(',')[0])}<br><span class="mute">${esc(AT.access[x.access] || '')}</span></td><td>${x.phases.join(', ') || '—'}</td><td>${x.kind}</td><td>${atPrice(x)}</td></tr>`).join('')}</tbody>`;
+  $('atKpis').innerHTML = (AT.kinds || ['sourced', 'estimate', 'included', 'no cost', 'unpriced']).map(k => `<div class="kpi"><b>${cnt(k)}</b><span>${k}</span></div>`).join('');
+  $('atTable').innerHTML = `<thead><tr><th>ID</th><th>Machine</th><th>Facility</th><th>Phases</th><th>Kind</th><th>Price</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(x.id)}</td><td>${esc(x.tool)}</td><td>${esc((AT.facility[x.facility] || '').split(',')[0])}<br><span class="mute">${esc(AT.access[x.access] || '')}</span></td><td>${esc(x.phases.join(', ')) || '—'}</td><td>${esc(x.kind)}</td><td>${atPrice(x)}</td></tr>`).join('')}</tbody>`;
   $('atSrc').textContent = `Sourced pages read on ${AT.read_on || '—'}; rates change every fiscal year. Python reference: adamas.atlas_prices; written page: docs/build/ATLAS.md. Sources: ${AT.summary.keys.map(k => '[' + k + ']').join(' ')}`;
 }
 $('atPhase').onchange = atlasTable; $('atKind').onchange = atlasTable; atlasTable();

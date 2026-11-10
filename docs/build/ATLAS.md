@@ -10,9 +10,12 @@ use it, and what it costs. Each price carries its kind:
 - **estimate**: the sum of part-price ranges from the experiment parts lists (`adamas.experiments`), which are
   reviewer estimates of 2026 street prices, not quotes.
 - **included**: priced inside another machine's line.
+- **no cost**: nothing to buy (open-source software on a computer you have).
 - **unpriced**: no published price was found; the reason says why.
 
-Of 60 machines: 22 sourced, 20 estimate, 1 included, 17 unpriced.
+Of 60 machines: 22 sourced, 20 estimate, 1 included, 1 no cost, 16 unpriced.
+5 of the sourced rows (M17, M20, M22, M23, M26) are priced by the closest published tool, which is not the
+same tool; their notes say how it differs.
 Prices are not converted between currencies and not summed: most cleanroom and characterization prices are **per hour
 of tool time**, and the hours a phase needs are not modelled here. Hourly rates differ several-fold between academic and
 industry users, and between facilities (compare the two characterization sources below).
@@ -21,60 +24,60 @@ industry users, and between facilities (compare the two characterization sources
 
 Shared cleanrooms also charge for access, on top of tool hours:
 
-- Monthly access fee: US$127 academic, US$127 industry (full), US$6,325 industry (fixed) per month [wnf2026]
-- Academic monthly cap on charges: US$2,500 academic per month [wnf2026]
+- Monthly access fee: US$127 academic (UW and non-UW), US$127 industry (full), US$6,325 industry (fixed) per month [wnf2026]
+- Academic monthly cap on equipment use and access fees: US$2,500 academic per month [wnf2026]
 
-The same sheet adds 15.6 % overhead to the listed rates for users outside the University of Washington
-[wnf2026].
+The same sheet adds 15.6 % overhead to the listed rates for users outside the University of Washington, and
+above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf2026].
 
 ## Coverage by phase
 
-| Phase | Machines | Sourced | Estimate | Included | Unpriced |
-|---|---|---|---|---|---|
-| P0 | 1 | 0 | 0 | 0 | 1 |
-| P1 | 8 | 1 | 7 | 0 | 0 |
-| P2 | 10 | 1 | 8 | 1 | 0 |
-| P3 | 8 | 1 | 5 | 0 | 2 |
-| P4 | 14 | 11 | 0 | 0 | 3 |
-| P5 | 13 | 8 | 2 | 0 | 3 |
-| P6 | 8 | 4 | 1 | 0 | 3 |
-| P7 | 14 | 6 | 0 | 0 | 8 |
-| P8 | 4 | 0 | 0 | 0 | 4 |
+| Phase | Machines | Sourced | Estimate | Included | No cost | Unpriced |
+|---|---|---|---|---|---|---|
+| P0 | 1 | 0 | 0 | 0 | 1 | 0 |
+| P1 | 8 | 1 | 7 | 0 | 0 | 0 |
+| P2 | 10 | 1 | 8 | 1 | 0 | 0 |
+| P3 | 8 | 1 | 5 | 0 | 0 | 2 |
+| P4 | 14 | 11 | 0 | 0 | 0 | 3 |
+| P5 | 13 | 8 | 2 | 0 | 0 | 3 |
+| P6 | 8 | 4 | 1 | 0 | 1 | 2 |
+| P7 | 14 | 6 | 0 | 0 | 0 | 8 |
+| P8 | 4 | 0 | 0 | 0 | 0 | 4 |
 
 ## Atlas
 
 | ID | Machine | Facility | Access | Phases | Kind | Price |
 |---|---|---|---|---|---|---|
-| M00 | Workstation plus open tools (adamas, Stim, PyMatching, ngspice, Yosys, KLayout, OpenROAD) | Any computer | buy | P0, P6 | **unpriced** | unpriced: a computer the user already has; every listed tool is open source, so no purchase is needed |
+| M00 | Workstation plus open tools (adamas, Stim, PyMatching, ngspice, Yosys, KLayout, OpenROAD) | Any computer | buy | P0, P6 | **no cost** | no cost: a computer the user already has; every listed tool is open source |
 | M01 | Microwave plasma chemical vapor deposition (MPCVD) reactor | Diamond growth and wafering laboratory or fab | partner or facility access | P4, P7 | **unpriced** | unpriced: no MPCVD reactor maker publishes a price; the D2 experiment's line item for several reactors is an estimate, not a per-reactor price |
 | M02 | High-pressure high-temperature (HPHT) press, or purchased HPHT seeds | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: no HPHT press price is published; type Ib plates are sold (e6cvd.com) but the page does not state the growth method |
 | M03 | Heteroepitaxy stack deposition (iridium on YSZ/Si or sapphire, bias-enhanced nucleation) | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: heteroepitaxy stacks (iridium on YSZ, bias-enhanced nucleation) are made in research groups; no service price is published |
 | M04 | Laser cutting and slicing | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: no published service rate for laser cutting of diamond was found |
 | M05 | Lapping, polishing, scaife or chemo-mechanical polishing | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: no published service rate for diamond polishing was found |
-| M06 | Raman mapping | Shared characterization facility | hourly user rate | P4, P7 | **sourced** | Raman: US$34 UW academic, US$40 outside academic, US$126 industry per hour [maf2023]; WITec Alpha300R / Renishaw InVia Raman: US$49.95 Cornell internal per hour [ccmr2026] |
-| M07 | X-ray diffraction (XRD) rocking curves and topography | Shared characterization facility | hourly user rate | P7 | **sourced** | XRD: US$55 UW academic, US$64 outside academic, US$200 industry per hour [maf2023]; Rigaku SmartLab XRD: US$51 Cornell internal per hour [ccmr2026] |
+| M06 | Raman mapping | Shared characterization facility | hourly user rate | P4, P7 | **sourced** | Raman: US$34 academic, US$40 outside academic, US$126 industry per hour [maf2023]; WITec Alpha300R / Renishaw InVia Raman: US$49.95 Cornell internal per hour [ccmr2026] |
+| M07 | X-ray diffraction (XRD) rocking curves and topography | Shared characterization facility | hourly user rate | P7 | **sourced** | XRD: US$55 academic, US$64 outside academic, US$200 industry per hour [maf2023]; Rigaku SmartLab XRD: US$51 Cornell internal per hour [ccmr2026] |
 | M08 | Photoluminescence (PL) and NV-density mapping | Shared characterization facility | hourly user rate | P5, P7 | **unpriced** | unpriced: no published hourly rate for photoluminescence or NV-density mapping was found |
 | M09 | Defect inspection (birefringence, etch-pit counting) | Shared characterization facility | hourly user rate | P7 | **unpriced** | unpriced: birefringence imaging and etch-pit counting use a polarizing microscope and a furnace; no rate was sourced |
-| M10 | Wet bench: tri-acid and piranha cleans, HF | University cleanroom | hourly user rate | P4, P5 | **sourced** | Wet Bench / Solvent Bench: US$13 academic, US$38 industry per hour [wnf2026] |
-| M11 | Optical lithography (mask aligner or laser writer) | University cleanroom | hourly user rate | P4 | **sourced** | Contact Aligner: US$63 academic, US$189 industry per hour [wnf2026]; Heidelberg Direct Write: US$38 academic, US$114 industry per hour [wnf2026] (maskless laser writer) |
-| M12 | Electron-beam lithography | University cleanroom | hourly user rate | P4, P5 | **sourced** | E-beam Lithography: US$158 academic, US$569 industry per hour [wnf2026] (the facility applies a separate yearly cap to e-beam hours) |
-| M13 | Electron-beam evaporator (Ti/Pt/Au, Au) | University cleanroom | hourly user rate | P4 | **sourced** | E-beam Evaporator: US$89 academic, US$267 industry per hour [wnf2026] |
-| M14 | Atomic layer deposition (ALD) of Al₂O₃ | University cleanroom | hourly user rate | P4 | **sourced** | ALD: US$38 academic, US$114 industry per hour [wnf2026] |
-| M15 | Oxygen plasma asher or reactive-ion etch for isolation | University cleanroom | hourly user rate | P4 | **sourced** | Plasma Asher: US$63 academic, US$189 industry per hour [wnf2026] |
-| M16 | Inductively coupled plasma reactive-ion etching (ICP-RIE) | University cleanroom | hourly user rate | P4, P7 | **sourced** | DRIE/RIE/ICP: US$89 academic, US$267 industry per hour [wnf2026] |
-| M17 | Probe station, hot chuck, semiconductor parameter analyzer | University cleanroom | hourly user rate | P4, P7 | **sourced** | Probe Station: US$38 academic, US$114 industry per hour [wnf2026] (the rate sheet lists no separate parameter analyzer or hot chuck) |
+| M10 | Wet bench: tri-acid and piranha cleans, HF | University cleanroom | hourly user rate | P4, P5 | **sourced** | Wet Bench / Solvent Bench: US$13 academic (UW and non-UW), US$38 industry per hour [wnf2026] |
+| M11 | Optical lithography (mask aligner or laser writer) | University cleanroom | hourly user rate | P4 | **sourced** | Contact Aligner: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026]; Heidelberg Direct Write: US$38 academic (UW and non-UW), US$114 industry per hour [wnf2026] (maskless laser writer) |
+| M12 | Electron-beam lithography | University cleanroom | hourly user rate | P4, P5 | **sourced** | E-beam Lithography: US$158 academic (UW and non-UW), US$569 industry per hour [wnf2026] (the facility applies a separate yearly cap to e-beam hours) |
+| M13 | Electron-beam evaporator (Ti/Pt/Au, Au) | University cleanroom | hourly user rate | P4 | **sourced** | E-beam Evaporator: US$89 academic (UW and non-UW), US$267 industry per hour [wnf2026] |
+| M14 | Atomic layer deposition (ALD) of Al₂O₃ | University cleanroom | hourly user rate | P4 | **sourced** | ALD: US$38 academic (UW and non-UW), US$114 industry per hour [wnf2026] |
+| M15 | Oxygen plasma asher or reactive-ion etch for isolation | University cleanroom | hourly user rate | P4 | **sourced** | Plasma Asher: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] |
+| M16 | Inductively coupled plasma reactive-ion etching (ICP-RIE) | University cleanroom | hourly user rate | P4, P7 | **sourced** | DRIE/RIE/ICP: US$89 academic (UW and non-UW), US$267 industry per hour [wnf2026] |
+| M17 | Probe station, hot chuck, semiconductor parameter analyzer | University cleanroom | hourly user rate | P4, P7 | **sourced** | **Closest listed tool, not the same:** Probe Station: US$38 academic (UW and non-UW), US$114 industry per hour [wnf2026] (the rate sheet lists no separate parameter analyzer or hot chuck) |
 | M18 | High-voltage curve tracer for breakdown | University cleanroom | hourly user rate | P4, P7 | **unpriced** | unpriced: no published hourly rate for a high-voltage curve tracer was found |
-| M19 | Profilometer, optical microscope, four-point probe | University cleanroom | hourly user rate | P2, P4 | **sourced** | Stylus / Optical Profilometer: US$63 academic, US$189 industry per hour [wnf2026] (profilometer only); Profilometer: US$22 UW academic, US$26 outside academic, US$126 industry per hour [maf2023] |
-| M20 | Low-energy ion implanter (¹⁵N) | Ion-beam facility | hourly user rate | P5 | **sourced** | BLUE 400 kV implanter: US$51 University of Michigan, US$102 other universities, US$204 businesses per hour [mibl2024] (set-up time is charged at the same rate, 4 hour minimum; a research implanter, not a dedicated low-energy ¹⁵N tool) |
-| M21 | Aperture masks (PMMA, AFM-tip) or focused ion beam | Shared characterization facility | hourly user rate | P5 | **sourced** | FIB: US$55 UW academic, US$64 outside academic, US$200 industry per hour [maf2023] (focused ion beam only; aperture masks are made with M12); Thermo Helios G4 UX FIB: US$116.35 Cornell internal per hour [ccmr2026] |
-| M22 | High-vacuum annealing furnace (800–1200 °C) | University cleanroom | hourly user rate | P5 | **sourced** | RTA: US$63 academic, US$189 industry per hour [wnf2026] (closest listed tool: rapid thermal anneal, not a high-vacuum 1200 °C furnace) |
-| M23 | Secondary-ion mass spectrometry (SIMS) | Shared characterization facility | hourly user rate | P5, P7 | **sourced** | ToF-SIMS: US$90 UW academic, US$100 outside academic, US$225 industry per hour [maf2023] (time-of-flight SIMS; depth profiles of implanted nitrogen are often done on dynamic SIMS, which is not priced here) |
-| M24 | Atomic force microscopy (AFM) | Shared characterization facility | hourly user rate | P4, P5 | **sourced** | AFM: US$22 UW academic, US$26 outside academic, US$126 industry per hour [maf2023]; Asylum MFP3D AFM: US$49.4 Cornell internal per hour [ccmr2026] |
+| M19 | Profilometer, optical microscope, four-point probe | University cleanroom | hourly user rate | P2, P4 | **sourced** | Stylus / Optical Profilometer: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (profilometer only); Profilometer: US$22 academic, US$26 outside academic, US$126 industry per hour [maf2023] |
+| M20 | Low-energy ion implanter (¹⁵N) | Ion-beam facility | hourly user rate | P5 | **sourced** | **Closest listed tool, not the same:** BLUE 400 kV implanter: US$51 University of Michigan, US$102 other universities, US$204 businesses per hour [mibl2024] (set-up is charged at the same rate, with a 4 hour minimum per ion beam and experiment; a research implanter, not a dedicated low-energy ¹⁵N tool) |
+| M21 | Aperture masks (PMMA, AFM-tip) or focused ion beam | Shared characterization facility | hourly user rate | P5 | **sourced** | FIB: US$55 academic, US$64 outside academic, US$200 industry per hour [maf2023] (focused ion beam only; aperture masks are made with M12); Thermo Helios G4 UX FIB: US$116.35 Cornell internal per hour [ccmr2026] |
+| M22 | High-vacuum annealing furnace (800–1200 °C) | University cleanroom | hourly user rate | P5 | **sourced** | **Closest listed tool, not the same:** RTA: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (closest listed tool: rapid thermal anneal, not a high-vacuum 1200 °C furnace) |
+| M23 | Secondary-ion mass spectrometry (SIMS) | Shared characterization facility | hourly user rate | P5, P7 | **sourced** | **Closest listed tool, not the same:** ToF-SIMS: US$90 academic, US$100 outside academic, US$225 industry per hour [maf2023] (time-of-flight SIMS; depth profiles of implanted nitrogen are often done on dynamic SIMS, which is not priced here) |
+| M24 | Atomic force microscopy (AFM) | Shared characterization facility | hourly user rate | P4, P5 | **sourced** | AFM: US$22 academic, US$26 outside academic, US$126 industry per hour [maf2023]; Asylum MFP3D AFM: US$49.40 Cornell internal per hour [ccmr2026] |
 | M25 | Laser writing of vacancies (detect-and-repair) | Research laboratory (tier C) | partner or facility access | P5 | **unpriced** | unpriced: laser writing of vacancies is done in a few research groups; no service price exists |
-| M26 | Wafer or die bonder (thermocompression, hybrid) | University cleanroom | hourly user rate | P6 | **sourced** | Wafer Bonder: US$89 academic, US$267 industry per hour [wnf2026] (wafer bonder; no die or flip-chip bonder rate was found) |
-| M27 | Dicing (laser or saw) | University cleanroom | hourly user rate | P6, P7 | **sourced** | Dicing Saw: US$63 academic, US$189 industry per hour [wnf2026] (saw only; laser dicing is not priced) |
-| M28 | Wire bonder and package | University cleanroom | hourly user rate | P6 | **sourced** | Wire Bonder: US$63 academic, US$189 industry per hour [wnf2026] (packages not included) |
-| M29 | CMOS control chip from a multi-project wafer (MPW) shuttle | Multi-project wafer (MPW) shuttle service | pay per design or per run | P6 | **sourced** | sky130A tile: 70 EUR per tile per tile [tinytapeout2026] (analog designs need at least two tiles (140 EUR) plus 40 EUR per analog pin for the first two; covers inclusion on the shuttle only, not the chip, board or shipping); X-FAB XH018 0.18 µm, 4 metal layers, E-FLASH: 1,080 EUR discounted (academic), 1,126 EUR standard per mm² [europractice2026] (minimum charge equivalent to 10 mm² (XH018_MIN_MM2); area rounded up to the next mm²; VAT treatment not stated on the page) |
+| M26 | Wafer or die bonder (thermocompression, hybrid) | University cleanroom | hourly user rate | P6 | **sourced** | **Closest listed tool, not the same:** Wafer Bonder: US$89 academic (UW and non-UW), US$267 industry per hour [wnf2026] (wafer bonder; no die or flip-chip bonder rate was found) |
+| M27 | Dicing (laser or saw) | University cleanroom | hourly user rate | P6, P7 | **sourced** | Dicing Saw: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (saw only; laser dicing is not priced) |
+| M28 | Wire bonder and package | University cleanroom | hourly user rate | P6 | **sourced** | Wire Bonder: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (packages not included) |
+| M29 | CMOS control chip from a multi-project wafer (MPW) shuttle | Multi-project wafer (MPW) shuttle service | pay per design or per run | P6 | **sourced** | sky130A tile: 70 EUR per tile per tile [tinytapeout2026] (analog designs need at least two tiles (140 EUR) plus 40 EUR per analog pin for the first two and 100 EUR per pin after that; covers inclusion on the shuttle only, not the chip, board or shipping); X-FAB XH018 0.18 µm, 4 metal layers, E-FLASH: 1,080 EUR discounted (eligible EUROPRACTICE members), 1,126 EUR standard per mm² [europractice2026] (basic offering, optional modules cost extra; minimum charge equivalent to 10 mm² (XH018_MIN_MM2); area rounded up to the next mm²; VAT treatment not stated on the page) |
 | M30 | Green source: LED or under 1 mW 532 nm laser module | Desk or kitchen table (tier A experiments) | buy | P1 | **estimate** | US$10 to 60, estimate from A1: Green source |
 | M31 | NV-rich diamond (irradiated and annealed HPHT) | Desk or kitchen table (tier A experiments) | buy | P1 | **sourced** | High NV content plate, 3.2 × 2.4 × 1.2 mm, HPHT type Ib: US$510 list per plate [lattispec2026] |
 | M32 | Longpass filter | Desk or kitchen table (tier A experiments) | buy | P1 | **estimate** | US$5 to 80, estimate from A1: Red filter |
@@ -97,7 +100,7 @@ The same sheet adds 15.6 % overhead to the listed rates for users outside the Un
 | M49 | Two single-photon avalanche diodes (SPADs) | Research laboratory (tier C) | buy | P3 | **estimate** | US$6,000 to 20,000, estimate from C1: Single-photon detectors |
 | M50 | Time tagger (picosecond correlator) | Research laboratory (tier C) | buy | P3 | **estimate** | US$5,000 to 20,000, estimate from C1: Time tagger |
 | M51 | Arbitrary waveform generator (AWG) | Research laboratory (tier C) | buy | P3, P5 | **estimate** | US$5,000 to 30,000, estimate from C1: Microwave and control |
-| M52 | Electronic-grade, low-nitrogen, optionally ¹²C-enriched CVD diamond | Research laboratory (tier C) | buy | P3, P5 | **sourced** | EL SC plate 2.0 × 2.0 × 0.5 mm (145-500-0385): US$865 regular per plate [e6cvd2026] (electronic grade, natural carbon isotopes); EL SC plate 4.0 × 4.0 × 0.5 mm (145-500-0389): US$2,545 regular per plate [e6cvd2026] (¹²C-enriched plates are not priced on the page) |
+| M52 | Electronic-grade, low-nitrogen, optionally ¹²C-enriched CVD diamond | Research laboratory (tier C) | buy | P3, P5 | **sourced** | EL SC plate 2.0 × 2.0 × 0.5 mm (145-500-0385): US$865 regular, US$565 special (sale) per plate [e6cvd2026] (electronic grade; isotope content not stated on the page); EL SC plate 4.0 × 4.0 × 0.5 mm (145-500-0389): US$2,545 regular, US$1,730 special (sale) per plate [e6cvd2026] (¹²C-enriched plates are not priced on the page) |
 | M53 | RF source for nuclear spins (MHz range) | Research laboratory (tier C) | buy | P3, P6 | **unpriced** | unpriced: not in any experiment parts list; a MHz signal generator and coil, to be quoted |
 | M54 | Two-color excitation for charge-state readout (orange or red laser) | Research laboratory (tier C) | buy | P3, P5 | **unpriced** | unpriced: not in any experiment parts list; an orange or red laser line, to be quoted |
 | M55 | Photoelectric readout chain (bias electrodes, lock-in, transimpedance) | Research laboratory (tier C) | buy | P4, P6 | **unpriced** | unpriced: not in any experiment parts list; electrodes are made on M11 to M13, the lock-in and amplifier need quotes |
@@ -114,5 +117,18 @@ The same sheet adds 15.6 % overhead to the listed rates for users outside the Un
 - **Application facilities (M56 to M59):** test-bench, shielded-room and irradiation-time quotes (see P8).
 - **Lab optics and detectors:** vendor list prices (objectives, single-photon detectors, time taggers) to replace the
   estimates; the vendors checked either do not publish prices or did not show them to an automated reader.
+
+## Sources and the dates they state
+
+- [ccmr2026]: fiscal year 2027, from 1 July 2026
+- [e6cvd2026]: no date shown
+- [europractice2026]: 2026 schedule
+- [lattispec2026]: no date shown
+- [maf2023]: effective 1 September 2023
+- [mibl2024]: from 1 September 2024
+- [tinytapeout2026]: no date shown
+- [wnf2026]: effective 1 March 2026
+
+All were read on 10 November 2026.
 
 Sources: [ccmr2026] [e6cvd2026] [europractice2026] [lattispec2026] [maf2023] [mibl2024] [tinytapeout2026] [wnf2026]

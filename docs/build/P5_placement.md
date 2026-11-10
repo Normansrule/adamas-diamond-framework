@@ -28,8 +28,8 @@ Atlas machines for this phase: M08 Photoluminescence (PL) and NV-density mapping
 | M47, M54 | Confocal setups (D1) | Two-color, with charge-state readout | 150,000 to 400,000 |
 | M51 | Control electronics (D1) | Multi-channel arbitrary waveform generators, amplifiers | 100,000 to 300,000 |
 | M52 | Materials (D1) | Isotopically purified ¹²C diamond | 20,000 to 100,000 |
-| M22 | High-vacuum annealing furnace (800–1200 °C) | vacancy anneal (S07) | US$63 to 189 per hour, RTA (closest listed tool) [wnf2026] ([Atlas](ATLAS.md)) |
-| M23 | Secondary-ion mass spectrometry (SIMS) | implant depth profile (S06) | US$90 to 225 per hour, ToF-SIMS [maf2023] ([Atlas](ATLAS.md)) |
+| M22 | High-vacuum annealing furnace (800–1200 °C) | vacancy anneal (S07) | US$63 to 189 per hour, RTA (closest listed tool, not the same) [wnf2026]; users outside the University of Washington add 15.6 % ([Atlas](ATLAS.md)) |
+| M23 | Secondary-ion mass spectrometry (SIMS) | implant depth profile (S06) | US$90 to 225 per hour, ToF-SIMS (closest listed tool, not the same) [maf2023] ([Atlas](ATLAS.md)) |
 
 ## Facility and safety
 

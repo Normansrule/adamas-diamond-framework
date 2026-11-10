@@ -10,7 +10,7 @@ The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with 
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| Unpriced machines (17) | No published price for MPCVD reactors, HPHT presses, heteroepitaxy, laser cutting, polishing, PL mapping, defect inspection, curve tracers, laser writing, the nuclear-spin RF source, the charge-state laser, the photoelectric readout chain, or the P8 application facilities | Quotes or facility rate sheets, entry by entry; each reason is in the Atlas |
+| Unpriced machines (16) | No published price for MPCVD reactors, HPHT presses, heteroepitaxy, laser cutting, polishing, PL mapping, defect inspection, curve tracers, laser writing, the nuclear-spin RF source, the charge-state laser, the photoelectric readout chain, or the P8 application facilities | Quotes or facility rate sheets, entry by entry; each reason is in the Atlas |
 | Lab optics and detectors are estimates | Thorlabs pages did not render for an automated reader; single-photon detector and time-tagger makers do not publish prices | List prices read by a person, or quotes |
 | Phase totals from hourly rates | Cleanroom and characterization prices are per hour, and the tool hours per phase are not modelled | An hours estimate per traveler step |
 | Currency and fiscal year | Prices stay in their own currency (US$ or EUR) and year; no exchange rate is sourced, and rate sheets change every year | A dated exchange rate, and re-reading the pages each year |

@@ -38,47 +38,49 @@ ACCESS = {"buy": "buy", "hourly": "hourly user rate", "service": "pay per design
 
 # Sourced: id -> list of quotes (reference key, tool as the page names it, currency, unit, {user category: price}, note)
 SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
-    "M06": [("maf2023", "Raman", "USD", "hour", {"UW academic": 34, "outside academic": 40, "industry": 126}, ""),
+    "M06": [("maf2023", "Raman", "USD", "hour", {"academic": 34, "outside academic": 40, "industry": 126}, ""),
             ("ccmr2026", "WITec Alpha300R / Renishaw InVia Raman", "USD", "hour", {"Cornell internal": 49.95}, "")],
-    "M07": [("maf2023", "XRD", "USD", "hour", {"UW academic": 55, "outside academic": 64, "industry": 200}, ""),
+    "M07": [("maf2023", "XRD", "USD", "hour", {"academic": 55, "outside academic": 64, "industry": 200}, ""),
             ("ccmr2026", "Rigaku SmartLab XRD", "USD", "hour", {"Cornell internal": 51.00}, "")],
-    "M10": [("wnf2026", "Wet Bench / Solvent Bench", "USD", "hour", {"academic": 13, "industry": 38}, "")],
-    "M11": [("wnf2026", "Contact Aligner", "USD", "hour", {"academic": 63, "industry": 189}, ""),
-            ("wnf2026", "Heidelberg Direct Write", "USD", "hour", {"academic": 38, "industry": 114}, "maskless laser writer")],
-    "M12": [("wnf2026", "E-beam Lithography", "USD", "hour", {"academic": 158, "industry": 569}, "the facility applies a separate yearly cap to e-beam hours")],
-    "M13": [("wnf2026", "E-beam Evaporator", "USD", "hour", {"academic": 89, "industry": 267}, "")],
-    "M14": [("wnf2026", "ALD", "USD", "hour", {"academic": 38, "industry": 114}, "")],
-    "M15": [("wnf2026", "Plasma Asher", "USD", "hour", {"academic": 63, "industry": 189}, "")],
-    "M16": [("wnf2026", "DRIE/RIE/ICP", "USD", "hour", {"academic": 89, "industry": 267}, "")],
-    "M17": [("wnf2026", "Probe Station", "USD", "hour", {"academic": 38, "industry": 114}, "the rate sheet lists no separate parameter analyzer or hot chuck")],
-    "M19": [("wnf2026", "Stylus / Optical Profilometer", "USD", "hour", {"academic": 63, "industry": 189}, "profilometer only"),
-            ("maf2023", "Profilometer", "USD", "hour", {"UW academic": 22, "outside academic": 26, "industry": 126}, "")],
+    "M10": [("wnf2026", "Wet Bench / Solvent Bench", "USD", "hour", {"academic (UW and non-UW)": 13, "industry": 38}, "")],
+    "M11": [("wnf2026", "Contact Aligner", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, ""),
+            ("wnf2026", "Heidelberg Direct Write", "USD", "hour", {"academic (UW and non-UW)": 38, "industry": 114}, "maskless laser writer")],
+    "M12": [("wnf2026", "E-beam Lithography", "USD", "hour", {"academic (UW and non-UW)": 158, "industry": 569}, "the facility applies a separate yearly cap to e-beam hours")],
+    "M13": [("wnf2026", "E-beam Evaporator", "USD", "hour", {"academic (UW and non-UW)": 89, "industry": 267}, "")],
+    "M14": [("wnf2026", "ALD", "USD", "hour", {"academic (UW and non-UW)": 38, "industry": 114}, "")],
+    "M15": [("wnf2026", "Plasma Asher", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "")],
+    "M16": [("wnf2026", "DRIE/RIE/ICP", "USD", "hour", {"academic (UW and non-UW)": 89, "industry": 267}, "")],
+    "M17": [("wnf2026", "Probe Station", "USD", "hour", {"academic (UW and non-UW)": 38, "industry": 114}, "the rate sheet lists no separate parameter analyzer or hot chuck")],
+    "M19": [("wnf2026", "Stylus / Optical Profilometer", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "profilometer only"),
+            ("maf2023", "Profilometer", "USD", "hour", {"academic": 22, "outside academic": 26, "industry": 126}, "")],
     "M20": [("mibl2024", "BLUE 400 kV implanter", "USD", "hour", {"University of Michigan": 51, "other universities": 102, "businesses": 204},
-             "set-up time is charged at the same rate, 4 hour minimum; a research implanter, not a dedicated low-energy ¹⁵N tool")],
-    "M21": [("maf2023", "FIB", "USD", "hour", {"UW academic": 55, "outside academic": 64, "industry": 200}, "focused ion beam only; aperture masks are made with M12"),
+             "set-up is charged at the same rate, with a 4 hour minimum per ion beam and experiment; a research implanter, not a dedicated low-energy ¹⁵N tool")],
+    "M21": [("maf2023", "FIB", "USD", "hour", {"academic": 55, "outside academic": 64, "industry": 200}, "focused ion beam only; aperture masks are made with M12"),
             ("ccmr2026", "Thermo Helios G4 UX FIB", "USD", "hour", {"Cornell internal": 116.35}, "")],
-    "M22": [("wnf2026", "RTA", "USD", "hour", {"academic": 63, "industry": 189}, "closest listed tool: rapid thermal anneal, not a high-vacuum 1200 °C furnace")],
-    "M23": [("maf2023", "ToF-SIMS", "USD", "hour", {"UW academic": 90, "outside academic": 100, "industry": 225},
+    "M22": [("wnf2026", "RTA", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "closest listed tool: rapid thermal anneal, not a high-vacuum 1200 °C furnace")],
+    "M23": [("maf2023", "ToF-SIMS", "USD", "hour", {"academic": 90, "outside academic": 100, "industry": 225},
              "time-of-flight SIMS; depth profiles of implanted nitrogen are often done on dynamic SIMS, which is not priced here")],
-    "M24": [("maf2023", "AFM", "USD", "hour", {"UW academic": 22, "outside academic": 26, "industry": 126}, ""),
+    "M24": [("maf2023", "AFM", "USD", "hour", {"academic": 22, "outside academic": 26, "industry": 126}, ""),
             ("ccmr2026", "Asylum MFP3D AFM", "USD", "hour", {"Cornell internal": 49.40}, "")],
-    "M26": [("wnf2026", "Wafer Bonder", "USD", "hour", {"academic": 89, "industry": 267}, "wafer bonder; no die or flip-chip bonder rate was found")],
-    "M27": [("wnf2026", "Dicing Saw", "USD", "hour", {"academic": 63, "industry": 189}, "saw only; laser dicing is not priced")],
-    "M28": [("wnf2026", "Wire Bonder", "USD", "hour", {"academic": 63, "industry": 189}, "packages not included")],
-    "M29": [("tinytapeout2026", "sky130A tile", "EUR", "tile", {"per tile": 70}, "analog designs need at least two tiles (140 EUR) plus 40 EUR per analog pin for the first two; "
+    "M26": [("wnf2026", "Wafer Bonder", "USD", "hour", {"academic (UW and non-UW)": 89, "industry": 267}, "wafer bonder; no die or flip-chip bonder rate was found")],
+    "M27": [("wnf2026", "Dicing Saw", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "saw only; laser dicing is not priced")],
+    "M28": [("wnf2026", "Wire Bonder", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "packages not included")],
+    "M29": [("tinytapeout2026", "sky130A tile", "EUR", "tile", {"per tile": 70}, "analog designs need at least two tiles (140 EUR) plus 40 EUR per analog pin for the first two and 100 EUR per pin after that; "
              "covers inclusion on the shuttle only, not the chip, board or shipping"),
-            ("europractice2026", "X-FAB XH018 0.18 µm, 4 metal layers, E-FLASH", "EUR", "mm²", {"discounted (academic)": 1080, "standard": 1126},
-             "minimum charge equivalent to 10 mm² (XH018_MIN_MM2); area rounded up to the next mm²; VAT treatment not stated on the page")],
+            ("europractice2026", "X-FAB XH018 0.18 µm, 4 metal layers, E-FLASH", "EUR", "mm²", {"discounted (eligible EUROPRACTICE members)": 1080, "standard": 1126},
+             "basic offering, optional modules cost extra; minimum charge equivalent to 10 mm² (XH018_MIN_MM2); area rounded up to the next mm²; VAT treatment not stated on the page")],
     "M31": [("lattispec2026", "High NV content plate, 3.2 × 2.4 × 1.2 mm, HPHT type Ib", "USD", "plate", {"list": 510}, "")],
-    "M52": [("e6cvd2026", "EL SC plate 2.0 × 2.0 × 0.5 mm (145-500-0385)", "USD", "plate", {"regular": 865}, "electronic grade, natural carbon isotopes"),
-            ("e6cvd2026", "EL SC plate 4.0 × 4.0 × 0.5 mm (145-500-0389)", "USD", "plate", {"regular": 2545}, "¹²C-enriched plates are not priced on the page")],
+    "M52": [("e6cvd2026", "EL SC plate 2.0 × 2.0 × 0.5 mm (145-500-0385)", "USD", "plate", {"regular": 865, "special (sale)": 565}, "electronic grade; isotope content not stated on the page"),
+            ("e6cvd2026", "EL SC plate 4.0 × 4.0 × 0.5 mm (145-500-0389)", "USD", "plate", {"regular": 2545, "special (sale)": 1730}, "¹²C-enriched plates are not priced on the page")],
 }
 
 XH018_MIN_MM2 = 10          # EUROPRACTICE minimum charge for X-FAB XH018, in mm² [europractice2026]
 
 # Facility access fees from the same rate sheet; they come on top of hourly tool rates.
-ACCESS_FEES = [("wnf2026", "Monthly access fee", "USD", "month", {"academic": 127, "industry (full)": 127, "industry (fixed)": 6325}),
-               ("wnf2026", "Academic monthly cap on charges", "USD", "month", {"academic": 2500})]
+ACCESS_FEES = [("wnf2026", "Monthly access fee", "USD", "month", {"academic (UW and non-UW)": 127, "industry (full)": 127, "industry (fixed)": 6325}),
+               ("wnf2026", "Academic monthly cap on equipment use and access fees", "USD", "month", {"academic": 2500})]
+WNF_NOTCH_USD = 5000        # above this monthly charge, WNF tools are billed at WNF_ABOVE_NOTCH_PCT of the hourly rate [wnf2026]
+WNF_ABOVE_NOTCH_PCT = 33
 
 WNF_OVERHEAD_PCT = 15.6     # overhead on WNF rates for users outside the University of Washington [wnf2026]
 
@@ -93,10 +95,18 @@ ESTIMATE = {
     "M47": [("C1", "Oil or air objective")], "M48": [("C1", "Scanning")], "M49": [("C1", "Single-photon detectors")], "M50": [("C1", "Time tagger")],
     "M51": [("C1", "Microwave and control")], "M52": [("C1", "Electronic-grade diamond")],
 }
+# Machines priced by a published tool that is not the same as the Atlas tool; the note on the quote says how it differs.
+SUBSTITUTE = {"M17", "M20", "M22", "M23", "M26"}
+
+# Effective date of each sourced page as the page states it (all were read on READ_ON).
+EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 September 2023", "ccmr2026": "fiscal year 2027, from 1 July 2026",
+             "mibl2024": "from 1 September 2024", "tinytapeout2026": "no date shown", "europractice2026": "2026 schedule",
+             "e6cvd2026": "no date shown", "lattispec2026": "no date shown"}
+
+NO_COST = {"M00": "a computer the user already has; every listed tool is open source"}
 INCLUDED = {"M39": ("M38", "the B1 laser line item includes an acousto-optic modulator or direct modulation")}
 
 UNPRICED = {
-    "M00": "a computer the user already has; every listed tool is open source, so no purchase is needed",
     "M01": "no MPCVD reactor maker publishes a price; the D2 experiment's line item for several reactors is an estimate, not a per-reactor price",
     "M02": "no HPHT press price is published; type Ib plates are sold (e6cvd.com) but the page does not state the growth method",
     "M03": "heteroepitaxy stacks (iridium on YSZ, bias-enhanced nucleation) are made in research groups; no service price is published",
@@ -125,6 +135,9 @@ PLACE = {**{f"M{i:02d}": ("desk", "buy") for i in range(30, 38)}, **{f"M{i:02d}"
          "M31": ("desk", "buy"), "M52": ("research", "buy")}
 
 
+KINDS = ("sourced", "estimate", "included", "no cost", "unpriced")
+
+
 def _part(exp: str, name: str) -> tuple[int, int]:
     from .experiments import EXPERIMENTS
     e = next(x for x in EXPERIMENTS if x["id"] == exp)
@@ -147,12 +160,14 @@ def entry(atlas_id: str) -> dict:
     fac, acc = PLACE[atlas_id]
     row = {"id": atlas_id, "tool": ATLAS[atlas_id][0], "facility": fac, "access": acc, "phases": phases_using(atlas_id)}
     if atlas_id in SOURCED:
-        quotes = [{"key": k, "listed_as": t, "currency": c, "unit": u, "prices": p, "note": n} for k, t, c, u, p, n in SOURCED[atlas_id]]
-        row.update(kind="sourced", quotes=quotes)
+        quotes = [{"key": k, "effective": EFFECTIVE[k], "listed_as": t, "currency": c, "unit": u, "prices": p, "note": n} for k, t, c, u, p, n in SOURCED[atlas_id]]
+        row.update(kind="sourced", quotes=quotes, substitute=atlas_id in SUBSTITUTE)
         if atlas_id in ESTIMATE:                            # a sourced price wins; the estimate stays visible for comparison
             row["estimate"] = _estimate(atlas_id)
     elif atlas_id in ESTIMATE:
         row.update(kind="estimate", estimate=_estimate(atlas_id))
+    elif atlas_id in NO_COST:
+        row.update(kind="no cost", reason=NO_COST[atlas_id])
     elif atlas_id in INCLUDED:
         row.update(kind="included", within=INCLUDED[atlas_id][0], reason=INCLUDED[atlas_id][1])
     else:
@@ -171,15 +186,16 @@ def short_price(atlas_id: str) -> str:
         return "not priced (no source yet; see the [Atlas](ATLAS.md))"
     k, t, c, u, p, _ = SOURCED[atlas_id][0]; lo, hi = min(p.values()), max(p.values())
     rng = _money(c, lo) if lo == hi else f"{_money(c, lo)} to {_money(c, hi).replace('US$', '')}"
-    near = " (closest listed tool)" if SOURCED[atlas_id][0][5].startswith("closest") else ""
-    return f"{rng} per {u}, {t}{near} [{k}] ([Atlas](ATLAS.md))"
+    near = " (closest listed tool, not the same)" if atlas_id in SUBSTITUTE else ""
+    extra = f"; users outside the University of Washington add {WNF_OVERHEAD_PCT} %" if k == "wnf2026" else ""
+    return f"{rng} per {u}, {t}{near} [{k}]{extra} ([Atlas](ATLAS.md))"
 
 
 def mpw_prices() -> str:
     """The M29 shuttle prices as one phrase, for the P6 page."""
     (k1, _, c1, _, p1, _), (k2, t2, c2, u2, p2, _) = SOURCED["M29"]
     lo, hi = min(p2.values()), max(p2.values())
-    return (f"{p1['per tile']} {c1} per Tiny Tapeout tile [{k1}]; {lo:,} to {hi:,} {c2}/{u2} for {t2.split(',')[0]} "
+    return (f"{p1['per tile']} {c1} per Tiny Tapeout tile [{k1}]; {lo:,} to {hi:,} {c2}/{u2} for {t2} "
             f"through EUROPRACTICE, minimum {XH018_MIN_MM2} mm² [{k2}]")
 
 
@@ -188,7 +204,7 @@ def rows() -> list[dict]:
 
 
 def summary() -> dict:
-    r = rows(); kinds = ("sourced", "estimate", "included", "unpriced")
+    r = rows(); kinds = KINDS
     by_phase = {}
     for ph in [f"P{i}" for i in range(9)]:
         ids = [x for x in r if ph in x["phases"]]
@@ -198,7 +214,7 @@ def summary() -> dict:
 
 
 def _money(cur: str, v: float) -> str:
-    s = f"{v:,.2f}".rstrip("0").rstrip(".") if v != int(v) else f"{int(v):,}"
+    s = f"{v:,.2f}" if v != int(v) else f"{int(v):,}"
     return f"US${s}" if cur == "USD" else f"{s} {cur}"
 
 
@@ -208,11 +224,13 @@ def _price_cell(x: dict) -> str:
         for q in x["quotes"]:
             p = ", ".join(f"{_money(q['currency'], v)} {k}" for k, v in q["prices"].items())
             out.append(f"{q['listed_as']}: {p} per {q['unit']} [{q['key']}]" + (f" ({q['note']})" if q["note"] else ""))
-        return "; ".join(out)
+        return ("**Closest listed tool, not the same:** " if x["substitute"] else "") + "; ".join(out)
     if x["kind"] == "estimate":
         e = x["estimate"]; return f"US${e['usd_low']:,} to {e['usd_high']:,}, estimate from {', '.join(e['from'])}"
     if x["kind"] == "included":
         return f"in {x['within']}: {x['reason']}"
+    if x["kind"] == "no cost":
+        return f"no cost: {x['reason']}"
     return f"unpriced: {x['reason']}"
 
 
@@ -220,7 +238,8 @@ def to_markdown() -> str:
     s = summary(); r = rows()
     table = "\n".join(f"| {x['id']} | {x['tool']} | {FACILITY[x['facility']].split(',')[0]} | {ACCESS[x['access']]} | {', '.join(x['phases']) or '—'} | **{x['kind']}** | {_price_cell(x)} |" for x in r)
     fees = "\n".join(f"- {t}: " + ", ".join(f"{_money(c, v)} {k}" for k, v in p.items()) + f" per {u} [{key}]" for key, t, c, u, p in ACCESS_FEES)
-    phase = "\n".join(f"| {ph} | {v['machines']} | {v['sourced']} | {v['estimate']} | {v['included']} | {v['unpriced']} |" for ph, v in s["by_phase"].items())
+    phase = "\n".join(f"| {ph} | {v['machines']} | " + " | ".join(str(v[k]) for k in KINDS) + " |" for ph, v in s["by_phase"].items())
+    srcs = "\n".join(f"- [{k}]: {EFFECTIVE[k]}" for k in s["keys"])
     return f"""# Machines and Facilities Atlas
 
 *Generated by `adamas build docs` from `adamas/atlas_prices.py`; do not edit by hand.*
@@ -233,9 +252,12 @@ use it, and what it costs. Each price carries its kind:
 - **estimate**: the sum of part-price ranges from the experiment parts lists (`adamas.experiments`), which are
   reviewer estimates of 2026 street prices, not quotes.
 - **included**: priced inside another machine's line.
+- **no cost**: nothing to buy (open-source software on a computer you have).
 - **unpriced**: no published price was found; the reason says why.
 
-Of {s['machines']} machines: {s['sourced']} sourced, {s['estimate']} estimate, {s['included']} included, {s['unpriced']} unpriced.
+Of {s['machines']} machines: {s['sourced']} sourced, {s['estimate']} estimate, {s['included']} included, {s['no cost']} no cost, {s['unpriced']} unpriced.
+{len(SUBSTITUTE)} of the sourced rows ({', '.join(sorted(SUBSTITUTE))}) are priced by the closest published tool, which is not the
+same tool; their notes say how it differs.
 Prices are not converted between currencies and not summed: most cleanroom and characterization prices are **per hour
 of tool time**, and the hours a phase needs are not modelled here. Hourly rates differ several-fold between academic and
 industry users, and between facilities (compare the two characterization sources below).
@@ -246,13 +268,13 @@ Shared cleanrooms also charge for access, on top of tool hours:
 
 {fees}
 
-The same sheet adds {WNF_OVERHEAD_PCT} % overhead to the listed rates for users outside the University of Washington
-[wnf2026].
+The same sheet adds {WNF_OVERHEAD_PCT} % overhead to the listed rates for users outside the University of Washington, and
+above a monthly charge of US${WNF_NOTCH_USD:,} bills tools at {WNF_ABOVE_NOTCH_PCT} % of the hourly rate [wnf2026].
 
 ## Coverage by phase
 
-| Phase | Machines | Sourced | Estimate | Included | Unpriced |
-|---|---|---|---|---|---|
+| Phase | Machines | Sourced | Estimate | Included | No cost | Unpriced |
+|---|---|---|---|---|---|---|
 {phase}
 
 ## Atlas
@@ -270,6 +292,12 @@ The same sheet adds {WNF_OVERHEAD_PCT} % overhead to the listed rates for users 
 - **Lab optics and detectors:** vendor list prices (objectives, single-photon detectors, time taggers) to replace the
   estimates; the vendors checked either do not publish prices or did not show them to an automated reader.
 
+## Sources and the dates they state
+
+{srcs}
+
+All were read on {READ_ON}.
+
 Sources: {' '.join(f'[{k}]' for k in s['keys'])}
 """
 
@@ -279,5 +307,5 @@ def write(path: str = "docs/build/ATLAS.md") -> str:
 
 
 def to_json() -> dict:
-    return {"rows": rows(), "summary": summary(), "facility": FACILITY, "access": ACCESS, "read_on": READ_ON,
+    return {"rows": rows(), "summary": summary(), "kinds": KINDS, "effective": EFFECTIVE, "facility": FACILITY, "access": ACCESS, "read_on": READ_ON,
             "access_fees": [{"key": k, "listed_as": t, "currency": c, "unit": u, "prices": p} for k, t, c, u, p in ACCESS_FEES]}
