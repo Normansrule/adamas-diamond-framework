@@ -1,4 +1,4 @@
-# ADAMAS reference database (part M, v0.35.0 and later): sources added for the Entanglement Lab (adamas/entangle.py) and build phase P7 (shewhart1931). Standard citations of classic papers, entered by hand; awaiting Crossref verification (make verify, make apply-verify).
+# ADAMAS reference database (part M, v0.35.0 and later): sources added for the Entanglement Lab (adamas/entangle.py) and build phases P7 and P8 (shewhart1931, mankins1995). Standard citations of classic papers, entered by hand; awaiting Crossref verification (make verify, make apply-verify).
 ghirardi1980 | Ghirardi, G. C.; Rimini, A.; Weber, T. | 1980 | A general argument against superluminal transmission through the quantum mechanical measurement process | Lettere al Nuovo Cimento | 27, 293 | bey,net | K
 clauser1969 | Clauser, J. F.; Horne, M. A.; Shimony, A.; Holt, R. A. | 1969 | Proposed experiment to test local hidden-variable theories | Physical Review Letters | 23, 880 | bey,net | K
 cirelson1980 | Cirel'son, B. S. | 1980 | Quantum generalizations of Bell's inequality | Letters in Mathematical Physics | 4, 93 | bey | K
@@ -6,3 +6,4 @@ ekert1991 | Ekert, A. K. | 1991 | Quantum cryptography based on Bell's theorem |
 bennett1992 | Bennett, C. H.; Brassard, G.; Mermin, N. D. | 1992 | Quantum cryptography without Bell's theorem | Physical Review Letters | 68, 557 | net | K
 wootters1982 | Wootters, W. K.; Zurek, W. H. | 1982 | A single quantum cannot be cloned | Nature | 299, 802 | bey | K
 shewhart1931 | Shewhart, W. A. | 1931 | Economic Control of Quality of Manufactured Product | D. Van Nostrand | book | si | K
+mankins1995 | Mankins, J. C. | 1995 | Technology readiness levels: a white paper | NASA Office of Space Access and Technology | white paper | app | K

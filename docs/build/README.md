@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3, P4, P5, P6 and P7 are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
+A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, P1, P2, P3, P4, P5, P6, P7 and P8 are written in full, with their gates evaluated by code; the rest are outlined in [phase0/BUILD_PROGRAM_OUTLINE.md](../phase0/BUILD_PROGRAM_OUTLINE.md) and are written one per release as their sources come in ([STATUS.md](../STATUS.md)).
 
 | Phase | Name | Budget | Goal | Gate question | Status |
 |---|---|---|---|---|---|
@@ -14,4 +14,4 @@ A ladder from a laptop to a pilot line. Each phase ends at a decision gate. P0, 
 | P5 | Placement | shared facility | Implant through masks, anneal, conversion statistics, NV pairs closer than 30 nm. | Is placement yield good enough to plan arrays? | [written](P5_placement.md) |
 | P6 | Integration | packaging line or MPW partner | Diamond chiplets bonded to silicon CMOS control; multi-cell arrays. | Does integration keep coherence and yield? | [written](P6_integration.md) |
 | P7 | Pilot line and products | fab | Wafer-scale flow, statistical process control, first products. | Which product line pays for the line? | [written](P7_pilot_line.md) |
-| P8 | Frontier and humanity | application-specific | Grid and EV efficiency, space electronics, medical magnetometry, navigation. | Where does diamond beat the incumbent, with evidence? | outline |
+| P8 | Frontier and humanity | application-specific | Grid and EV efficiency, space electronics, medical magnetometry, navigation. | Where does diamond beat the incumbent, with evidence? | [written](P8_frontier.md) |

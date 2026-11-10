@@ -22,7 +22,7 @@
 </style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 6px"><h1 style="font-size:clamp(32px,4.6vw,58px)">From a laptop <span class="grad">to a pilot line</span></h1>
-<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P7 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P8 is an outline until its sources are in.</p></section>
+<p class="lead" style="max-width:860px">Nine phases, each ending at a decision gate. P0 to P8 are written in full, and their gates are evaluated by the package: the verdicts below change when the models or the data change. P8 is an evidence ledger whose claims are checked by rules in code.</p></section>
 <section class="block" style="padding-top:6px">
   <div class="card" style="padding:12px"><svg class="ladder" id="ladder" viewBox="0 0 1160 250" role="group" aria-label="The build program, phase by phase; select a phase"></svg></div>
   <p class="src">Solid border: written in full. Dashed: outline. The device track (P4) and the quantum track (P3, P5) meet at P6.</p>
@@ -159,6 +159,16 @@ function detail() {
       ${row('Edge ring of non-uniform growth', `${pc(b.yield.y_meas)} vs ${pc(b.yield.y_pred)}`, b.yield.pass, r.degraded.yield, true)}</table></div>
       <h3>Good dies per 2-inch wafer at D₀ = ${fx(y.d0_cm2, 2)} cm⁻²</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Die area (mm²)</th><th>Gross</th><th>Yield</th><th>Good</th></tr>${gd}</table></div>
       <p class="src">Not priced per die: no sourced wafer cost yet. Illustrative inputs except the 2-inch wafer [kim2021], the 3 mm monitor die and P4's contact resistance. Control chart after [shewhart1931]; yield model [murphy1964]. Rates over ${r.runs} simulated runs.</p>`; }
+  else if (sel === 'P8') { const g = D.p8, rows = g.rows || [], apps = g.apps || [], b = g.degraded || {};
+    const fx = (v, n) => v === null || v === undefined ? '—' : v.toFixed(n);
+    const rng = c => !c ? '' : (c.p10 === c.p90 ? fx(c.p50, 2) : `${fx(c.p10, 2)}–${fx(c.p90, 2)}`);
+    const body = apps.map((a, i) => { const r = rows[i] || {}; return `<tr><td>${a.name}</td><td class="n">${a.computed ? rng(r.computed) : (a.cited ? 'cited' : '—')}</td><td>${a.claim}</td><td class="n">${a.trl} / ${r.cap ?? '—'}</td><td>${V(!!r.pass, r.pass ? 'pass' : 'fail')}</td></tr>`; }).join('');
+    const tw = (lab, t) => `<tr><td>${lab}</td><td>${V(!(t && t.pass), t && t.pass ? 'passed' : 'rejected')}</td></tr>`;
+    right = `<h3 style="margin-top:0">Evidence ledger ${V(g.verdict === 'go', g.verdict)}</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Application</th><th>Ratio (above 1 favours diamond)</th><th>Claim</th><th>TRL / cap</th><th>Rules</th></tr>${body}</table></div>
+      <p class="src">Power switch: bulk-doped diamond loses to SiC at 300 K and wins at 523 K over sourced parameter ranges; the median crosses 1 at ${fx(g.crossover_p50_k, 0)} K. Computed, not measured.</p>
+      <h3>Inflated claims: each must be rejected</h3><div style="overflow-x:auto"><table class="tests"><tr><th>Twin</th><th></th></tr>
+      ${tw('300 K inverter switch "beats" SiC', b.hidden_loss)}${tw('NV magnetometer at TRL 6', b.inflated_trl)}${tw('RF amplifier "beats" GaN, no comparison', b.unsupported_win)}</table></div>
+      <p class="src">Claims and readiness levels are this repository's judgment; rules R1 to R3 check them against the evidence. TRL scale [mankins1995]. Not priced.</p>`; }
   else right = `<h3 style="margin-top:0">Outline ${V(null, 'not yet written')}</h3><p style="color:var(--mute)">This phase is written when its machines, prices, facility needs, and pass/fail criteria have sources. Why it waits: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/STATUS.md">STATUS.md</a>.</p>`;
   const doc = D.docs[sel];
   $('detail').innerHTML = `<div><h2 style="margin:0 0 10px;font-size:26px">${p.id} · ${esc(p.name)}</h2><dl><dt>Goal</dt><dd>${esc(p.goal)}</dd><dt>Budget</dt><dd>${esc(p.budget)}</dd>

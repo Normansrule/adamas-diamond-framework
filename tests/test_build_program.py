@@ -43,7 +43,7 @@ def test_p2_gate_passes_a_correct_setup_about_95_percent_of_the_time():
 
 
 def test_phase_documents_are_current():
-    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md()), (B.DOCS["P6"], B._p6_md()), (B.DOCS["P7"], B._p7_md())):
+    for name, text in (("README.md", B._index_md()), (B.DOCS["P0"], B._p0_md()), (B.DOCS["P1"], B._p1_md()), (B.DOCS["P2"], B._p2_md()), (B.DOCS["P3"], B._p3_md()), (B.DOCS["P4"], B._p4_md()), (B.DOCS["P5"], B._p5_md()), (B.DOCS["P6"], B._p6_md()), (B.DOCS["P7"], B._p7_md()), (B.DOCS["P8"], B._p8_md())):
         assert (ROOT / "docs" / "build" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
 
 
@@ -230,3 +230,29 @@ def test_p7_pass_rates_meet_the_design():
     assert r["gate"] >= 0.95 - 3 * (0.95 * 0.05 / 300) ** 0.5, r
     assert r["spc"] >= c - 3 * se and r["yield"] >= c - 3 * se, r              # each check's false-alarm rate
     assert all(v <= 0.05 for v in r["degraded"].values()), r
+
+
+
+def test_p8_ledger_passes_and_every_inflated_claim_is_rejected():
+    g, b = B.p8_gate(), B.p8_degraded()
+    assert g["verdict"] == "go" and not any(v["pass"] for v in b.values())
+    assert not b["hidden_loss"]["r1"] and not b["inflated_trl"]["r2"] and not b["unsupported_win"]["r1"]
+    assert set(g["beats"]) == {"hot", "spreader", "detector"}
+
+
+def test_p8_power_comparison_flips_with_temperature():
+    """Bulk-doped diamond loses to SiC at 300 K and wins at 523 K over the sourced ranges; the crossover is between."""
+    cold, hot = B.p8_loss_ratio_percentiles(300.0), B.p8_loss_ratio_percentiles(523.0)
+    assert cold["p90"] < 1 < hot["p10"]
+    assert 300 < B.p8_crossover_k("p50") < B.p8_crossover_k("p10") < 523
+    from adamas import uncertainty as U
+    mc = U.monte_carlo("power", B.P8_SAMPLES)                    # the same samples as the uncertainty study
+    assert (cold["p10"], cold["p90"]) == pytest.approx((mc["p10"], mc["p90"]), rel=1e-12)
+
+
+def test_p8_rules_cover_every_claim_type():
+    a = {"id": "x", "computed": None, "cited": None, "claim": "undecided", "evidence": "proposed", "trl": 3, "problem": "p"}
+    assert not B.p8_check(a)["r2"] and B.p8_check({**a, "trl": 2})["pass"]
+    assert not B.p8_check({**a, "trl": 2, "problem": " "})["r3"]
+    assert B.p8_check({**a, "trl": 2, "claim": "beats", "cited": "a measured comparison [x2000]"})["r1"]
+    assert not B.p8_check({**B.P8_APPS[1], "claim": "undecided"})["r1"]          # hiding a decisive win also fails

@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.39.0 (build phase P8)
+
+P8 (frontier) completes the build program as an evidence ledger. Every win it claims is backed by a comparison computed over sourced parameter ranges or by a cited measurement, and code rejects claims that contradict a decisive comparison, wins without evidence, and readiness levels above what the evidence allows; three inflated-claim twins check each rule. The ledger reports that bulk-doped diamond loses to silicon carbide as a power switch at room temperature and wins only at high junction temperature, and that this win is computed, not measured. Open items are in [STATUS.md](STATUS.md).
+
 ### Status after v0.38.0 (build phase P7)
 
 P7 (pilot line) is written with two code-evaluated checks (process in statistical control, yield explained by killer defects). The wafer size is sourced [kim2021], the chart follows [shewhart1931] with limits widened and stated, and the yield model is [murphy1964], which the simulation reproduces exactly (formula checked by quadrature, sampler by Monte Carlo); D₀ comes from separate defect-monitor wafers so the yield check is not circular; every other input is labeled illustrative; each check has a degraded twin that must fail. The product question is answered only as good dies per wafer: no price is sourced, so no product is called profitable. Open items are in [STATUS.md](STATUS.md).

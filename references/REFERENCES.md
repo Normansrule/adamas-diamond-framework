@@ -1,6 +1,6 @@
 # References
 
-**591 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**592 references.** 500 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -523,9 +523,10 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[meneghini2021]`** Meneghini, M.; De Santi, C.; Abid, I.; et al. (2021). GaN-based power devices: physics, reliability, and perspectives. *Journal of Applied Physics*, 130, 181101. [doi:10.1063/5.0061354](https://doi.org/10.1063/5.0061354)
 - 📚 **`[kassakian2023]`** Kassakian, J. G.; Perreault, D. J.; Verghese, G. C.; Schlecht, M. F. (2023). Principles of Power Electronics (2nd ed.). *Cambridge University Press*.
 
-## Applications and requirements (12)
+## Applications and requirements (13)
 
 - 📚 **`[howard1966]`** Howard, R. A. (1966). Information value theory. *IEEE Transactions on Systems Science and Cybernetics*, 2, 22-26.
+- 📚 **`[mankins1995]`** Mankins, J. C. (1995). Technology readiness levels: a white paper. *NASA Office of Space Access and Technology*, white paper.
 - 📚 **`[jansen1999]`** Jansen, M. J. W. (1999). Analysis of variance designs for model output. *Computer Physics Communications*, 117, 35-43.
 - ✅ **`[tapper2000]`** Tapper, R. J. (2000). Diamond detectors in particle physics. *Reports on Progress in Physics*, 63, 1273. [doi:10.1088/0034-4885/63/8/203](https://doi.org/10.1088/0034-4885/63/8/203)
 - 📚 **`[sobol2001]`** Sobol, I. M. (2001). Global sensitivity indices for nonlinear mathematical models and their Monte Carlo estimates. *Mathematics and Computers in Simulation*, 55, 271-280.

@@ -2,7 +2,20 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.38.0 (2026-11-09).
+Last updated: v0.39.0 (2026-11-10).
+
+## Open in v0.39.0: build phase P8 (frontier)
+
+[P8](build/P8_frontier.md) is written as an evidence ledger whose rules are evaluated by code (`adamas.build_program.p8_gate`). What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Incumbent numbers for magnetometry, RF and navigation | No sourced femtotesla medical requirement, fluxgate or optically pumped sensitivity, GaN RF power density at matched conditions, or navigation requirement | Sources for each, then a computed or cited comparison in the ledger |
+| Radiation-hardness numbers | Only the review [tapper2000] is cited | Dose-to-failure data for diamond and silicon devices |
+| Measured power comparison | The 523 K win is computed from a model with bulk-doped drift; no diamond converter is measured | A converter bench (M56) test of P4 to P7 devices at 250 °C |
+| Claims and readiness levels | They are this repository's judgment; the rules check consistency with the evidence, not the judgment itself | Review by people working in each application |
+| Prices of benches, shielded rooms and irradiation time | Not sourced | Quotes or facility rates |
+| Verification of mankins1995 | Entered by hand; Crossref is not reachable from the build container | `make verify` |
 
 ## Open in v0.38.0: build phase P7 (pilot line)
 
@@ -160,7 +173,7 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 |---|---|---|
 | Renaming experiment IDs in E29 | The roadmap IDs are cross-referenced in the README, E2, E8, the notebooks, and the decision analysis's keys. Renaming them breaks published links and saved course progress for no change in content. The two ID lists are explained in the chapter instead. | Nothing; kept by decision. |
 | Tauri desktop shell with a Python engine | The Electron build is released (installers for Windows, macOS, and Linux built in CI), passes its per-page self-test in CI, and runs the same web code. A port is roadmap step 5 in [phase0/APP_ARCHITECTURE.md](phase0/APP_ARCHITECTURE.md). Porting before the content is complete would double the release work. | Port after the build program write-ups; keep Electron until Tauri passes the same self-test. |
-| Build program P8 full write-up and the Machines and Facilities Atlas (P0 to P7 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | One phase per release, each passing the same reference check. |
+| Machines and Facilities Atlas prices (P0 to P8 are written) | Each of the roughly 60 Atlas entries needs a sourced price, facility need, and pass/fail criterion; several phases list machines without prices. Writing them without sources would break this project's rule that every number is sourced or computed. The outline is in [phase0/BUILD_PROGRAM_OUTLINE.md](phase0/BUILD_PROGRAM_OUTLINE.md). | Quotes or facility rates, entry by entry. |
 | GitHub Actions major versions (checkout, setup-node, setup-python, artifacts, pages) | GitHub warns that these target Node.js 20; it already runs them on Node.js 24, and every workflow passes. Newer majors exist (up to v7 and v8) and some change artifact behaviour, so each bump needs its release notes read and a test run. | Bump one workflow at a time and confirm the desktop release still uploads its installers. |
 | Crossref verification of the newest references (part K) | Verification queries Crossref from the network; the build machine for releases cannot reach it. Metadata was checked by hand on publisher, arXiv, or institutional pages. | On a machine with internet, from the repository folder: `make verify MAILTO=you@example.com`, then `make apply-verify`. |
 
