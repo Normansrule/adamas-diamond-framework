@@ -103,7 +103,9 @@ def test_confirmed_numbers_match_their_papers():
     for (dev, k), (v, key) in want.items():
         c = qdl.BY_ID[dev]["fom"][k]["current"]
         assert c["value"] == v and c["refs"] == [key] and c["conditions"] and not c.get("todo"), (dev, k)
-    assert qdl.BY_ID["QDL-24"]["fom"]["e"]["current"]["label"] == "reported"          # temperature not confirmed
+    assert all(qdl.BY_ID[d]["fom"][k]["current"]["label"] == "demonstrated" for d, k in want)       # all at room temperature
+    units = {("QDL-12", "sens"): "pT/√Hz", ("QDL-21", "sens"): "pT/√Hz", ("QDL-24", "e"): "V/cm/√Hz", ("QDL-18", "res"): "Hz", ("QDL-17", "res"): "nm"}
+    assert all(qdl.BY_ID[d]["fom"][k]["unit"] == u for (d, k), u in units.items())
     assert len(qdl.open_numbers()) == 2
 
 

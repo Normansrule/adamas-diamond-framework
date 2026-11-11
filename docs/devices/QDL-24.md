@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Electric-field sensitivity | 140 V/cm/√Hz | reported: single NV, AC field, one second of averaging; operating temperature not confirmed from the full text [dolde2011] | — |  |
+| Electric-field sensitivity | 140 V/cm/√Hz | demonstrated: single NV, AC field, ambient conditions; equivalent to one elementary charge at 150 nm with 1 s of averaging [dolde2011] | — |  |
 
 ## How to build it
 

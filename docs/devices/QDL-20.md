@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| dD/dT | -74.2 kHz/K ± 0.7 | demonstrated: weighted average of four samples near 300 K [acosta2010] | — |  |
+| dD/dT | -74.2 ± 0.7 kHz/K | demonstrated: weighted average of four samples near 300 K [acosta2010] | — |  |
 
 ## How to build it
 

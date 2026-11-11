@@ -4,7 +4,7 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 **Status: reported** (Published, with a bound or special conditions stated next to the number). Operating temperature: about 300 K. [babinec2010] [hadden2010] [riedel2017]
 
-Collection gains are measured at room temperature; the factor depends on the structure (ten-fold flux for nanowires [babinec2010]).
+Collection gains are measured at room temperature; the factor depends on the structure (ten-fold flux for nanowires [babinec2010]). The status stays reported because the solid-immersion lens and waveguide gains are not confirmed here.
 
 **Analogy only:** a interconnect for light (analogy) — the real device is the Optical waveguide and photon collector. Fits: It routes signals (photons) to where they are measured. Breaks: It only improves collection; at room temperature it does not make photons indistinguishable.
 

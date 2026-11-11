@@ -28,7 +28,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Sensitivity | 15 pT/√Hz ± 1 | demonstrated: NV ensemble, ambient conditions, 13 × 200 × 2000 µm sensing volume, 4.0 kHz noise bandwidth; one action potential gives a signal-to-noise ratio of about 1.2 [barry2016] | — |  |
+| Sensitivity | 15 ± 1 pT/√Hz | demonstrated: NV ensemble, ambient conditions, 13 × 200 × 2000 µm sensing volume, 4.0 kHz noise bandwidth; one action potential gives a signal-to-noise ratio of about 1.2; about 1.6 times worse below 40 µs time resolution [barry2016] | — |  |
 
 ## How to build it
 

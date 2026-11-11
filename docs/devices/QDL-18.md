@@ -31,7 +31,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Spectral resolution | 3 Hz | demonstrated: NV ensemble, 88 mT, thermally polarized liquid, 1 pL sample volume (30 pL effective); 2.8 Hz proton linewidth with refocusing [glenn2018] | — |  |
+| Spectral resolution | 3 Hz | demonstrated: NV ensemble, 88 mT, thermally polarized liquid, about 1 pL nominal sample volume, half the signal from about 30 pL; 2.8 Hz proton linewidth with refocusing [glenn2018] | — |  |
 
 ## How to build it
 

@@ -549,7 +549,7 @@ DEVICES = [
                   "and waveguides guide it out, which shortens every readout. This raises the photons-per-repetition input of "
                   "the readout check (QDL-05)."),
   "status": {"label": "reported", "temperature_k": 300, "refs": ["babinec2010", "hadden2010", "riedel2017"],
-             "note": "Collection gains are measured at room temperature; the factor depends on the structure (ten-fold flux for nanowires [babinec2010])."},
+             "note": "Collection gains are measured at room temperature; the factor depends on the structure (ten-fold flux for nanowires [babinec2010]). The status stays reported because the solid-immersion lens and waveguide gains are not confirmed here."},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Faster readout in registers and sensors", "reported", ["babinec2010", "hadden2010"])],
   "fom": {"gain": _fom("Collection gain over bulk", "×", "higher", _cur(10, "demonstrated", ["babinec2010"], "photon flux of a single NV in a nanowire against bulk diamond, at ten times less pump power; room temperature"), None)},
@@ -712,7 +712,7 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["staudacher2013", "mamin2013", "aslam2017", "glenn2018", "lovchinsky2016"], "note": ""},
   "gates": [_g("Dynamical-decoupling sensing sequences", "demonstrated", ["staudacher2013", "mamin2013"])], "entanglement": [],
   "use_cases": [_g("Chemistry of tiny samples", "demonstrated", ["glenn2018"]), _g("Single-protein detection", "demonstrated", ["lovchinsky2016"])],
-  "fom": {"res": _fom("Spectral resolution", "Hz", "lower", _cur(3, "demonstrated", ["glenn2018"], "NV ensemble, 88 mT, thermally polarized liquid, 1 pL sample volume (30 pL effective); 2.8 Hz proton linewidth with refocusing"), None)},
+  "fom": {"res": _fom("Spectral resolution", "Hz", "lower", _cur(3, "demonstrated", ["glenn2018"], "NV ensemble, 88 mT, thermally polarized liquid, about 1 pL nominal sample volume, half the signal from about 30 pL; 2.8 Hz proton linewidth with refocusing"), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {"S06": "Shallow NVs (2.5 keV, about 4 nm deep by adamas.coupling)."},
             "extra": [], "atlas": ["M20", "M22", "M47", "M51"]},
   "layers": ["Sample (liquid)", "Shallow NV layer", "Diamond"], "checks": [], "no_check": "No NMR model in the package yet.",
@@ -756,7 +756,7 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["barry2016"], "note": ""},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Non-invasive neural recording", "demonstrated", ["barry2016"])],
-  "fom": {"sens": _fom("Sensitivity", "pT/√Hz", "lower", _cur(15, "demonstrated", ["barry2016"], "NV ensemble, ambient conditions, 13 × 200 × 2000 µm sensing volume, 4.0 kHz noise bandwidth; one action potential gives a signal-to-noise ratio of about 1.2", err=1), None)},
+  "fom": {"sens": _fom("Sensitivity", "pT/√Hz", "lower", _cur(15, "demonstrated", ["barry2016"], "NV ensemble, ambient conditions, 13 × 200 × 2000 µm sensing volume, 4.0 kHz noise bandwidth; one action potential gives a signal-to-noise ratio of about 1.2; about 1.6 times worse below 40 µs time resolution", err=1), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18", "S19"], "overrides": {}, "extra": [], "atlas": ["M38", "M40", "M58"]},
   "layers": ["Tissue", "NV ensemble", "Diamond"],
   "checks": [_chk("detect", "Signal is detected", {"contrast": 0.012}, {"contrast": 0.0006}, "Twenty times less contrast (stray light)", "five-sigma convention (build program P1)")],
@@ -792,7 +792,7 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["dolde2011", "hsieh2019"], "note": ""},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Electric-field sensing with a single NV", "demonstrated", ["dolde2011"]), _g("Materials at megabar pressure", "demonstrated", ["hsieh2019"])],
-  "fom": {"e": _fom("Electric-field sensitivity", "V/cm/√Hz", "lower", _cur(140, "reported", ["dolde2011"], "single NV, AC field, one second of averaging; operating temperature not confirmed from the full text"), None)},
+  "fom": {"e": _fom("Electric-field sensitivity", "V/cm/√Hz", "lower", _cur(140, "demonstrated", ["dolde2011"], "single NV, AC field, ambient conditions; equivalent to one elementary charge at 150 nm with 1 s of averaging"), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {"S06": "Shallow NV layer in an anvil culet for pressure work."},
             "extra": [], "atlas": ["M20", "M22", "M47"]},
   "layers": ["Sample under pressure", "NV layer in the anvil", "Diamond anvil"], "checks": [], "no_check": "No Stark or stress model in the package beyond adamas.nv strain.",
@@ -1025,7 +1025,7 @@ def _device_md(d: dict, rates: dict) -> str:
             elif c.get("todo"):
                 cur, lab = "to confirm", f"{c['todo']} {_refs(c['refs'])}"
             else:
-                cur = (c.get("bound") or "") + _fmt(c["value"], f["unit"]) + (f" ± {_fmt(c['err'])}" if c.get("err") else "")
+                cur = (c.get("bound") or "") + (f"{_fmt(c['value'])} ± {_fmt(c['err'], f['unit'])}" if c.get("err") else _fmt(c["value"], f["unit"]))
                 lab = f"{c['label']}: {c['conditions']} {_refs(c['refs'])}".strip()
             tv = "—" if not t or t["value"] is None else _fmt(t["value"], f["unit"])
             tb = "" if not t else t["basis"] + (f" (`{t['python']}`)" if t.get("python") else "") + (" " + _refs(t["refs"]) if t.get("refs") else "")

@@ -717,7 +717,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 |---|---|---|
 | Starting plate | CVD (100) plates 20 to 40 µm thick | [tao2014] |
 | Thinning | Argon-chlorine plasma RIE | [tao2014] |
-| Strain-coupling device process | Electronic-grade plates 2 × 2 × 0.02 mm; 30 nm PECVD SiO₂; oxide-bonded to oxidized silicon; Ar/Cl₂ ICP thinning by about 18 µm to 1 to 2 µm; photolithography and O₂ plasma etch; released in buffered HF that removes the 1 µm SiO₂; piranha clean | [ovartchaiyapong2012] |
+| Strain-coupling device process | Electronic-grade plates 2 × 2 × 0.02 mm; 30 nm PECVD SiO₂; oxide-bonded to oxidized silicon; Ar/Cl₂ ICP thinning by about 18 µm to 1 to 2 µm; photolithography and O₂ plasma etch; released in buffered HF that removes the 1 µm SiO₂; two rounds of piranha, RCA1 and RCA2 cleans | [ovartchaiyapong2012] |
 | Release | Backside etching; 106 of 108 cantilevers survived | [tao2014] |
 | Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device, made by the process above [ovartchaiyapong2012], was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] [ovartchaiyapong2012] |
 | NV creation | ¹⁴N implant 3 × 10⁹ cm⁻² at 40 keV; 800 °C vacuum anneal for 3 h (as traveler S06 and S07) | [ovartchaiyapong2014] |

@@ -12,7 +12,6 @@ Seven of the nine device figures of merit that said "confirm from the paper" now
 |---|---|---|
 | QDL-07 NV⁻ fraction under electrical control | [grotz2012] reports a shift from NV⁰ to NV⁻ over a ±0.5 V gate but no fraction | A paper that states the fraction |
 | QDL-19 per-pixel sensitivity | The review [levine2019] gives no per-pixel number in the parts read | A measured quantum diamond microscope sensitivity with its pixel size |
-| QDL-24 operating temperature | Only the abstract of [dolde2011] was read | The full paper |
 | Verification of ovartchaiyapong2012 | Entered by hand from the arXiv page (which links its DOI) | `make verify` |
 
 ## Open in v0.41.0: extension steps X07a to X27a
@@ -159,7 +158,7 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 |---|---|---|
 | QDL-07 | NV⁻ fraction under readout | NV⁻ fraction under electrical control: [grotz2012] shifts an ensemble from NV⁰ to NV⁻ over a ±0.5 V electrolytic gate but states no fraction; needs another source |
 | QDL-19 | Field sensitivity per pixel | Per-pixel sensitivity: the review [levine2019] defines a volume-normalized sensitivity but no per-pixel number was found in the parts read; needs a measured value |
-| QDL-09, 12, 17, 18, 21, 22, 24 | Seven figures of merit | Closed in v0.42.0: values read from the papers with their conditions (QDL-24's operating temperature is still unconfirmed, so it is labeled reported) |
+| QDL-09, 12, 17, 18, 21, 22, 24 | Seven figures of merit | Closed in v0.42.0: values read from the papers with their conditions (all seven measured at room temperature or ambient conditions) |
 
 ## Fixed in v0.30.0
 
