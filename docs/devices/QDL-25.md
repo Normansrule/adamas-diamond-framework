@@ -33,14 +33,14 @@ None.
 
 ## How to build it
 
-Traveler variant: `sensor` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).
+Traveler variant: `sensor` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).
 
 | Step | What | Max °C | Notes |
 |---|---|---|---|
 | S01 | **Incoming substrate inspection.** Every later step inherits the substrate's defects: dislocations become leakage paths, polishing damage roughens the channel, nitrogen and silicon impurities add unwanted color centers. | 25 | Safety: Handle with plastic or diamond-safe tweezers; edges chip. |
 | S06 | **Nitrogen implantation through apertures.** High-density NV ensemble (or irradiated HPHT). | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
-| X25a | **Cavity assembly (sapphire or dielectric resonator).** Mount the diamond in a high-Q microwave cavity with a magnet. | — | **missing** (demonstrated) [breeze2018] |
+| X25a | **Cavity assembly (sapphire or dielectric resonator).** Optically pumped NV centers in a high-quality microwave resonator amplify microwaves: a continuous-wave maser at room temperature. | — | **extension step** (demonstrated, docs/process/TRAVELER.md) [breeze2018] Safety: Class 4 laser (hundreds of mW): interlocked enclosure and laser training. Strong magnet: pacemakers, tools and pinch hazards. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 

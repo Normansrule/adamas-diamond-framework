@@ -36,7 +36,7 @@ None quantified yet.
 
 ## How to build it
 
-Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).
+Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).
 
 | Step | What | Max °C | Notes |
 |---|---|---|---|
@@ -46,7 +46,7 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** a
 | S06 | **Nitrogen implantation through apertures.** Places nitrogen where qubits are wanted (layer QIMPLANT of PDK-0). Depth and dose set how many NV centers form and how close they sit to the surface. | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
 | S13 | **Atomic-layer-deposited Al₂O₃ gate insulator and passivation.** Al₂O₃ is both the gate insulator and the cap that stabilizes the hole gas. Deposition temperature sets the trade-off: hot ALD survives high-temperature operation; cold ALD keeps NO₂. | 450 | Safety: Trimethylaluminium is pyrophoric: sealed source, trained operators, never open to air. |
-| X15a | **Ferromagnet strip deposition.** Not specified in the traveler. | — | **missing** (proposed) [trifunovic2013] |
+| X15a | **Ferromagnet strip deposition.** The proposal links two spin qubits about a micrometre apart through the magnons of a ferromagnet placed just above them. | — | **extension step** (proposed, docs/process/TRAVELER.md) [trifunovic2013] Safety: Evaporation and sputtering: high voltage and vacuum hazards; facility training. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 

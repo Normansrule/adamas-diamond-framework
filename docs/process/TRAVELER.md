@@ -547,3 +547,330 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 **Silicon, for comparison.** Silicon is sawn with blades and packaged with organic die-attach limited to about 150 to 175 °C.
 
+## Extension steps (device-specific, outside T1)
+
+Eleven devices in the Quantum Device Library add one step to T1. Each is written below with its evidence label: **demonstrated** (done at room temperature in the cited work), **cryogenic** (the cited result needs cryogenic operation) or **proposed** (no fabricated device). A parameter the source does not give is marked *to source*.
+
+| Step | Title | After | Devices | Label |
+|---|---|---|---|---|
+| X07a | p-i-n doped growth (boron and phosphorus layers) | S03 | QDL-07 | demonstrated |
+| X09a | Nanophotonic etch (nanopillars or waveguides) | S07 | QDL-09 | demonstrated |
+| X10a | Dark-spin chain placement | S06 | QDL-10 | proposed |
+| X11a | Nanophotonic etch (cavity) | S07 | QDL-11 | cryogenic |
+| X13a | Optomechanical resonator fabrication | S07 | QDL-13 | proposed |
+| X14a | Released diamond nanobeam | S07 | QDL-14 | demonstrated |
+| X15a | Ferromagnet strip deposition | S13 | QDL-15 | proposed |
+| X17a | Pillar tip etch and cantilever mount | S07 | QDL-17 | demonstrated |
+| X20a | Nanodiamond milling and surface treatment | S07 | QDL-20 | demonstrated |
+| X25a | Cavity assembly (sapphire or dielectric resonator) | S07 | QDL-25 | demonstrated |
+| X27a | CMOS die from a multi-project wafer (MPW) shuttle | S19 | QDL-27 | demonstrated |
+
+### X07a · p-i-n doped growth (boron and phosphorus layers)
+
+*Evidence: **demonstrated** · after S03 · devices QDL-07 · peak temperature not given by the source · Atlas M01, M23*
+
+**Why.** An NV center inside the intrinsic layer of a diamond p-i-n diode can be driven electrically: injected electrons and holes recombine at the defect, which then emits single photons at room temperature.
+
+**Equipment.** MPCVD reactor with diborane and phosphine (or trimethylboron) doping lines; SIMS for dopant profiles; Ti/Pt/Au contacts (traveler S09 to S10).
+
+| Parameter | Value | Source |
+|---|---|---|
+| Structure | Single neutral NV center in the intrinsic layer of a p-i-n diode | [mizuochi2012] |
+| Doping levels, layer thicknesses, growth temperature | Not given in the abstract of [mizuochi2012]; to source from the full paper | [mizuochi2012] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Electroluminescence from a single center at room temperature | pass / fail | [mizuochi2012] |
+| Diode rectifies (forward current, low reverse leakage) | pass / fail | ADAMAS |
+
+**Safety.** Phosphine and diborane are highly toxic and pyrophoric: gas cabinets, detectors and the facility's toxic-gas training are mandatory.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| No n-type conduction | Phosphorus not incorporated or compensated | Check SIMS profile, growth orientation and nitrogen background |
+
+**Silicon, for comparison.** Silicon p-n junctions are made by implantation or diffusion in minutes; diamond n-type doping is the hard part.
+
+### X09a · Nanophotonic etch (nanopillars or waveguides)
+
+*Evidence: **demonstrated** · after S07 · devices QDL-09 · peak temperature 200 °C · Atlas M12, M16, M10*
+
+**Why.** A pillar or waveguide around an NV center guides its light out of the high-index diamond, so more photons reach the detector at lower laser power.
+
+**Equipment.** Electron-beam lithography; ICP-RIE with oxygen (and chlorine for angled etching); HF bath for mask removal; Faraday cage for angled etching.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Pillar size | About 200 nm diameter, 2 µm long | [babinec2010] |
+| Mask | FOx-17 spin-on glass (negative e-beam resist) diluted 1:2 in MIBK; removed in HF | [babinec2010] [hausmann2010] |
+| Pillar etch | Oxygen ICP-RIE, 30 sccm O₂, 100 W bias, 10 mTorr, ICP 600 to 1000 W, about 10 min | [babinec2010] |
+| Etch rate | 190 to 240 nm/min in single-crystal diamond | [hausmann2010] |
+| Waveguides (angled etch) | About 200 nm titanium mask; 50 sccm O₂ + 2 sccm Cl₂, 700 W ICP, 100 W RF, 10 mTorr; Faraday cage at about 45° gives about 35° sidewalls | [burek2012] |
+| Clean | Boiling nitric, perchloric and sulfuric acid (as traveler S02) | [hausmann2010] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Saturated count rate, pillar over unpatterned diamond | ≥ 5 × | ADAMAS (about ten-fold reported [babinec2010]) |
+| g⁽²⁾(0) below 0.5 on the chosen pillar | pass / fail | [babinec2010] |
+
+**Safety.** HF: calcium gluconate gel at hand and HF-specific training. Chlorine is toxic and corrosive: interlocked gas cabinet. Hot tri-acid: face shield, acid hood.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Pillars taper or break | Mask erodes or too much bias | Thicker or harder mask (Al₂O₃ resists best [hausmann2010]), lower bias |
+| No NV in the pillar | NV density too low for random placement | Raise implant dose or align pillars to located NVs |
+
+**Silicon, for comparison.** Silicon photonics etches waveguides at wafer scale with deep-UV lithography; diamond nanophotonics is still chip-scale.
+
+### X10a · Dark-spin chain placement
+
+*Evidence: **proposed** · after S06 · devices QDL-10 · peak temperature not given by the source · Atlas M20, M21*
+
+**Why.** A chain of optically dark nitrogen spins between two NV registers carries quantum information over hundreds of nanometres without photons.
+
+**Equipment.** Low-energy nitrogen implanter; Aperture mask or scanning-probe implantation; Vacuum anneal (traveler S07).
+
+| Parameter | Value | Source |
+|---|---|---|
+| Chain spacing | About 16 to 18 nm (16 nm for a 7-spin chain, 18.1 nm for an 18-spin chain in the proposal's examples) | [yao2012] |
+| Chain length | About 5 spins for 100 nm, about 20 for 500 nm | [yao2012] |
+| Register spacing | Plaquettes about 100 to 500 nm apart | [yao2012] |
+| Placement process | Implantation and anneal with about 40 % NV conversion assumed; no process reaches this order yet | [yao2012] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Mean chain spacing | ≤ 20 nm | [yao2012] |
+
+**Safety.** Ion implanters: radiation and high-voltage interlocks; facility training.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Gaps or doubled sites in the chain | Poisson placement statistics | Not solved: deterministic single-ion placement is open |
+
+**Silicon, for comparison.** Silicon has no counterpart; single-dopant placement (phosphorus in silicon) is done by scanning-tunnelling lithography in research labs.
+
+### X11a · Nanophotonic etch (cavity)
+
+*Evidence: **cryogenic** · after S07 · devices QDL-11 · peak temperature not given by the source · Atlas M12, M16*
+
+**Why.** A small optical cavity speeds up the NV's zero-phonon emission; the published enhancement was measured below 10 K, where the line is narrow.
+
+**Equipment.** Diamond membrane on SiO₂/Si; Electron-beam lithography; RIE for the SiN mask and oxygen RIE for thinning.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Membrane | 5 µm single-crystal membrane on 2 µm SiO₂/Si, thinned by oxygen RIE to 280 nm | [faraon2011] |
+| Mask | 500 nm SiN patterned by e-beam lithography | [faraon2011] |
+| Cavity | Microring 4.8 µm diameter, 700 nm wide | [faraon2011] |
+| Monolithic alternative | Angled-etch photonic-crystal nanobeam, 400 nm wide, 220 nm period (quality factor simulated only) | [burek2012] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Cavity quality factor | ≥ 3000 | ADAMAS (3800 and 4300 measured [faraon2011]) |
+| Zero-phonon emission enhanced when the cavity is tuned onto the line (below 10 K) | pass / fail | [faraon2011] |
+
+**Safety.** Liquid helium: cryogenic burns and asphyxiation; oxygen monitors. HF for SiO₂ removal: as X09a.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Low quality factor | Rough sidewalls or a thickness gradient | Smoother mask, thinner uniform membrane |
+
+**Silicon, for comparison.** Silicon microrings are a foundry product; the cavity enhancement of a diamond emitter needs cryogenic operation.
+
+### X13a · Optomechanical resonator fabrication
+
+*Evidence: **proposed** · after S07 · devices QDL-13 · peak temperature not given by the source · Atlas M12, M16*
+
+**Why.** The proposal couples an NV spin to a mechanical oscillator through a magnetic tip, and the oscillator to telecom light in a cavity, to build a room-temperature quantum repeater.
+
+**Equipment.** SiN membrane oscillator with a magnetic tip; High-finesse optical cavity (membrane in the middle).
+
+| Parameter | Value | Source |
+|---|---|---|
+| Oscillator | SiN membrane inside the cavity; mechanical quality factor 3 × 10⁹ assumed | [ji2022] |
+| Cavity | About 60 cm long, finesse 12,000 | [ji2022] |
+| Spin coupling | Magnetic tip on the membrane, field gradient about 10⁷ T/m | [ji2022] |
+| Fabrication | No device fabricated; the diamond part follows T1; the membrane and tip are not specified | [ji2022] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Mechanical quality factor of the membrane | ≥ 3e+09 | [ji2022] (assumed in the proposal) |
+
+**Safety.** High-power lasers in the cavity: Class 3B or 4 controls.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Quality factor far below the assumption | Clamping and gas damping | Not solved: no fabricated device; measure the membrane's quality factor first |
+
+**Silicon, for comparison.** Silicon nitride membranes are made in silicon foundries; the spin-mechanics interface is diamond-specific.
+
+### X14a · Released diamond nanobeam
+
+*Evidence: **demonstrated** · after S07 · devices QDL-14 · peak temperature 450 °C · Atlas M12, M16*
+
+**Why.** A free-standing diamond cantilever with an NV inside lets the spin feel the beam's strain, so the beam's motion can drive or read the spin at room temperature.
+
+**Equipment.** Diamond plate bonded to oxidized silicon (HSQ) or clamped between fused-quartz slides; ICP-RIE (argon-chlorine thinning, oxygen patterning); Air anneal furnace.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Starting plate | CVD (100) plates 20 to 40 µm thick | [tao2014] |
+| Thinning | Argon-chlorine plasma RIE | [tao2014] |
+| Release | Backside etching; 106 of 108 cantilevers survived | [tao2014] |
+| Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] |
+| NV creation | ¹⁴N implant 3 × 10⁹ cm⁻² at 40 keV; 800 °C vacuum anneal for 3 h (as traveler S06 and S07) | [ovartchaiyapong2014] |
+| Surface | Air anneal at 450 °C for oxygen termination raised the quality factor more than ten-fold | [tao2014] |
+| Angled-etch alternative | Nanobeams up to 85 µm long without a membrane | [burek2012] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Mechanical quality factor at room temperature in vacuum | ≥ 300000 | [ovartchaiyapong2014] |
+| Beam survives release and is free over its length | pass / fail | ADAMAS |
+
+**Safety.** Chlorine plasma: toxic gas controls. HSQ bonding uses HF later for removal: HF training.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Low quality factor | Surface loss | Oxygen-terminate by the 450 °C air anneal [tao2014] |
+| Beam breaks on release | Stress or rinse forces | Critical-point drying; shorter beams |
+
+**Silicon, for comparison.** Silicon MEMS release beams by etching a sacrificial oxide at wafer scale; diamond has no sacrificial layer, so it is thinned or undercut instead.
+
+### X15a · Ferromagnet strip deposition
+
+*Evidence: **proposed** · after S13 · devices QDL-15 · peak temperature not given by the source · Atlas M13*
+
+**Why.** The proposal links two spin qubits about a micrometre apart through the magnons of a ferromagnet placed just above them.
+
+**Equipment.** Deposition of a ferromagnetic film (not specified); E-beam lithography and lift-off.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Material | Not specified in the model; yttrium iron garnet is named as an example | [trifunovic2013] |
+| Geometry | Worked estimate: a disc 20 nm thick, 50 nm radius, with qubits 25 nm below it; qubits about 1 µm apart | [trifunovic2013] |
+| Operating temperature | 0.1 K in the proposal (cryogenic) | [trifunovic2013] |
+| Deposition process | Not given in [trifunovic2013]; to source. It follows gold, so it must stay below 500 °C (traveler rule 1) | ADAMAS |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Process temperature after gold | ≤ 500 °C | ADAMAS (traveler rule 1) |
+
+**Safety.** Evaporation and sputtering: high voltage and vacuum hazards; facility training.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| No coupling | Film too far from the NV, or magnon gap wrong | Not solved: no fabricated device |
+
+**Silicon, for comparison.** Magnetic tunnel junctions (MRAM) are deposited on silicon wafers in production; a magnon bus for spin qubits is a proposal.
+
+### X17a · Pillar tip etch and cantilever mount
+
+*Evidence: **demonstrated** · after S07 · devices QDL-17 · peak temperature not given by the source · Atlas M12, M16, M24*
+
+**Why.** An NV center near the end of a diamond pillar, scanned over a sample like an AFM tip, images magnetic fields with nanometre resolution at room temperature.
+
+**Equipment.** Electronic-grade plate; ICP-RIE (argon-chlorine and oxygen) for back-thinning and pillars; Electron-beam lithography; AFM head for mounting and scanning.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Plate | Electronic grade, 50 µm thick, back-thinned to about 3 µm by RIE (argon-chlorine and oxygen) | [maletinsky2012] |
+| NV creation | Nitrogen implant 6 keV, 3 × 10¹¹ cm⁻², 800 °C for 2 h; NVs about 10 nm deep (as traveler S06 and S07) | [maletinsky2012] |
+| Pillars | About 200 nm diameter, about 1 µm long, by e-beam lithography and RIE | [maletinsky2012] |
+| Mount | Not given in the arXiv text read here; to source | [maletinsky2012] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Photon count rate from the tip NV | ≥ 100000 counts/s | ADAMAS (up to 3 × 10⁵ at 20 µW reported [maletinsky2012]) |
+| Echo coherence time T₂ of the tip NV | ≥ 10 µs | ADAMAS (33 µs reported [maletinsky2012]) |
+
+**Safety.** Chlorine plasma: toxic gas controls. 532 nm laser: Class 3B or 4 controls.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Tip NV too deep or too shallow | Implant energy | Adjust energy; shallow NVs lose coherence |
+
+**Silicon, for comparison.** Silicon AFM tips are made in batch on wafers; a single-spin tip is diamond-specific.
+
+### X20a · Nanodiamond milling and surface treatment
+
+*Evidence: **demonstrated** · after S07 · devices QDL-20 · peak temperature not given by the source · Atlas M31*
+
+**Why.** Nanodiamonds with many NV centers go where a plate cannot, such as inside a living cell, and read out temperature optically.
+
+**Equipment.** Commercial NV nanodiamonds; Confocal ODMR setup.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Material | Single-crystal nanodiamonds with about 500 NV centers each, bought from a supplier | [kucsko2013] |
+| Size | Not stated in [kucsko2013]; the 200 nm figure there is the spatial resolution | [kucsko2013] |
+| Milling and surface treatment | Not described in [kucsko2013]; buy them; to source a milling process | [kucsko2013] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Temperature accuracy of one nanodiamond | ≤ 100 mK | ADAMAS (44 ± 10 mK reported [kucsko2013]) |
+
+**Safety.** Nanoparticle powders: avoid inhalation; handle in suspension. Biological samples: the institution's biosafety rules.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Broad ODMR lines | Strain and surface spins in small particles | Larger particles or surface treatment |
+
+**Silicon, for comparison.** Silicon has no counterpart; quantum-dot nanoparticles are the nearest optical probes.
+
+### X25a · Cavity assembly (sapphire or dielectric resonator)
+
+*Evidence: **demonstrated** · after S07 · devices QDL-25 · peak temperature not given by the source · Atlas M38, M41*
+
+**Why.** Optically pumped NV centers in a high-quality microwave resonator amplify microwaves: a continuous-wave maser at room temperature.
+
+**Equipment.** Hollow single-crystal sapphire resonator in a copper cavity; Electromagnet or permanent magnet near 0.43 T; 532 nm continuous-wave laser of hundreds of mW.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Resonator | Sapphire ring 10 mm outer, 5.1 mm inner diameter, 6.5 mm tall; TE01δ mode at 9.22 GHz; quality factor 55,000 unloaded, 30,000 loaded | [breeze2018] |
+| Diamond | CVD type IIa, 1 ppm nitrogen, 2.1 × 2.1 × 2.6 mm³, electron-irradiated and annealed (energy, dose and anneal not given in the arXiv text); 0.072 ppm NV⁻ | [breeze2018] |
+| Field | About 429.8 mT along an NV axis | [breeze2018] |
+| Pump | 532 nm continuous wave, 400 mW; threshold about 210 mW; heats the sample by about 35 °C | [breeze2018] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| Loaded resonator quality factor | ≥ 30000 | [breeze2018] |
+| Maser threshold pump power | ≤ 400 mW | ADAMAS (about 210 mW reported [breeze2018]) |
+
+**Safety.** Class 4 laser (hundreds of mW): interlocked enclosure and laser training. Strong magnet: pacemakers, tools and pinch hazards.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| No maser oscillation | Loaded quality factor or NV density too low | Re-seat the diamond, raise NV density, check field alignment |
+
+**Silicon, for comparison.** Silicon has no room-temperature maser; microwave amplifiers use transistors.
+
+### X27a · CMOS die from a multi-project wafer (MPW) shuttle
+
+*Evidence: **demonstrated** · after S19 · devices QDL-27 · peak temperature 25 °C · Atlas M00, M29*
+
+**Why.** A CMOS chip under the diamond delivers the microwaves, filters out the green pump and detects the red light, shrinking the sensor to one die.
+
+**Equipment.** CMOS design tools (open or commercial); MPW shuttle (prices in the Machines and Facilities Atlas); Microscope for pick-and-place.
+
+| Parameter | Value | Source |
+|---|---|---|
+| Process and die | TSMC 65 nm LP; 0.8 × 0.5 mm² die | [kim2019cmos] |
+| On-chip parts | Three-turn microwave loop in Metal 9; grating filter in Metal 8 absorbing about 95 % of the green; photodiode 0.23 A/W | [kim2019cmos] |
+| Diamond | CVD, irradiated 1 × 10¹⁸ e⁻ cm⁻² at 1 MeV and annealed 2 h at 850 °C; about 0.01 ppm NV | [kim2019cmos] |
+| Attach | Picked and placed under a microscope; immersion oil at the interface (no heating; the CMOS die is made at the foundry) | [kim2019cmos] |
+| Operation | 532 nm, 500 mW; 6.27 mT bias | [kim2019cmos] |
+
+| Check | Pass criterion | Source |
+|---|---|---|
+| ODMR seen on the on-chip photodiode | pass / fail | [kim2019cmos] |
+| Magnetic sensitivity | ≤ 64.2 µT/√Hz | ADAMAS (twice the 32.1 reported [kim2019cmos]) |
+
+**Safety.** Class 4 laser at 500 mW: interlocked enclosure and laser training.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| Pump light swamps the photodiode | Filter layer mis-drawn or the diamond overhangs it | Check the metal grating in layout review; align the diamond |
+
+**Silicon, for comparison.** This step is silicon: the control and readout die is an ordinary CMOS chip.
+

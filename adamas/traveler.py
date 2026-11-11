@@ -280,7 +280,8 @@ def thermal_violations(variant: str | None = None) -> list[str]:
 
 
 def to_json() -> dict:
-    return {"steps": STEPS, "xs": XS, "variants": VARIANTS, "modules": MODULES, "order": ORDER}
+    from .traveler_ext import EXTENSIONS
+    return {"steps": STEPS, "xs": XS, "variants": VARIANTS, "modules": MODULES, "order": ORDER, "extensions": EXTENSIONS}
 
 
 def to_markdown() -> str:
@@ -312,6 +313,8 @@ def to_markdown() -> str:
         L += ["", "**Safety.** " + " ".join(s["safety"]), ""]
         L += ["| Symptom | Likely cause | Action |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in s["failures"]]
         L += ["", f"**Silicon, for comparison.** {s['silicon']}", ""]
+    from .traveler_ext import to_markdown as ext_md
+    L.append(ext_md())
     return "\n".join(L) + "\n"
 
 

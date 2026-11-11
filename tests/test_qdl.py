@@ -70,7 +70,8 @@ def test_routes_use_real_traveler_steps_and_atlas_machines():
             assert x["id"] not in steps and set(x["atlas"]) <= set(atlas.ATLAS) and x["refs"]
             assert x["after"] in r["steps"], f"{d['id']} {x['id']}: anchor step must be on the route"
         b = qdl.build_process(d)
-        assert [s["id"] for s in b if not s["missing"]] == r["steps"] and sum(s["missing"] for s in b) == len(r["extra"])
+        assert [s["id"] for s in b if not s["missing"] and not s["extension"]] == r["steps"]
+        assert sum(s["missing"] or s["extension"] for s in b) == len(r["extra"])
 
 
 def test_extra_step_ids_are_unique():

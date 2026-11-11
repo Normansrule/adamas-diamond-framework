@@ -2,7 +2,20 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.40.0 (2026-11-10).
+Last updated: v0.41.0 (2026-11-11).
+
+## Open in v0.41.0: extension steps X07a to X27a
+
+The eleven device-specific build steps are written as step sheets ([process/TRAVELER.md](process/TRAVELER.md), `adamas.traveler_ext`). Each parameter is read from its paper or marked *to source*. What they do not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| X07a doping levels, layer thicknesses and growth temperature | Only the abstract of [mizuochi2012] was read | The full paper |
+| X10a, X13a, X15a are proposals | No fabricated device: deterministic spin-chain placement, a room-temperature membrane at the assumed quality factor, and a ferromagnet bus (which the proposal runs at 0.1 K) | A demonstration of each |
+| X11a works only cryogenically | The cavity enhancement was measured below 10 K [faraon2011] | A room-temperature use case, or keep it labeled cryogenic |
+| X17a tip mounting, X20a nanodiamond size and milling, X25a irradiation and anneal | Not given in the texts read | The full papers or supplements |
+| Monolithic microdisk route (khanaliloo2015) | The paper could not be read from the container | Read it, then add its parameters |
+| Verification of maletinsky2012 | Entered by hand (published title and pages read from the university repository) | `make verify` |
 
 ## Open in v0.40.0: Machines and Facilities Atlas
 
@@ -123,17 +136,7 @@ The Quantum Device Library ([docs/devices/README.md](devices/README.md), `adamas
 
 | Device | Item | Why it waits |
 |---|---|---|
-| QDL-07 | X07a p-i-n doped growth (boron and phosphorus layers) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-09 | X09a Nanophotonic etch (nanopillars or waveguides) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-10 | X10a Dark-spin chain placement | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-11 | X11a Nanophotonic etch (cavity) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-13 | X13a Optomechanical resonator fabrication | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-14 | X14a Released diamond nanobeam | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-15 | X15a Ferromagnet strip deposition | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-17 | X17a Pillar tip etch and cantilever mount | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-20 | X20a Nanodiamond milling and surface treatment | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-25 | X25a Cavity assembly (sapphire or dielectric resonator) | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
-| QDL-27 | X27a CMOS die from a multi-project wafer (MPW) shuttle | Not in the process traveler (docs/process/TRAVELER.md) yet; the device page shows it as **missing** |
+| QDL-07, 09, 10, 11, 13, 14, 15, 17, 20, 25, 27 | Build steps X07a to X27a | Closed in v0.41.0: written as extension steps in [process/TRAVELER.md](process/TRAVELER.md) (`adamas.traveler_ext`); open parameters inside them are listed under "Open in v0.41.0" |
 | QDL-02, 07, 09, 10, 13 to 16, 18, 22 to 26 | No simulated pass/fail check | The package has no model for these devices yet (nuclear decoupling, charge state, photonics, mechanics, NMR, maser, many-body); each page says which |
 | All | Photos of build steps (Fab Journey, planned for v0.32.0) | Wikimedia Commons licenses could not be checked from the build container; diagrams only until each license is logged in references/images.psv with a test |
 | QDL-05 | [dreau2013] metadata | Checked on arXiv (1210.6195); awaiting Crossref verification (`make verify`) |

@@ -34,12 +34,12 @@ None quantified yet.
 
 ## How to build it
 
-Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).
+Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).
 
 | Step | What | Max °C | Notes |
 |---|---|---|---|
 | S19 | **Dicing and high-temperature packaging.** Flip-chip or wire-bond the diamond onto the CMOS die. | 350 | Safety: Laser dicing fumes: local extraction. |
-| X27a | **CMOS die from a multi-project wafer (MPW) shuttle.** Design with open tools (M00) and order a shuttle. | — | **missing** (demonstrated) [kim2019cmos] |
+| X27a | **CMOS die from a multi-project wafer (MPW) shuttle.** A CMOS chip under the diamond delivers the microwaves, filters out the green pump and detects the red light, shrinking the sensor to one die. | 25 | **extension step** (demonstrated, docs/process/TRAVELER.md) [kim2019cmos] Safety: Class 4 laser at 500 mW: interlocked enclosure and laser training. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 

@@ -89,21 +89,27 @@ Bell-state fidelity and gate fidelity are different metrics; they sit in differe
 | [QDL-27 CMOS control and readout chiplet](QDL-27.md) | demonstrated | Generate the microwaves and read the photons or photocurrent with a silicon chip bonded to the diamond. | pass (1.00) |
 | [QDL-28 Packaged sensor module](QDL-28.md) | demonstrated | Put the diamond, light source, filter, detector and antenna in one portable package. | pass (1.00) |
 
+## Extension steps
+
+Device-specific steps written as step sheets in the extension section of [docs/process/TRAVELER.md](../process/TRAVELER.md), with the evidence label of the step itself.
+
+| Device | Step | Title | Evidence |
+|---|---|---|---|
+| QDL-07 | X07a | p-i-n doped growth (boron and phosphorus layers) | demonstrated |
+| QDL-09 | X09a | Nanophotonic etch (nanopillars or waveguides) | demonstrated |
+| QDL-10 | X10a | Dark-spin chain placement | proposed |
+| QDL-11 | X11a | Nanophotonic etch (cavity) | cryogenic |
+| QDL-13 | X13a | Optomechanical resonator fabrication | proposed |
+| QDL-14 | X14a | Released diamond nanobeam | demonstrated |
+| QDL-15 | X15a | Ferromagnet strip deposition | proposed |
+| QDL-17 | X17a | Pillar tip etch and cantilever mount | demonstrated |
+| QDL-20 | X20a | Nanodiamond milling and surface treatment | demonstrated |
+| QDL-25 | X25a | Cavity assembly (sapphire or dielectric resonator) | demonstrated |
+| QDL-27 | X27a | CMOS die from a multi-project wafer (MPW) shuttle | demonstrated |
+
 ## Build steps the traveler does not have yet
 
-| Device | Step | Title |
-|---|---|---|
-| QDL-07 | X07a | p-i-n doped growth (boron and phosphorus layers) |
-| QDL-09 | X09a | Nanophotonic etch (nanopillars or waveguides) |
-| QDL-10 | X10a | Dark-spin chain placement |
-| QDL-11 | X11a | Nanophotonic etch (cavity) |
-| QDL-13 | X13a | Optomechanical resonator fabrication |
-| QDL-14 | X14a | Released diamond nanobeam |
-| QDL-15 | X15a | Ferromagnet strip deposition |
-| QDL-17 | X17a | Pillar tip etch and cantilever mount |
-| QDL-20 | X20a | Nanodiamond milling and surface treatment |
-| QDL-25 | X25a | Cavity assembly (sapphire or dielectric resonator) |
-| QDL-27 | X27a | CMOS die from a multi-project wafer (MPW) shuttle |
+None: every device's build steps are in the traveler or its extension section.
 
 ## Numbers to confirm from the papers
 

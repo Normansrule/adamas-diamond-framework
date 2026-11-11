@@ -1,6 +1,6 @@
 # References
 
-**600 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**601 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -270,13 +270,14 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[joliffe2024]`** Joliffe, M.; Vorobyov, V.; Wrachtrup, J. (2024). Readout of strongly coupled NV center-pair spin states with deep neural networks. *arXiv*, 2412.19581.
 - ✅ **`[williams2026]`** Williams, H.; Newman, A.; Graham, S.; Stephen, C.; Morley, G. (2026). A portable LED-based diamond magnetometer for outreach and teaching labs. *American Journal of Physics*, 94, 489. [doi:10.1119/5.0295777](https://doi.org/10.1119/5.0295777)
 
-## Quantum sensing (18)
+## Quantum sensing (19)
 
 - 📚 **`[born1999]`** Born, M.; Wolf, E. (1999). Principles of Optics: Electromagnetic Theory of Propagation, Interference and Diffraction of Light (7th expanded ed.). *Cambridge University Press*.
 - ✅ **`[balasubramanian2008]`** Balasubramanian, G.; Chan, I. Y.; Kolesov, R.; et al. (2008). Nanoscale imaging magnetometry with diamond spins under ambient conditions. *Nature*, 455, 648. [doi:10.1038/nature07278](https://doi.org/10.1038/nature07278)
 - ✅ **`[maze2008]`** Maze, J. R.; Stanwix, P. L.; Hodges, J. S.; et al. (2008). Nanoscale magnetic sensing with an individual electronic spin in diamond. *Nature*, 455, 644. [doi:10.1038/nature07279](https://doi.org/10.1038/nature07279)
 - ✅ **`[taylor2008]`** Taylor, J. M.; Cappellaro, P.; Childress, L.; et al. (2008). High-sensitivity diamond magnetometer with nanoscale resolution. *Nature Physics*, 4, 810. [doi:10.1038/nphys1075](https://doi.org/10.1038/nphys1075)
 - ✅ **`[dolde2011]`** Dolde, F.; Fedder, H.; Doherty, M. W.; et al. (2011). Electric-field sensing using single diamond spins. *Nature Physics*, 7, 459. [doi:10.1038/nphys1969](https://doi.org/10.1038/nphys1969)
+- 📚 **`[maletinsky2012]`** Maletinsky, P.; Hong, S.; Grinolds, M. S.; Hausmann, B.; Lukin, M. D.; Walsworth, R. L.; Loncar, M.; Yacoby, A. (2012). A robust scanning diamond sensor for nanoscale imaging with single nitrogen-vacancy centres. *Nature Nanotechnology*, 7, 320.
 - ✅ **`[kucsko2013]`** Kucsko, G.; Maurer, P. C.; Yao, N. Y.; et al. (2013). Nanometre-scale thermometry in a living cell. *Nature*, 500, 54. [doi:10.1038/nature12373](https://doi.org/10.1038/nature12373)
 - ✅ **`[toyli2013]`** Toyli, D. M.; de las Casas, C. F.; Christle, D. J.; Dobrovitski, V. V.; Awschalom, D. D. (2013). Fluorescence thermometry enhanced by the quantum coherence of single spins in diamond. *Proceedings of the National Academy of Sciences*, 110, 8417. [doi:10.1073/pnas.1306825110](https://doi.org/10.1073/pnas.1306825110)
 - ✅ **`[rondin2014]`** Rondin, L.; Tetienne, J.-P.; Hingant, T.; et al. (2014). Magnetometry with nitrogen-vacancy defects in diamond. *Reports on Progress in Physics*, 77, 056503. [doi:10.1088/0034-4885/77/5/056503](https://doi.org/10.1088/0034-4885/77/5/056503)

@@ -36,7 +36,7 @@ None quantified yet.
 
 ## How to build it
 
-Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).
+Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).
 
 | Step | What | Max °C | Notes |
 |---|---|---|---|
@@ -45,7 +45,7 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Steps marked **missing** a
 | S03 | **Homoepitaxial buffer growth (MPCVD).** Buries polishing damage and substrate impurities under fresh, controlled diamond; for qubits a ¹²C-enriched cap removes the nuclear-spin bath. | 950 | Safety: Hydrogen and methane are flammable: leak-checked lines, gas detectors, interlocked exhaust. Microwave leakage check after any maintenance. |
 | S06 | **Nitrogen implantation through apertures.** Places nitrogen where qubits are wanted (layer QIMPLANT of PDK-0). Depth and dose set how many NV centers form and how close they sit to the surface. | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
-| X13a | **Optomechanical resonator fabrication.** Not specified in the traveler. | — | **missing** (proposed) [ji2022] |
+| X13a | **Optomechanical resonator fabrication.** The proposal couples an NV spin to a mechanical oscillator through a magnetic tip, and the oscillator to telecom light in a cavity, to build a room-temperature quantum repeater. | — | **extension step** (proposed, docs/process/TRAVELER.md) [ji2022] Safety: High-power lasers in the cavity: Class 3B or 4 controls. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 

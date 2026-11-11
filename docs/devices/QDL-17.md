@@ -34,7 +34,7 @@ None.
 
 ## How to build it
 
-Traveler variant: `sensor` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).
+Traveler variant: `sensor` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).
 
 | Step | What | Max °C | Notes |
 |---|---|---|---|
@@ -42,7 +42,7 @@ Traveler variant: `sensor` (docs/process/TRAVELER.md). Steps marked **missing** 
 | S02 | **Oxidizing acid clean.** Removes graphitic (non-diamond) carbon, metals, and organics, and leaves an oxygen-terminated reference surface. | 200 | Safety: Perchloric acid only in a perchloric-rated hood with wash-down; perchlorate residues are explosive. Hot concentrated acids: face shield, acid apron, heavy gloves; never add organics. Never boil a perchloric mixture to dryness: hot sulfuric acid can dehydrate HClO₄ to explosive anhydrous perchloric acid; top up or stop well before the volume falls. |
 | S06 | **Nitrogen implantation through apertures.** Shallow single NVs (2.5 keV). | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
-| X17a | **Pillar tip etch and cantilever mount.** Etch a pillar around the NV and attach it to a cantilever. | — | **missing** (reported) [casola2018] |
+| X17a | **Pillar tip etch and cantilever mount.** An NV center near the end of a diamond pillar, scanned over a sample like an AFM tip, images magnetic fields with nanometre resolution at room temperature. | — | **extension step** (demonstrated, docs/process/TRAVELER.md) [maletinsky2012] Safety: Chlorine plasma: toxic gas controls. 532 nm laser: Class 3B or 4 controls. |
 | S18 | **Quantum test (NV windows).** Measures the numbers that decide whether qubits work: resonance contrast, coherence, and charge-state stability. They feed the gate budget of chapter E5. | 25 | Safety: Class 3B/4 laser: interlocked enclosure, wavelength-rated eyewear. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.

@@ -139,7 +139,7 @@ function checks(d) {
     <p class="note">Simulated with a fixed seed and analyzed with the Data Lab's fitting code. The degraded twin has one physical fault and must fail. Pass rates over many seeds: docs/devices/${d.id}.md.</p>`;
 }
 function route(d) {
-  return `<ol class="route">${d.build.map(s => `<li class="${s.missing ? 'miss' : ''}"><span class="sid">${esc(s.id)}</span><div><b>${esc(s.title)}</b>${s.missing ? ` <span class="st proposed" style="display:inline-block">not in traveler</span>` : ''}
+  return `<ol class="route">${d.build.map(s => `<li class="${s.missing ? 'miss' : ''}"><span class="sid">${esc(s.id)}</span><div><b>${esc(s.title)}</b>${s.missing ? ` <span class="st proposed" style="display:inline-block">not in traveler</span>` : s.extension ? ` <span class="st ${esc(s.label)}" style="display:inline-block">extension step · ${esc(s.label)}</span>` : ''}
     <span>${esc(s.text)}${s.t_max_c !== null ? ` · up to ${s.t_max_c} °C` : ''}</span>${s.safety && s.safety.length ? `<span class="safety">Safety: ${esc(s.safety.join(' '))}</span>` : ''}${s.refs ? `<span>${refs(s.refs)}</span>` : ''}</div></li>`).join('')}</ol>
     <p class="note">Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training first; these notes do not replace it. Full step sheets: <a href="process.html">Process Traveler</a>.</p>
     <p class="note">Machines: ${Object.entries(d.atlas_names).map(([k, v]) => `${esc(k)} ${esc(v)}`).join('; ')}</p>`;

@@ -28,6 +28,8 @@ rate of the nominal check over independent seeds is computed by pass_rate() and 
 """
 from __future__ import annotations
 
+import re
+
 import copy
 import functools
 import json
@@ -883,18 +885,35 @@ def build_process(dev: dict) -> list[dict]:
     for sid in dev["route"]["steps"]:
         s = steps[sid]
         out.append({"id": sid, "title": s["title"], "t_max_c": s["t_max_c"], "text": dev["route"]["overrides"].get(sid, s["why"]),
-                    "safety": s.get("safety", []), "missing": False, "label": "traveler"})
-        for x in extras.pop(sid, []):
-            out.append({"id": x["id"], "title": x["title"], "t_max_c": None, "text": x["text"], "safety": [], "missing": True, "label": x["label"], "refs": x["refs"], "atlas": x["atlas"]})
+                    "safety": s.get("safety", []), "missing": False, "extension": False, "label": "traveler"})
+        out += [_extra(x) for x in extras.pop(sid, [])]
     for xs in extras.values():
-        for x in xs:
-            out.append({"id": x["id"], "title": x["title"], "t_max_c": None, "text": x["text"], "safety": [], "missing": True, "label": x["label"], "refs": x["refs"], "atlas": x["atlas"]})
+        out += [_extra(x) for x in xs]
     return out
+
+
+def _extra(x: dict) -> dict:
+    """A device's extra step: the written extension step (adamas.traveler_ext) when there is one, else marked missing."""
+    from .traveler_ext import BY_ID
+    e = BY_ID.get(x["id"])
+    if e is None:
+        return {"id": x["id"], "title": x["title"], "t_max_c": None, "text": x["text"], "safety": [], "missing": True, "extension": False,
+                "label": x["label"], "refs": x["refs"], "atlas": x["atlas"]}
+    keys = sorted({k for _, _, src in e["params"] for k in re.findall(r"\[([a-z][a-z0-9]*\d{4}[a-z0-9]*)\]", src)})
+    return {"id": e["id"], "title": e["title"], "t_max_c": e["t_max_c"], "text": e["why"], "safety": e["safety"], "missing": False, "extension": True,
+            "label": e["label"], "refs": keys, "atlas": e["atlas"]}
 
 
 def missing_steps() -> list[tuple[str, str, str]]:
     """(device, step id, title) for every build step the traveler does not have yet."""
-    return [(d["id"], x["id"], x["title"]) for d in DEVICES for x in d["route"].get("extra", [])]
+    from .traveler_ext import BY_ID
+    return [(d["id"], x["id"], x["title"]) for d in DEVICES for x in d["route"].get("extra", []) if x["id"] not in BY_ID]
+
+
+def extension_steps() -> list[tuple[str, str, str, str]]:
+    """(device, step id, title, evidence label) for every extra step written in adamas.traveler_ext."""
+    from .traveler_ext import BY_ID
+    return [(d["id"], x["id"], BY_ID[x["id"]]["title"], BY_ID[x["id"]]["label"]) for d in DEVICES for x in d["route"].get("extra", []) if x["id"] in BY_ID]
 
 
 def open_numbers() -> list[tuple[str, str, str]]:
@@ -1006,10 +1025,12 @@ def _device_md(d: dict, rates: dict) -> str:
         L += [""]
     else:
         L += ["None quantified yet.", ""]
-    L += ["## How to build it", "", f"Traveler variant: `{d['route']['variant']}` (docs/process/TRAVELER.md). Steps marked **missing** are not in the traveler yet (docs/STATUS.md).", "",
+    L += ["## How to build it", "", f"Traveler variant: `{d['route']['variant']}` (docs/process/TRAVELER.md). Extension steps are written in the traveler's extension section; steps marked **missing** are not in the traveler yet (docs/STATUS.md).", "",
           "| Step | What | Max °C | Notes |", "|---|---|---|---|"]
     for s in build_process(d):
-        note = ("**missing** (" + s["label"] + ") " + _refs(s.get("refs", []))) if s["missing"] else ("Safety: " + " ".join(s["safety"]) if s["safety"] else "")
+        note = (("**missing** (" + s["label"] + ") " + _refs(s.get("refs", []))) if s["missing"] else
+                ("**extension step** (" + s["label"] + ", docs/process/TRAVELER.md) " + _refs(s["refs"]) + (" Safety: " + " ".join(s["safety"]) if s["safety"] else "")) if s["extension"] else
+                ("Safety: " + " ".join(s["safety"]) if s["safety"] else ""))
         L.append(f"| {s['id']} | **{s['title']}.** {s['text']} | {s['t_max_c'] if s['t_max_c'] is not None else '—'} | {note} |")
     L += ["", "Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.", ""]
     from .atlas import ATLAS
@@ -1048,7 +1069,11 @@ def _index_md(rates: dict) -> str:
             ch = ", ".join(("pass" if _results()[d["id"]][i]["nominal"]["pass"] else "FAIL") + f" ({rates[(d['id'], i)]:.2f})" for i in range(len(d["checks"]))) or "—"
             L.append(f"| [{d['id']} {d['name']}]({d['id']}.md) | {d['status']['label']} | {d['function']} | {ch} |")
         L += [""]
-    L += ["## Build steps the traveler does not have yet", "", "| Device | Step | Title |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in missing_steps()] + [""]
+    L += ["## Extension steps", "", "Device-specific steps written as step sheets in the extension section of "
+          "[docs/process/TRAVELER.md](../process/TRAVELER.md), with the evidence label of the step itself.", "",
+          "| Device | Step | Title | Evidence |", "|---|---|---|---|"] + [f"| {a} | {b} | {c} | {e} |" for a, b, c, e in extension_steps()] + [""]
+    miss = missing_steps()
+    L += ["## Build steps the traveler does not have yet", ""] + (["| Device | Step | Title |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in miss] if miss else ["None: every device's build steps are in the traveler or its extension section."]) + [""]
     L += ["## Numbers to confirm from the papers", "", "| Device | Figure of merit | To confirm |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in open_numbers()] + [""]
     L += ["## How pass/fail is computed", "",
           "Each check simulates a measurement with a fixed seed, analyzes it with adamas.fitting where a fit applies, and compares it with a sourced threshold "
