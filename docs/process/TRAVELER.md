@@ -717,8 +717,9 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 |---|---|---|
 | Starting plate | CVD (100) plates 20 to 40 µm thick | [tao2014] |
 | Thinning | Argon-chlorine plasma RIE | [tao2014] |
+| Strain-coupling device process | Electronic-grade plates 2 × 2 × 0.02 mm; 30 nm PECVD SiO₂; oxide-bonded to oxidized silicon; Ar/Cl₂ ICP thinning by about 18 µm to 1 to 2 µm; photolithography and O₂ plasma etch; released in buffered HF that removes the 1 µm SiO₂; piranha clean | [ovartchaiyapong2012] |
 | Release | Backside etching; 106 of 108 cantilevers survived | [tao2014] |
-| Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device, made by its authors' own earlier process rather than this one, was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] |
+| Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device, made by the process above [ovartchaiyapong2012], was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] [ovartchaiyapong2012] |
 | NV creation | ¹⁴N implant 3 × 10⁹ cm⁻² at 40 keV; 800 °C vacuum anneal for 3 h (as traveler S06 and S07) | [ovartchaiyapong2014] |
 | Surface | Air anneal at 450 °C for oxygen termination raised the quality factor more than ten-fold | [tao2014] |
 | Angled-etch alternative | Nanobeams up to 85 µm long without a membrane | [burek2012] |
@@ -803,7 +804,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Parameter | Value | Source |
 |---|---|---|
 | Material | Single-crystal nanodiamonds with about 500 NV centers each, bought from a supplier | [kucsko2013] |
-| Size | Not stated in [kucsko2013]; the 200 nm figure there is the spatial resolution | [kucsko2013] |
+| Size | Not stated in the main text or Methods of [kucsko2013] (the supplement was not read); the 200 nm figure there is the spatial resolution | [kucsko2013] |
 | Milling and surface treatment | Not described in [kucsko2013]; buy them; to source a milling process | [kucsko2013] |
 
 | Check | Pass criterion | Source |
@@ -829,7 +830,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Parameter | Value | Source |
 |---|---|---|
 | Resonator | Sapphire ring 10 mm outer, 5.1 mm inner diameter, 6.5 mm tall; TE01δ mode at 9.22 GHz; quality factor 55,000 unloaded, 30,000 loaded | [breeze2018] |
-| Diamond | CVD type IIa, 1 ppm nitrogen, 2.1 × 2.1 × 2.6 mm³, electron-irradiated and annealed (energy, dose and anneal not given in the arXiv text); 0.072 ppm NV⁻ | [breeze2018] |
+| Diamond | CVD type IIa, 1 ppm nitrogen, 2.1 × 2.1 × 2.6 mm³, electron-irradiated and annealed by Element Six (energy, dose and anneal not stated in the paper); 0.072 ppm NV⁻ and about 0.2 ppm NV⁰ plus NV⁻ | [breeze2018] |
 | Field | About 429.8 mT along an NV axis | [breeze2018] |
 | Pump | 532 nm continuous wave, 400 mW; threshold predicted at about 210 mW; heats the sample by about 35 °C | [breeze2018] |
 
@@ -856,10 +857,10 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 | Parameter | Value | Source |
 |---|---|---|
-| Process and die | TSMC 65 nm LP; inductor, filter and photodiode stacked in a 200 × 200 µm footprint; a 0.8 × 0.5 mm² die appears in the public-access copy, not in the arXiv text (to confirm) | [kim2019cmos] |
+| Process and die | TSMC 65 nm LP; inductor, filter and photodiode stacked in a 200 × 200 µm footprint; total chip area 0.8 × 0.5 mm² including bond pads (published version; not in the arXiv text) | [kim2019cmos] |
 | On-chip parts | Three-turn microwave loop in Metal 9; grating filter in Metal 8 absorbing about 95 % of the green; photodiode 0.23 A/W | [kim2019cmos] |
 | Diamond | CVD, electron-irradiated 1 × 10¹⁸ cm⁻² at 1 MeV and annealed 2 h at 850 °C; about 0.01 ppm NV | [kim2019cmos] |
-| Attach | Diamond transferred onto the die; pick-and-place with immersion oil appears in the public-access copy, not in the arXiv text (to confirm) | [kim2019cmos] |
+| Attach | Picked and placed on the chip under a microscope, with immersion oil at the interface to hold it and reduce index mismatch (published version; not in the arXiv text) | [kim2019cmos] |
 | Operation | 532 nm, 500 mW; 6.27 mT bias | [kim2019cmos] |
 
 | Check | Pass criterion | Source |

@@ -30,7 +30,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Signal enhancement over thermal | to confirm | Hyperpolarization enhancement: confirm from the paper [king2015] | — |  |
+| Signal enhancement over thermal | 170000 × | demonstrated: ¹³C in a high-pressure high-temperature crystal at 420 mT, room temperature; bulk ¹³C polarization about 6 % [king2015] | — |  |
 
 ## How to build it
 

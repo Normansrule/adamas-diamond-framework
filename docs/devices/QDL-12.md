@@ -32,7 +32,7 @@ None.
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
 | Line shift per field | 28.03 MHz/mT | reported: physical constant, g = 2.0028 (adamas.nv) [doherty2013] | — |  |
-| Sensitivity | to confirm | Ensemble sensitivity records: confirm from the paper [wolf2015] [barry2020] | — |  |
+| Sensitivity | 0.9 pT/√Hz | demonstrated: NV ensemble of about 10¹¹ centres in 8.5 × 10⁻⁴ mm³, room temperature, photon-shot-noise limited [wolf2015] | — |  |
 
 ## How to build it
 

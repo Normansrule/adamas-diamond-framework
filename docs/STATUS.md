@@ -2,7 +2,18 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.41.0 (2026-11-11).
+Last updated: v0.42.0 (2026-11-11).
+
+## Open in v0.42.0: device numbers confirmed from the papers
+
+Seven of the nine device figures of merit that said "confirm from the paper" now carry values read from the papers, with conditions: nanowire flux gain 10× [babinec2010], ensemble sensitivity 0.9 pT/√Hz [wolf2015], tip resolution about 20 nm [maletinsky2012], NMR spectral resolution 3 Hz [glenn2018], biomagnetic sensitivity 15 pT/√Hz [barry2016], hyperpolarization enhancement about 170,000 [king2015], electric-field sensitivity about 140 V/cm/√Hz [dolde2011]. Two stay open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| QDL-07 NV⁻ fraction under electrical control | [grotz2012] reports a shift from NV⁰ to NV⁻ over a ±0.5 V gate but no fraction | A paper that states the fraction |
+| QDL-19 per-pixel sensitivity | The review [levine2019] gives no per-pixel number in the parts read | A measured quantum diamond microscope sensitivity with its pixel size |
+| QDL-24 operating temperature | Only the abstract of [dolde2011] was read | The full paper |
+| Verification of ovartchaiyapong2012 | Entered by hand from the arXiv page (which links its DOI) | `make verify` |
 
 ## Open in v0.41.0: extension steps X07a to X27a
 
@@ -10,12 +21,11 @@ The eleven device-specific build steps are written as step sheets ([process/TRAV
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| X07a doping levels, layer thicknesses and growth temperature | Only the abstract of [mizuochi2012] was read | The full paper |
+| X07a doping levels, layer thicknesses and growth temperature | The paper and its supplement are paywalled and blocked from the container; press releases confirm only boron and phosphorus layers grown by CVD | The full paper |
 | X10a, X13a, X15a are proposals | No fabricated device: deterministic spin-chain placement, a room-temperature membrane at the assumed quality factor, and a ferromagnet bus (which the proposal runs at 0.1 K) | A demonstration of each |
 | X11a works only cryogenically | The cavity enhancement was measured below 10 K [faraon2011] | A room-temperature use case, or keep it labeled cryogenic |
-| X20a nanodiamond size and milling, X25a irradiation and anneal | Not given in the texts read | The full papers or supplements |
-| X27a die size and diamond attach | Given in the public-access copy of [kim2019cmos] but not in its arXiv text, so marked to confirm | The published version |
-| X14a cantilever process | The strain-coupling device used its authors' earlier process, which is not cited here; the step cites the released-cantilever process of [tao2014] | Cite and read the earlier process paper |
+| X20a nanodiamond size and milling | Not in the main text or Methods of [kucsko2013]; its supplement could not be read from the container | The supplement |
+| X25a irradiation and anneal | The paper says Element Six did these steps and gives no energy, dose or anneal [breeze2018] | Element Six's process, or another maser paper that states it |
 | Monolithic microdisk route (khanaliloo2015) | The paper could not be read from the container | Read it, then add its parameters |
 | Verification of maletinsky2012 | Entered by hand (published title and pages read from the university repository); its DOI is added by `make apply-verify`, not by hand | `make verify` |
 
@@ -147,15 +157,9 @@ Numbers that exist in the papers but are not yet confirmed from them (the device
 
 | Device | Figure of merit | To confirm |
 |---|---|---|
-| QDL-07 | NV⁻ fraction under readout | NV⁻ fraction under electrical control: confirm from the paper |
-| QDL-09 | Collection gain over bulk | Photon-collection gain of diamond nanowires: confirm from the paper |
-| QDL-12 | Sensitivity | Ensemble sensitivity records: confirm from the paper |
-| QDL-17 | Spatial resolution | Tip spatial resolution: confirm from the paper |
-| QDL-18 | Spectral resolution | Chemical-shift resolution: confirm from the paper |
-| QDL-19 | Field sensitivity per pixel | Per-pixel sensitivity: confirm from the paper |
-| QDL-21 | Sensitivity | Biomagnetic sensitivity: confirm from the paper |
-| QDL-22 | Signal enhancement over thermal | Hyperpolarization enhancement: confirm from the paper |
-| QDL-24 | Electric-field sensitivity | Electric-field sensitivity: confirm from the paper |
+| QDL-07 | NV⁻ fraction under readout | NV⁻ fraction under electrical control: [grotz2012] shifts an ensemble from NV⁰ to NV⁻ over a ±0.5 V electrolytic gate but states no fraction; needs another source |
+| QDL-19 | Field sensitivity per pixel | Per-pixel sensitivity: the review [levine2019] defines a volume-normalized sensitivity but no per-pixel number was found in the parts read; needs a measured value |
+| QDL-09, 12, 17, 18, 21, 22, 24 | Seven figures of merit | Closed in v0.42.0: values read from the papers with their conditions (QDL-24's operating temperature is still unconfirmed, so it is labeled reported) |
 
 ## Fixed in v0.30.0
 

@@ -91,6 +91,20 @@ def test_missing_steps_and_open_numbers_are_listed_in_status():
     assert "docs/devices/README.md" in status
     for dev, sid, _ in qdl.missing_steps():
         assert sid in status, f"{dev} {sid} missing from docs/STATUS.md"
+    for dev, name, _ in qdl.open_numbers():
+        assert f"| {dev} | {name} |" in status, f"{dev} {name} missing from docs/STATUS.md"
+
+
+def test_confirmed_numbers_match_their_papers():
+    """Values read from the papers in v0.42.0; a change must be re-checked against the paper."""
+    want = {("QDL-09", "gain"): (10, "babinec2010"), ("QDL-12", "sens"): (0.9, "wolf2015"), ("QDL-17", "res"): (20, "maletinsky2012"),
+            ("QDL-18", "res"): (3, "glenn2018"), ("QDL-21", "sens"): (15, "barry2016"), ("QDL-22", "gain"): (170000, "king2015"),
+            ("QDL-24", "e"): (140, "dolde2011")}
+    for (dev, k), (v, key) in want.items():
+        c = qdl.BY_ID[dev]["fom"][k]["current"]
+        assert c["value"] == v and c["refs"] == [key] and c["conditions"] and not c.get("todo"), (dev, k)
+    assert qdl.BY_ID["QDL-24"]["fom"]["e"]["current"]["label"] == "reported"          # temperature not confirmed
+    assert len(qdl.open_numbers()) == 2
 
 
 @pytest.mark.parametrize("dev,i", [(d["id"], i) for d in qdl.DEVICES for i in range(len(d["checks"]))])

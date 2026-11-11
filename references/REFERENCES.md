@@ -1,6 +1,6 @@
 # References
 
-**601 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**602 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -292,7 +292,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (39)
+## NV center fabrication and placement (40)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -307,6 +307,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[ishikawa2012]`** Ishikawa, T.; Fu, K.-M. C.; Santori, C.; et al. (2012). Optical and spin coherence properties of nitrogen-vacancy centers placed in a 100 nm thick isotopically purified diamond layer. *Nano Letters*, 12, 2083. [doi:10.1021/nl300350r](https://doi.org/10.1021/nl300350r)
 - ✅ **`[kasu2012]`** Kasu, M.; Sato, H.; Hirama, K. (2012). Thermal stabilization of hole channel on H-terminated diamond surface by using atomic-layer-deposited Al2O3 overlayer and its electric properties. *Applied Physics Express*, 5, 025701. [doi:10.1143/apex.5.025701](https://doi.org/10.1143/apex.5.025701)
 - ✅ **`[ohno2012]`** Ohno, K.; Heremans, F. J.; Bassett, L. C.; et al. (2012). Engineering shallow spins in diamond with nitrogen delta-doping. *Applied Physics Letters*, 101, 082413. [doi:10.1063/1.4748280](https://doi.org/10.1063/1.4748280)
+- 📚 **`[ovartchaiyapong2012]`** Ovartchaiyapong, P.; Pascal, L. M. A.; Myers, B. A.; Lauria, P.; Bleszynski Jayich, A. C. (2012). High quality factor single-crystal diamond mechanical resonators. *Applied Physics Letters*, 101, 163505.
 - 📚 **`[stacey2012]`** Stacey, A.; Karle, T. J.; McGuinness, L. P.; et al. (2012). Depletion of nitrogen-vacancy color centers in diamond via hydrogen passivation. *Applied Physics Letters*, 100(7), 071902.
 - ✅ **`[yamamoto2013]`** Yamamoto, T.; Umeda, T.; Watanabe, K.; et al. (2013). Extending spin coherence times of diamond qubits by high-temperature annealing. *Physical Review B*, 88, 075206. [doi:10.1103/physrevb.88.075206](https://doi.org/10.1103/physrevb.88.075206)
 - ✅ **`[chu2014]`** Chu, Y.; de Leon, N. P.; Shields, B. J.; et al. (2014). Coherent optical transitions in implanted nitrogen vacancy centers. *Nano Letters*, 14, 1982. [doi:10.1021/nl404836p](https://doi.org/10.1021/nl404836p)

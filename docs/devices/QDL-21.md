@@ -28,7 +28,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Sensitivity | to confirm | Biomagnetic sensitivity: confirm from the paper [barry2016] | — |  |
+| Sensitivity | 15 pT/√Hz ± 1 | demonstrated: NV ensemble, ambient conditions, 13 × 200 × 2000 µm sensing volume, 4.0 kHz noise bandwidth; one action potential gives a signal-to-noise ratio of about 1.2 [barry2016] | — |  |
 
 ## How to build it
 

@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Electric-field sensitivity | to confirm | Electric-field sensitivity: confirm from the paper [dolde2011] | — |  |
+| Electric-field sensitivity | 140 V/cm/√Hz | reported: single NV, AC field, one second of averaging; operating temperature not confirmed from the full text [dolde2011] | — |  |
 
 ## How to build it
 

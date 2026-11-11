@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Field sensitivity per pixel | to confirm | Per-pixel sensitivity: confirm from the paper [levine2019] | — |  |
+| Field sensitivity per pixel | to confirm | Per-pixel sensitivity: the review [levine2019] defines a volume-normalized sensitivity but no per-pixel number was found in the parts read; needs a measured value [levine2019] | — |  |
 
 ## How to build it
 

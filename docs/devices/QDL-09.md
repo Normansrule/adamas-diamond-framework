@@ -4,7 +4,7 @@ _Generated from `adamas/qdl.py` (`adamas build docs`); do not edit by hand. Ever
 
 **Status: reported** (Published, with a bound or special conditions stated next to the number). Operating temperature: about 300 K. [babinec2010] [hadden2010] [riedel2017]
 
-Collection gains are reported at room temperature; the exact factor for each structure is to be confirmed.
+Collection gains are measured at room temperature; the factor depends on the structure (ten-fold flux for nanowires [babinec2010]).
 
 **Analogy only:** a interconnect for light (analogy) — the real device is the Optical waveguide and photon collector. Fits: It routes signals (photons) to where they are measured. Breaks: It only improves collection; at room temperature it does not make photons indistinguishable.
 
@@ -32,7 +32,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Collection gain over bulk | to confirm | Photon-collection gain of diamond nanowires: confirm from the paper [babinec2010] | — |  |
+| Collection gain over bulk | 10 × | demonstrated: photon flux of a single NV in a nanowire against bulk diamond, at ten times less pump power; room temperature [babinec2010] | — |  |
 
 ## How to build it
 

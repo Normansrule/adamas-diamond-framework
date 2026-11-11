@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.42.0 (device numbers confirmed)
+
+Seven device figures of merit move from "to confirm" to values read from the papers, each with its conditions (ensemble or single NV, field, volume, bandwidth). Two do not, and say why instead of borrowing a number from a review: the electrolytic-gate paper reports a charge-state shift but no NV⁻ fraction, and the quantum diamond microscope review gives no per-pixel figure in the parts read. One value whose temperature could not be confirmed (electric-field sensing) is labeled reported, not demonstrated. A test pins every confirmed value to its paper.
+
 ### Status after v0.41.0 (traveler extension steps)
 
 No device page shows a missing build step any more: the eleven extra steps are written as step sheets, and code checks that each parameter cites a paper or is an ADAMAS rule. The evidence label is the step's own: of the eleven, seven were done at room temperature in the cited work, one (the microring cavity) needs cryogenic operation, and three (spin chains, optomechanical membrane, ferromagnet bus) are proposals with no fabricated device; the ferromagnet proposal runs at 0.1 K, and its row says so. Where the paper read did not give a parameter (p-i-n doping levels, tip mounting, nanodiamond size, the maser diamond's irradiation), the sheet says *to source* rather than filling it in.

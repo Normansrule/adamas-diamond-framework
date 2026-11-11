@@ -30,7 +30,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Spatial resolution | to confirm | Tip spatial resolution: confirm from the paper [casola2018] | — |  |
+| Spatial resolution | 20 nm | demonstrated: single NV in a diamond nanopillar scanning probe, room temperature; 'in the range of 20 nm' [maletinsky2012] | — |  |
 
 ## How to build it
 

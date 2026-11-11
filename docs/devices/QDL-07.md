@@ -31,7 +31,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| NV⁻ fraction under readout | to confirm | NV⁻ fraction under electrical control: confirm from the paper [grotz2012] | — | As high as the gate budget needs (Machine Builder) |
+| NV⁻ fraction under readout | to confirm | NV⁻ fraction under electrical control: [grotz2012] shifts an ensemble from NV⁰ to NV⁻ over a ±0.5 V electrolytic gate but states no fraction; needs another source [grotz2012] | — | As high as the gate budget needs (Machine Builder) |
 
 ## How to build it
 
