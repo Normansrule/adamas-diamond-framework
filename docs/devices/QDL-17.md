@@ -47,7 +47,7 @@ Traveler variant: `sensor` (docs/process/TRAVELER.md). Extension steps are writt
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 
-Machines (Atlas): M24 Atomic force microscopy (AFM); M47 High numerical-aperture objective; M49 Two single-photon avalanche diodes (SPADs)
+Machines (Atlas): M12 Electron-beam lithography; M16 Inductively coupled plasma reactive-ion etching (ICP-RIE); M21 Aperture masks (PMMA, AFM-tip) or focused ion beam; M24 Atomic force microscopy (AFM); M47 High numerical-aperture objective; M49 Two single-photon avalanche diodes (SPADs)
 
 ## Pass/fail checks (simulated)
 

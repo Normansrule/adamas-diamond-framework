@@ -43,10 +43,27 @@ def test_fields_labels_sources_and_machines():
 
 def test_steps_after_gold_respect_the_thermal_rule():
     first_metal = traveler.step_index("S09")
-    for e in X.EXTENSIONS:
-        if traveler.step_index(e["after"]) >= first_metal:
-            assert e["t_max_c"] is None or e["t_max_c"] <= 500, e["id"]
-            assert any(c[3] is not None and c[3] <= 500 and c[1] == "°C" for c in e["checks"]) or e["t_max_c"] is not None, e["id"]
+    late = [e for e in X.EXTENSIONS if traveler.step_index(e["after"]) >= first_metal]
+    assert {e["id"] for e in late} == {"X15a", "X27a"}
+    for e in late:
+        assert e["t_max_c"] is None or e["t_max_c"] <= 500, e["id"]
+        assert any(c[1] == "°C" and c[3] is not None and c[3] <= 500 for c in e["checks"]), e["id"]   # the rule is a check
+
+
+def test_labels_have_web_styles_and_refs_are_counted():
+    html = (ROOT / "web" / "devices.html").read_text(encoding="utf-8")
+    assert all(f".st.{lab}" in html for lab in X.LABELS)
+    used = qdl.refs_used()
+    assert {"babinec2010", "tao2014", "maletinsky2012", "breeze2018"} <= used
+    assert X.badge(X.BY_ID["X15a"]) == "proposed · cryogenic" and X.badge(X.BY_ID["X09a"]) == "demonstrated"
+
+
+def test_device_machines_include_extension_machines():
+    for d in qdl.DEVICES:
+        m = set(qdl.route_atlas(d))
+        assert set(d["route"]["atlas"]) <= m
+        for x in d["route"].get("extra", []):
+            assert set(X.BY_ID[x["id"]]["atlas"]) <= m, (d["id"], x["id"])
 
 
 def test_proposed_steps_say_so_and_cmos_target_is_computed():

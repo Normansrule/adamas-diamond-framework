@@ -101,7 +101,7 @@ Device-specific steps written as step sheets in the extension section of [docs/p
 | QDL-11 | X11a | Nanophotonic etch (cavity) | cryogenic |
 | QDL-13 | X13a | Optomechanical resonator fabrication | proposed |
 | QDL-14 | X14a | Released diamond nanobeam | demonstrated |
-| QDL-15 | X15a | Ferromagnet strip deposition | proposed |
+| QDL-15 | X15a | Ferromagnet strip deposition | proposed · cryogenic |
 | QDL-17 | X17a | Pillar tip etch and cantilever mount | demonstrated |
 | QDL-20 | X20a | Nanodiamond milling and surface treatment | demonstrated |
 | QDL-25 | X25a | Cavity assembly (sapphire or dielectric resonator) | demonstrated |

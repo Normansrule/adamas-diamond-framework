@@ -44,7 +44,7 @@ Traveler variant: `sensor` (docs/process/TRAVELER.md). Extension steps are writt
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 
-Machines (Atlas): M31 NV-rich diamond (irradiated and annealed HPHT); M38 532 nm laser, tens of mW; M43 Helmholtz coil set and current supplies
+Machines (Atlas): M31 NV-rich diamond (irradiated and annealed HPHT); M38 532 nm laser, tens of mW; M41 Fast RF switch and 1–10 W microwave amplifier; M43 Helmholtz coil set and current supplies
 
 ## Pass/fail checks (simulated)
 

@@ -46,12 +46,12 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are writte
 | S05 | **Etched alignment marks.** Every later mask, including the nanoscale nitrogen apertures, aligns to these. They must be etched into diamond because the NV anneal (S07) exceeds gold's melting point (1064 °C). | 120 | Safety: Plasma tools: standard interlocks; chlorine-free recipes only. |
 | S06 | **Nitrogen implantation through apertures.** Places nitrogen where qubits are wanted (layer QIMPLANT of PDK-0). Depth and dose set how many NV centers form and how close they sit to the surface. | 25 | Safety: Ion implanter: radiation (X-ray) interlocks and high voltage. |
 | S07 | **Vacancy anneal and oxygen re-termination.** Heating makes vacancies mobile; when one meets an implanted nitrogen it forms an NV center. The oxidizing clean then stabilizes the negative charge state that is the qubit. | 1100 | Safety: Furnace hot-zone burns; vacuum implosion shielding. |
-| X09a | **Nanophotonic etch (nanopillars or waveguides).** A pillar or waveguide around an NV center guides its light out of the high-index diamond, so more photons reach the detector at lower laser power. | 200 | **extension step** (demonstrated, docs/process/TRAVELER.md) [babinec2010] [burek2012] [hausmann2010] Safety: HF: calcium gluconate gel at hand and HF-specific training. Chlorine is toxic and corrosive: interlocked gas cabinet. Hot tri-acid: face shield, acid hood. |
+| X09a | **Nanophotonic etch (nanopillars or waveguides).** A pillar or waveguide around an NV center guides its light out of the high-index diamond, so more photons reach the detector at lower laser power. | — | **extension step** (demonstrated, docs/process/TRAVELER.md) [babinec2010] [burek2012] [hausmann2010] Safety: HF: calcium gluconate gel at hand and HF-specific training. Chlorine is toxic and corrosive: interlocked gas cabinet. Hot tri-acid: face shield, acid hood. |
 | S18 | **Quantum test (NV windows).** Measures the numbers that decide whether qubits work: resonance contrast, coherence, and charge-state stability. They feed the gate budget of chapter E5. | 25 | Safety: Class 3B/4 laser: interlocked enclosure, wavelength-rated eyewear. |
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 
-Machines (Atlas): M12 Electron-beam lithography; M16 Inductively coupled plasma reactive-ion etching (ICP-RIE); M47 High numerical-aperture objective
+Machines (Atlas): M10 Wet bench: tri-acid and piranha cleans, HF; M12 Electron-beam lithography; M16 Inductively coupled plasma reactive-ion etching (ICP-RIE); M47 High numerical-aperture objective
 
 ## Pass/fail checks (simulated)
 

@@ -61,7 +61,7 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are writte
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 
-Machines (Atlas): M20 Low-energy ion implanter (¹⁵N); M22 High-vacuum annealing furnace (800–1200 °C); M53 RF source for nuclear spins (MHz range); M52 Electronic-grade, low-nitrogen, optionally ¹²C-enriched CVD diamond; M47 High numerical-aperture objective; M51 Arbitrary waveform generator (AWG)
+Machines (Atlas): M20 Low-energy ion implanter (¹⁵N); M22 High-vacuum annealing furnace (800–1200 °C); M47 High numerical-aperture objective; M51 Arbitrary waveform generator (AWG); M52 Electronic-grade, low-nitrogen, optionally ¹²C-enriched CVD diamond; M53 RF source for nuclear spins (MHz range)
 
 ## Pass/fail checks (simulated)
 

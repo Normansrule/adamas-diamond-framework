@@ -28,12 +28,11 @@ rate of the nominal check over independent seeds is computed by pass_rate() and 
 """
 from __future__ import annotations
 
-import re
-
 import copy
 import functools
 import json
 import math
+import re
 from pathlib import Path
 
 import numpy as np
@@ -901,7 +900,15 @@ def _extra(x: dict) -> dict:
                 "label": x["label"], "refs": x["refs"], "atlas": x["atlas"]}
     keys = sorted({k for _, _, src in e["params"] for k in re.findall(r"\[([a-z][a-z0-9]*\d{4}[a-z0-9]*)\]", src)})
     return {"id": e["id"], "title": e["title"], "t_max_c": e["t_max_c"], "text": e["why"], "safety": e["safety"], "missing": False, "extension": True,
-            "label": e["label"], "refs": keys, "atlas": e["atlas"]}
+            "label": e["label"] + (" · cryogenic" if e.get("cryogenic") else ""), "cls": e["label"], "refs": keys, "atlas": e["atlas"]}
+
+
+def route_atlas(dev: dict) -> list[str]:
+    """Machines for the device's whole build: the route's list plus those of its written extension steps, in Atlas order."""
+    from .atlas import ATLAS
+    from .traveler_ext import BY_ID
+    ids = set(dev["route"]["atlas"]) | {a for x in dev["route"].get("extra", []) for a in BY_ID.get(x["id"], {}).get("atlas", [])}
+    return [a for a in ATLAS if a in ids]
 
 
 def missing_steps() -> list[tuple[str, str, str]]:
@@ -913,7 +920,8 @@ def missing_steps() -> list[tuple[str, str, str]]:
 def extension_steps() -> list[tuple[str, str, str, str]]:
     """(device, step id, title, evidence label) for every extra step written in adamas.traveler_ext."""
     from .traveler_ext import BY_ID
-    return [(d["id"], x["id"], BY_ID[x["id"]]["title"], BY_ID[x["id"]]["label"]) for d in DEVICES for x in d["route"].get("extra", []) if x["id"] in BY_ID]
+    from .traveler_ext import badge
+    return [(d["id"], x["id"], BY_ID[x["id"]]["title"], badge(BY_ID[x["id"]])) for d in DEVICES for x in d["route"].get("extra", []) if x["id"] in BY_ID]
 
 
 def open_numbers() -> list[tuple[str, str, str]]:
@@ -922,7 +930,7 @@ def open_numbers() -> list[tuple[str, str, str]]:
 
 
 def refs_used() -> set[str]:
-    keys = set()
+    keys = {k for d in DEVICES for s in build_process(d) if s["extension"] for k in s["refs"]}
     for d in DEVICES:
         keys |= set(d["status"]["refs"])
         for g in d["gates"] + d["entanglement"] + d["use_cases"]:
@@ -949,7 +957,7 @@ def to_json() -> dict:
         e = {k: v for k, v in d.items()}
         e["build"] = build_process(d)
         e["results"] = copy.deepcopy(_results()[d["id"]])
-        e["atlas_names"] = {a: ATLAS[a][0] for a in d["route"]["atlas"]}
+        e["atlas_names"] = {a: ATLAS[a][0] for a in route_atlas(d)}
         devs.append(e)
     return {"devices": devs, "statuses": STATUS_TEXT, "families": FAMILIES, "superconducting": SUPERCONDUCTING_NOTE,
             "dipolar_mhz_nm3": _dip(), "t2_room_ms": T2_ROOM_MS, "r_max_nm": r_max_nm()}
@@ -1034,7 +1042,7 @@ def _device_md(d: dict, rates: dict) -> str:
         L.append(f"| {s['id']} | **{s['title']}.** {s['text']} | {s['t_max_c'] if s['t_max_c'] is not None else '—'} | {note} |")
     L += ["", "Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.", ""]
     from .atlas import ATLAS
-    L += ["Machines (Atlas): " + "; ".join(f"{a} {ATLAS[a][0]}" for a in d["route"]["atlas"]), ""]
+    L += ["Machines (Atlas): " + "; ".join(f"{a} {ATLAS[a][0]}" for a in route_atlas(d)), ""]
     L += ["## Pass/fail checks (simulated)", ""]
     if d["checks"]:
         L += ["| Check | Nominal (documented seed) | Degraded twin | Fault | Threshold source | Pass rate |", "|---|---|---|---|---|---|"]

@@ -54,7 +54,7 @@ Traveler variant: `qubit` (docs/process/TRAVELER.md). Extension steps are writte
 
 Hazardous steps need your institution's cleanroom, chemical, laser and high-voltage training before you start; the notes above do not replace it.
 
-Machines (Atlas): M47 High numerical-aperture objective; M49 Two single-photon avalanche diodes (SPADs); M50 Time tagger (picosecond correlator)
+Machines (Atlas): M12 Electron-beam lithography; M16 Inductively coupled plasma reactive-ion etching (ICP-RIE); M47 High numerical-aperture objective; M49 Two single-photon avalanche diodes (SPADs); M50 Time tagger (picosecond correlator)
 
 ## Pass/fail checks (simulated)
 

@@ -549,7 +549,7 @@ _Generated from `adamas/traveler.py` (`make traveler`); edit the Python, not thi
 
 ## Extension steps (device-specific, outside T1)
 
-Eleven devices in the Quantum Device Library add one step to T1. Each is written below with its evidence label: **demonstrated** (done at room temperature in the cited work), **cryogenic** (the cited result needs cryogenic operation) or **proposed** (no fabricated device). A parameter the source does not give is marked *to source*.
+Eleven devices in the Quantum Device Library add one step to T1. Each is written below with its evidence label: **demonstrated** (done at room temperature in the cited work), **cryogenic** (the cited result needs cryogenic operation) or **proposed** (no fabricated device; marked proposed · cryogenic when the proposal assumes cold operation). A parameter the source does not give is marked *to source*.
 
 | Step | Title | After | Devices | Label |
 |---|---|---|---|---|
@@ -559,7 +559,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | X11a | Nanophotonic etch (cavity) | S07 | QDL-11 | cryogenic |
 | X13a | Optomechanical resonator fabrication | S07 | QDL-13 | proposed |
 | X14a | Released diamond nanobeam | S07 | QDL-14 | demonstrated |
-| X15a | Ferromagnet strip deposition | S13 | QDL-15 | proposed |
+| X15a | Ferromagnet strip deposition | S13 | QDL-15 | proposed · cryogenic |
 | X17a | Pillar tip etch and cantilever mount | S07 | QDL-17 | demonstrated |
 | X20a | Nanodiamond milling and surface treatment | S07 | QDL-20 | demonstrated |
 | X25a | Cavity assembly (sapphire or dielectric resonator) | S07 | QDL-25 | demonstrated |
@@ -593,7 +593,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 ### X09a · Nanophotonic etch (nanopillars or waveguides)
 
-*Evidence: **demonstrated** · after S07 · devices QDL-09 · peak temperature 200 °C · Atlas M12, M16, M10*
+*Evidence: **demonstrated** · after S07 · devices QDL-09 · peak temperature not given by the source · Atlas M12, M16, M10*
 
 **Why.** A pillar or waveguide around an NV center guides its light out of the high-index diamond, so more photons reach the detector at lower laser power.
 
@@ -635,7 +635,8 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Chain spacing | About 16 to 18 nm (16 nm for a 7-spin chain, 18.1 nm for an 18-spin chain in the proposal's examples) | [yao2012] |
 | Chain length | About 5 spins for 100 nm, about 20 for 500 nm | [yao2012] |
 | Register spacing | Plaquettes about 100 to 500 nm apart | [yao2012] |
-| Placement process | Implantation and anneal with about 40 % NV conversion assumed; no process reaches this order yet | [yao2012] |
+| Placement process | Implantation and anneal with about 40 % NV conversion assumed; operation at room temperature, with optional cooling to about 50 K | [yao2012] |
+| State of the art | No published process places nitrogen chains at this pitch | ADAMAS |
 
 | Check | Pass criterion | Source |
 |---|---|---|
@@ -683,12 +684,12 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 **Why.** The proposal couples an NV spin to a mechanical oscillator through a magnetic tip, and the oscillator to telecom light in a cavity, to build a room-temperature quantum repeater.
 
-**Equipment.** SiN membrane oscillator with a magnetic tip; High-finesse optical cavity (membrane in the middle).
+**Equipment.** SiN membrane oscillator with a magnetic tip; High-finesse optical cavity.
 
 | Parameter | Value | Source |
 |---|---|---|
-| Oscillator | SiN membrane inside the cavity; mechanical quality factor 3 × 10⁹ assumed | [ji2022] |
-| Cavity | About 60 cm long, finesse 12,000 | [ji2022] |
+| Oscillator | SiN membrane inside the cavity; mechanical quality factor 3 × 10⁹ assumed in the proposal's calculations, against about 10⁹ for current membranes as the paper states | [ji2022] |
+| Cavity | Main design: about 60 cm long, finesse 12,000 (the paper also discusses a short, higher-finesse variant) | [ji2022] |
 | Spin coupling | Magnetic tip on the membrane, field gradient about 10⁷ T/m | [ji2022] |
 | Fabrication | No device fabricated; the diamond part follows T1; the membrane and tip are not specified | [ji2022] |
 
@@ -717,7 +718,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Starting plate | CVD (100) plates 20 to 40 µm thick | [tao2014] |
 | Thinning | Argon-chlorine plasma RIE | [tao2014] |
 | Release | Backside etching; 106 of 108 cantilevers survived | [tao2014] |
-| Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] |
+| Size | 20 to 240 µm long, 8 to 16 µm wide, 80 to 800 nm thick [tao2014]; the strain-coupling device, made by its authors' own earlier process rather than this one, was 60 µm long, 15 µm wide, about 1 µm thick | [tao2014] [ovartchaiyapong2014] |
 | NV creation | ¹⁴N implant 3 × 10⁹ cm⁻² at 40 keV; 800 °C vacuum anneal for 3 h (as traveler S06 and S07) | [ovartchaiyapong2014] |
 | Surface | Air anneal at 450 °C for oxygen termination raised the quality factor more than ten-fold | [tao2014] |
 | Angled-etch alternative | Nanobeams up to 85 µm long without a membrane | [burek2012] |
@@ -738,7 +739,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 ### X15a · Ferromagnet strip deposition
 
-*Evidence: **proposed** · after S13 · devices QDL-15 · peak temperature not given by the source · Atlas M13*
+*Evidence: **proposed · cryogenic** · after S13 · devices QDL-15 · peak temperature not given by the source · Atlas M13*
 
 **Why.** The proposal links two spin qubits about a micrometre apart through the magnons of a ferromagnet placed just above them.
 
@@ -765,22 +766,22 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 ### X17a · Pillar tip etch and cantilever mount
 
-*Evidence: **demonstrated** · after S07 · devices QDL-17 · peak temperature not given by the source · Atlas M12, M16, M24*
+*Evidence: **demonstrated** · after S07 · devices QDL-17 · peak temperature not given by the source · Atlas M12, M16, M21, M24*
 
 **Why.** An NV center near the end of a diamond pillar, scanned over a sample like an AFM tip, images magnetic fields with nanometre resolution at room temperature.
 
-**Equipment.** Electronic-grade plate; ICP-RIE (argon-chlorine and oxygen) for back-thinning and pillars; Electron-beam lithography; AFM head for mounting and scanning.
+**Equipment.** Electronic-grade plate; ICP-RIE (argon-chlorine and oxygen) for back-thinning and pillars; Electron-beam lithography; Focused ion beam with tungsten deposition; Tuning-fork AFM head.
 
 | Parameter | Value | Source |
 |---|---|---|
 | Plate | Electronic grade, 50 µm thick, back-thinned to about 3 µm by RIE (argon-chlorine and oxygen) | [maletinsky2012] |
 | NV creation | Nitrogen implant 6 keV, 3 × 10¹¹ cm⁻², 800 °C for 2 h; NVs about 10 nm deep (as traveler S06 and S07) | [maletinsky2012] |
 | Pillars | About 200 nm diameter, about 1 µm long, by e-beam lithography and RIE | [maletinsky2012] |
-| Mount | Not given in the arXiv text read here; to source | [maletinsky2012] |
+| Mount | A diamond platform fused to a quartz tip of a tuning-fork AFM by tungsten deposition, then cut free with a focused ion beam | [maletinsky2012] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
-| Photon count rate from the tip NV | ≥ 100000 counts/s | ADAMAS (up to 3 × 10⁵ at 20 µW reported [maletinsky2012]) |
+| Photon count rate from the tip NV | ≥ 100000 counts/s | ADAMAS (above 3 × 10⁵ reported, with excitation as low as 20 µW [maletinsky2012]) |
 | Echo coherence time T₂ of the tip NV | ≥ 10 µs | ADAMAS (33 µs reported [maletinsky2012]) |
 
 **Safety.** Chlorine plasma: toxic gas controls. 532 nm laser: Class 3B or 4 controls.
@@ -830,12 +831,12 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Resonator | Sapphire ring 10 mm outer, 5.1 mm inner diameter, 6.5 mm tall; TE01δ mode at 9.22 GHz; quality factor 55,000 unloaded, 30,000 loaded | [breeze2018] |
 | Diamond | CVD type IIa, 1 ppm nitrogen, 2.1 × 2.1 × 2.6 mm³, electron-irradiated and annealed (energy, dose and anneal not given in the arXiv text); 0.072 ppm NV⁻ | [breeze2018] |
 | Field | About 429.8 mT along an NV axis | [breeze2018] |
-| Pump | 532 nm continuous wave, 400 mW; threshold about 210 mW; heats the sample by about 35 °C | [breeze2018] |
+| Pump | 532 nm continuous wave, 400 mW; threshold predicted at about 210 mW; heats the sample by about 35 °C | [breeze2018] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
 | Loaded resonator quality factor | ≥ 30000 | [breeze2018] |
-| Maser threshold pump power | ≤ 400 mW | ADAMAS (about 210 mW reported [breeze2018]) |
+| Maser threshold pump power | ≤ 400 mW | ADAMAS (threshold predicted at about 210 mW [breeze2018]) |
 
 **Safety.** Class 4 laser (hundreds of mW): interlocked enclosure and laser training. Strong magnet: pacemakers, tools and pinch hazards.
 
@@ -847,7 +848,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 ### X27a · CMOS die from a multi-project wafer (MPW) shuttle
 
-*Evidence: **demonstrated** · after S19 · devices QDL-27 · peak temperature 25 °C · Atlas M00, M29*
+*Evidence: **demonstrated** · after S19 · devices QDL-27 · peak temperature not given by the source · Atlas M00, M29*
 
 **Why.** A CMOS chip under the diamond delivers the microwaves, filters out the green pump and detects the red light, shrinking the sensor to one die.
 
@@ -855,15 +856,16 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 
 | Parameter | Value | Source |
 |---|---|---|
-| Process and die | TSMC 65 nm LP; 0.8 × 0.5 mm² die | [kim2019cmos] |
+| Process and die | TSMC 65 nm LP; inductor, filter and photodiode stacked in a 200 × 200 µm footprint; a 0.8 × 0.5 mm² die appears in the public-access copy, not in the arXiv text (to confirm) | [kim2019cmos] |
 | On-chip parts | Three-turn microwave loop in Metal 9; grating filter in Metal 8 absorbing about 95 % of the green; photodiode 0.23 A/W | [kim2019cmos] |
-| Diamond | CVD, irradiated 1 × 10¹⁸ e⁻ cm⁻² at 1 MeV and annealed 2 h at 850 °C; about 0.01 ppm NV | [kim2019cmos] |
-| Attach | Picked and placed under a microscope; immersion oil at the interface (no heating; the CMOS die is made at the foundry) | [kim2019cmos] |
+| Diamond | CVD, electron-irradiated 1 × 10¹⁸ cm⁻² at 1 MeV and annealed 2 h at 850 °C; about 0.01 ppm NV | [kim2019cmos] |
+| Attach | Diamond transferred onto the die; pick-and-place with immersion oil appears in the public-access copy, not in the arXiv text (to confirm) | [kim2019cmos] |
 | Operation | 532 nm, 500 mW; 6.27 mT bias | [kim2019cmos] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
 | ODMR seen on the on-chip photodiode | pass / fail | [kim2019cmos] |
+| Attach temperature, after gold | ≤ 500 °C | ADAMAS (traveler rule 1) |
 | Magnetic sensitivity | ≤ 64.2 µT/√Hz | ADAMAS (twice the 32.1 reported [kim2019cmos]) |
 
 **Safety.** Class 4 laser at 500 mW: interlocked enclosure and laser training.

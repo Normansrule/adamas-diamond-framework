@@ -13,9 +13,11 @@ The eleven device-specific build steps are written as step sheets ([process/TRAV
 | X07a doping levels, layer thicknesses and growth temperature | Only the abstract of [mizuochi2012] was read | The full paper |
 | X10a, X13a, X15a are proposals | No fabricated device: deterministic spin-chain placement, a room-temperature membrane at the assumed quality factor, and a ferromagnet bus (which the proposal runs at 0.1 K) | A demonstration of each |
 | X11a works only cryogenically | The cavity enhancement was measured below 10 K [faraon2011] | A room-temperature use case, or keep it labeled cryogenic |
-| X17a tip mounting, X20a nanodiamond size and milling, X25a irradiation and anneal | Not given in the texts read | The full papers or supplements |
+| X20a nanodiamond size and milling, X25a irradiation and anneal | Not given in the texts read | The full papers or supplements |
+| X27a die size and diamond attach | Given in the public-access copy of [kim2019cmos] but not in its arXiv text, so marked to confirm | The published version |
+| X14a cantilever process | The strain-coupling device used its authors' earlier process, which is not cited here; the step cites the released-cantilever process of [tao2014] | Cite and read the earlier process paper |
 | Monolithic microdisk route (khanaliloo2015) | The paper could not be read from the container | Read it, then add its parameters |
-| Verification of maletinsky2012 | Entered by hand (published title and pages read from the university repository) | `make verify` |
+| Verification of maletinsky2012 | Entered by hand (published title and pages read from the university repository); its DOI is added by `make apply-verify`, not by hand | `make verify` |
 
 ## Open in v0.40.0: Machines and Facilities Atlas
 
