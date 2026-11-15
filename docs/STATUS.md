@@ -11,7 +11,7 @@ Last updated: v0.44.0 (2026-11-15).
 | X07a layer thicknesses, growth temperature, gas mix, substrate orientation | The paper [mizuochi2012] and its supplement are paywalled and blocked from the container; the author's review [mizuochi2014] gives the doping, substrate and contacts but not these | The full paper |
 | X13a membrane process | The proposal [ji2022] fabricates no device; the demonstrated diamond microdisk route [mitchell2016] is listed as an alternative, not as the proposal's membrane | A fabricated membrane with a magnetic tip |
 | Etch powers, times and the undercut temperature for the microdisk route | Not stated in [mitchell2016]; [khanaliloo2015] could not be read from the container | Read [khanaliloo2015] |
-| Verification of mizuochi2014 and mitchell2016 | Entered by hand from the documents read (mizuochi2014 is in Japanese, from the Japan Society of Applied Physics site) | `make verify` |
+| Verification of mizuochi2014 and mitchell2016 | Entered by hand from the documents read (mizuochi2014 is in Japanese, read from annex.jsap.or.jp) | `make verify` |
 
 ## Open in v0.43.0: Atlas prices for most of the rest
 

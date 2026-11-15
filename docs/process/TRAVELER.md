@@ -576,7 +576,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Parameter | Value | Source |
 |---|---|---|
 | Structure | Single neutral NV center in the intrinsic layer of a p-i-n diode | [mizuochi2012] |
-| Substrate and layers | High-pressure high-temperature (HPHT) boron-doped p-type substrate; intrinsic and phosphorus-doped n-type layers grown by CVD; NV centers made by ion implantation and annealing | [mizuochi2014] |
+| Substrate and layers | High-pressure high-temperature (HPHT) boron-doped p-type substrate; intrinsic and phosphorus-doped n-type layers grown by chemical vapor deposition (CVD); NV centers made by ion implantation and annealing | [mizuochi2014] |
 | Doping | Phosphorus about 1 × 10¹⁸ cm⁻³ (n-layer), boron about 1 × 10¹⁹ cm⁻³ (p-type substrate) | [mizuochi2014] |
 | Contacts | Au/Pt/Ti electrodes on the n and p surfaces, wire-bonded | [mizuochi2014] |
 | Operating point | About 4 × 10⁴ photons per second from one neutral NV center at 14 mA injection current, room temperature | [mizuochi2012] |
@@ -696,7 +696,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Cavity | Main design: about 60 cm long, finesse 12,000 (the paper also discusses a short, higher-finesse variant) | [ji2022] |
 | Spin coupling | Magnetic tip on the membrane, field gradient about 10⁷ T/m | [ji2022] |
 | Fabrication | No device fabricated; the diamond part follows T1; the membrane and tip are not specified | [ji2022] |
-| Demonstrated diamond resonator (not the proposal's membrane) | Single-crystal diamond microdisks 5.0 to 6.0 µm across and about 940 nm thick, made by quasi-isotropic undercut [khanaliloo2015]: about 400 nm PECVD Si₃N₄ hard mask, oxygen plasma etch, about 250 nm conformal PECVD Si₃N₄ to protect the sidewalls, zero-RF-power oxygen RIE undercut, mask removed in 49 % HF and boiling piranha; intrinsic optical quality factor 6.1 to 6.8 × 10⁴, mechanical quality factor above 9000 | [mitchell2016] |
+| Demonstrated diamond resonator (not the proposal's membrane) | Single-crystal diamond microdisks 5.0 to 6.0 µm across and about 940 nm thick, made by quasi-isotropic undercut [khanaliloo2015] (demonstrated): about 400 nm plasma-enhanced CVD (PECVD) Si₃N₄ hard mask, about 250 nm conformal PECVD Si₃N₄ to protect the sidewalls, zero-radio-frequency-power oxygen reactive ion etching (RIE) undercut, mask removed in 49 % hydrofluoric acid (HF) and boiling piranha; intrinsic optical quality factor 6.1 to 6.8 × 10⁴, mechanical quality factor above 9000. Etch powers, times and temperatures are not stated there; to source | [mitchell2016] |
 
 | Check | Pass criterion | Source |
 |---|---|---|

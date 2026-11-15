@@ -269,6 +269,8 @@ def write_golden(path: str = "web/tests/entangle_golden.json") -> str:
 def document() -> str:
     """docs/ENTANGLEMENT.md, with every number computed here."""
     ns, game, tp, mp = no_signaling_check(), signaling_game(), teleport_check(), measure_and_prepare_fidelity()
+    if not ns["max_change"] < 1e-12:                     # the page prints this bound, so it must hold for the run it reports
+        raise ValueError(f"no-signaling check exceeded its bound: {ns['max_change']}")
     rows = "\n".join(f"| {y if y else 'next'} | {w} | {lab} | [{k}] |" for y, k, w, lab in TIMELINE)
     return f"""# Entanglement without a wire: what it can and cannot do
 

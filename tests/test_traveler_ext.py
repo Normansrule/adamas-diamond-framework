@@ -92,4 +92,9 @@ def test_v044_parameters_match_their_sources():
     r = p["X13a"]["Demonstrated diamond resonator (not the proposal's membrane)"]
     assert r[1] == "[mitchell2016]" and "6.1 to 6.8 × 10⁴" in r[0] and "above 9000" in r[0] and "940 nm" in r[0]
     assert BY_ID["X13a"]["label"] == "proposed"                 # the proposal stays proposed; the microdisk is a demonstrated alternative
-    assert "Adámas Nanotechnologies" in p["X20a"]["Material"][0] and "nitric acid for 48 h" in p["X25a"]["Diamond"][0]
+    assert "Adámas Nanotechnologies" in p["X20a"]["Material"][0]       # the supplier's own spelling, as in [lattispec2026]
+    d = p["X25a"]["Diamond"][0]
+    assert "nitric acid for 48 h" in d and "2.1 × 2.1 × 2.6 mm³" in d and "{100} faces" in d
+    rect = next(c for c in BY_ID["X07a"]["checks"] if c[0].startswith("Diode rectifies"))[4]
+    assert "nine orders of magnitude at 30 V" in rect and "[mizuochi2014]" in rect
+    assert "to source" in r[0] and "(demonstrated)" in r[0]
