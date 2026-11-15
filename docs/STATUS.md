@@ -2,7 +2,16 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.43.0 (2026-11-15).
+Last updated: v0.44.0 (2026-11-15).
+
+## Open in v0.44.0: traveler parameters read from the sources
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| X07a layer thicknesses, growth temperature, gas mix, substrate orientation | The paper [mizuochi2012] and its supplement are paywalled and blocked from the container; the author's review [mizuochi2014] gives the doping, substrate and contacts but not these | The full paper |
+| X13a membrane process | The proposal [ji2022] fabricates no device; the demonstrated diamond microdisk route [mitchell2016] is listed as an alternative, not as the proposal's membrane | A fabricated membrane with a magnetic tip |
+| Etch powers, times and the undercut temperature for the microdisk route | Not stated in [mitchell2016]; [khanaliloo2015] could not be read from the container | Read [khanaliloo2015] |
+| Verification of mizuochi2014 and mitchell2016 | Entered by hand from the documents read (mizuochi2014 is in Japanese, from the Japan Society of Applied Physics site) | `make verify` |
 
 ## Open in v0.43.0: Atlas prices for most of the rest
 
@@ -34,12 +43,12 @@ The eleven device-specific build steps are written as step sheets ([process/TRAV
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| X07a doping levels, layer thicknesses and growth temperature | The paper and its supplement are paywalled and blocked from the container; press releases confirm only boron and phosphorus layers grown by CVD | The full paper |
+| X07a doping levels, layer thicknesses and growth temperature | Doping closed in v0.44.0 from the author's review; thicknesses and growth conditions are in "Open in v0.44.0" | — |
 | X10a, X13a, X15a are proposals | No fabricated device: deterministic spin-chain placement, a room-temperature membrane at the assumed quality factor, and a ferromagnet bus (which the proposal runs at 0.1 K) | A demonstration of each |
 | X11a works only cryogenically | The cavity enhancement was measured below 10 K [faraon2011] | A room-temperature use case, or keep it labeled cryogenic |
-| X20a nanodiamond size and milling | Not in the main text or Methods of [kucsko2013]; its supplement could not be read from the container | The supplement |
-| X25a irradiation and anneal | The paper says Element Six did these steps and gives no energy, dose or anneal [breeze2018] | Element Six's process, or another maser paper that states it |
-| Monolithic microdisk route (khanaliloo2015) | The paper could not be read from the container | Read it, then add its parameters |
+| X20a nanodiamond size and milling | The arXiv version of [kucsko2013] has no separate supplement and states no size or treatment; the supplier is now named | The supplier's specification for the nanodiamonds used |
+| X25a irradiation and anneal | The paper and its arXiv version say Element Six did these steps and give no energy, dose or anneal [breeze2018] | Element Six's process, or another maser paper that states it |
+| Monolithic microdisk route (khanaliloo2015) | Partly closed in v0.44.0: the same group's later paper [mitchell2016] gives the process and results, added to X13a | Read [khanaliloo2015] for etch powers and times |
 | Verification of maletinsky2012 | Entered by hand (published title and pages read from the university repository); its DOI is added by `make apply-verify`, not by hand | `make verify` |
 
 ## Open in v0.40.0: Machines and Facilities Atlas

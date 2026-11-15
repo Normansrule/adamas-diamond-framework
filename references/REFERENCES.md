@@ -1,6 +1,6 @@
 # References
 
-**617 references.** 523 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**619 references.** 523 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -292,7 +292,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (40)
+## NV center fabrication and placement (42)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -316,10 +316,12 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[itoh2014]`** Itoh, K. M.; Watanabe, H. (2014). Isotope engineering of silicon and diamond for quantum computing and sensing applications. *MRS Communications*, 4, 143. [doi:10.1557/mrc.2014.32](https://doi.org/10.1557/mrc.2014.32)
 - ✅ **`[lesik2014]`** Lesik, M.; Tetienne, J.-P.; Tallaire, A.; et al. (2014). Perfect preferential orientation of nitrogen-vacancy defects in a synthetic diamond sample. *Applied Physics Letters*, 104, 113107. [doi:10.1063/1.4869103](https://doi.org/10.1063/1.4869103)
 - ✅ **`[michl2014]`** Michl, J.; Teraji, T.; Zaiser, S.; et al. (2014). Perfect alignment and preferential orientation of nitrogen-vacancy centers during chemical vapor deposition diamond growth on (111) surfaces. *Applied Physics Letters*, 104, 102407. [doi:10.1063/1.4868128](https://doi.org/10.1063/1.4868128)
+- 📚 **`[mizuochi2014]`** Mizuochi, N. (2014). Single photon emission and quantum information device by using NV center in diamond (in Japanese). *Kogaku (Japanese Journal of Optics)*, 43, 376.
 - ✅ **`[ohno2014]`** Ohno, K.; Heremans, F. J.; de las Casas, C. F.; et al. (2014). Three-dimensional localization of spins in diamond using 12C implantation. *Applied Physics Letters*, 105, 052406. [doi:10.1063/1.4890613](https://doi.org/10.1063/1.4890613)
 - ✅ **`[bayn2015]`** Bayn, I.; Chen, E. H.; Trusheim, M. E.; et al. (2015). Generation of ensembles of individually resolvable nitrogen vacancies using nanometer-scale apertures in ultrahigh-aspect ratio planar implantation masks. *Nano Letters*, 15, 1751. [doi:10.1021/nl504441m](https://doi.org/10.1021/nl504441m)
 - ✅ **`[jakobi2016]`** Jakobi, I.; Momenzadeh, S. A.; Favaro de Oliveira, F.; et al. (2016). Efficient creation of dipolar coupled nitrogen-vacancy spin qubits in diamond. *Journal of Physics: Conference Series*, 752, 012001. [doi:10.1088/1742-6596/752/1/012001](https://doi.org/10.1088/1742-6596/752/1/012001)
 - ✅ **`[mclellan2016]`** McLellan, C. A.; Myers, B. A.; Kraemer, S.; et al. (2016). Patterned formation of highly coherent nitrogen-vacancy centers using a focused electron irradiation technique. *Nano Letters*, 16, 2450. [doi:10.1021/acs.nanolett.5b05304](https://doi.org/10.1021/acs.nanolett.5b05304)
+- 📚 **`[mitchell2016]`** Mitchell, M.; Khanaliloo, B.; Lake, D. P.; Masuda, T.; Hadden, J. P.; Barclay, P. E. (2016). Single-crystal diamond low-dissipation cavity optomechanics. *Optica*, 3, 963.
 - ✅ **`[scarabelli2016]`** Scarabelli, D.; Trusheim, M.; Gaathon, O.; Englund, D.; Wind, S. J. (2016). Nanoscale engineering of closely-spaced coupled spins in diamond. *Nano Letters*, 16, 4982. [doi:10.1021/acs.nanolett.6b01692](https://doi.org/10.1021/acs.nanolett.6b01692)
 - ✅ **`[schukraft2016]`** Schukraft, M.; Zheng, J.; Schroeder, T.; et al. (2016). Precision nanoimplantation of nitrogen vacancy centers into diamond photonic crystal cavities and waveguides. *APL Photonics*, 1, 020801. [doi:10.1063/1.4948746](https://doi.org/10.1063/1.4948746)
 - ✅ **`[chen2017]`** Chen, Y.-C.; Salter, P. S.; Knauer, S.; et al. (2017). Laser writing of coherent colour centres in diamond. *Nature Photonics*, 11, 77. [doi:10.1038/nphoton.2016.234](https://doi.org/10.1038/nphoton.2016.234)

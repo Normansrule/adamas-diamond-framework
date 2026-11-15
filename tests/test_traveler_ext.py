@@ -80,3 +80,16 @@ def test_device_pages_show_extension_steps():
     assert b["extension"] and not b["missing"] and b["label"] == "demonstrated" and "babinec2010" in b["refs"]
     assert "### X09a" in traveler.to_markdown()
     assert (ROOT / "docs" / "process" / "TRAVELER.md").read_text(encoding="utf-8") == traveler.to_markdown(), "run: adamas build docs"
+
+
+def test_v044_parameters_match_their_sources():
+    """Values read in v0.44.0; a change must be re-checked against the source."""
+    from adamas.traveler_ext import BY_ID
+    p = {s["id"]: {n: (v, k) for n, v, k in s["params"]} for s in BY_ID.values()}
+    assert p["X07a"]["Doping"] == ("Phosphorus about 1 × 10¹⁸ cm⁻³ (n-layer), boron about 1 × 10¹⁹ cm⁻³ (p-type substrate)", "[mizuochi2014]")
+    assert "4 × 10⁴ photons per second" in p["X07a"]["Operating point"][0] and "14 mA" in p["X07a"]["Operating point"][0]
+    assert "to source" in p["X07a"]["Layer thicknesses, growth temperature, gas mix, substrate orientation"][0]
+    r = p["X13a"]["Demonstrated diamond resonator (not the proposal's membrane)"]
+    assert r[1] == "[mitchell2016]" and "6.1 to 6.8 × 10⁴" in r[0] and "above 9000" in r[0] and "940 nm" in r[0]
+    assert BY_ID["X13a"]["label"] == "proposed"                 # the proposal stays proposed; the microdisk is a demonstrated alternative
+    assert "Adámas Nanotechnologies" in p["X20a"]["Material"][0] and "nitric acid for 48 h" in p["X25a"]["Diamond"][0]
