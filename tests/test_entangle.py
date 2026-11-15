@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_bob_cannot_see_anything_alice_does():
     r = E.no_signaling_check(trials=100, seed=11)
     assert r["max_change"] < 1e-12                       # the theorem: exactly 0 up to round-off [ghirardi1980]
+    assert "below 10⁻¹²" in E.document()          # the page states the bound, not the platform-dependent round-off
     assert r["max_conditional_change"] > 0.1             # yet the correlations are real once Alice's results are known
 
 

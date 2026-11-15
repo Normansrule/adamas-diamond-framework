@@ -27,7 +27,7 @@ heralded by a detection at a station between the nodes [bernien2013] [humphreys2
 `no_signaling_check` takes 200 random two-qubit states and, for each, a random measurement basis and a random unitary
 on Alice's side. It compares Bob's density matrix (everything he can ever measure) before and after.
 
-* Largest change, in trace distance: **6.1e-16** (floating-point round-off; the theorem says exactly 0).
+* Largest change, in trace distance: **below 10⁻¹²** (floating-point round-off, whose exact size depends on the platform; the theorem says exactly 0).
 * For contrast, Bob's state *conditioned on Alice's result* changes by up to **0.51**: the
   correlation is real, but Bob cannot see it without being told Alice's result.
 
