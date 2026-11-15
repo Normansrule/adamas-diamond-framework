@@ -47,12 +47,12 @@ SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
     "M04": [("gatechims2025", "Laser Machining Lab, class 1, 2 and 3 tools", "USD", "hour",
              {"Georgia Tech and US academic, class 1": 28, "Georgia Tech and US academic, class 2": 39, "Georgia Tech and US academic, class 3": 50,
               "foreign academic and industry, class 1": 47, "foreign academic and industry, class 2": 53, "foreign academic and industry, class 3": 51},
-             "femtosecond laser machining of glass, sapphire and metal; the page does not say which tool is in which class and does not mention diamond")],
-    "M05": [("ccmr2026", "Allied Multiprep Polishers", "USD", "hour", {"Cornell internal": 33.99}, "metallographic polisher"),
-            ("ccmr2026", "Struers Rotopol", "USD", "hour", {"Cornell internal": 36.40}, "metallographic polisher"),
-            ("aggiefab2025", "G&P CMP", "USD", "hour", {"Texas A&M": 55}, "chemical-mechanical polisher; outside academic users pay 150 % and industry 300 % of the listed rate (the page prints no dollar figure for them)")],
+             "rates as printed (class 3 is below class 2 for foreign academic and industry users); femtosecond laser machining of glass, sapphire and metal; the page does not say which tool is in which class and does not mention diamond")],
+    "M05": [("ccmr2026", "Allied Multiprep Polishers", "USD", "hour", {"Cornell internal": 33.99}, "the sheet does not say it polishes diamond"),
+            ("ccmr2026", "Struers Rotopol", "USD", "hour", {"Cornell internal": 36.40}, "the sheet does not say it polishes diamond"),
+            ("aggiefab2025", "G&P CMP", "USD", "hour", {"Texas A&M": 55}, "chemical-mechanical polisher, not stated for diamond; outside academic users pay 150 % and industry 300 % of the listed rate (the page prints no dollar figure for them)")],
     "M08": [("cunyasrc2024", "FLS1000 Photoluminescence Lifetime Spectrometer; Micro-Photoluminescence Setup", "USD", "hour",
-             {"CUNY": 20, "outside academic": 30, "start-up": 60, "industrial": 120}, "the same rate for each tool; no photoluminescence mapping tool is listed"),
+             {"City University of New York (CUNY)": 20, "outside academic": 30, "start-up": 60, "industrial": 120}, "the same rate for each tool; no photoluminescence mapping tool is listed"),
             ("ccmr2026", "Edinburgh FLS1000 Fluorescence and Lifetime Spectrometer", "USD", "hour", {"Cornell internal": 41.70}, "US$10.50 minimum charge")],
     "M09": [("wnf2026", "Microscopes", "USD", "hour", {"academic (UW and non-UW)": 13, "industry": 38}, "the sheet does not say whether polarizing optics are fitted")],
     "M10": [("wnf2026", "Wet Bench / Solvent Bench", "USD", "hour", {"academic (UW and non-UW)": 13, "industry": 38}, "")],
@@ -64,7 +64,7 @@ SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
     "M15": [("wnf2026", "Plasma Asher", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "")],
     "M16": [("wnf2026", "DRIE/RIE/ICP", "USD", "hour", {"academic (UW and non-UW)": 89, "industry": 267}, "")],
     "M17": [("wnf2026", "Probe Station", "USD", "hour", {"academic (UW and non-UW)": 38, "industry": 114}, "the rate sheet lists no separate parameter analyzer or hot chuck")],
-    "M18": [("asuaep2026", "Keysight B1505A Power Device Analyzer/Curve Tracer", "USD", "hour", {"ASU": 44, "nonprofit and academic": 55},
+    "M18": [("asuaep2026", "Keysight B1505A Power Device Analyzer/Curve Tracer", "USD", "hour", {"Arizona State University (ASU)": 44, "nonprofit and academic": 55},
              "listed for packaged discrete devices; the rate page states no voltage range")],
     "M19": [("wnf2026", "Stylus / Optical Profilometer", "USD", "hour", {"academic (UW and non-UW)": 63, "industry": 189}, "profilometer only"),
             ("maf2023", "Profilometer", "USD", "hour", {"academic": 22, "outside academic": 26, "industry": 126}, "")],
@@ -87,22 +87,23 @@ SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
     "M31": [("lattispec2026", "High NV content plate, 3.2 × 2.4 × 1.2 mm, HPHT type Ib", "USD", "plate", {"list": 510}, "")],
     "M52": [("e6cvd2026", "EL SC plate 2.0 × 2.0 × 0.5 mm (145-500-0385)", "USD", "plate", {"regular": 865, "special (sale)": 565}, "electronic grade; isotope content not stated on the page"),
             ("e6cvd2026", "EL SC plate 4.0 × 4.0 × 0.5 mm (145-500-0389)", "USD", "plate", {"regular": 2545, "special (sale)": 1730}, "¹²C-enriched plates are not priced on the page")],
+    # Store rows: specifications in the names (MHz, layers, volts, polarization) are as the product page names them.
     "M53": [("srs2026", "DS345 30 MHz function generator", "USD", "instrument", {"base price": 2595}, "the page prints 'from'; options cost extra"),
             ("rigolna2026", "DG1022Z 25 MHz two-channel function generator", "USD", "instrument", {"price shown": 389}, "")],
-    "M54": [("edmundoptics2026", "594 nm yellow HeNe laser, 1.3 mW, linearly polarized (#28-062)", "GBP", "laser", {"list, excluding VAT": 4234}, "UK store"),
-            ("edmundoptics2026", "635 nm 4 mW circular laser diode (#57-106)", "GBP", "diode", {"list, excluding VAT": 212}, "UK store; diode module only")],
+    "M54": [("edmundoptics2026", "594 nm yellow HeNe laser, 1.3 mW, linearly polarized (#28-062)", "GBP", "laser", {"list, excluding value-added tax (VAT)": 4234}, "UK store"),
+            ("edmundoptics2026", "635 nm 4 mW circular laser diode (#57-106)", "GBP", "diode", {"list, excluding value-added tax (VAT)": 212}, "UK store; diode module only")],
     "M55": [("srs2026", "SR860 500 kHz lock-in amplifier", "USD", "instrument", {"base price": 6495}, "the page prints 'from'"),
             ("srs2026", "SR570 low-noise current preamplifier", "USD", "instrument", {"base price": 3395}, "transimpedance amplifier; the page prints 'from'")],
     "M56": [("transcat2026", "GW Instek GPM-8213G digital AC power meter with GPIB", "USD", "instrument", {"price shown": 1156}, "reseller; a power meter, not a multichannel power analyzer; tariff surcharges may apply"),
             ("infraredcameras2026", "FLIR E8 Pro thermal camera", "USD", "camera", {"regular price": 3249}, "reseller; shown sold out when read"),
-            ("element14sg2026", "Infineon EVALDCLINKDPTTOBO1 800 V double-pulse test board", "SGD", "board", {"excluding GST": 661.05}, "reseller; the device-under-test board only, not a complete tester")],
-    "M57": [("osurc2023", "Gamma Irradiator Use (Cobalt-60)", "USD", "run", {"OSU internal": 179, "external": 188}, "includes staff time; sheet for 1 July 2023 to 30 June 2024, no newer sheet was found"),
+            ("element14sg2026", "Infineon EVALDCLINKDPTTOBO1 800 V double-pulse test board", "SGD", "board", {"excluding goods and services tax (GST)": 661.05}, "reseller; the device-under-test board only, not a complete tester")],
+    "M57": [("osurc2023", "Gamma Irradiator Use (Cobalt-60)", "USD", "run", {"Oregon State University (OSU) internal": 179, "external": 188}, "includes staff time; sheet for 1 July 2023 to 30 June 2024, no newer sheet was found"),
             ("umdrad2025", "Irradiator", "USD", "hour", {"listed rate": 550}, "2 hour minimum, 150 % off hours; university and government discounts not printed; the facility describes a panoramic cobalt-60 irradiator")],
-    "M58": [("aalto2025", "DC (shielded room in Magnet House 4th floor)", "EUR", "hour", {"all users, VAT 0 %": 40}, "a magnetically shielded room for hourly use"),
+    "M58": [("aalto2025", "DC (shielded room in Magnet House 4th floor)", "EUR", "hour", {"all users, VAT 0 %": 40}, "a shielded room for hourly use; the page does not say whether the shielding is magnetic or radio-frequency, and does not explain the name DC"),
             ("twinleaf2026", "MS-1L four-layer magnetic shield", "USD", "shield", {"price shown": 7996}, "benchtop shield, 30 mm bore; not a room"),
             ("twinleaf2026", "MS-2 four-layer magnetic shield", "USD", "shield", {"price shown": 14390}, "benchtop shield, 46 mm bore; not a room"),
             ("quspin2026", "QZFM Gen-3 zero-field optically pumped magnetometer", "USD", "sensor",
-             {"1 to 3 sensors, each": 10000, "4 to 7, each": 8500, "8 to 15, each": 8000, "16 to 32, each": 7700}, "for a gradiometer, two or more sensors; triaxial option US$1,250 more per sensor")],
+             {"1 to 3 sensors, each": 10000, "4 to 7, each": 8500, "8 to 15, each": 8000, "16 to 32, each": 7700}, "price per sensor at each order size; triaxial option US$1,250 more per sensor")],
 }
 
 # Sourced rows that price only part of the machine: id -> what is not priced.
@@ -111,7 +112,7 @@ PARTIAL = {
     "M53": "the RF amplifier and the coil",
     "M54": "the laser-diode driver, mounts and optics",
     "M55": "the bias electrodes, which are made on M11 to M13 and priced there",
-    "M56": "a complete double-pulse tester (none with a published price was found)",
+    "M56": "a multichannel power analyzer and a complete double-pulse tester (none with a published price was found)",
     "M57": "proton beam time (the facilities checked quote it on request)",
 }
 
@@ -137,10 +138,10 @@ ESTIMATE = {
     "M51": [("C1", "Microwave and control")], "M52": [("C1", "Electronic-grade diamond")],
 }
 # Machines priced by a published tool that is not the same as the Atlas tool; the note on the quote says how it differs.
-SUBSTITUTE = {"M04", "M05", "M08", "M09", "M17", "M20", "M22", "M23", "M26"}
+SUBSTITUTE = {"M04", "M05", "M08", "M09", "M17", "M18", "M20", "M22", "M23", "M26"}
 
 # Effective date of each sourced page as the page states it, and the date it was read.
-EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 September 2023", "ccmr2026": "fiscal year 2027, from 1 July 2026",
+EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 September 2023 when first read; on 15 November 2026 the current table showed no date and a new table was listed from 1 January 2027", "ccmr2026": "fiscal year 2027, from 1 July 2026",
              "mibl2024": "from 1 September 2024", "tinytapeout2026": "no date shown", "europractice2026": "2026 schedule",
              "e6cvd2026": "no date shown", "lattispec2026": "no date shown",
              "gatechims2025": "effective 1 September 2025", "aggiefab2025": "effective 1 October 2025", "cunyasrc2024": "effective 1 July 2024",
@@ -150,7 +151,7 @@ EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 Septem
              "quspin2026": "no date shown"}
 READ = {k: (READ_ON_2 if k in {"gatechims2025", "aggiefab2025", "cunyasrc2024", "asuaep2026", "osurc2023", "umdrad2025", "aalto2025", "srs2026",
                                "rigolna2026", "edmundoptics2026", "transcat2026", "infraredcameras2026", "element14sg2026", "twinleaf2026", "quspin2026"}
-            else READ_ON + (" and " + READ_ON_2 if k in {"ccmr2026", "wnf2026"} else "")) for k in EFFECTIVE}
+            else READ_ON + (" and " + READ_ON_2 if k in {"ccmr2026", "wnf2026", "maf2023"} else "")) for k in EFFECTIVE}
 
 NO_COST = {"M00": "a computer the user already has; every listed tool is open source"}
 INCLUDED = {"M39": ("M38", "the B1 laser line item includes an acousto-optic modulator or direct modulation")}
@@ -288,8 +289,8 @@ Every machine the build program names (M00 to M59, from the outline), where it l
 use it, and what it costs. Each price carries its kind:
 
 - **sourced**: read from a published rate sheet or store page on the date listed under Sources (the reference gives
-  the page). Rates and list prices change; check the page before you budget. Store prices exclude tax and shipping
-  unless the row says otherwise.
+  the page). Rates and list prices change; check the page before you budget. Store prices may exclude tax and
+  shipping; a row says so where the page does.
 - **estimate**: the sum of part-price ranges from the experiment parts lists (`adamas.experiments`), which are
   reviewer estimates of 2026 street prices, not quotes.
 - **included**: priced inside another machine's line.
@@ -349,5 +350,5 @@ def write(path: str = "docs/build/ATLAS.md") -> str:
 
 
 def to_json() -> dict:
-    return {"rows": rows(), "summary": summary(), "kinds": KINDS, "effective": EFFECTIVE, "facility": FACILITY, "access": ACCESS, "read_on": READ,
+    return {"rows": rows(), "summary": summary(), "kinds": KINDS, "effective": EFFECTIVE, "facility": FACILITY, "access": ACCESS, "read_on": READ, "read_dates": [READ_ON, READ_ON_2],
             "access_fees": [{"key": k, "listed_as": t, "currency": c, "unit": u, "prices": p} for k, t, c, u, p in ACCESS_FEES]}

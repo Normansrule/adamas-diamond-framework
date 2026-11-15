@@ -247,7 +247,7 @@ function atlasTable() {
   const cnt = k => rows.filter(x => x.kind === k).length;
   $('atKpis').innerHTML = (AT.kinds || ['sourced', 'estimate', 'included', 'no cost', 'unpriced']).map(k => `<div class="kpi"><b>${cnt(k)}</b><span>${k}</span></div>`).join('');
   $('atTable').innerHTML = `<thead><tr><th>ID</th><th>Machine</th><th>Facility</th><th>Phases</th><th>Kind</th><th>Price</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(x.id)}</td><td>${esc(x.tool)}</td><td>${esc((AT.facility[x.facility] || '').split(',')[0])}<br><span class="mute">${esc(AT.access[x.access] || '')}</span></td><td>${esc(x.phases.join(', ')) || '—'}</td><td>${esc(x.kind)}</td><td>${atPrice(x)}</td></tr>`).join('')}</tbody>`;
-  $('atSrc').textContent = `Sourced pages read on ${[...new Set(Object.values(AT.read_on || {}))].join('; ') || '—'} (each source's date is in docs/build/ATLAS.md); rates and list prices change. Python reference: adamas.atlas_prices; written page: docs/build/ATLAS.md. Sources: ${AT.summary.keys.map(k => '[' + k + ']').join(' ')}`;
+  $('atSrc').textContent = `Sourced pages read on ${(AT.read_dates || []).join(' or ') || '—'} (each source's date is in docs/build/ATLAS.md); rates and list prices change. Python reference: adamas.atlas_prices; written page: docs/build/ATLAS.md. Sources: ${AT.summary.keys.map(k => '[' + k + ']').join(' ')}`;
 }
 $('atPhase').onchange = atlasTable; $('atKind').onchange = atlasTable; atlasTable();
 </script></body></html>

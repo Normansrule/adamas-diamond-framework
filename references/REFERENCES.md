@@ -501,7 +501,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[vanschoot2017]`** van Schoot, J.; Troost, K.; Bornebroek, F.; et al. (2017). High-numerical aperture extreme ultraviolet scanner for 8-nm lithography and beyond. *Journal of Micro/Nanolithography, MEMS, and MOEMS*, 16(4), 041010. [doi:10.1117/1.jmm.16.4.041010](https://doi.org/10.1117/1.jmm.16.4.041010)
 - 📚 **`[bakshi2018]`** Bakshi, V. (Ed.) (2018). EUV Lithography (2nd ed.). *SPIE Press*.
 - 📚 **`[levinson2019]`** Levinson, H. J. (2019). Principles of Lithography (4th ed.). *SPIE Press*.
-- ✅ **`[maf2023]`** Molecular Analysis Facility, University of Washington (2023). Molecular Analysis Facility rates, effective 1 September 2023. *moles.washington.edu*, accessed 10 November 2026.
+- ✅ **`[maf2023]`** Molecular Analysis Facility, University of Washington (2023). Molecular Analysis Facility rates, effective 1 September 2023 (date no longer shown on 15 November 2026). *moles.washington.edu*, accessed 10 and 15 November 2026.
 - ✅ **`[osurc2023]`** Radiation Center, Oregon State University (2023). Radiation Center fees, 1 July 2023 to 30 June 2024. *radiationcenter.oregonstate.edu*, accessed 15 November 2026.
 - ✅ **`[cunyasrc2024]`** Photonics Initiative, CUNY Advanced Science Research Center (2024). ASRC Photonics core facility rates, effective 1 July 2024. *asrc.gc.cuny.edu*, accessed 15 November 2026.
 - ✅ **`[aalto2025]`** Aalto NeuroImaging, Aalto University (2025). Aalto NeuroImaging infrastructure rates (page updated 8 January 2025). *aalto.fi*, accessed 15 November 2026.

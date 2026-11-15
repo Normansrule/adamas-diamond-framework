@@ -74,7 +74,7 @@ def test_money_format():
     assert A._money("USD", 49.4) == "US$49.40" and A._money("USD", 6325) == "US$6,325" and A._money("EUR", 1126) == "1,126 EUR"
 
 
-# Every sourced number as read from its page on 10 November 2026. A change here must be re-checked against the page.
+# Every sourced number as read from its page on 10 or 15 November 2026 (adamas.atlas_prices.READ). A change here must be re-checked against the page.
 GOLDEN = {
     ("M06", "maf2023"): (34, 40, 126), ("M06", "ccmr2026"): (49.95,), ("M07", "maf2023"): (55, 64, 200), ("M07", "ccmr2026"): (51.0,),
     ("M10", "wnf2026"): (13, 38), ("M11", "wnf2026"): (63, 189, 38, 114), ("M12", "wnf2026"): (158, 569), ("M13", "wnf2026"): (89, 267),
@@ -101,6 +101,14 @@ def test_partial_rows_say_what_is_left_out_and_every_source_has_dates():
     keys = {k for qs in A.SOURCED.values() for k, *_ in qs} | {f[0] for f in A.ACCESS_FEES}
     assert keys <= set(A.EFFECTIVE) and set(A.READ) == set(A.EFFECTIVE)
     assert all(A.READ[k] in (A.READ_ON, A.READ_ON_2, f"{A.READ_ON} and {A.READ_ON_2}") for k in A.READ)
+    units = {(i, k, c, u) for i, qs in A.SOURCED.items() for k, _, c, u, _, _ in qs if i in {"M04", "M05", "M08", "M09", "M18", "M53", "M54", "M55", "M56", "M57", "M58"}}
+    assert units == {("M04", "gatechims2025", "USD", "hour"), ("M05", "ccmr2026", "USD", "hour"), ("M05", "aggiefab2025", "USD", "hour"),
+                     ("M08", "cunyasrc2024", "USD", "hour"), ("M08", "ccmr2026", "USD", "hour"), ("M09", "wnf2026", "USD", "hour"),
+                     ("M18", "asuaep2026", "USD", "hour"), ("M53", "srs2026", "USD", "instrument"), ("M53", "rigolna2026", "USD", "instrument"),
+                     ("M54", "edmundoptics2026", "GBP", "laser"), ("M54", "edmundoptics2026", "GBP", "diode"), ("M55", "srs2026", "USD", "instrument"),
+                     ("M56", "transcat2026", "USD", "instrument"), ("M56", "infraredcameras2026", "USD", "camera"), ("M56", "element14sg2026", "SGD", "board"),
+                     ("M57", "osurc2023", "USD", "run"), ("M57", "umdrad2025", "USD", "hour"), ("M58", "aalto2025", "EUR", "hour"),
+                     ("M58", "twinleaf2026", "USD", "shield"), ("M58", "quspin2026", "USD", "sensor")}
     assert set(A.UNPRICED) == {"M01", "M02", "M03", "M25", "M59"}
 
 

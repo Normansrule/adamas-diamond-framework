@@ -11,10 +11,11 @@ Eleven more machines are priced from published pages read on 15 November 2026 (s
 | Item | Why it waits | What would close it |
 |---|---|---|
 | Unpriced machines (5): M01 MPCVD reactor, M02 HPHT press, M03 heteroepitaxy, M25 laser writing of vacancies, M59 navigation test vehicle | No maker or service publishes a price | Quotes |
-| Closest-tool rows M04, M05, M08, M09 | The rate sheets found price laser machining of glass and sapphire, metallographic and silicon polishers, photoluminescence spectrometers and a general microscope, not the diamond tools | A rate sheet or service price for diamond laser cutting, scaife polishing, photoluminescence mapping and a polarizing microscope |
-| Partly priced rows M09, M53 to M57 | Each row names what is not priced: the etch-pit furnace, the RF amplifier and coil, the laser driver and optics, the bias electrodes (priced on M11 to M13), a complete double-pulse tester, proton beam time | Quotes for the named parts; the proton facilities checked (Texas A&M, Berkeley 88-Inch, TRIUMF, PSI) quote on request |
+| Closest-tool rows M04, M05, M08, M09, M18 | The rate sheets found price laser machining of glass and sapphire, sample polishers and a chemical-mechanical polisher not stated for diamond, photoluminescence spectrometers and a general microscope, and a curve tracer listed for packaged discrete devices, not the diamond tools | A rate sheet or service price for diamond laser cutting, scaife polishing, photoluminescence mapping and a polarizing microscope |
+| Partly priced rows M09, M53 to M57 | Each row names what is not priced: the etch-pit furnace, the radio-frequency amplifier and coil, the laser driver and optics, the bias electrodes (priced on M11 to M13), a power analyzer and a complete double-pulse tester, proton beam time | Quotes for the named parts; the proton facilities checked (Texas A&M, Berkeley 88-Inch, TRIUMF, PSI) quote on request |
 | Old or undated pages | The Oregon State gamma rate is for 2023 to 2024; several store pages show no date; the UW Molecular Analysis Facility page no longer shows its 2023 date and lists new rates from 1 January 2027 | Re-read the pages each year; switch maf2023 to the 2027 table when it takes effect |
 | Reseller prices | The power meter, thermal camera and double-pulse board prices come from resellers, and the camera was sold out when read | Maker list prices or quotes |
+| Aalto shielded room | The page does not say whether the room is magnetically or radio-frequency shielded | Ask the facility |
 | Thorlabs list prices | Thorlabs pages do not render for an automated reader | Read by a person |
 
 ## Open in v0.42.0: device numbers confirmed from the papers
