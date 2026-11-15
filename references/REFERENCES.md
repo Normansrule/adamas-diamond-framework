@@ -1,6 +1,6 @@
 # References
 
-**602 references.** 508 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**617 references.** 523 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -473,7 +473,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 
 - ✅ **`[sewani2020]`** Sewani, V. K.; Vallabhapurapu, H. H.; Yang, Y.; et al. (2020). Coherent control of NV- centers in diamond in a quantum teaching lab. *American Journal of Physics*, 88, 1156. [doi:10.1119/10.0001905](https://doi.org/10.1119/10.0001905)
 
-## Lithography and nanofabrication (32)
+## Lithography and nanofabrication (47)
 
 - ✅ **`[kanaya1972]`** Kanaya, K.; Okayama, S. (1972). Penetration and energy-loss theory of electrons in solid targets. *Journal of Physics D: Applied Physics*, 5, 43. [doi:10.1088/0022-3727/5/1/308](https://doi.org/10.1088/0022-3727/5/1/308)
 - ✅ **`[chang1975]`** Chang, T. H. P. (1975). Proximity effect in electron-beam lithography. *Journal of Vacuum Science and Technology*, 12, 1271. [doi:10.1116/1.568515](https://doi.org/10.1116/1.568515)
@@ -502,11 +502,26 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[bakshi2018]`** Bakshi, V. (Ed.) (2018). EUV Lithography (2nd ed.). *SPIE Press*.
 - 📚 **`[levinson2019]`** Levinson, H. J. (2019). Principles of Lithography (4th ed.). *SPIE Press*.
 - ✅ **`[maf2023]`** Molecular Analysis Facility, University of Washington (2023). Molecular Analysis Facility rates, effective 1 September 2023. *moles.washington.edu*, accessed 10 November 2026.
+- ✅ **`[osurc2023]`** Radiation Center, Oregon State University (2023). Radiation Center fees, 1 July 2023 to 30 June 2024. *radiationcenter.oregonstate.edu*, accessed 15 November 2026.
+- ✅ **`[cunyasrc2024]`** Photonics Initiative, CUNY Advanced Science Research Center (2024). ASRC Photonics core facility rates, effective 1 July 2024. *asrc.gc.cuny.edu*, accessed 15 November 2026.
+- ✅ **`[aalto2025]`** Aalto NeuroImaging, Aalto University (2025). Aalto NeuroImaging infrastructure rates (page updated 8 January 2025). *aalto.fi*, accessed 15 November 2026.
+- ✅ **`[aggiefab2025]`** AggieFab Nanofabrication Facility, Texas A&M University (2025). AggieFab fees, effective 1 October 2025. *aggiefab.tamu.edu*, accessed 15 November 2026.
+- ✅ **`[gatechims2025]`** Institute for Matter and Systems, Georgia Institute of Technology (2025). IMS cleanroom rates, effective 1 September 2025 (Laser Machining Lab hourly usage). *matter-systems.gatech.edu*, accessed 15 November 2026.
+- ✅ **`[umdrad2025]`** Radiation Facilities, University of Maryland (2025). Radiation Facilities fee schedule 2026-2027, effective 1 July 2025. *radiation.umd.edu*, accessed 15 November 2026.
 - ✅ **`[asmleuv2026]`** ASML (2026). EUV lithography systems (product page: 0.33 and 0.55 numerical aperture platforms). *asml.com*, accessed September 2026.
 - ✅ **`[asmlhighna2026]`** ASML (2026). High NA EUV reaches new readiness milestone with first high-volume logic product (press release). *asml.com*, 15 July 2026.
-- ✅ **`[ccmr2026]`** Cornell Center for Materials Research (2026). CCMR shared facility rates, internal Cornell use, fiscal year 2027 (effective 1 July 2026). *ccmr.cornell.edu*, accessed 10 November 2026.
+- ✅ **`[asuaep2026]`** Advanced Electronics and Photonics core facility, Arizona State University (2026). AEP core facility rates (no date shown). *cores.research.asu.edu*, accessed 15 November 2026.
+- ✅ **`[ccmr2026]`** Cornell Center for Materials Research (2026). CCMR shared facility rates, internal Cornell use, fiscal year 2027 (effective 1 July 2026). *ccmr.cornell.edu*, accessed 10 and 15 November 2026.
+- ✅ **`[edmundoptics2026]`** Edmund Optics (UK store) (2026). 594 nm HeNe laser #28-062 and 635 nm laser diode #57-106 (store listings, prices excluding VAT). *edmundoptics.co.uk*, accessed 15 November 2026.
+- ✅ **`[element14sg2026]`** element14 Singapore (reseller) (2026). Infineon EVALDCLINKDPTTOBO1 800 V double-pulse test board (store listing). *sg.element14.com*, accessed 15 November 2026.
 - ✅ **`[imec2026]`** imec (2026). Imec receives the world's most advanced High NA EUV system (press release). *imec-int.com*, 18 March 2026.
-- ✅ **`[wnf2026]`** Washington Nanofabrication Facility, University of Washington (2026). Washington Nanofabrication Facility rate structure, effective 1 March 2026 (hourly tool rates and access fees). *wnf.washington.edu*, accessed 10 November 2026.
+- ✅ **`[infraredcameras2026]`** Infrared Cameras Inc. (reseller) (2026). FLIR E8 Pro thermal camera (store listing). *buy.infraredcameras.com*, accessed 15 November 2026.
+- ✅ **`[quspin2026]`** QuSpin (2026). QZFM Gen-3 zero-field optically pumped magnetometer (product page with volume prices). *quspin.com*, accessed 15 November 2026.
+- ✅ **`[rigolna2026]`** RIGOL Technologies USA (2026). DG1000Z series function and arbitrary waveform generators (store listing). *rigolna.com*, accessed 15 November 2026.
+- ✅ **`[srs2026]`** Stanford Research Systems (2026). Product pages with base prices: DS345 function generator, SR860 lock-in amplifier, SR570 current preamplifier. *thinksrs.com*, accessed 15 November 2026.
+- ✅ **`[transcat2026]`** Transcat (reseller) (2026). GW Instek GPM-8213G digital AC power meter (store listing). *transcat.com*, accessed 15 November 2026.
+- ✅ **`[twinleaf2026]`** Twinleaf (2026). MS-1L and MS-2 four-layer magnetic shields (product pages). *twinleaf.com*, accessed 15 November 2026.
+- ✅ **`[wnf2026]`** Washington Nanofabrication Facility, University of Washington (2026). Washington Nanofabrication Facility rate structure, effective 1 March 2026 (hourly tool rates and access fees). *wnf.washington.edu*, accessed 10 and 15 November 2026.
 
 ## Power electronics and applications (20)
 

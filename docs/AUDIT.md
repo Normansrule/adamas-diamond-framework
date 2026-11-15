@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.43.0 (Atlas prices for most of the rest)
+
+The Atlas now prices 33 of 60 machines from published pages (was 22), and only 5 are unpriced (was 16): the MPCVD reactor, HPHT press and heteroepitaxy stack (no maker publishes a price), laser writing of vacancies (no service exists) and the navigation test vehicle. Nothing was estimated to fill a gap. Where the published tool is not the diamond tool (femtosecond laser machining of glass and sapphire for diamond cutting, metallographic and silicon CMP polishers for diamond polishing, photoluminescence spectrometers for photoluminescence mapping, a general microscope for a polarizing one), the row says "closest listed tool, not the same". Where a price covers only part of a machine, the row names what is left out, so no reader takes a lock-in price for the whole readout chain or a gamma rate for proton time. Store prices from resellers are labeled as such, and every source lists both the date it states and the date it was read. The University of Washington Molecular Analysis Facility page no longer shows its 1 September 2023 date and now also lists rates from 1 January 2027; the current values used here are unchanged.
+
 ### Status after v0.42.0 (device numbers confirmed)
 
 Seven device figures of merit move from "to confirm" to values read from the papers, each with its conditions (ensemble or single NV, field, volume, bandwidth). Two do not, and say why instead of borrowing a number from a review: the electrolytic-gate paper reports a charge-state shift but no NV⁻ fraction, and the quantum diamond microscope review gives no per-pixel figure in the parts read. A test pins every confirmed value to its paper.

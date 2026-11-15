@@ -2,7 +2,20 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.42.0 (2026-11-11).
+Last updated: v0.43.0 (2026-11-15).
+
+## Open in v0.43.0: Atlas prices for most of the rest
+
+Eleven more machines are priced from published pages read on 15 November 2026 (see [build/ATLAS.md](build/ATLAS.md)); 33 of 60 are now sourced. What is left:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Unpriced machines (5): M01 MPCVD reactor, M02 HPHT press, M03 heteroepitaxy, M25 laser writing of vacancies, M59 navigation test vehicle | No maker or service publishes a price | Quotes |
+| Closest-tool rows M04, M05, M08, M09 | The rate sheets found price laser machining of glass and sapphire, metallographic and silicon polishers, photoluminescence spectrometers and a general microscope, not the diamond tools | A rate sheet or service price for diamond laser cutting, scaife polishing, photoluminescence mapping and a polarizing microscope |
+| Partly priced rows M09, M53 to M57 | Each row names what is not priced: the etch-pit furnace, the RF amplifier and coil, the laser driver and optics, the bias electrodes (priced on M11 to M13), a complete double-pulse tester, proton beam time | Quotes for the named parts; the proton facilities checked (Texas A&M, Berkeley 88-Inch, TRIUMF, PSI) quote on request |
+| Old or undated pages | The Oregon State gamma rate is for 2023 to 2024; several store pages show no date; the UW Molecular Analysis Facility page no longer shows its 2023 date and lists new rates from 1 January 2027 | Re-read the pages each year; switch maf2023 to the 2027 table when it takes effect |
+| Reseller prices | The power meter, thermal camera and double-pulse board prices come from resellers, and the camera was sold out when read | Maker list prices or quotes |
+| Thorlabs list prices | Thorlabs pages do not render for an automated reader | Read by a person |
 
 ## Open in v0.42.0: device numbers confirmed from the papers
 
@@ -34,7 +47,7 @@ The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with 
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| Unpriced machines (16) | No published price for MPCVD reactors, HPHT presses, heteroepitaxy, laser cutting, polishing, PL mapping, defect inspection, curve tracers, laser writing, the nuclear-spin RF source, the charge-state laser, the photoelectric readout chain, or the P8 application facilities | Quotes or facility rate sheets, entry by entry; each reason is in the Atlas |
+| Unpriced machines (16) | Closed for 11 in v0.43.0; see "Open in v0.43.0" for the 5 left | — |
 | Lab optics and detectors are estimates | Thorlabs pages did not render for an automated reader; single-photon detector and time-tagger makers do not publish prices | List prices read by a person, or quotes |
 | Phase totals from hourly rates | Cleanroom and characterization prices are per hour, and the tool hours per phase are not modelled | An hours estimate per traveler step |
 | Currency and fiscal year | Prices stay in their own currency (US$ or EUR) and year; no exchange rate is sourced, and rate sheets change every year | A dated exchange rate, and re-reading the pages each year |

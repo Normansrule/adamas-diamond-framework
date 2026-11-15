@@ -28,8 +28,8 @@ Atlas machines for this phase: M01 Microwave plasma chemical vapor deposition (M
 | M10 to M16 | Cleanroom access (C2) | Tool-time fees for lithography, evaporation, ALD, plasma | 5,000 to 30,000 |
 | M01 | Hydrogen plasma (C2) | MPCVD time at a partner lab | 1,000 to 5,000 |
 | M17 | Probe station and analyzer (C2) | Often available in the department | 0 to 10,000 |
-| M18 | High-voltage curve tracer for breakdown | breakdown tests (not yet simulated) | not priced (no source yet; see the [Atlas](ATLAS.md)) |
-| M55 | Photoelectric readout chain (bias electrodes, lock-in, transimpedance) | photoelectric NV readout (not yet simulated) | not priced (no source yet; see the [Atlas](ATLAS.md)) |
+| M18 | High-voltage curve tracer for breakdown | breakdown tests (not yet simulated) | US$44 to 55 per hour, Keysight B1505A Power Device Analyzer/Curve Tracer [asuaep2026] ([Atlas](ATLAS.md)) |
+| M55 | Photoelectric readout chain (bias electrodes, lock-in, transimpedance) | photoelectric NV readout (not yet simulated) | US$6,495 per instrument, SR860 500 kHz lock-in amplifier [srs2026]; not priced: the bias electrodes, which are made on M11 to M13 and priced there ([Atlas](ATLAS.md)) |
 
 ## Facility and safety
 

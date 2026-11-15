@@ -33,7 +33,7 @@ def test_sourced_prices_cite_the_reference_database():
     for key, listed, cur, unit, prices, _ in quotes:
         assert key in keys and keys[key].status == "V", key           # a page that was fetched and read
         assert "accessed" in keys[key].locator and listed and unit
-        assert cur in ("USD", "EUR") and prices and all(v > 0 for v in prices.values())
+        assert cur in ("USD", "EUR", "GBP", "SGD") and prices and all(v > 0 for v in prices.values())
     assert set(A.summary()["keys"]) <= set(keys)
 
 
@@ -55,14 +55,14 @@ def test_phase_machine_lists_are_in_the_atlas_and_counted():
     s = A.summary()
     assert s["machines"] == len(ATLAS) == 60
     assert sum(s[k] for k in A.KINDS) == 60
-    assert (s["sourced"], s["estimate"], s["included"], s["no cost"], s["unpriced"]) == (22, 20, 1, 1, 16)   # as stated in CHANGELOG and AUDIT
-    assert s["by_phase"]["P8"]["unpriced"] == 4 and s["by_phase"]["P4"]["sourced"] == 11
+    assert (s["sourced"], s["estimate"], s["included"], s["no cost"], s["unpriced"]) == (33, 20, 1, 1, 5)   # as stated in CHANGELOG and AUDIT
+    assert s["by_phase"]["P8"]["unpriced"] == 1 and s["by_phase"]["P4"]["sourced"] == 13
 
 
 def test_p6_shuttle_price_and_short_cells():
     assert "70 EUR per Tiny Tapeout tile [tinytapeout2026]" in A.mpw_prices()
     assert f"minimum {A.XH018_MIN_MM2} mm²" in A.mpw_prices() and "not totalled" in B._p6_md()
-    assert A.short_price("M18").startswith("not priced")
+    assert A.short_price("M59").startswith("not priced")
     assert all("closest listed tool" in A.short_price(i) for i in A.SUBSTITUTE)
     assert "closest listed tool" not in A.short_price("M12") and A.SUBSTITUTE <= set(A.SOURCED)
     assert A.short_price("M12") == ("US$158 to 569 per hour, E-beam Lithography [wnf2026]; users outside the University of "
@@ -84,7 +84,24 @@ GOLDEN = {
     ("M24", "maf2023"): (22, 26, 126), ("M24", "ccmr2026"): (49.4,), ("M26", "wnf2026"): (89, 267), ("M27", "wnf2026"): (63, 189),
     ("M28", "wnf2026"): (63, 189), ("M29", "tinytapeout2026"): (70,), ("M29", "europractice2026"): (1080, 1126),
     ("M31", "lattispec2026"): (510,), ("M52", "e6cvd2026"): (865, 565, 2545, 1730),
+    ("M04", "gatechims2025"): (28, 39, 50, 47, 53, 51), ("M05", "ccmr2026"): (33.99, 36.40), ("M05", "aggiefab2025"): (55,),
+    ("M08", "cunyasrc2024"): (20, 30, 60, 120), ("M08", "ccmr2026"): (41.70,), ("M09", "wnf2026"): (13, 38), ("M18", "asuaep2026"): (44, 55),
+    ("M53", "srs2026"): (2595,), ("M53", "rigolna2026"): (389,), ("M54", "edmundoptics2026"): (4234, 212), ("M55", "srs2026"): (6495, 3395),
+    ("M56", "transcat2026"): (1156,), ("M56", "infraredcameras2026"): (3249,), ("M56", "element14sg2026"): (661.05,),
+    ("M57", "osurc2023"): (179, 188), ("M57", "umdrad2025"): (550,), ("M58", "aalto2025"): (40,), ("M58", "twinleaf2026"): (7996, 14390),
+    ("M58", "quspin2026"): (10000, 8500, 8000, 7700),
 }
+
+
+def test_partial_rows_say_what_is_left_out_and_every_source_has_dates():
+    assert set(A.PARTIAL) <= set(A.SOURCED) and all(v.strip() for v in A.PARTIAL.values())
+    for i in A.PARTIAL:
+        assert "not priced: " + A.PARTIAL[i] in A.short_price(i)
+        assert "**Not priced:** " + A.PARTIAL[i] in A._price_cell(A.entry(i))
+    keys = {k for qs in A.SOURCED.values() for k, *_ in qs} | {f[0] for f in A.ACCESS_FEES}
+    assert keys <= set(A.EFFECTIVE) and set(A.READ) == set(A.EFFECTIVE)
+    assert all(A.READ[k] in (A.READ_ON, A.READ_ON_2, f"{A.READ_ON} and {A.READ_ON_2}") for k in A.READ)
+    assert set(A.UNPRICED) == {"M01", "M02", "M03", "M25", "M59"}
 
 
 def test_sourced_values_match_the_golden_table():
