@@ -102,7 +102,7 @@ const shown = () => DEV.filter(d => (fam === 'all' || d.family === fam) && (stat
 function grid() {
   const list = shown();
   $('grid').innerHTML = list.map(d => `<button class="dev" type="button" data-id="${esc(d.id)}" aria-pressed="${d.id === sel}">
-    <span class="id">${esc(d.id)} · ${esc(Dt.families[d.family])}</span><span class="h">${esc(d.name)}</span><span>${badge(d.status.label)}${onMarket(d.id).some(p => p.level === 'in production') ? ` <span class="st" style="background:${RF.colors['in production']};color:#08121c">on the market</span>` : ''}</span>
+    <span class="id">${esc(d.id)} · ${esc(Dt.families[d.family])}</span><span class="h">${esc(d.name)}</span><span>${badge(d.status.label)}${onMarket(d.id).some(p => p.level === 'in production' && !p.material) ? ` <span class="st" style="background:${RF.colors['in production']};color:#08121c">on the market</span>` : onMarket(d.id).some(p => p.level === 'in production') ? ` <span class="st" style="background:${RF.colors['on diamond']};color:#08121c">material on the market</span>` : ''}</span>
     <span class="p">${esc(d.function)}</span>${d.analogy ? `<span class="ana">Analogy only: ${esc(d.analogy.label)}</span>` : ''}</button>`).join('');
   $('grid').querySelectorAll('.dev').forEach(b => b.onclick = () => pick(b.dataset.id, true));
   $('count').textContent = `${list.length} of ${DEV.length} devices shown`;
@@ -168,7 +168,7 @@ function detail() {
     <div class="cols"><div class="box"><h3>What it should do</h3><p style="margin:0 0 8px">${esc(d.function)}</p><p class="note" style="font-size:14px;color:var(--ink)">${esc(d.explanation)}</p>
       <p class="note">${esc(Dt.statuses[st.label])}. ${refs(st.refs)} ${esc(st.note)}</p></div>
       <div class="box"><h3>Cross-section</h3>${section(d.layers)}</div></div>
-    ${onMarket(d.id).length ? `<div class="box" style="margin-top:14px;border-color:${RF.colors['in production']}"><h3>Real today: products and deployments</h3>${onMarket(d.id).map(p => `<p style="margin:6px 0"><b>${esc(p.name)}</b> <span class="ref">${esc(p.level)}</span><br>${esc(p.fact)} ${refs(p.refs)}</p>`).join('')}<p class="note">These show the device type exists; they are not the ADAMAS device and are not compared with other qubits. Full list: docs/process/RETROFIT.md.</p></div>` : ''}
+    ${onMarket(d.id).length ? `<div class="box" style="margin-top:14px;border-color:${RF.colors['in production']}"><h3>Real today: products and deployments</h3>${onMarket(d.id).map(p => `<p style="margin:6px 0"><b>${esc(p.name)}</b> <span class="ref">${esc(p.level)}</span><br>${esc(p.fact)} ${refs(p.refs.filter(k => !p.fact.includes('[' + k + ']')))}</p>`).join('')}<p class="note">These show the device type exists; they are not the ADAMAS device and are not compared with other qubits. Full list: docs/process/RETROFIT.md.</p></div>` : ''}
     <div class="cols"><div class="box"><h3>Gates it can hold</h3>${rows(d.gates, 'None: this device does not run gates.')}</div>
       <div class="box"><h3>Entanglement</h3>${rows(d.entanglement, 'None.')}</div></div>
     <div class="cols"><div class="box"><h3>Use cases</h3>${rows(d.use_cases, 'None listed.')}</div>

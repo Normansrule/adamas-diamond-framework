@@ -50,7 +50,7 @@ details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:
 import { boot, data } from './assets/site.js';
 boot('Process');
 const $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
-const DATA = await data(), RF = DATA.retrofit, T = DATA.traveler, MOD = Object.fromEntries(T.modules.map(m => [m[0], m])), KEY = 'adamas-traveler-v1';
+const DATA = await data(), RF = DATA.retrofit || null, T = DATA.traveler, MOD = Object.fromEntries(T.modules.map(m => [m[0], m])), KEY = 'adamas-traveler-v1';
 let variant = 'qubit', cur = 0, drawnIds = new Set();
 const log = (() => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } })();
 const saveLog = () => { try { localStorage.setItem(KEY, JSON.stringify(log)); } catch { /* private mode */ } };
@@ -66,7 +66,7 @@ $('variants').onclick = e => { const b = e.target.closest('button'); if (!b) ret
 function list() {
   let html = '', last = '';
   T.steps.forEach((s, k) => { if (s.module !== last) { html += `<div class="mh">${MOD[s.module][1]}</div>`; last = s.module; }
-    html += `<button data-k="${k}" class="${k === cur ? 'on' : ''} ${skipped(s.id) ? 'skip' : ''}"><i style="background:${MOD[s.module][2]}"></i>${s.id} ${s.short}<b title="Best real route: ${RF.steps[s.id] ? RF.level_text[RF.steps[s.id].level] : ''}" style="flex:none;width:8px;height:8px;border-radius:50%;margin-left:auto;background:${RF.steps[s.id] ? RF.colors[RF.steps[s.id].level] : 'transparent'}"></b><span class="done" style="color:${stepStatus(s) === '✓' ? 'var(--green)' : 'var(--red)'}">${stepStatus(s)}</span></button>`; });
+    html += `<button data-k="${k}" class="${k === cur ? 'on' : ''} ${skipped(s.id) ? 'skip' : ''}"><i style="background:${MOD[s.module][2]}"></i>${s.id} ${s.short}<b title="Best real route: ${RF && RF.steps[s.id] ? RF.level_text[RF.steps[s.id].level] : ''}" style="flex:none;width:8px;height:8px;border-radius:50%;margin-left:auto;background:${RF && RF.steps[s.id] ? RF.colors[RF.steps[s.id].level] : 'transparent'}"></b><span class="done" style="color:${stepStatus(s) === '✓' ? 'var(--green)' : 'var(--red)'}">${stepStatus(s)}</span></button>`; });
   $('slist').innerHTML = html; $('slist').querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.k));
 }
 function progress() {
@@ -106,18 +106,21 @@ function card(k) {
     ${realRoutes(s.id)}`;
   $('stepCard').querySelectorAll('input').forEach(inp => inp.onchange = () => { setEntry(s.id, +inp.dataset.i, inp.type === 'checkbox' ? inp.checked : inp.value); card(k); });
 }
+const escR = x => String(x ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const citeR = (keys, text) => keys.filter(k => !String(text).includes('[' + k + ']')).map(k => '[' + escR(k) + ']').join(' ');
 const lvBadge = lv => `<span class="lv" style="background:${RF.colors[lv]}">${RF.level_text[lv]}</span>`;
-const RBY = Object.fromEntries(RF.routes.map(r => [r.id, r]));
+const RBY = RF ? Object.fromEntries(RF.routes.map(r => [r.id, r])) : {};
 function realRoutes(sid) {
-  const v = RF.steps[sid]; if (!v) return '';
-  const rows = v.routes.map(id => RBY[id]).map(r => `<div class="rt" style="border-color:${RF.colors[r.level]}">${lvBadge(r.level)} <b>${r.process}</b> <span class="src">${r.who}</span><br>${r.fact} <span class="src">${r.refs.map(k => '[' + k + ']').join(' ')}</span><br><span class="src">Left to do: ${r.left}</span></div>`).join('');
+  const v = RF && RF.steps[sid]; if (!v) return '';
+  const rows = v.routes.map(id => RBY[id]).map(r => `<div class="rt" style="border-color:${RF.colors[r.level]}">${lvBadge(r.level)} <b>${escR(r.process)}</b> <span class="src">${escR(r.who)}</span><br>${escR(r.fact)} <span class="src">${citeR(r.refs, r.fact)}</span><br><span class="src">Left to do: ${escR(r.left)}</span></div>`).join('');
   const cites = v.traveler_refs.length ? `<p class="src">This step's own parameters cite diamond work: ${v.traveler_refs.map(k => '[' + k + ']').join(' ')}</p>` : '';
   return `<h3 style="margin-top:18px">Real processes you can use or retrofit ${lvBadge(v.level)}</h3>${rows || '<p class="src">No separate route: the tools are standard shared-cleanroom tools (see the Atlas).</p>'}${cites}`;
 }
 function retrofitPanel() {
+  if (!RF) { $('retrofit').textContent = 'Retrofit data missing: run adamas build docs and make site.'; return; }
   const S = RF.summary, stageRows = RF.stages.map(([k, name]) => { const rs = RF.routes.filter(r => r.stage === k); const best = rs.map(r => r.level).sort((a, b) => RF.levels.indexOf(a) - RF.levels.indexOf(b))[0] || 'proposed';
     return `<div class="rs" style="border-color:${RF.colors[best]}"><b>${k} · ${name}</b><span>${rs.length} route${rs.length === 1 ? '' : 's'} · best: ${best}</span></div>`; }).join('');
-  $('retrofit').innerHTML = `<b>Real processes, today.</b> ${S.routes} routes cover every build stage: ${S['in production']} are in production for diamond, ${S['on diamond']} are demonstrated on diamond, ${S.retrofit} are retrofits from silicon, SiC or GaN. ${S.steps_by_level['in production']} of ${S.steps} traveler steps have a route in production. NV devices already sold: ${S.devices_on_market.join(', ')}.
+  $('retrofit').innerHTML = `<b>Real processes, today.</b> ${S.routes} routes cover every build stage: ${S['in production']} are in production for diamond, ${S['on diamond']} are demonstrated on diamond, ${S.retrofit} are retrofits from silicon, SiC or GaN. ${S.steps_by_level['in production']} of ${S.steps} traveler steps have a route in production that performs that step. NV devices already sold: ${S.devices_on_market.join(', ')}; NV diamond material sold for ${S.materials_on_market.join(', ')}.
     <div class="rkey">${RF.levels.map(lvBadge).join(' ')}</div><div class="rmap">${stageRows}</div>
     <span class="src">Each step below lists its routes. Full map: <a href="https://github.com/Normansrule/adamas-diamond-framework/blob/main/docs/process/RETROFIT.md">docs/process/RETROFIT.md</a> (adamas.retrofit). Company statements are marked; retrofit routes are proposals until run on diamond.</span>`;
 }

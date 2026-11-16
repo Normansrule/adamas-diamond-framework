@@ -15,6 +15,8 @@ The [Retrofit Map](process/RETROFIT.md) (`adamas.retrofit`) lists real processes
 | Product specifications | Several product pages give no numbers (QuantumDiamonds QD m.0, SBQuantum, Element Six DNV grades' absolute NV density) | Datasheets |
 | Operating temperature of the microchiplet array (R26) | Not restated from [wan2020] | Read the paper's methods |
 | Laser-slicing kerf and thickness for diamond (R11) | Not in the parts of [sakamoto2023] that could be read | The full paper |
+| Steps without a production route | 16 of 20 traveler steps have no route that performs them in production; S15 and S16 rest on silicon cleanroom tools only | A service or paper that runs each step on diamond |
+| Diamond energy range at the implantation service (R16) | The page lists diamond but gives energies only for silicon carbide | Ask the service for ¹⁵N at the S06 energy |
 | Verification of the nine new papers | Entered by hand from the pages read | `make verify` |
 
 ## Open in v0.44.0: traveler parameters read from the sources
