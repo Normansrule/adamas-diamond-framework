@@ -2,7 +2,20 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.44.0 (2026-11-15).
+Last updated: v0.45.0 (2026-11-16).
+
+## Open in v0.45.0: Retrofit Map
+
+The [Retrofit Map](process/RETROFIT.md) (`adamas.retrofit`) lists real processes for every build stage. What it does not have yet:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Retrofit routes R12, R28, R31 | Laser slicing (silicon carbide), silver sintering (a non-diamond diode) and silicon cleanroom tools are proven, but not on diamond in the sources read | Run each on a diamond piece and record the result |
+| Company statements without papers | Three-inch (Element Six with Orbray) and 100 and 200 mm (Diamond Foundry) single crystals, CMP roughness (Fraunhofer USA), plasma tool roughness (Oxford Instruments) | Published specifications or papers |
+| Product specifications | Several product pages give no numbers (QuantumDiamonds QD m.0, SBQuantum, Element Six DNV grades' absolute NV density) | Datasheets |
+| Operating temperature of the microchiplet array (R26) | Not restated from [wan2020] | Read the paper's methods |
+| Laser-slicing kerf and thickness for diamond (R11) | Not in the parts of [sakamoto2023] that could be read | The full paper |
+| Verification of the nine new papers | Entered by hand from the pages read | `make verify` |
 
 ## Open in v0.44.0: traveler parameters read from the sources
 

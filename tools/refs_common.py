@@ -29,7 +29,7 @@ TAG_NAMES = {
     "fab": "NV center fabrication and placement",
     "qc": "Quantum computing with diamond spins",
     "net": "Photonics, other color centers, and quantum networks",
-    "ind": "Industry and news (2025-2026)",
+    "ind": "Industry, products and news",
     "edu": "Teaching laboratories",
     "lit": "Lithography and nanofabrication",
     "pwr": "Power electronics and applications",

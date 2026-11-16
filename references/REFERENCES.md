@@ -1,6 +1,6 @@
 # References
 
-**619 references.** 523 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**651 references.** 546 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -50,13 +50,14 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[kageura2024]`** Kageura, T.; Sasama, Y.; Yamada, K.; Kimura, K.; Onoda, S.; Yamaguchi, T. (2024). Surface transfer doping of hydrogen-terminated diamond probed by shallow nitrogen-vacancy centers. *Carbon*, 229, 119404.
 - 📚 **`[oshnik2025]`** Oshnik, N.; Westrich, S.; Burmeister, N.; et al. (2025). Nitrogen-vacancy centers in epitaxial laterally overgrown diamond: towards up-scaling of color center-based quantum technologies. *Materials for Quantum Technology*, 5(2), 025201.
 
-## Diamond growth and wafers (36)
+## Diamond growth and wafers (41)
 
 - ✅ **`[bundy1955]`** Bundy, F. P.; Hall, H. T.; Strong, H. M.; Wentorf, R. H. (1955). Man-made diamonds. *Nature*, 176, 51. [doi:10.1038/176051a0](https://doi.org/10.1038/176051a0)
 - ✅ **`[angus1968]`** Angus, J. C.; Will, H. A.; Stanko, W. S. (1968). Growth of diamond seed crystals by vapor deposition. *Journal of Applied Physics*, 39, 2915. [doi:10.1063/1.1656693](https://doi.org/10.1063/1.1656693)
 - ✅ **`[matsumoto1982]`** Matsumoto, S.; Sato, Y.; Kamo, M.; Setaka, N. (1982). Vapor deposition of diamond particles from methane. *Japanese Journal of Applied Physics*, 21, L183. [doi:10.1143/jjap.21.l183](https://doi.org/10.1143/jjap.21.l183)
 - ✅ **`[kamo1983]`** Kamo, M.; Sato, Y.; Matsumoto, S.; Setaka, N. (1983). Diamond synthesis from gas phase in microwave plasma. *Journal of Crystal Growth*, 62, 642. [doi:10.1016/0022-0248(83)90411-6](https://doi.org/10.1016/0022-0248(83)90411-6)
 - ✅ **`[bachmann1991]`** Bachmann, P. K.; Leers, D.; Lydtin, H. (1991). Towards a general concept of diamond chemical vapour deposition. *Diamond and Related Materials*, 1, 1. [doi:10.1016/0925-9635(91)90005-u](https://doi.org/10.1016/0925-9635(91)90005-u)
+- 📚 **`[parikh1992]`** Parikh, N. R.; Hunn, J. D.; McGucken, E.; Swanson, M. L.; White, C. W.; Rudder, R. A.; Malta, D. P.; Posthill, J. B.; Markunas, R. J. (1992). Single-crystal diamond plate liftoff achieved by ion implantation and subsequent annealing. *Applied Physics Letters*, 61, 3124.
 - ✅ **`[goodwin1993]`** Goodwin, D. G. (1993). Scaling laws for diamond chemical-vapor deposition. I. Diamond surface chemistry. *Journal of Applied Physics*, 74, 6888. [doi:10.1063/1.355063](https://doi.org/10.1063/1.355063)
 - ✅ **`[ohtsuka1996]`** Ohtsuka, K.; Suzuki, K.; Sawabe, A.; Inuzuka, T. (1996). Epitaxial growth of diamond on iridium. *Japanese Journal of Applied Physics*, 35, L1072. [doi:10.1143/jjap.35.l1072](https://doi.org/10.1143/jjap.35.l1072)
 - ✅ **`[gicquel2001]`** Gicquel, A.; Hassouni, K.; Silva, F.; Achard, J. (2001). CVD diamond films: from growth to applications. *Current Applied Physics*, 1, 479. [doi:10.1016/s1567-1739(01)00061-x](https://doi.org/10.1016/s1567-1739(01)00061-x)
@@ -68,12 +69,14 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[butler2009]`** Butler, J. E.; Mankelevich, Y. A.; Cheesman, A.; Ma, J.; Ashfold, M. N. R. (2009). Understanding the chemical vapor deposition of diamond: recent progress. *Journal of Physics: Condensed Matter*, 21, 364201. [doi:10.1088/0953-8984/21/36/364201](https://doi.org/10.1088/0953-8984/21/36/364201)
 - ✅ **`[friel2009]`** Friel, I.; Clewes, S. L.; Dhillon, H. K.; et al. (2009). Control of surface and bulk crystalline quality in single crystal diamond grown by chemical vapour deposition. *Diamond and Related Materials*, 18, 808. [doi:10.1016/j.diamond.2009.01.013](https://doi.org/10.1016/j.diamond.2009.01.013)
 - ✅ **`[mokuno2009]`** Mokuno, Y.; Chayahara, A.; Yamada, H.; Tsubouchi, N. (2009). Improving purity and size of single-crystal diamond plates produced by high-rate CVD growth and lift-off process using ion implantation. *Diamond and Related Materials*, 18, 1258. [doi:10.1016/j.diamond.2009.04.005](https://doi.org/10.1016/j.diamond.2009.04.005)
+- 📚 **`[chayahara2011]`** Chayahara, A.; Mokuno, Y.; Tsubouchi, N.; Yamada, H. (2011). Development of single-crystalline diamond wafers (English edition). *Synthesiology*, 3, 259.
 - ✅ **`[markham2011]`** Markham, M. L.; Dodson, J. M.; Scarsbrook, G. A.; et al. (2011). CVD diamond for spintronics. *Diamond and Related Materials*, 20, 134. [doi:10.1016/j.diamond.2010.11.016](https://doi.org/10.1016/j.diamond.2010.11.016)
 - ✅ **`[sumiya2012]`** Sumiya, H.; Tamasaku, K. (2012). Large defect-free synthetic type IIa diamond crystals synthesized via high pressure and high temperature. *Japanese Journal of Applied Physics*, 51, 090102. [doi:10.1143/jjap.51.090102](https://doi.org/10.1143/jjap.51.090102)
 - 📚 **`[lu2013]`** Lu, J.; Gu, Y.; Grotjohn, T. A.; Schuelke, T.; Asmussen, J. (2013). Experimentally defining the safe and efficient, high pressure microwave plasma assisted CVD operating regime for single crystal diamond synthesis. *Diamond and Related Materials*, 37, 17-28.
 - ✅ **`[schuelke2013]`** Schuelke, T.; Grotjohn, T. A. (2013). Diamond polishing. *Diamond and Related Materials*, 32, 17. [doi:10.1016/j.diamond.2012.11.007](https://doi.org/10.1016/j.diamond.2012.11.007)
 - ✅ **`[tallaire2013]`** Tallaire, A.; Achard, J.; Silva, F.; Brinza, O.; Gicquel, A. (2013). Growth of large size diamond single crystals by plasma assisted chemical vapour deposition: recent achievements and remaining challenges. *Comptes Rendus Physique*, 14, 169. [doi:10.1016/j.crhy.2012.10.008](https://doi.org/10.1016/j.crhy.2012.10.008)
 - ✅ **`[schreck2014]`** Schreck, M.; Asmussen, J.; Shikata, S.; Arnault, J.-C.; Fujimori, N. (2014). Large-area high-quality single crystal diamond. *MRS Bulletin*, 39, 504. [doi:10.1557/mrs.2014.96](https://doi.org/10.1557/mrs.2014.96)
+- 📚 **`[thomas2014]`** Thomas, E. L. H.; Nelson, G. W.; Mandal, S.; Foord, J. S.; Williams, O. A. (2014). Chemical mechanical polishing of thin film diamond. *Carbon*, 68, 473.
 - ✅ **`[yamada2014]`** Yamada, H.; Chayahara, A.; Mokuno, Y.; Kato, Y.; Shikata, S. (2014). A 2-in. mosaic wafer made of a single-crystal diamond. *Applied Physics Letters*, 104, 102110. [doi:10.1063/1.4868720](https://doi.org/10.1063/1.4868720)
 - ✅ **`[teraji2015]`** Teraji, T.; Yamamoto, T.; Watanabe, K.; et al. (2015). Homoepitaxial diamond film growth: high purity, high crystalline quality, isotopic enrichment, and single color center formation. *Physica Status Solidi A*, 212, 2365. [doi:10.1002/pssa.201532449](https://doi.org/10.1002/pssa.201532449)
 - ✅ **`[aida2016]`** Aida, H.; Kim, S.-W.; Ikejiri, K.; et al. (2016). Fabrication of freestanding heteroepitaxial diamond substrate via micropatterns and microneedles. *Applied Physics Express*, 9, 035504. [doi:10.7567/apex.9.035504](https://doi.org/10.7567/apex.9.035504)
@@ -83,7 +86,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[achard2020]`** Achard, J.; Jacques, V.; Tallaire, A. (2020). Chemical vapour deposition diamond single crystals with nitrogen-vacancy centres: a review of material synthesis and technology for quantum sensing applications. *Journal of Physics D: Applied Physics*, 53, 313001. [doi:10.1088/1361-6463/ab81d1](https://doi.org/10.1088/1361-6463/ab81d1)
 - ✅ **`[bolshakov2020]`** Bolshakov, A. P.; Ralchenko, V. G.; Shu, G.; et al. (2020). Single crystal diamond growth by MPCVD at subatmospheric pressures. *Materials Today Communications*, 25, 101635. [doi:10.1016/j.mtcomm.2020.101635](https://doi.org/10.1016/j.mtcomm.2020.101635)
 - ✅ **`[kim2020]`** Kim, S.-W.; Kawamata, Y.; Takaya, R.; Koyama, K.; Kasu, M. (2020). Growth of high-quality one-inch free-standing heteroepitaxial (001) diamond on (11-20) sapphire substrate. *Applied Physics Letters*, 117, 202102. [doi:10.1063/5.0024070](https://doi.org/10.1063/5.0024070)
+- 📚 **`[liu2020]`** Liu, N.; Sugawara, K.; Yoshitaka, N.; Yamada, H.; Takeuchi, D.; Akabane, Y.; Fujino, K.; Kawai, K.; Arima, K.; Yamamura, K. (2020). Damage-free highly efficient plasma-assisted polishing of a 20-mm square large mosaic single crystal diamond substrate. *Scientific Reports*, 10, 19432.
 - ✅ **`[kim2021]`** Kim, S.-W.; Takaya, R.; Hirano, S.; Kasu, M. (2021). Two-inch high-quality (001) diamond heteroepitaxial growth on sapphire (11-20) misoriented substrate by step-flow mode. *Applied Physics Express*, 14, 115501. [doi:10.35848/1882-0786/ac28e7](https://doi.org/10.35848/1882-0786/ac28e7)
+- 📚 **`[sakamoto2023]`** Sakamoto, K.; Tokunaga, D.; Itoh, S.; Hidai, H.; Matsusaka, S.; Omatsu, T.; Koyama, K.; Kim, S.-W.; Morita, N. (2023). Laser slicing of a diamond at the {100} plane using an irradiation sequence that restricts crack propagation along the {111} plane. *Diamond and Related Materials*, 110045.
 - 📚 **`[qu2024]`** Qu, P.; Jin, P.; Zhou, G.; Wang, Z.; Wang, Z. (2024). Growth of two-inch free-standing heteroepitaxial diamond on Ir/YSZ/Si (001) substrates via laser-patterned templates. *Journal of Semiconductors*, 45(9), 090501.
 - 📚 **`[fendt2025]`** Fendt, J.; Schreck, M. (2025). Maskless epitaxial overgrowth of diamond on 3D patterns formed by self-organization in an oxidation process. *Journal of Applied Physics*, 137(23), 235107.
 - 📚 **`[schreck2025]`** Schreck, M.; Peter, T. (2025). Wafer bow in diamond heteroepitaxy: causes, their analytical description, and viable solutions. *Journal of Applied Physics*, 137(1), 015108.
@@ -139,7 +144,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[verona2016]`** Verona, C.; Ciccognani, W.; Colangeli, S.; et al. (2016). Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators. *Journal of Applied Physics*, 120, 025104. [doi:10.1063/1.4955469](https://doi.org/10.1063/1.4955469)
 - ✅ **`[crawford2021]`** Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. (2021). Surface transfer doping of diamond: a review. *Progress in Surface Science*, 96, 100613. [doi:10.1016/j.progsurf.2021.100613](https://doi.org/10.1016/j.progsurf.2021.100613)
 
-## Devices and circuits (47)
+## Devices and circuits (48)
 
 - ✅ **`[kawarada1994]`** Kawarada, H.; Aoki, M.; Ito, M. (1994). Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds. *Applied Physics Letters*, 65, 1563. [doi:10.1063/1.112915](https://doi.org/10.1063/1.112915)
 - ✅ **`[aleksov2003]`** Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. (2003). Diamond field effect transistors - concepts and challenges. *Diamond and Related Materials*, 12, 391. [doi:10.1016/s0925-9635(02)00401-6](https://doi.org/10.1016/s0925-9635(02)00401-6)
@@ -154,6 +159,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[russell2012]`** Russell, S. A. O.; Sharabi, S.; Tallaire, A.; Moran, D. A. J. (2012). Hydrogen-terminated diamond field-effect transistors with cutoff frequency of 53 GHz. *IEEE Electron Device Letters*, 33, 1471. [doi:10.1109/led.2012.2210020](https://doi.org/10.1109/led.2012.2210020)
 - ✅ **`[isberg2013]`** Isberg, J.; Gabrysch, M.; Hammersberg, J.; et al. (2013). Generation, transport and detection of valley-polarized electrons in diamond. *Nature Materials*, 12, 760. [doi:10.1038/nmat3694](https://doi.org/10.1038/nmat3694)
 - ✅ **`[iwasaki2013jfet]`** Iwasaki, T.; Hoshino, Y.; Tsuzuki, K.; et al. (2013). High-temperature operation of diamond junction field-effect transistors with lateral p-n junctions. *IEEE Electron Device Letters*, 34, 1175. [doi:10.1109/led.2013.2271377](https://doi.org/10.1109/led.2013.2271377)
+- 📚 **`[shikata2013]`** Shikata, S.; Umezawa, H. (2013). Development of diamond-based power devices (English edition). *Synthesiology*, 6, 147.
 - ✅ **`[kawarada2014]`** Kawarada, H.; Tsuboi, H.; Naruo, T.; et al. (2014). C-H surface diamond field effect transistors for high temperature (400 C) and high voltage (500 V) operation. *Applied Physics Letters*, 105, 013510. [doi:10.1063/1.4884828](https://doi.org/10.1063/1.4884828)
 - ✅ **`[liu2014]`** Liu, J. W.; Liao, M. Y.; Imura, M.; et al. (2014). Diamond logic inverter with enhancement-mode metal-insulator-semiconductor field effect transistor. *Applied Physics Letters*, 105, 082110. [doi:10.1063/1.4894291](https://doi.org/10.1063/1.4894291)
 - ✅ **`[traore2014]`** Traore, A.; Muret, P.; Fiori, A.; et al. (2014). Zr/oxidized diamond interface for high power Schottky diodes. *Applied Physics Letters*, 104, 052105. [doi:10.1063/1.4864060](https://doi.org/10.1063/1.4864060)
@@ -292,7 +298,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (42)
+## NV center fabrication and placement (45)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -329,11 +335,14 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[ozawa2017]`** Ozawa, H.; Tahara, K.; Ishiwata, H.; Hatano, M.; Iwasaki, T. (2017). Formation of perfectly aligned nitrogen-vacancy-center ensembles in chemical-vapor-deposition-grown diamond (111). *Applied Physics Express*, 10, 045501. [doi:10.7567/apex.10.045501](https://doi.org/10.7567/apex.10.045501)
 - ✅ **`[schroder2017]`** Schroeder, T.; Trusheim, M. E.; Walsh, M.; et al. (2017). Scalable focused ion beam creation of nearly lifetime-limited single quantum emitters in diamond nanostructures. *Nature Communications*, 8, 15376. [doi:10.1038/ncomms15376](https://doi.org/10.1038/ncomms15376)
 - ✅ **`[luhmann2018]`** Lühmann, T.; Raatz, N.; John, R.; et al. (2018). Screening and engineering of colour centres in diamond. *Journal of Physics D: Applied Physics*, 51, 483002. [doi:10.1088/1361-6463/aadfab](https://doi.org/10.1088/1361-6463/aadfab)
+- 📚 **`[matsumae2018]`** Matsumae, T.; Kurashima, Y.; Umezawa, H.; Mokuno, Y.; Takagi, H. (2018). Room-temperature bonding of single-crystal diamond and Si using Au/Au atomic diffusion bonding in atmospheric air. *Microelectronic Engineering*, 195, 68.
 - ✅ **`[chen2019]`** Chen, Y.-C.; Griffiths, B.; Weng, L.; et al. (2019). Laser writing of individual nitrogen-vacancy defects in diamond with near-unity yield. *Optica*, 6, 662. [doi:10.1364/optica.6.000662](https://doi.org/10.1364/optica.6.000662)
 - ✅ **`[grootberning2019]`** Groot-Berning, K.; Kornher, T.; Jacob, G.; et al. (2019). Deterministic single-ion implantation of rare-earth ions for nanometer-resolution color-center generation. *Physical Review Letters*, 123, 106802. [doi:10.1103/physrevlett.123.106802](https://doi.org/10.1103/physrevlett.123.106802)
+- 📚 **`[hicks2019]`** Hicks, M.-L.; Pakpour-Tabrizi, A. C.; Jackman, R. B. (2019). Diamond etching beyond 10 μm with near-zero micromasking. *Scientific Reports*, 9, 15619.
 - ✅ **`[luhmann2019]`** Lühmann, T.; John, R.; Wunderlich, R.; Meijer, J.; Pezzagna, S. (2019). Coulomb-driven single defect engineering for scalable qubits and spin sensors in diamond. *Nature Communications*, 10, 4956. [doi:10.1038/s41467-019-12556-0](https://doi.org/10.1038/s41467-019-12556-0)
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
+- 📚 **`[dai2023]`** Dai, C.; Wang, Y.; Lin, P.; Hao, Z.; Wang, C.; Feng, X.; Liu, X. (2023). Pressureless silver sintering die attach for a Schottky barrier diode. *Frontiers in Materials*, 10, 1297827.
 - ✅ **`[mibl2024]`** Michigan Ion Beam Laboratory, University of Michigan (2024). Approved rates for use of the Michigan Ion Beam Laboratory (starting 1 September 2024). *mibl.engin.umich.edu*, accessed 10 November 2026.
 - ✅ **`[lattispec2026]`** Adámas Nanotechnologies (sold through LattiSpec) (2026). High NV content plates, 3.2 × 2.4 × 1.2 mm, HPHT type Ib (store listing). *lattispec.com*, accessed 10 November 2026.
 
@@ -459,16 +468,39 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[li2024]`** Li, L.; De Santis, L.; Harris, I. B. W.; et al. (2024). Heterogeneous integration of spin-photon interfaces with a CMOS platform. *Nature*, 630, 70. [doi:10.1038/s41586-024-07371-7](https://doi.org/10.1038/s41586-024-07371-7)
 - ✅ **`[stolk2024]`** Stolk, A. J.; van der Enden, K. L.; Slater, M.-C.; et al. (2024). Metropolitan-scale heralded entanglement of solid-state qubits. *Science Advances*, 10, eadp6442. [doi:10.1126/sciadv.adp6442](https://doi.org/10.1126/sciadv.adp6442)
 
-## Industry and news (2025-2026) (9)
+## Industry, products and news (32)
 
+- ✅ **`[lockheed2019]`** DSIAC (reprinted from GPS World) (2019). Quantum magnetometer senses its place (17 September 2019). *dsiac.dtic.mil*, accessed 16 November 2026.
+- ✅ **`[qnami2019]`** Qnami (distributed by HORIBA) (2019). Quantilever MX specification sheet (release version December 2019). *static.horiba.com*, accessed 16 November 2026.
+- ✅ **`[e6dnv2020]`** Element Six (2020). Element Six launches DNV-B1 quantum-grade diamond (news, 15 June 2020). *e6.com*, accessed 16 November 2026.
+- ✅ **`[e6dnv2021]`** Element Six (Business Wire) (2021). Element Six DNV-B14 quantum-grade diamond (press release, 20 September 2021). *businesswire.com*, accessed 16 November 2026.
 - ✅ **`[kasu2022talk]`** Kasu, M. (2022). 2-inch diamond wafer growth and high-power diamond MOSFET fabrication (seminar abstract reporting 2568 V, 7.54 mOhm cm2, 874.6 MW/cm2). *MIT.nano seminar series*, 29 November 2022.
+- ✅ **`[qb2022]`** Quantum Brilliance (2022). Pawsey commissions first room-temperature on-premises quantum computer in a supercomputing center (press release, 31 May 2022). *quantumbrilliance.com*, accessed 16 November 2026.
+- ✅ **`[diamondfoundry2023]`** Diamond Foundry (2023). World's first single-crystal diamond wafer (company insights page, 2 October 2023). *df.com*, accessed 16 November 2026.
+- ✅ **`[disco2024]`** DISCO Corporation (2024). KABRA laser slicing (press release). *disco.co.jp*, accessed 16 November 2026.
+- ✅ **`[quantumdiamonds2024]`** The Quantum Insider (2024). QuantumDiamonds launches QD m.0 for semiconductor chip failure analysis (news, 1 October 2024). *thequantuminsider.com*, accessed 16 November 2026.
+- ✅ **`[cornes2025]`** Cornes Technologies (Seki Diamond Systems) (2025). SDS6K microwave plasma CVD system catalogue. *cornestech.co.jp*, accessed 16 November 2026.
 - ✅ **`[olcf2025]`** Oak Ridge Leadership Computing Facility (2025). Q&A: Inside Quantum Brilliance's quantum computer technology. *OLCF news*, 2 September 2025.
+- ✅ **`[ornl2025]`** Oak Ridge National Laboratory (2025). Q&A: inside Quantum Brilliance's quantum computer technology (news, 2 September 2025). *ornl.gov*, accessed 16 November 2026.
+- ✅ **`[akash2026]`** Journal of Electronic Defense (2026). Akash Systems puts GaN-on-diamond in orbit (news, 9 July 2026). *jedonline.com*, accessed 16 November 2026.
+- ✅ **`[ciqtek2026]`** CIQTEK (distributed by Emona) (2026). Diamond Quantum Computer for Education (product page). *emona.com.au*, accessed 16 November 2026.
+- ✅ **`[diamondfoundry2026]`** Semiconductor Today (2026). Diamond Foundry unveils first 200 mm-diameter single-crystal diamond (news, 11 November 2026). *semiconductor-today.com*, accessed 16 November 2026.
+- ✅ **`[diamondmaterials2026]`** Diamond Materials GmbH (2026). Processing services (company page). *diamond-materials.com*, accessed 16 November 2026.
 - ✅ **`[e6orbray2026]`** Semiconductor Today (2026). Element Six and Orbray accelerate wafer-scale single-crystal diamond for volume production. *Semiconductor Today (news)*, 16 June 2026.
+- ✅ **`[e6thermal2026]`** Element Six (2026). Thermal management diamond (product page). *e6.com*, accessed 16 November 2026.
+- ✅ **`[fraunhofercmw2026]`** Fraunhofer USA Center Midwest (2026). Diamond electronics (capabilities page). *cmw.fraunhofer.org*, accessed 16 November 2026.
+- ✅ **`[hzdr2026]`** HZDR Innovation GmbH (2026). Ion implantation services. *hzdr-innovation.de*, accessed 16 November 2026.
+- ✅ **`[ibs2026]`** Ion Beam Services (2026). Ion implantation foundry services. *ionbeamservices.com*, accessed 16 November 2026.
+- ✅ **`[mks2026]`** MKS Instruments (2026). Microwave solutions for single-crystal diamond wafers. *mks.com*, accessed 16 November 2026.
 - ✅ **`[ookuma2026]`** Jiji Press (2026). Diamond semiconductor plant completed in northeastern Japan. *Jiji Press (news)*, 29 May 2026.
+- ✅ **`[orbray2026]`** Orbray Co., Ltd. (2026). Diamond substrates (KENZAN Diamond): product page. *orbray.com*, accessed 16 November 2026.
+- ✅ **`[oxinst2026]`** Oxford Instruments Plasma Technology (2026). Plasma processing for quantum diamond and NV centres (application page). *plasma.oxinst.com*, accessed 16 November 2026.
 - ✅ **`[patsnap2026]`** Patsnap (2026). Diamond semiconductor wafer technology landscape 2026. *Patsnap R&D blog*, 15 May 2026.
 - ✅ **`[pen2026]`** Power Electronics News (2026). Analyzing industry efforts in scaling diamond semiconductor technology. *Power Electronics News*, 19 February 2026.
 - ✅ **`[qbtech2026]`** Quantum Brilliance (2026). Diamond quantum technology (technology overview page). *quantumbrilliance.com*, accessed September 2026.
+- ✅ **`[qnami2026]`** Qnami (distributed by Quantum Design) (2026). ProteusQ specifications. *qd-europe.com*, accessed 16 November 2026.
 - ✅ **`[saxonq2026]`** Greene, T. (2026). Engineers build world's first portable diamond-powered quantum computer (report on SaxonQ; vendor claims, not yet peer reviewed). *Live Science (news)*, 6 August 2026.
+- ✅ **`[sbquantum2026]`** The Quantum Insider (2026). SBQuantum to launch quantum sensor into space as part of the MagQuest challenge (news, 27 March 2026). *thequantuminsider.com*, accessed 16 November 2026.
 - ✅ **`[tqi2026]`** The Quantum Insider (2026). Top diamond NV-centre quantum computing companies in 2026. *The Quantum Insider*, 10 July 2026.
 
 ## Teaching laboratories (1)

@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.45.0 (Retrofit Map)
+
+The Retrofit Map separates three things that are easy to blur: a process sold today for diamond, a process shown once on diamond in a paper, and a mature silicon or silicon carbide process that has not been run on diamond. Only the first two are labeled as real; the third is a proposal of this repository. Company statements without a paper (three-inch and 200 mm wafers, a CMP service's roughness, a plasma tool's roughness) are marked as such in the text, and a test fails if the marking is dropped. Products are tied to the device type they show is possible and are never compared with superconducting or other qubits; the two-qubit room-temperature accelerator is reported with its qubit count. Facts that the research could not confirm were left out (for example a magnetometer launch page that does not name NV is listed as 'NV not named', and a hyperpolarization product that uses parahydrogen rather than NV was excluded).
+
 ### Status after v0.44.0 (traveler parameters; CI green)
 
 Continuous integration had failed on every branch since v0.35.0, on Python 3.10 only: a generated page printed a floating-point round-off (about 6 × 10⁻¹⁶) whose last digit differs between numerical library builds, so the test that the page matches its generator failed. Pages now print only numbers that are stable across platforms; this one states the tested bound (below 10⁻¹²). The fix was reproduced on Python 3.10 with the library versions CI installs before it was pushed. Four step sheets gain parameters read from their sources; where only a review by the same author could be read (the p-i-n diode), the step cites the review for what it states and keeps the rest marked to source.
