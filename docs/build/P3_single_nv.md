@@ -69,7 +69,7 @@ The gate needs all 3 tests to pass, so each is set for 98.30 % coverage and a co
 |---|---|---|---|---|---|
 | One emitter (antibunching) | g⁽²⁾(0) + kσ < 0.5 | g₀ = 0.20 | 0.180 ± 0.012 | yes | 100.0 % |
 | Nuclear spin resolved (hyperfine) | three lines; spacing at least 5σ; every line narrower than the spacing | 2.147 MHz [felton2009] | 2.149 ± 0.008 MHz, widest line 0.42 MHz | yes | 99.8 % |
-| Nuclear spin driven (Rabi) | transferred population within kσ of 1 | Ω = 10 kHz, δ = 0 | 1.022 ± 0.027 (9.99 ± 0.01 kHz) | yes | 98.2 % |
+| Nuclear spin driven (Rabi) | transferred population within kσ of 1 | Ω = 10 kHz, δ = 0 | 1.02 ± 0.03 (9.99 ± 0.01 kHz) | yes | 98.2 % |
 | **Gate: every row passes** | | | | **yes** | **98.0 %** |
 
 The degraded twins, one fault each. The last column is how often the faulty setup wrongly passes.
@@ -78,7 +78,7 @@ The degraded twins, one fault each. The last column is how often the faulty setu
 |---|---|---|---|---|
 | Antibunching | two NVs in the focus (g₀ = 0.55) | 0.534 ± 0.012 | no | 0.0 % |
 | Hyperfine | power-broadened line, 3 MHz wide | 1 line(s) found, triplet not resolved | no | 0.0 % |
-| Nuclear Rabi | RF detuned by one Rabi frequency (half the population moves) | 0.528 ± 0.027 | no | 0.0 % |
+| Nuclear Rabi | RF detuned by one Rabi frequency (half the population moves) | 0.53 ± 0.03 | no | 0.0 % |
 
 The antibunching and hyperfine tests are not calibrated to 98.30 %: their pass rates depend on how far the simulated g₀ sits below 0.5 and how well the lines are resolved, both wide margins here. The nuclear Rabi fit leaves its decay time free over a window with no decay, which inflates the amplitude's error, so that test is also conservative. A single "stop" on real data is a reason to repeat the failing measurement before changing the setup.
 

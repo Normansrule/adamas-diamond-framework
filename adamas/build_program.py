@@ -2533,7 +2533,7 @@ The gate needs all {P3_TESTS} tests to pass, so each is set for {100 * P3_TEST_C
 |---|---|---|---|---|---|
 | One emitter (antibunching) | g⁽²⁾(0) + kσ < 0.5 | g₀ = {ab['put_in']:.2f} | {ab['g2_zero']:.3f} ± {ab['err']:.3f} | {yes(ab['pass'])} | {pct(rates['antibunching'])} |
 | Nuclear spin resolved (hyperfine) | three lines; spacing at least {P3_RESOLVED_SNR:g}σ; every line narrower than the spacing | {hf['reference']} MHz [felton2009] | {hf_fit} | {yes(hf['pass'])} | {pct(rates['hyperfine'])} |
-| Nuclear spin driven (Rabi) | transferred population within kσ of 1 | Ω = {nr['put_in_khz']:g} kHz, δ = 0 | {nr['transfer']:.3f} ± {nr['transfer_err']:.3f} ({nr['rabi_khz']:.2f} ± {nr['rabi_err_khz']:.2f} kHz) | {yes(nr['pass'])} | {pct(rates['nuclear_rabi'])} |
+| Nuclear spin driven (Rabi) | transferred population within kσ of 1 | Ω = {nr['put_in_khz']:g} kHz, δ = 0 | {nr['transfer']:.2f} ± {nr['transfer_err']:.2f} ({nr['rabi_khz']:.2f} ± {nr['rabi_err_khz']:.2f} kHz) | {yes(nr['pass'])} | {pct(rates['nuclear_rabi'])} |
 | **Gate: every row passes** | | | | **{yes(g['verdict'] == 'go')}** | **{pct(rates['gate'])}** |
 
 The degraded twins, one fault each. The last column is how often the faulty setup wrongly passes.
@@ -2542,7 +2542,7 @@ The degraded twins, one fault each. The last column is how often the faulty setu
 |---|---|---|---|---|
 | Antibunching | two NVs in the focus (g₀ = {b['antibunching']['put_in']:.2f}) | {b['antibunching']['g2_zero']:.3f} ± {b['antibunching']['err']:.3f} | {yes(b['antibunching']['pass'])} | {pct(rates['degraded']['antibunching'])} |
 | Hyperfine | power-broadened line, {P3_BROAD_MHZ:g} MHz wide | {hb_fit} | {yes(hb['pass'])} | {pct(rates['degraded']['hyperfine'])} |
-| Nuclear Rabi | RF detuned by one Rabi frequency (half the population moves) | {b['nuclear_rabi']['transfer']:.3f} ± {b['nuclear_rabi']['transfer_err']:.3f} | {yes(b['nuclear_rabi']['pass'])} | {pct(rates['degraded']['nuclear_rabi'])} |
+| Nuclear Rabi | RF detuned by one Rabi frequency (half the population moves) | {b['nuclear_rabi']['transfer']:.2f} ± {b['nuclear_rabi']['transfer_err']:.2f} | {yes(b['nuclear_rabi']['pass'])} | {pct(rates['degraded']['nuclear_rabi'])} |
 
 The antibunching and hyperfine tests are not calibrated to {100 * P3_TEST_COVERAGE:.2f} %: their pass rates depend on how far the simulated g₀ sits below 0.5 and how well the lines are resolved, both wide margins here. The nuclear Rabi fit leaves its decay time free over a window with no decay, which inflates the amplitude's error, so that test is also conservative. A single "stop" on real data is a reason to repeat the failing measurement before changing the setup.
 

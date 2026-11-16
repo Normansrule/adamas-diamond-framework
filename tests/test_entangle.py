@@ -99,4 +99,15 @@ def test_teleport_with_zero_probability_outcome_does_not_divide_by_zero():
 def test_generated_document_and_golden_are_current():
     assert (ROOT / "docs" / "ENTANGLEMENT.md").read_text(encoding="utf-8") == E.document(), "run: adamas build docs"
     g = json.loads((ROOT / "web" / "tests" / "entangle_golden.json").read_text(encoding="utf-8"))
-    assert g == json.loads(json.dumps(E.golden())), "run: adamas build docs"
+    # compared to 1e-9, not exactly: the last digits of a float depend on the CPU's linear-algebra kernels (CI runners differ)
+    assert _close(g, json.loads(json.dumps(E.golden()))), "run: adamas build docs"
+
+
+def _close(a, b, tol=1e-9):
+    if isinstance(a, dict):
+        return isinstance(b, dict) and a.keys() == b.keys() and all(_close(a[k], b[k], tol) for k in a)
+    if isinstance(a, list):
+        return isinstance(b, list) and len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))
+    if isinstance(a, float) or isinstance(b, float):
+        return abs(a - b) <= tol
+    return a == b
