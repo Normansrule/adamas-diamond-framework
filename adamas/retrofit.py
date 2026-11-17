@@ -40,10 +40,12 @@ ROUTE_STEPS = {"R07": ["S03"], "R08": ["S03"], "R16": ["S06"], "R17": ["S06"], "
                "R20": ["S06"], "R21": ["S05", "S10"], "R22": ["S05", "S10"], "R23": ["S08", "S13"], "R27": ["S19"],
                "R28": ["S19"], "R31": ["S09", "S14", "S15", "S16"],
                # added in v0.46.0: a route for every step
-               "R32": ["S01", "S04"], "R33": ["S18"], "R34": ["S01"], "R35": ["S01"], "R36": ["S02", "S04"], "R37": ["S02"],
+               # R35 (a datasheet), R49 (Pt/Au) and R50 (gold with an unstated stack) perform no step as written; they stay
+               # stage-level routes. R45 (resist coating) supports the lithography steps listed.
+               "R32": ["S01", "S04"], "R33": ["S18"], "R34": ["S01"], "R36": ["S02", "S04"], "R37": ["S02"],
                "R38": ["S07"], "R39": ["S08"], "R40": ["S08", "S12"], "R41": ["S12"], "R42": ["S13"], "R43": ["S12", "S13"],
                "R44": ["S10", "S11", "S11E", "S14", "S15", "S16"], "R45": ["S10", "S11", "S14", "S16"], "R46": ["S11", "S15"],
-               "R47": ["S14", "S15"], "R48": ["S09", "S16"], "R49": ["S09"], "R50": ["S09"], "R51": ["S17"], "R52": ["S17"],
+               "R47": ["S15"], "R48": ["S16"], "R51": ["S17"], "R52": ["S17"],
                "R53": ["S18"], "R54": ["S18"], "R55": ["S19"], "R56": ["S19"], "R57": ["S19"]}
 
 # Routes: id, stage, process, who or where, maturity, what the source states, refs, what is left for ADAMAS.
@@ -148,21 +150,21 @@ ROUTES = [
      ["wnf2026"], "The diamond recipes are in the traveler steps; small diamond pieces on silicon-sized tools are this repository's proposal"),
     # v0.46.0: routes for the steps that had none. Numbers are as the sources print them.
     ("R32", "Q1", "Confocal Raman and photoluminescence mapping (inVia)", "Renishaw", "in production",
-     "Sold with a diamond application note: measures 'diamond stress, purity and origin' and maps the 1332 cm⁻¹ Raman line and the "
-     "1.95 eV NV⁻ photoluminescence band of a CVD film (company statement)", ["renishaw2026"],
+     "Company page: determines 'diamond stress, purity and origin' and maps the 1332 cm⁻¹ Raman line and the 1.95 eV NV⁻ "
+     "photoluminescence band of a hot-filament chemical vapor deposition (CVD) diamond film (company statement)", ["renishaw2026"],
      "Use for incoming and post-growth inspection; set pass limits from the S01 checks"),
-    ("R33", "T1", "Quality control of NV diamond as a service (quantum diamond scan)", "Kwan-tek, France", "in production",
+    ("R33", "T1", "Quality control of NV diamond as a service (quantum diamond scan)", "Kwan-tek", "in production",
      "Measures T1, T2, Hahn-echo T2 and Rabi oscillations of customer NV diamond on an automated bench and returns a report "
      "(company statement, no numbers)", ["kwantek2026"],
      "Ask whether patterned chips are accepted for the S18 quantum test, and for the measurement conditions"),
     ("R34", "Q1", "Birefringence imaging and X-ray topography of defects", "Research (Moore and co-workers)", "on diamond",
      "Rotating-analyser polarizing microscope at 589 nm: birefringence Δn up to 15 × 10⁻³ at growth-sector boundaries and about "
-     "1.8 × 10⁻³ in low-strain regions; X-ray rocking curves about 20 arcsec (HPHT synthetic diamond)", ["moore2016"],
+     "1.8 × 10⁻³ in low-strain regions; X-ray rocking curves about 20 arcsec (high-pressure high-temperature (HPHT) synthetic diamond)", ["moore2016"],
      "Shown on HPHT diamond; a commercial topography service for diamond was not found"),
     ("R35", "Q1", "Quantum-grade single-crystal plates with a published acceptance sheet", "Coherent", "in production",
-     "Datasheet values: substitutional nitrogen 800 ppb, NV 300 ppb, surface roughness Sa below 0.5 nm, T2 200 µs, T2* 1 µs "
+     "Datasheet values: substitutional nitrogen 800 ppb, NV 300 ppb, areal average surface roughness (Sa) below 0.5 nm, T2 200 µs, T2* 1 µs "
      "(company statement)", ["coherentqg2026"],
-     "Compare these with the S01 pass windows before buying; no birefringence value is stated"),
+     "An acceptance sheet, not an inspection: compare it with the S01 pass windows before buying; no birefringence value is stated"),
     ("R36", "Q1", "Tri-acid clean", "Research (Sangtawesin and co-workers)", "on diamond",
      "Refluxing 1:1:1 sulfuric, nitric and perchloric acid for at least one hour, before etching and before every anneal; a "
      "1:2 hydrogen peroxide in sulfuric acid piranha after the oxygen anneal", ["sangtawesin2019"],
@@ -175,8 +177,9 @@ ROUTES = [
      "and hold 2 h; then oxygen at 445 to 450 °C and atmospheric pressure for 4 h (diamond etches in oxygen from about 500 °C)",
      ["sangtawesin2019"], "An earlier study also reported longer T2 after 1200 °C [naydenov2010]; a furnace sold for this use was not found"),
     ("R39", "P3", "Hydrogen termination that preserves NV centers", "Research (McCloskey and co-workers)", "on diamond",
-     "Heated hydrogen plasma (10 Torr, 500 sccm H₂, 400 W, 10 min, stage 800 °C) lost almost 50 % of NV photoluminescence; an "
-     "unheated plasma (at most 120 °C) showed no clear loss; forming gas at 950 °C for 1 h also terminated the surface",
+     "Heated hydrogen plasma (10 Torr, 500 standard cubic centimetres per minute (sccm) H₂, 400 W, 10 min, stage 800 °C) lost almost "
+     "50 % of NV photoluminescence; an unheated plasma (at most 120 °C) showed no clear loss; a forming-gas alternative ran at 950 °C "
+     "for 1 h (7 sccm H₂ in 150 sccm N₂)",
      ["mccloskey2024"], "Choose the cold plasma for chips that already carry NV centers (S08 comes after S07)"),
     ("R40", "P3", "Hydrogen plasma and NO₂ activation", "Research (Wade, Geis and co-workers)", "on diamond",
      "Plasma ramped to 65 Torr and 5 kW, held 30 min; 1 min in NO₂ gave 1 to 2 kΩ/sq, against 2.5 to 10 kΩ/sq for other "
@@ -193,14 +196,15 @@ ROUTES = [
      "10 nm ALD Al₂O₃ after 2 % NO₂ in N₂: drain current −200 mA/mm at room temperature, stable up to 200 °C", ["kasu2012", "nttbrl2011"],
      "Deposition temperature and cycles are not stated in the summary read"),
     ("R44", "P6", "Tabletop maskless aligner for small pieces (µMLA)", "Heidelberg Instruments", "retrofit",
-     "Substrates from 5 mm × 5 mm to 6 inch; minimum feature 0.6, 1 or 3 µm by write mode; 405 or 375 nm laser; second-layer "
-     "alignment 500 nm (general tool, not stated for diamond)", ["heidelbergumla2026"],
-     "Not shown on diamond in the source; writing masks 1 to 6 on 4 mm plates with it is this repository's proposal"),
+     "Substrates from 5 mm × 5 mm to 6 inch; minimum feature 0.6, 1 or 3 µm by write mode; 405 and/or 375 nm laser; second-layer "
+     "alignment 500 nm over 5 × 5 mm² (company statement; general tool, not stated for diamond)", ["heidelbergumla2026"],
+     "Not shown on diamond; the 4 mm plates of R01 (and 3 mm plates of S01) are below the 5 mm × 5 mm minimum, so a carrier "
+     "would be needed: this repository's proposal"),
     ("R45", "P6", "Edge-to-edge resist on small diamond pieces", "Research (Strathclyde, Hill and co-workers)", "on diamond",
      "Spin coating builds resist up at the edges of small samples; printing the resist coats edge to edge; 4 × 4 × 0.5 mm "
      "single-crystal plates diced to 2 × 2 mm", ["hill2016"], "Use on the 2 to 4 mm plates of route R01"),
     ("R46", "P6", "Electron-beam lithography and buffered-oxide opening of Al₂O₃", "Research (Qu and co-workers)", "on diamond",
-     "PMMA patterned by electron beam; 80 nm Pd contacts; 35 nm evaporated plus 15 nm plasma-ALD Al₂O₃; 10:1 buffered oxide etch "
+     "Poly(methyl methacrylate) (PMMA) resist patterned by electron beam; 80 nm Pd contacts; 35 nm evaporated plus 15 nm plasma-ALD Al₂O₃; 10:1 buffered oxide etch "
      "removes the Al₂O₃ over the contacts; contact resistance 11.4 Ω·mm", ["qu2024b"], "Preprint in the source read"),
     ("R47", "P6", "Pd/Ti/Au contacts and TMAH opening of Al₂O₃", "Research (Liu and co-workers)", "on diamond",
      "Pd/Ti/Au 10/20/100 nm contacts by electron-beam lithography; Al₂O₃ wet-etched in tetramethylammonium hydroxide (TMAH) "
@@ -216,17 +220,17 @@ ROUTES = [
      "layers on request, parts down to 0.5 mm (company statement; stack not stated)", ["diamondmaterialshs2026"],
      "Ask for a gold layer without an adhesion metal for S09, which needs gold on the hydrogen-terminated surface"),
     ("R51", "T1", "Hot chuck to 400 °C", "Micromanipulator", "retrofit",
-     "Wafer testing from −65 to 400 °C for 150 to 300 mm wafers (general tool, not stated for diamond)", ["micromanipulator2026"],
+     "Wafer testing from −65 to 400 °C for 150 to 300 mm wafers (company statement; general tool, not stated for diamond)", ["micromanipulator2026"],
      "Not shown on diamond; holding a 4 mm die on a wafer chuck is this repository's proposal"),
     ("R52", "T1", "High-temperature test of diamond logic", "Research (Liu and co-workers)", "on diamond",
-     "Hydrogenated diamond NOR logic worked at 300 °C and failed at 400 °C (news report)", ["aipnews2018"],
+     "Diamond NOR logic worked at 300 °C and failed at 400 °C (news report)", ["aipnews2018"],
      "The S17 hot-chuck limit of 400 °C sits at this failure point"),
     ("R53", "T1", "Open-source confocal and ODMR control software (Qudi)", "Research (Binder and co-workers)", "on diamond",
      "Python suite with a confocal scanner and optically detected magnetic resonance (ODMR) logic that sweeps the microwave "
      "frequency and records the fluorescence", ["binder2017"], "Free; drives the S18 confocal setup"),
     ("R54", "T1", "Room-temperature ODMR on a diamond device", "Research (Broadway and co-workers)", "on diamond",
-     "532 nm, 300 mW continuous at the sample, 40× oil objective with NA 1.3, room temperature", ["broadway2018"],
-     "A wide-field version of the S18 test"),
+     "532 nm, 300 mW continuous at the sample, 40× objective with numerical aperture (NA) 1.3, room temperature", ["broadway2018"],
+     "The optical conditions for the S18 test on a device chip; preprint in the source read"),
     ("R55", "P5", "Laser cutting system for single-crystal diamond (eM15)", "Coherent", "in production",
      "For natural and synthetic single-crystal diamond and CVD wafers; 15 W green (532 nm) laser; 200 × 200 mm travel; 2000 mm/min "
      "(company statement; kerf not stated)", ["coherentem152026"], "Measure the kerf and edge damage on a test plate"),
@@ -235,7 +239,8 @@ ROUTES = [
      "through", ["zhang2022"], "Narrower kerf than dry cutting"),
     ("R57", "P5", "Brazed die attach of diamond", "Research (Msolli and co-workers)", "on diamond",
      "Die brazed with AuGe (melting point 356 °C) or AlSi (577 °C), thermally cycled from −50 to 300 °C", ["msolli2012"],
-     "AuGe melts below the 500 °C hydrogen limit; compare with silver sinter (R28)"),
+     "AuGe brazing needs at least 356 °C, above S19's 350 °C budget: it would need that budget raised and checked against the "
+     "Al₂O₃ and hydrogen-termination limits; compare with silver sinter at 290 °C (R28)"),
 ]
 
 # Products on the market or deployed that show a Quantum Device Library device is real (adamas.qdl ids).

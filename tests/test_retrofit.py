@@ -42,12 +42,14 @@ def test_summary_counts_and_step_levels():
     assert (s["routes"], s["in production"], s["on diamond"], s["retrofit"], s["proposed"]) == (57, 15, 37, 5, 0)
     assert s["devices_on_market"] == ["QDL-01", "QDL-17", "QDL-19"]                # devices sold as devices
     assert s["materials_on_market"] == ["QDL-12", "QDL-20"]                       # only the NV diamond material is sold
-    assert s["steps_by_level"] == {"in production": 9, "on diamond": 11, "retrofit": 0, "proposed": 0}
+    assert s["steps_by_level"] == {"in production": 8, "on diamond": 12, "retrofit": 0, "proposed": 0}
     assert s["steps_with_route"] == 20                                            # every step has a route that performs it
     assert sum(s["steps_by_level"].values()) == len(STEPS) == 20
     assert s["step_levels"]["S15"] == s["step_levels"]["S16"] == "on diamond"    # buffered-oxide via and Ti/Pt/Au lift-off shown on diamond
     assert s["step_levels"]["S06"] == "in production"                            # implantation services list diamond
     assert s["step_levels"]["S07"] == "on diamond"                               # implanters do not anneal; R38 is a paper
+    assert s["step_levels"]["S09"] == "on diamond"                               # no service states gold directly on C–H (R50 does not count)
+    assert not {"R35", "R49", "R50"} & set(R.ROUTE_STEPS)                         # a datasheet, Pt/Au and an unstated stack perform no step
     assert s["step_levels"]["S19"] == "in production"                            # a laser cutter sold for single-crystal diamond (R55)
     assert "R29" not in R.step_view("S19")["routes"] and "R30" not in R.step_view("S19")["routes"]   # heat spreaders do not dice
 
@@ -65,7 +67,7 @@ def test_numbers_match_their_sources():
     assert "1200 °C" in f["R38"] and "445 to 450 °C" in f["R38"] and "almost 50 %" in f["R39"] and "1 to 2 kΩ/sq" in f["R40"]
     assert "2.3 × 10¹⁴ cm⁻²" in f["R41"] and "1.5 Å per cycle" in f["R42"] and "−200 mA/mm" in f["R43"] and "5 mm × 5 mm" in f["R44"]
     assert "11.4 Ω·mm" in f["R46"] and "10/10/70 nm" in f["R48"] and "5.65 × 10⁻⁴ Ω·cm²" in f["R49"] and "−65 to 400 °C" in f["R51"]
-    assert "74.59 µm" in f["R56"] and "356 °C" in f["R57"] and "15 W green (532 nm)" in f["R55"] and "Sa below 0.5 nm" in f["R35"]
+    assert "74.59 µm" in f["R56"] and "356 °C" in f["R57"] and "15 W green (532 nm)" in f["R55"] and "(Sa) below 0.5 nm" in f["R35"]
     p = {x["name"]: x["fact"] for x in R.products()}
     assert "2 µT/√Hz" in p["Qnami ProteusQ scanning NV microscope"] and "two qubits" in p["Quantum Brilliance room-temperature diamond quantum accelerator"]
 
