@@ -27,16 +27,24 @@ COLORS = {"in production": "#2fbf71", "on diamond": "#4aa8ff", "retrofit": "#ffc
 
 # Build stages in order, with the traveler steps (adamas.traveler) each one covers. "W" stages come before S01.
 STAGES = [("W1", "Wafers", []), ("W2", "Growth reactors", ["S03"]), ("W3", "Slicing and lift-off", []),
-          ("W4", "Polishing", ["S01", "S04"]), ("P1", "Etching and marks", ["S05", "S10"]),
-          ("P2", "Nitrogen and NV creation", ["S06", "S07"]), ("P3", "Surface, gate oxide and transistors", ["S08", "S11", "S12", "S13"]),
+          ("W4", "Polishing", ["S01", "S04"]), ("Q1", "Cleaning and inspection", ["S01", "S02", "S04"]),
+          ("P1", "Etching and marks", ["S05", "S10"]),
+          ("P2", "Nitrogen and NV creation", ["S06", "S07"]), ("P3", "Surface, gate oxide and transistors", ["S08", "S11", "S11E", "S12", "S13"]),
           ("P4", "Bonding and integration", ["S19"]), ("P5", "Packaging and heat", ["S19"]),
-          ("P6", "Lithography and metal", ["S09", "S14", "S15", "S16"])]
+          ("P6", "Lithography and metal", ["S09", "S10", "S11", "S11E", "S14", "S15", "S16"]),
+          ("T1", "Electrical and quantum test", ["S17", "S18"])]
 
 # The traveler steps each route actually performs. A route counts for a step's maturity only if it is listed here, so a
 # stage-wide route (for example a heat spreader in the packaging stage) does not raise the level of a step it does not do.
 ROUTE_STEPS = {"R07": ["S03"], "R08": ["S03"], "R16": ["S06"], "R17": ["S06"], "R18": ["S06"], "R19": ["S06", "S07"],
                "R20": ["S06"], "R21": ["S05", "S10"], "R22": ["S05", "S10"], "R23": ["S08", "S13"], "R27": ["S19"],
-               "R28": ["S19"], "R31": ["S09", "S14", "S15", "S16"]}
+               "R28": ["S19"], "R31": ["S09", "S14", "S15", "S16"],
+               # added in v0.46.0: a route for every step
+               "R32": ["S01", "S04"], "R33": ["S18"], "R34": ["S01"], "R35": ["S01"], "R36": ["S02", "S04"], "R37": ["S02"],
+               "R38": ["S07"], "R39": ["S08"], "R40": ["S08", "S12"], "R41": ["S12"], "R42": ["S13"], "R43": ["S12", "S13"],
+               "R44": ["S10", "S11", "S11E", "S14", "S15", "S16"], "R45": ["S10", "S11", "S14", "S16"], "R46": ["S11", "S15"],
+               "R47": ["S14", "S15"], "R48": ["S09", "S16"], "R49": ["S09"], "R50": ["S09"], "R51": ["S17"], "R52": ["S17"],
+               "R53": ["S18"], "R54": ["S18"], "R55": ["S19"], "R56": ["S19"], "R57": ["S19"]}
 
 # Routes: id, stage, process, who or where, maturity, what the source states, refs, what is left for ADAMAS.
 ROUTES = [
@@ -138,6 +146,96 @@ ROUTES = [
     ("R31", "P6", "Shared university cleanroom: aligners, direct-write lithography, electron-beam evaporation", "University cleanrooms (for example the Washington Nanofabrication Facility)",
      "retrofit", "Hourly rates published for contact aligners, maskless direct writers and electron-beam evaporators (silicon tools)",
      ["wnf2026"], "The diamond recipes are in the traveler steps; small diamond pieces on silicon-sized tools are this repository's proposal"),
+    # v0.46.0: routes for the steps that had none. Numbers are as the sources print them.
+    ("R32", "Q1", "Confocal Raman and photoluminescence mapping (inVia)", "Renishaw", "in production",
+     "Sold with a diamond application note: measures 'diamond stress, purity and origin' and maps the 1332 cm⁻¹ Raman line and the "
+     "1.95 eV NV⁻ photoluminescence band of a CVD film (company statement)", ["renishaw2026"],
+     "Use for incoming and post-growth inspection; set pass limits from the S01 checks"),
+    ("R33", "T1", "Quality control of NV diamond as a service (quantum diamond scan)", "Kwan-tek, France", "in production",
+     "Measures T1, T2, Hahn-echo T2 and Rabi oscillations of customer NV diamond on an automated bench and returns a report "
+     "(company statement, no numbers)", ["kwantek2026"],
+     "Ask whether patterned chips are accepted for the S18 quantum test, and for the measurement conditions"),
+    ("R34", "Q1", "Birefringence imaging and X-ray topography of defects", "Research (Moore and co-workers)", "on diamond",
+     "Rotating-analyser polarizing microscope at 589 nm: birefringence Δn up to 15 × 10⁻³ at growth-sector boundaries and about "
+     "1.8 × 10⁻³ in low-strain regions; X-ray rocking curves about 20 arcsec (HPHT synthetic diamond)", ["moore2016"],
+     "Shown on HPHT diamond; a commercial topography service for diamond was not found"),
+    ("R35", "Q1", "Quantum-grade single-crystal plates with a published acceptance sheet", "Coherent", "in production",
+     "Datasheet values: substitutional nitrogen 800 ppb, NV 300 ppb, surface roughness Sa below 0.5 nm, T2 200 µs, T2* 1 µs "
+     "(company statement)", ["coherentqg2026"],
+     "Compare these with the S01 pass windows before buying; no birefringence value is stated"),
+    ("R36", "Q1", "Tri-acid clean", "Research (Sangtawesin and co-workers)", "on diamond",
+     "Refluxing 1:1:1 sulfuric, nitric and perchloric acid for at least one hour, before etching and before every anneal; a "
+     "1:2 hydrogen peroxide in sulfuric acid piranha after the oxygen anneal", ["sangtawesin2019"],
+     "Perchloric acid needs a rated fume hood and institutional training"),
+    ("R37", "Q1", "Nitrate-sulfuric acid clean followed by hot piranha", "Research (McCloskey and co-workers)", "on diamond",
+     "1:20 w/w sodium nitrate in sulfuric acid for 30 min, then 1:4 v/v hydrogen peroxide in sulfuric acid for 10 min, on an "
+     "NV sample", ["mccloskey2024"], "Avoids perchloric acid; preprint, not yet peer reviewed in the source read"),
+    ("R38", "P2", "Staged vacuum anneal to 1200 °C and oxygen re-termination", "Research (Sangtawesin and co-workers)", "on diamond",
+     "Vacuum 1 × 10⁻⁷ to 2 × 10⁻⁶ Torr; holds of 11 h at 100 °C, 8 h at 400 °C and 8 h at 800 °C, ramp to 1200 °C over 6 to 12 h "
+     "and hold 2 h; then oxygen at 445 to 450 °C and atmospheric pressure for 4 h (diamond etches in oxygen from about 500 °C)",
+     ["sangtawesin2019"], "An earlier study also reported longer T2 after 1200 °C [naydenov2010]; a furnace sold for this use was not found"),
+    ("R39", "P3", "Hydrogen termination that preserves NV centers", "Research (McCloskey and co-workers)", "on diamond",
+     "Heated hydrogen plasma (10 Torr, 500 sccm H₂, 400 W, 10 min, stage 800 °C) lost almost 50 % of NV photoluminescence; an "
+     "unheated plasma (at most 120 °C) showed no clear loss; forming gas at 950 °C for 1 h also terminated the surface",
+     ["mccloskey2024"], "Choose the cold plasma for chips that already carry NV centers (S08 comes after S07)"),
+    ("R40", "P3", "Hydrogen plasma and NO₂ activation", "Research (Wade, Geis and co-workers)", "on diamond",
+     "Plasma ramped to 65 Torr and 5 kW, held 30 min; 1 min in NO₂ gave 1 to 2 kΩ/sq, against 2.5 to 10 kΩ/sq for other "
+     "activation, and the resistance rose above 3 kΩ/sq within hours in laboratory air", ["wade2017"],
+     "Cap with Al₂O₃ soon after NO₂ (S13)"),
+    ("R41", "P3", "NO₂ hole doping of transistors", "Research (NTT, Kubovic and Kasu)", "on diamond",
+     "300 ppm NO₂: hole density up to 2.3 × 10¹⁴ cm⁻² and drain current 1.8 times that in air", ["kubovic2009", "nttbrl2009"],
+     "Exposure time is not stated in the summary read"),
+    ("R42", "P3", "Plasma-enhanced ALD Al₂O₃ with hydrogen-plasma recovery", "Research (Yang and co-workers)", "on diamond",
+     "Al₂O₃ from dimethylaluminium isopropoxide and oxygen plasma at 100 °C, about 1.5 Å per cycle; the first ~1 nm raised the "
+     "resistance from ~30 kΩ to ~3 MΩ, and a hydrogen plasma at 500 °C for 30 min brought it back to ~20 kΩ", ["yang2017"],
+     "Thermal ALD (trimethylaluminium and water) is the traveler's choice; this is the alternative"),
+    ("R43", "P3", "ALD Al₂O₃ passivation after NO₂", "Research (NTT, Kasu and co-workers)", "on diamond",
+     "10 nm ALD Al₂O₃ after 2 % NO₂ in N₂: drain current −200 mA/mm at room temperature, stable up to 200 °C", ["kasu2012", "nttbrl2011"],
+     "Deposition temperature and cycles are not stated in the summary read"),
+    ("R44", "P6", "Tabletop maskless aligner for small pieces (µMLA)", "Heidelberg Instruments", "retrofit",
+     "Substrates from 5 mm × 5 mm to 6 inch; minimum feature 0.6, 1 or 3 µm by write mode; 405 or 375 nm laser; second-layer "
+     "alignment 500 nm (general tool, not stated for diamond)", ["heidelbergumla2026"],
+     "Not shown on diamond in the source; writing masks 1 to 6 on 4 mm plates with it is this repository's proposal"),
+    ("R45", "P6", "Edge-to-edge resist on small diamond pieces", "Research (Strathclyde, Hill and co-workers)", "on diamond",
+     "Spin coating builds resist up at the edges of small samples; printing the resist coats edge to edge; 4 × 4 × 0.5 mm "
+     "single-crystal plates diced to 2 × 2 mm", ["hill2016"], "Use on the 2 to 4 mm plates of route R01"),
+    ("R46", "P6", "Electron-beam lithography and buffered-oxide opening of Al₂O₃", "Research (Qu and co-workers)", "on diamond",
+     "PMMA patterned by electron beam; 80 nm Pd contacts; 35 nm evaporated plus 15 nm plasma-ALD Al₂O₃; 10:1 buffered oxide etch "
+     "removes the Al₂O₃ over the contacts; contact resistance 11.4 Ω·mm", ["qu2024b"], "Preprint in the source read"),
+    ("R47", "P6", "Pd/Ti/Au contacts and TMAH opening of Al₂O₃", "Research (Liu and co-workers)", "on diamond",
+     "Pd/Ti/Au 10/20/100 nm contacts by electron-beam lithography; Al₂O₃ wet-etched in tetramethylammonium hydroxide (TMAH) "
+     "for 10 min", ["liu2016"], "An HF-free alternative for the S15 via"),
+    ("R48", "P6", "Ti/Pt/Au lift-off and Cr/Au pads on an NV device", "Research (Broadway and co-workers)", "on diamond",
+     "Ti/Pt/Au 10/10/70 nm evaporated and lifted off, annealed 600 °C for 20 min in 10 Torr H₂; Cr/Au 10/70 nm bond pads",
+     ["broadway2018"], "Shown on a diamond chip with NV sensors"),
+    ("R49", "P6", "Pt/Au ohmic contacts on hydrogen-terminated diamond", "Research (Zhang and co-workers)", "on diamond",
+     "Specific contact resistance 5.65 × 10⁻⁴ Ω·cm² as fabricated (circular transfer-length method)", ["zhang2019"],
+     "Compare with the gold contacts of S09"),
+    ("R50", "P6", "Gold metallization of customer diamond", "Diamond Materials GmbH", "in production",
+     "'Gold layers with excellent adhesion and wetting properties', patterning by lithography or shadow masks, AuSn or In solder "
+     "layers on request, parts down to 0.5 mm (company statement; stack not stated)", ["diamondmaterialshs2026"],
+     "Ask for a gold layer without an adhesion metal for S09, which needs gold on the hydrogen-terminated surface"),
+    ("R51", "T1", "Hot chuck to 400 °C", "Micromanipulator", "retrofit",
+     "Wafer testing from −65 to 400 °C for 150 to 300 mm wafers (general tool, not stated for diamond)", ["micromanipulator2026"],
+     "Not shown on diamond; holding a 4 mm die on a wafer chuck is this repository's proposal"),
+    ("R52", "T1", "High-temperature test of diamond logic", "Research (Liu and co-workers)", "on diamond",
+     "Hydrogenated diamond NOR logic worked at 300 °C and failed at 400 °C (news report)", ["aipnews2018"],
+     "The S17 hot-chuck limit of 400 °C sits at this failure point"),
+    ("R53", "T1", "Open-source confocal and ODMR control software (Qudi)", "Research (Binder and co-workers)", "on diamond",
+     "Python suite with a confocal scanner and optically detected magnetic resonance (ODMR) logic that sweeps the microwave "
+     "frequency and records the fluorescence", ["binder2017"], "Free; drives the S18 confocal setup"),
+    ("R54", "T1", "Room-temperature ODMR on a diamond device", "Research (Broadway and co-workers)", "on diamond",
+     "532 nm, 300 mW continuous at the sample, 40× oil objective with NA 1.3, room temperature", ["broadway2018"],
+     "A wide-field version of the S18 test"),
+    ("R55", "P5", "Laser cutting system for single-crystal diamond (eM15)", "Coherent", "in production",
+     "For natural and synthetic single-crystal diamond and CVD wafers; 15 W green (532 nm) laser; 200 × 200 mm travel; 2000 mm/min "
+     "(company statement; kerf not stated)", ["coherentem152026"], "Measure the kerf and edge damage on a test plate"),
+    ("R56", "P5", "Water-jet-guided laser cutting of single-crystal diamond", "Research (Zhang and co-workers)", "on diamond",
+     "1 mm thick plate: kerf 74.59 µm with water-jet guidance against 220.8 µm dry; 532 nm, 30 µm nozzle at 400 bar, 11.8 W to cut "
+     "through", ["zhang2022"], "Narrower kerf than dry cutting"),
+    ("R57", "P5", "Brazed die attach of diamond", "Research (Msolli and co-workers)", "on diamond",
+     "Die brazed with AuGe (melting point 356 °C) or AlSi (577 °C), thermally cycled from −50 to 300 °C", ["msolli2012"],
+     "AuGe melts below the 500 °C hydrogen limit; compare with silver sinter (R28)"),
 ]
 
 # Products on the market or deployed that show a Quantum Device Library device is real (adamas.qdl ids).
@@ -235,11 +333,14 @@ def to_markdown() -> str:
             f"{s['retrofit']} retrofit, {s['proposed']} proposed. {s['products']} products or deployments cover "
             f"{len(s['devices_on_market'])} device types sold today as devices ({', '.join(s['devices_on_market'])}) and "
             f"{len(s['materials_on_market'])} whose NV diamond material is sold ({', '.join(s['materials_on_market'])}). "
-            f"Of the {s['steps']} traveler steps, {s['steps_by_level']['in production']} have a route in production and "
-            f"{s['steps_by_level']['on diamond']} more cite a diamond demonstration; the other {s['steps_by_level']['retrofit'] + s['steps_by_level']['proposed']} "
-            f"({', '.join(sorted(k for k, v in s['step_levels'].items() if v in ('retrofit', 'proposed')))}) are standard lithography and "
-            "metal steps on shared cleanroom tools (Atlas M11 to M13). A route counts for a step only if it performs that step "
-            "(the 'Routes' column below); a step with no such route is 'on diamond' when its own parameters cite a diamond paper.", "",
+            f"Every one of the {s['steps']} traveler steps now has at least one route that performs it ({s['steps_with_route']} of {s['steps']}): "
+            f"{s['steps_by_level']['in production']} have a route in production for diamond "
+            f"({', '.join(k for k, v in s['step_levels'].items() if v == 'in production')}), "
+            f"{s['steps_by_level']['on diamond']} have a diamond demonstration, and "
+            f"{s['steps_by_level']['retrofit'] + s['steps_by_level']['proposed']} rest only on a retrofit or proposal. "
+            "A route counts for a step only if it performs that step (the 'Routes' column below); a step is also 'on diamond' when its "
+            "own parameters cite a diamond paper. 'In production' means the process or tool is offered for diamond, not that it has "
+            "been run on an ADAMAS chip.", "",
             "![Retrofit Map](../img/fig62_retrofit_map.png)", ""]
     for k, name, steps in STAGES:
         out += [f"## {k} · {name} (best: {stage_level(k)})", ""]
@@ -263,7 +364,13 @@ def to_markdown() -> str:
             "delta-doped layer instead (R18).",
             "4. Etch and pattern on shared cleanroom tools of the class the Atlas prices (R21, R22; Atlas M11 to M16).",
             "5. Build hydrogen-terminated FETs with ALD Al₂O₃ as published (R23), and bond dies to silicon at room temperature (R24).",
-            "6. Benchmark against products already sold (scanning NV microscopes, quantum-grade diamond, teaching instruments).", "",
+            "6. Clean in tri-acid or a perchloric-free nitrate-sulfuric mix (R36, R37), anneal with the published 1200 °C schedule "
+            "(R38), and terminate with a cold hydrogen plasma that keeps the NV centers (R39).",
+            "7. Inspect by Raman and photoluminescence mapping (R32) against a published acceptance sheet (R35), send NV pieces to a "
+            "quality-control service (R33), run the confocal test with free software (R53), and dice with a laser sold for "
+            "single-crystal diamond (R55).",
+            "8. Benchmark against products already sold (scanning NV microscopes, quantum-grade diamond, teaching instruments).", "",
+            "![Step coverage](../img/fig63_step_coverage.png)", "",
             f"Sources: {_cite(s['keys'])}", ""]
     return "\n".join(out)
 
@@ -292,7 +399,7 @@ def figure(out: str | Path = "docs/img") -> Path:
     ax.set_title("Real processes for each build stage, by maturity")
     for lv in LEVELS:
         ax.scatter([], [], s=80, color=COLORS[lv], edgecolor="black", label=LEVEL_TEXT[lv])
-    ax.legend(loc="lower right", fontsize=8, frameon=True)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.11), ncol=2, fontsize=8, frameon=False)
     ps = products()[::-1]
     for i, p in enumerate(ps):
         bx.scatter(0.04, i, s=160, color=COLORS[p["level"]], edgecolor="black", linewidth=0.6, clip_on=False)
@@ -303,4 +410,36 @@ def figure(out: str | Path = "docs/img") -> Path:
              "Retrofit = proven on silicon, SiC or GaN, proposed for diamond.", fontsize=8)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     p = out / "fig62_retrofit_map.png"; fig.savefig(p, dpi=150); plt.close(fig)
+    return p
+
+
+def figure_steps(out: str | Path = "docs/img") -> Path:
+    """Figure 63: step coverage, one row per traveler step, one dot per route that performs the step, colored by maturity."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    by = {r["id"]: r for r in routes()}
+    rows = [(st, step_view(st["id"])) for st in STEPS][::-1]
+    width = max(len(v["routes"]) for _, v in rows) + 2.5
+    fig, ax = plt.subplots(figsize=(13, 8.2))
+    for i, (st, v) in enumerate(rows):
+        ax.barh(i, width, color=COLORS[v["level"]], alpha=0.16, height=0.84)
+        rs = sorted((by[r] for r in v["routes"]), key=lambda r: LEVELS.index(r["level"]))
+        for j, r in enumerate(rs):
+            ax.scatter(j + 0.5, i, s=210, color=COLORS[r["level"]], edgecolor="black", linewidth=0.6, zorder=3)
+            ax.text(j + 0.5, i, r["id"][1:], ha="center", va="center", fontsize=6.3, zorder=4)
+        if v["traveler_refs"]:
+            ax.text(width - 0.15, i, f"+{len(v['traveler_refs'])} paper(s) cited by the step", ha="right", va="center", fontsize=7, color="#555")
+    ax.set_yticks(range(len(rows))); ax.set_yticklabels([f"{st['id']} {st['title'][:64]}" for st, _ in rows], fontsize=8)
+    ax.set_xlim(0, width); ax.set_xticks([])
+    ax.set_title("Every traveler step has a real route: what is offered for diamond, what is demonstrated, what is a retrofit\n"
+                 "(dots: routes that perform the step, number = route id in RETROFIT.md; background = best level)", fontsize=11)
+    for lv in LEVELS:
+        ax.scatter([], [], s=80, color=COLORS[lv], edgecolor="black", label=LEVEL_TEXT[lv])
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.04), ncol=4, fontsize=8, frameon=False)
+    fig.text(0.01, 0.01, "Source: adamas.retrofit (docs/process/RETROFIT.md). 'In production' means offered for diamond, "
+             "not run on an ADAMAS chip; company statements are marked there.", fontsize=8)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    p = out / "fig63_step_coverage.png"; fig.savefig(p, dpi=150); plt.close(fig)
     return p

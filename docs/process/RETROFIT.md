@@ -11,7 +11,7 @@ This page answers one question for each stage of the build: **what real process,
 
 A retrofit route is a proposal of this repository until someone runs it on diamond. Products show that a device type is real; they do not make the ADAMAS processor real, and none is compared with superconducting or other qubits.
 
-Of 31 routes: 10 in production, 18 demonstrated on diamond, 3 retrofit, 0 proposed. 9 products or deployments cover 3 device types sold today as devices (QDL-01, QDL-17, QDL-19) and 2 whose NV diamond material is sold (QDL-12, QDL-20). Of the 20 traveler steps, 4 have a route in production and 14 more cite a diamond demonstration; the other 2 (S15, S16) are standard lithography and metal steps on shared cleanroom tools (Atlas M11 to M13). A route counts for a step only if it performs that step (the 'Routes' column below); a step with no such route is 'on diamond' when its own parameters cite a diamond paper.
+Of 57 routes: 15 in production, 37 demonstrated on diamond, 5 retrofit, 0 proposed. 9 products or deployments cover 3 device types sold today as devices (QDL-01, QDL-17, QDL-19) and 2 whose NV diamond material is sold (QDL-12, QDL-20). Every one of the 20 traveler steps now has at least one route that performs it (20 of 20): 9 have a route in production for diamond (S01, S03, S04, S05, S06, S09, S10, S18, S19), 11 have a diamond demonstration, and 0 rest only on a retrofit or proposal. A route counts for a step only if it performs that step (the 'Routes' column below); a step is also 'on diamond' when its own parameters cite a diamond paper. 'In production' means the process or tool is offered for diamond, not that it has been run on an ADAMAS chip.
 
 ![Retrofit Map](../img/fig62_retrofit_map.png)
 
@@ -54,6 +54,18 @@ Traveler steps: S01, S04 ([TRAVELER.md](TRAVELER.md)).
 | R14 | Chemical-mechanical polishing (CMP) | Cardiff University; Fraunhofer USA CMW as a service | **on diamond** | Nanocrystalline diamond film from 18.3 to 1.7 nm root-mean-square (rms) roughness in 4 h with colloidal silica (0.42 nm rms locally); the Fraunhofer USA service states sub-nanometer roughness over large-area diamond wafers (company statement) [thomas2014] [fraunhofercmw2026] | The paper used polycrystalline film; the service does not state the crystal type |
 | R15 | Grinding, polishing, laser cutting, plasma etching and metallization as a service | Diamond Materials GmbH | **in production** | Lists these services for customer diamond (company statement, no specifications) [diamondmaterials2026] | Ask for roughness and thickness tolerances |
 
+## Q1 · Cleaning and inspection (best: in production)
+
+Traveler steps: S01, S02, S04 ([TRAVELER.md](TRAVELER.md)).
+
+| Route | Process | Who | Maturity | What the source states | What is left |
+|---|---|---|---|---|---|
+| R32 | Confocal Raman and photoluminescence mapping (inVia) | Renishaw | **in production** | Sold with a diamond application note: measures 'diamond stress, purity and origin' and maps the 1332 cm⁻¹ Raman line and the 1.95 eV NV⁻ photoluminescence band of a CVD film (company statement) [renishaw2026] | Use for incoming and post-growth inspection; set pass limits from the S01 checks |
+| R34 | Birefringence imaging and X-ray topography of defects | Research (Moore and co-workers) | **on diamond** | Rotating-analyser polarizing microscope at 589 nm: birefringence Δn up to 15 × 10⁻³ at growth-sector boundaries and about 1.8 × 10⁻³ in low-strain regions; X-ray rocking curves about 20 arcsec (HPHT synthetic diamond) [moore2016] | Shown on HPHT diamond; a commercial topography service for diamond was not found |
+| R35 | Quantum-grade single-crystal plates with a published acceptance sheet | Coherent | **in production** | Datasheet values: substitutional nitrogen 800 ppb, NV 300 ppb, surface roughness Sa below 0.5 nm, T2 200 µs, T2* 1 µs (company statement) [coherentqg2026] | Compare these with the S01 pass windows before buying; no birefringence value is stated |
+| R36 | Tri-acid clean | Research (Sangtawesin and co-workers) | **on diamond** | Refluxing 1:1:1 sulfuric, nitric and perchloric acid for at least one hour, before etching and before every anneal; a 1:2 hydrogen peroxide in sulfuric acid piranha after the oxygen anneal [sangtawesin2019] | Perchloric acid needs a rated fume hood and institutional training |
+| R37 | Nitrate-sulfuric acid clean followed by hot piranha | Research (McCloskey and co-workers) | **on diamond** | 1:20 w/w sodium nitrate in sulfuric acid for 30 min, then 1:4 v/v hydrogen peroxide in sulfuric acid for 10 min, on an NV sample [mccloskey2024] | Avoids perchloric acid; preprint, not yet peer reviewed in the source read |
+
 ## P1 · Etching and marks (best: in production)
 
 Traveler steps: S05, S10 ([TRAVELER.md](TRAVELER.md)).
@@ -74,14 +86,20 @@ Traveler steps: S06, S07 ([TRAVELER.md](TRAVELER.md)).
 | R18 | Nitrogen delta-doping during growth | Research (Awschalom group) | **on diamond** | Nitrogen layers at depths of 5 to 100 nm; T₂ above 100 µs at 5 nm and above 600 µs at 50 nm or deeper [ohno2012] | An alternative to S06: no implant damage, but no lateral placement |
 | R19 | Laser writing of single NV centers | Research (Oxford and Warwick) | **on diamond** | Single NV centers with up to 45 % success per site, within about 200 nm of the target; anneal 3 h at 1000 °C [chen2017] | The detect-and-repair route of build phase P5 (Atlas M25) |
 | R20 | NV arrays through masks | Research (Awschalom and Schenkel groups) | **on diamond** | Nanofabrication of single NV centers on sub-100 nm length scales across a chip [toyli2010] | Yield is statistical (Poisson); see build phase P5 |
+| R38 | Staged vacuum anneal to 1200 °C and oxygen re-termination | Research (Sangtawesin and co-workers) | **on diamond** | Vacuum 1 × 10⁻⁷ to 2 × 10⁻⁶ Torr; holds of 11 h at 100 °C, 8 h at 400 °C and 8 h at 800 °C, ramp to 1200 °C over 6 to 12 h and hold 2 h; then oxygen at 445 to 450 °C and atmospheric pressure for 4 h (diamond etches in oxygen from about 500 °C) [sangtawesin2019] | An earlier study also reported longer T2 after 1200 °C [naydenov2010]; a furnace sold for this use was not found |
 
 ## P3 · Surface, gate oxide and transistors (best: on diamond)
 
-Traveler steps: S08, S11, S12, S13 ([TRAVELER.md](TRAVELER.md)).
+Traveler steps: S08, S11, S11E, S12, S13 ([TRAVELER.md](TRAVELER.md)).
 
 | Route | Process | Who | Maturity | What the source states | What is left |
 |---|---|---|---|---|---|
 | R23 | Hydrogen-terminated field-effect transistors (FETs) with atomic-layer-deposited Al₂O₃ | Waseda University (Kawarada group) | **on diamond** | Al₂O₃ deposited at 450 °C, 200 nm gate insulator; breakdown 1700 V at room temperature and 1200 V at 300 and 400 °C; drain current within 30 % from room temperature to 400 °C [kawarada2017] [kawarada2014] | No foundry offering was found |
+| R39 | Hydrogen termination that preserves NV centers | Research (McCloskey and co-workers) | **on diamond** | Heated hydrogen plasma (10 Torr, 500 sccm H₂, 400 W, 10 min, stage 800 °C) lost almost 50 % of NV photoluminescence; an unheated plasma (at most 120 °C) showed no clear loss; forming gas at 950 °C for 1 h also terminated the surface [mccloskey2024] | Choose the cold plasma for chips that already carry NV centers (S08 comes after S07) |
+| R40 | Hydrogen plasma and NO₂ activation | Research (Wade, Geis and co-workers) | **on diamond** | Plasma ramped to 65 Torr and 5 kW, held 30 min; 1 min in NO₂ gave 1 to 2 kΩ/sq, against 2.5 to 10 kΩ/sq for other activation, and the resistance rose above 3 kΩ/sq within hours in laboratory air [wade2017] | Cap with Al₂O₃ soon after NO₂ (S13) |
+| R41 | NO₂ hole doping of transistors | Research (NTT, Kubovic and Kasu) | **on diamond** | 300 ppm NO₂: hole density up to 2.3 × 10¹⁴ cm⁻² and drain current 1.8 times that in air [kubovic2009] [nttbrl2009] | Exposure time is not stated in the summary read |
+| R42 | Plasma-enhanced ALD Al₂O₃ with hydrogen-plasma recovery | Research (Yang and co-workers) | **on diamond** | Al₂O₃ from dimethylaluminium isopropoxide and oxygen plasma at 100 °C, about 1.5 Å per cycle; the first ~1 nm raised the resistance from ~30 kΩ to ~3 MΩ, and a hydrogen plasma at 500 °C for 30 min brought it back to ~20 kΩ [yang2017] | Thermal ALD (trimethylaluminium and water) is the traveler's choice; this is the alternative |
+| R43 | ALD Al₂O₃ passivation after NO₂ | Research (NTT, Kasu and co-workers) | **on diamond** | 10 nm ALD Al₂O₃ after 2 % NO₂ in N₂: drain current −200 mA/mm at room temperature, stable up to 200 °C [kasu2012] [nttbrl2011] | Deposition temperature and cycles are not stated in the summary read |
 
 ## P4 · Bonding and integration (best: on diamond)
 
@@ -103,39 +121,61 @@ Traveler steps: S19 ([TRAVELER.md](TRAVELER.md)).
 | R28 | Pressureless silver sintering (power-module die attach) | Research on a non-diamond Schottky diode | **retrofit** | Sintered at 290 °C for 40 min without pressure [dai2023] | Not shown on diamond; proposed for S19 because it stays below the 500 °C hydrogen limit |
 | R29 | Diamond heat spreaders | Element Six | **in production** | Thermal conductivity from 1000 to 2200 W/(m·K), for radio-frequency power amplifiers and laser diodes [e6thermal2026] | Passive diamond in production today |
 | R30 | GaN-on-diamond amplifiers in orbit | Akash Systems | **in production** | 5 W continuous wave at 8.4 GHz on Pixxel's Firefly satellites; described as the first GaN-on-diamond device in space [akash2026] | Diamond as a heat sink, not as a semiconductor |
+| R55 | Laser cutting system for single-crystal diamond (eM15) | Coherent | **in production** | For natural and synthetic single-crystal diamond and CVD wafers; 15 W green (532 nm) laser; 200 × 200 mm travel; 2000 mm/min (company statement; kerf not stated) [coherentem152026] | Measure the kerf and edge damage on a test plate |
+| R56 | Water-jet-guided laser cutting of single-crystal diamond | Research (Zhang and co-workers) | **on diamond** | 1 mm thick plate: kerf 74.59 µm with water-jet guidance against 220.8 µm dry; 532 nm, 30 µm nozzle at 400 bar, 11.8 W to cut through [zhang2022] | Narrower kerf than dry cutting |
+| R57 | Brazed die attach of diamond | Research (Msolli and co-workers) | **on diamond** | Die brazed with AuGe (melting point 356 °C) or AlSi (577 °C), thermally cycled from −50 to 300 °C [msolli2012] | AuGe melts below the 500 °C hydrogen limit; compare with silver sinter (R28) |
 
-## P6 · Lithography and metal (best: retrofit)
+## P6 · Lithography and metal (best: in production)
 
-Traveler steps: S09, S14, S15, S16 ([TRAVELER.md](TRAVELER.md)).
+Traveler steps: S09, S10, S11, S11E, S14, S15, S16 ([TRAVELER.md](TRAVELER.md)).
 
 | Route | Process | Who | Maturity | What the source states | What is left |
 |---|---|---|---|---|---|
 | R31 | Shared university cleanroom: aligners, direct-write lithography, electron-beam evaporation | University cleanrooms (for example the Washington Nanofabrication Facility) | **retrofit** | Hourly rates published for contact aligners, maskless direct writers and electron-beam evaporators (silicon tools) [wnf2026] | The diamond recipes are in the traveler steps; small diamond pieces on silicon-sized tools are this repository's proposal |
+| R44 | Tabletop maskless aligner for small pieces (µMLA) | Heidelberg Instruments | **retrofit** | Substrates from 5 mm × 5 mm to 6 inch; minimum feature 0.6, 1 or 3 µm by write mode; 405 or 375 nm laser; second-layer alignment 500 nm (general tool, not stated for diamond) [heidelbergumla2026] | Not shown on diamond in the source; writing masks 1 to 6 on 4 mm plates with it is this repository's proposal |
+| R45 | Edge-to-edge resist on small diamond pieces | Research (Strathclyde, Hill and co-workers) | **on diamond** | Spin coating builds resist up at the edges of small samples; printing the resist coats edge to edge; 4 × 4 × 0.5 mm single-crystal plates diced to 2 × 2 mm [hill2016] | Use on the 2 to 4 mm plates of route R01 |
+| R46 | Electron-beam lithography and buffered-oxide opening of Al₂O₃ | Research (Qu and co-workers) | **on diamond** | PMMA patterned by electron beam; 80 nm Pd contacts; 35 nm evaporated plus 15 nm plasma-ALD Al₂O₃; 10:1 buffered oxide etch removes the Al₂O₃ over the contacts; contact resistance 11.4 Ω·mm [qu2024b] | Preprint in the source read |
+| R47 | Pd/Ti/Au contacts and TMAH opening of Al₂O₃ | Research (Liu and co-workers) | **on diamond** | Pd/Ti/Au 10/20/100 nm contacts by electron-beam lithography; Al₂O₃ wet-etched in tetramethylammonium hydroxide (TMAH) for 10 min [liu2016] | An HF-free alternative for the S15 via |
+| R48 | Ti/Pt/Au lift-off and Cr/Au pads on an NV device | Research (Broadway and co-workers) | **on diamond** | Ti/Pt/Au 10/10/70 nm evaporated and lifted off, annealed 600 °C for 20 min in 10 Torr H₂; Cr/Au 10/70 nm bond pads [broadway2018] | Shown on a diamond chip with NV sensors |
+| R49 | Pt/Au ohmic contacts on hydrogen-terminated diamond | Research (Zhang and co-workers) | **on diamond** | Specific contact resistance 5.65 × 10⁻⁴ Ω·cm² as fabricated (circular transfer-length method) [zhang2019] | Compare with the gold contacts of S09 |
+| R50 | Gold metallization of customer diamond | Diamond Materials GmbH | **in production** | 'Gold layers with excellent adhesion and wetting properties', patterning by lithography or shadow masks, AuSn or In solder layers on request, parts down to 0.5 mm (company statement; stack not stated) [diamondmaterialshs2026] | Ask for a gold layer without an adhesion metal for S09, which needs gold on the hydrogen-terminated surface |
+
+## T1 · Electrical and quantum test (best: in production)
+
+Traveler steps: S17, S18 ([TRAVELER.md](TRAVELER.md)).
+
+| Route | Process | Who | Maturity | What the source states | What is left |
+|---|---|---|---|---|---|
+| R33 | Quality control of NV diamond as a service (quantum diamond scan) | Kwan-tek, France | **in production** | Measures T1, T2, Hahn-echo T2 and Rabi oscillations of customer NV diamond on an automated bench and returns a report (company statement, no numbers) [kwantek2026] | Ask whether patterned chips are accepted for the S18 quantum test, and for the measurement conditions |
+| R51 | Hot chuck to 400 °C | Micromanipulator | **retrofit** | Wafer testing from −65 to 400 °C for 150 to 300 mm wafers (general tool, not stated for diamond) [micromanipulator2026] | Not shown on diamond; holding a 4 mm die on a wafer chuck is this repository's proposal |
+| R52 | High-temperature test of diamond logic | Research (Liu and co-workers) | **on diamond** | Hydrogenated diamond NOR logic worked at 300 °C and failed at 400 °C (news report) [aipnews2018] | The S17 hot-chuck limit of 400 °C sits at this failure point |
+| R53 | Open-source confocal and ODMR control software (Qudi) | Research (Binder and co-workers) | **on diamond** | Python suite with a confocal scanner and optically detected magnetic resonance (ODMR) logic that sweeps the microwave frequency and records the fluorescence [binder2017] | Free; drives the S18 confocal setup |
+| R54 | Room-temperature ODMR on a diamond device | Research (Broadway and co-workers) | **on diamond** | 532 nm, 300 mW continuous at the sample, 40× oil objective with NA 1.3, room temperature [broadway2018] | A wide-field version of the S18 test |
 
 ## Traveler steps and their best route
 
 | Step | Title | Routes | Diamond papers the step cites | Best level |
 |---|---|---|---|---|
-| S01 | Incoming substrate inspection | — | [friel2009] [schreck2017] [kim2021] [qu2024] [e6orbray2026] | on diamond |
-| S02 | Oxidizing acid clean | — | [sangtawesin2019] | on diamond |
+| S01 | Incoming substrate inspection | R32, R34, R35 | [friel2009] [schreck2017] [kim2021] [qu2024] [e6orbray2026] | in production |
+| S02 | Oxidizing acid clean | R36, R37 | [sangtawesin2019] | on diamond |
 | S03 | Homoepitaxial buffer growth (MPCVD) | R07, R08 | [tallaire2013] [lu2013] [bolshakov2020] [teraji2015] [balasubramanian2009] | in production |
-| S04 | Post-growth clean and inspection | — | [sangtawesin2019] | on diamond |
+| S04 | Post-growth clean and inspection | R32, R36 | [sangtawesin2019] | in production |
 | S05 | Etched alignment marks | R21, R22 | [hauf2011] | in production |
 | S06 | Nitrogen implantation through apertures | R16, R17, R18, R19, R20 | [pezzagna2010] [ziegler2010] | in production |
-| S07 | Vacancy anneal and oxygen re-termination | R19 | [pezzagna2010] [hauf2011] [sangtawesin2019] | on diamond |
-| S08 | Hydrogen termination (H₂ plasma) | R23 | [kawarada2023] [stacey2012] | on diamond |
-| S09 | Blanket gold deposition | R31 | [kawarada2023] | on diamond |
-| S10 | Mask 1 (OHMIC + ISO): gold pattern and oxygen-plasma isolation | R21, R22 | [kawarada2023] [kawarada2014] | in production |
-| S11 | Mask 2 (GATE opening): self-aligned channel | — | [kawarada2023] | on diamond |
-| S11E | Mask 3 (ENH): partial C–O channel for enhancement-mode FETs | — | [kitabayashi2017] | on diamond |
-| S12 | NO₂ exposure (option A, high-current devices) | — | [kasu2012] [hirama2012] [sato2013] [kubovic2009] | on diamond |
-| S13 | Atomic-layer-deposited Al₂O₃ gate insulator and passivation | R23 | [kasu2012] [hirama2012] [kawarada2014] [kawarada2017] | on diamond |
-| S14 | Mask 4 (GATE metal) | R31 | [kasu2012] [kawarada2023] | on diamond |
-| S15 | Mask 5 (VIA): open Al₂O₃ over contacts | R31 | — | retrofit |
-| S16 | Mask 6 (METAL2): interconnect and pads | R31 | — | retrofit |
-| S17 | Parametric test (PDK-0 monitor die) | — | [liu2017] [kawarada2014] | on diamond |
-| S18 | Quantum test (NV windows) | — | [doherty2013] [aslam2013] | on diamond |
-| S19 | Dicing and high-temperature packaging | R27, R28 | [lutz2018] | on diamond |
+| S07 | Vacancy anneal and oxygen re-termination | R19, R38 | [pezzagna2010] [hauf2011] [sangtawesin2019] | on diamond |
+| S08 | Hydrogen termination (H₂ plasma) | R23, R39, R40 | [kawarada2023] [stacey2012] | on diamond |
+| S09 | Blanket gold deposition | R31, R48, R49, R50 | [kawarada2023] | in production |
+| S10 | Mask 1 (OHMIC + ISO): gold pattern and oxygen-plasma isolation | R21, R22, R44, R45 | [kawarada2023] [kawarada2014] | in production |
+| S11 | Mask 2 (GATE opening): self-aligned channel | R44, R45, R46 | [kawarada2023] | on diamond |
+| S11E | Mask 3 (ENH): partial C–O channel for enhancement-mode FETs | R44 | [kitabayashi2017] | on diamond |
+| S12 | NO₂ exposure (option A, high-current devices) | R40, R41, R43 | [kasu2012] [hirama2012] [sato2013] [kubovic2009] | on diamond |
+| S13 | Atomic-layer-deposited Al₂O₃ gate insulator and passivation | R23, R42, R43 | [kasu2012] [hirama2012] [kawarada2014] [kawarada2017] | on diamond |
+| S14 | Mask 4 (GATE metal) | R31, R44, R45, R47 | [kasu2012] [kawarada2023] | on diamond |
+| S15 | Mask 5 (VIA): open Al₂O₃ over contacts | R31, R44, R46, R47 | — | on diamond |
+| S16 | Mask 6 (METAL2): interconnect and pads | R31, R44, R45, R48 | — | on diamond |
+| S17 | Parametric test (PDK-0 monitor die) | R51, R52 | [liu2017] [kawarada2014] | on diamond |
+| S18 | Quantum test (NV windows) | R33, R53, R54 | [doherty2013] [aslam2013] | in production |
+| S19 | Dicing and high-temperature packaging | R27, R28, R55, R56, R57 | [lutz2018] | in production |
 
 ## On the market: NV devices sold or deployed today
 
@@ -158,6 +198,10 @@ Traveler steps: S09, S14, S15, S16 ([TRAVELER.md](TRAVELER.md)).
 3. Send pieces to an implantation service that lists diamond (R16, R17) for the S06 nitrogen implant, or grow a delta-doped layer instead (R18).
 4. Etch and pattern on shared cleanroom tools of the class the Atlas prices (R21, R22; Atlas M11 to M16).
 5. Build hydrogen-terminated FETs with ALD Al₂O₃ as published (R23), and bond dies to silicon at room temperature (R24).
-6. Benchmark against products already sold (scanning NV microscopes, quantum-grade diamond, teaching instruments).
+6. Clean in tri-acid or a perchloric-free nitrate-sulfuric mix (R36, R37), anneal with the published 1200 °C schedule (R38), and terminate with a cold hydrogen plasma that keeps the NV centers (R39).
+7. Inspect by Raman and photoluminescence mapping (R32) against a published acceptance sheet (R35), send NV pieces to a quality-control service (R33), run the confocal test with free software (R53), and dice with a laser sold for single-crystal diamond (R55).
+8. Benchmark against products already sold (scanning NV microscopes, quantum-grade diamond, teaching instruments).
 
-Sources: [akash2026] [chayahara2011] [chen2017] [ciqtek2026] [cornes2025] [dai2023] [diamondfoundry2023] [diamondfoundry2026] [diamondmaterials2026] [disco2024] [e6cvd2026] [e6dnv2020] [e6dnv2021] [e6orbray2026] [e6thermal2026] [fraunhofercmw2026] [hicks2019] [hzdr2026] [ibs2026] [kawarada2014] [kawarada2017] [kim2021] [kucsko2013] [lattispec2026] [liang2021] [liu2020] [lockheed2019] [matsumae2018] [mks2026] [ohno2012] [orbray2026] [ornl2025] [oxinst2026] [parikh1992] [qb2022] [qnami2019] [qnami2026] [quantumdiamonds2024] [sakamoto2023] [sbquantum2026] [schreck2017] [shikata2013] [thomas2014] [toyli2010] [wan2020] [wnf2026] [yamada2014]
+![Step coverage](../img/fig63_step_coverage.png)
+
+Sources: [aipnews2018] [akash2026] [binder2017] [broadway2018] [chayahara2011] [chen2017] [ciqtek2026] [coherentem152026] [coherentqg2026] [cornes2025] [dai2023] [diamondfoundry2023] [diamondfoundry2026] [diamondmaterials2026] [diamondmaterialshs2026] [disco2024] [e6cvd2026] [e6dnv2020] [e6dnv2021] [e6orbray2026] [e6thermal2026] [fraunhofercmw2026] [heidelbergumla2026] [hicks2019] [hill2016] [hzdr2026] [ibs2026] [kasu2012] [kawarada2014] [kawarada2017] [kim2021] [kubovic2009] [kucsko2013] [kwantek2026] [lattispec2026] [liang2021] [liu2016] [liu2020] [lockheed2019] [matsumae2018] [mccloskey2024] [micromanipulator2026] [mks2026] [moore2016] [msolli2012] [nttbrl2009] [nttbrl2011] [ohno2012] [orbray2026] [ornl2025] [oxinst2026] [parikh1992] [qb2022] [qnami2019] [qnami2026] [qu2024b] [quantumdiamonds2024] [renishaw2026] [sakamoto2023] [sangtawesin2019] [sbquantum2026] [schreck2017] [shikata2013] [thomas2014] [toyli2010] [wade2017] [wan2020] [wnf2026] [yamada2014] [yang2017] [zhang2019] [zhang2022]

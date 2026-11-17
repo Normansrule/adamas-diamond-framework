@@ -2,7 +2,21 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.45.0 (2026-11-16).
+Last updated: v0.46.0 (2026-11-17).
+
+## Open in v0.46.0: Step Services
+
+Every traveler step now has a route that performs it ([RETROFIT.md](process/RETROFIT.md), Figure 63). What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Steps demonstrated but not offered for diamond | S02, S07, S08, S11, S11E, S12 to S17: only papers perform them; no vendor found that offers tri-acid cleaning, vacancy annealing, hydrogen termination, NO₂ doping or ALD on customer diamond | A service quote, or running them in a shared cleanroom |
+| Company statements without numbers | Kwan-tek NV quality control (R33) and Diamond Materials gold metallization (R50) give no numbers or stack; Coherent's cutter (R55) gives no kerf | Datasheets or a test order |
+| Whether the NV quality-control service accepts patterned chips (R33) | The page describes diamonds, not finished chips | Ask the service |
+| Gold directly on hydrogen-terminated diamond from a service (R50) | S09 needs gold without an adhesion metal; the service does not state its stack | Ask for the stack |
+| General tools not stated for diamond (R44 maskless aligner, R51 hot chuck) | Small pieces on these tools are this repository's proposal | Run one diamond plate on each |
+| HPHT and preprint sources | Birefringence values are from HPHT diamond (R34); R37, R39, R46, R48 are preprints in the sources read | CVD measurements; the published versions |
+| Verification of the 13 new papers | Entered by hand from the pages read; two titles (qu2024b, yang2017) were read from listings | `make verify` |
 
 ## Open in v0.45.0: Retrofit Map
 

@@ -1,6 +1,6 @@
 # References
 
-**651 references.** 546 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**673 references.** 557 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -144,7 +144,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[verona2016]`** Verona, C.; Ciccognani, W.; Colangeli, S.; et al. (2016). Comparative investigation of surface transfer doping of hydrogen terminated diamond by high electron affinity insulators. *Journal of Applied Physics*, 120, 025104. [doi:10.1063/1.4955469](https://doi.org/10.1063/1.4955469)
 - ✅ **`[crawford2021]`** Crawford, K. G.; Maini, I.; Macdonald, D. A.; Moran, D. A. J. (2021). Surface transfer doping of diamond: a review. *Progress in Surface Science*, 96, 100613. [doi:10.1016/j.progsurf.2021.100613](https://doi.org/10.1016/j.progsurf.2021.100613)
 
-## Devices and circuits (48)
+## Devices and circuits (53)
 
 - ✅ **`[kawarada1994]`** Kawarada, H.; Aoki, M.; Ito, M. (1994). Enhancement mode metal-semiconductor field effect transistors using homoepitaxial diamonds. *Applied Physics Letters*, 65, 1563. [doi:10.1063/1.112915](https://doi.org/10.1063/1.112915)
 - ✅ **`[aleksov2003]`** Aleksov, A.; Kubovic, M.; Kaeb, N.; et al. (2003). Diamond field effect transistors - concepts and challenges. *Diamond and Related Materials*, 12, 391. [doi:10.1016/s0925-9635(02)00401-6](https://doi.org/10.1016/s0925-9635(02)00401-6)
@@ -163,6 +163,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[kawarada2014]`** Kawarada, H.; Tsuboi, H.; Naruo, T.; et al. (2014). C-H surface diamond field effect transistors for high temperature (400 C) and high voltage (500 V) operation. *Applied Physics Letters*, 105, 013510. [doi:10.1063/1.4884828](https://doi.org/10.1063/1.4884828)
 - ✅ **`[liu2014]`** Liu, J. W.; Liao, M. Y.; Imura, M.; et al. (2014). Diamond logic inverter with enhancement-mode metal-insulator-semiconductor field effect transistor. *Applied Physics Letters*, 105, 082110. [doi:10.1063/1.4894291](https://doi.org/10.1063/1.4894291)
 - ✅ **`[traore2014]`** Traore, A.; Muret, P.; Fiori, A.; et al. (2014). Zr/oxidized diamond interface for high power Schottky diodes. *Applied Physics Letters*, 104, 052105. [doi:10.1063/1.4864060](https://doi.org/10.1063/1.4864060)
+- 📚 **`[liu2016]`** Liu, J.; Ohsato, H.; Wang, X.; et al. (2016). Design and fabrication of high-performance diamond triple-gate field-effect transistors. *Scientific Reports*, 6, 34757.
 - ✅ **`[matsumoto2016]`** Matsumoto, T.; Kato, H.; Oyama, K.; et al. (2016). Inversion channel diamond metal-oxide-semiconductor field-effect transistor with normally off characteristics. *Scientific Reports*, 6, 31585. [doi:10.1038/srep31585](https://doi.org/10.1038/srep31585)
 - ✅ **`[neudeck2016]`** Neudeck, P. G.; Meredith, R. D.; Chen, L.; et al. (2016). Prolonged silicon carbide integrated circuit operation in Venus surface atmospheric conditions. *AIP Advances*, 6, 125119. [doi:10.1063/1.4973429](https://doi.org/10.1063/1.4973429)
 - ✅ **`[kasu2017]`** Kasu, M. (2017). Diamond field-effect transistors for RF power electronics: novel NO2 hole doping and low-temperature deposited Al2O3 passivation. *Japanese Journal of Applied Physics*, 56, 01AA01. [doi:10.7567/jjap.56.01aa01](https://doi.org/10.7567/jjap.56.01aa01)
@@ -170,6 +171,8 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[kitabayashi2017]`** Kitabayashi, Y.; Kudo, T.; Tsuboi, H.; et al. (2017). Normally-off C-H diamond MOSFETs with partial C-O channel achieving 2-kV breakdown voltage. *IEEE Electron Device Letters*, 38, 363. [doi:10.1109/led.2017.2661340](https://doi.org/10.1109/led.2017.2661340)
 - ✅ **`[liu2017]`** Liu, J. W.; Oosato, H.; Liao, M. Y.; Imura, M.; Watanabe, E.; Koide, Y. (2017). Logic circuits with hydrogenated diamond field-effect transistors. *IEEE Electron Device Letters*, 38, 922. [doi:10.1109/led.2017.2702744](https://doi.org/10.1109/led.2017.2702744)
 - ✅ **`[ren2017]`** Ren, Z.; Zhang, J.; Zhang, J.; et al. (2017). Diamond field effect transistors with MoO3 gate dielectric. *IEEE Electron Device Letters*, 38, 786. [doi:10.1109/led.2017.2695495](https://doi.org/10.1109/led.2017.2695495)
+- 📚 **`[wade2017]`** Wade, T.; Geis, M. W.; Fedynyshyn, T. H.; et al. (2017). Effect of surface roughness and H-termination chemistry on diamond's semiconducting surface conductance. *Diamond and Related Materials*, 76, 79.
+- 📚 **`[yang2017]`** Yang, Y.; Koeck, F. A.; Dutta, M.; et al. (2017). Al2O3 dielectric layers on H-terminated diamond: controlling surface conductivity. *Journal of Applied Physics*, 122, 155304.
 - ✅ **`[bormashov2018]`** Bormashov, V. S.; Troschiev, S. Y.; Tarelkin, S. A.; et al. (2018). High power density nuclear battery prototype based on diamond Schottky diodes. *Diamond and Related Materials*, 84, 41. [doi:10.1016/j.diamond.2018.03.006](https://doi.org/10.1016/j.diamond.2018.03.006)
 - ✅ **`[geis2018]`** Geis, M. W.; Wade, T. C.; Wuorio, C. H.; et al. (2018). Progress toward diamond power field-effect transistors. *Physica Status Solidi A*, 215, 1800681. [doi:10.1002/pssa.201800681](https://doi.org/10.1002/pssa.201800681)
 - ✅ **`[huang2018]`** Huang, B.; Bai, X.; Lam, S. K.; Tsang, K. K. (2018). Diamond FinFET without hydrogen termination. *Scientific Reports*, 8, 3063. [doi:10.1038/s41598-018-20803-5](https://doi.org/10.1038/s41598-018-20803-5)
@@ -179,6 +182,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[yu2018]`** Yu, X.; Zhou, J.; Qi, C.; et al. (2018). A high frequency hydrogen-terminated diamond MISFET with fT/fmax of 70/80 GHz. *IEEE Electron Device Letters*, 39, 1373. [doi:10.1109/led.2018.2862158](https://doi.org/10.1109/led.2018.2862158)
 - ✅ **`[imanishi2019]`** Imanishi, S.; Horikawa, K.; Oi, N.; et al. (2019). 3.8 W/mm RF power density for ALD Al2O3-based two-dimensional hole gas diamond MOSFET operating at saturation velocity. *IEEE Electron Device Letters*, 40, 279. [doi:10.1109/led.2018.2886596](https://doi.org/10.1109/led.2018.2886596)
 - ✅ **`[kim2019cmos]`** Kim, D.; Ibrahim, M. I.; Foy, C.; Trusheim, M. E.; Han, R.; Englund, D. R. (2019). A CMOS-integrated quantum sensor based on nitrogen-vacancy centres. *Nature Electronics*, 2, 284. [doi:10.1038/s41928-019-0275-5](https://doi.org/10.1038/s41928-019-0275-5)
+- 📚 **`[zhang2019]`** Zhang, M.; Lin, F.; Wang, W.; et al. (2019). Ohmic contact of Pt/Au on hydrogen-terminated single crystal diamond. *Coatings*, 9, 539.
 - ✅ **`[saha2020]`** Saha, N. C.; Oishi, T.; Kim, S.-W.; Kawamata, Y.; Koyama, K.; Kasu, M. (2020). 145-MW/cm2 heteroepitaxial diamond MOSFETs with NO2 p-type doping and an Al2O3 passivation layer. *IEEE Electron Device Letters*, 41, 1066.
 - ✅ **`[ibrahim2021]`** Ibrahim, M. I.; Foy, C.; Englund, D. R.; Han, R. (2021). High-scalability CMOS quantum magnetometer with spin-state excitation and detection of diamond color centers. *IEEE Journal of Solid-State Circuits*, 56, 1001. [doi:10.1109/jssc.2020.3027056](https://doi.org/10.1109/jssc.2020.3027056)
 - ✅ **`[saha2021]`** Saha, N. C.; Kim, S.-W.; Oishi, T.; Kawamata, Y.; Koyama, K.; Kasu, M. (2021). 345-MW/cm2 2608-V NO2 p-type doped diamond MOSFETs with an Al2O3 passivation overlayer on heteroepitaxial diamond. *IEEE Electron Device Letters*, 42, 903. [doi:10.1109/led.2021.3075687](https://doi.org/10.1109/led.2021.3075687)
@@ -190,17 +194,19 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[saha2023rel]`** Saha, N. C.; Shiratsuchi, T.; Kim, S.-W.; Koyama, K.; Oishi, T.; Kasu, M. (2023). Long stress (190 h) operation of NO2 p-type doped diamond MOSFETs. *IEEE Electron Device Letters*, 44(6), 975.
 - 📚 **`[saha2023sbd]`** Saha, N. C.; Irie, Y.; Seki, Y.; et al. (2023). 1651-V all-ion-implanted Schottky barrier diode on heteroepitaxial diamond with 3.6x10^5 on/off ratio. *IEEE Electron Device Letters*, 44(2), 293.
 - ✅ **`[liao2024]`** Liao, M.; Sun, H.; Koizumi, S. (2024). High-temperature and high-electron mobility metal-oxide-semiconductor field-effect transistors based on n-type diamond. *Advanced Science*, 11(13), 2306013. [doi:10.1002/advs.202306013](https://doi.org/10.1002/advs.202306013)
+- 📚 **`[qu2024b]`** Qu, C.; Maini, I.; Guo, Q.; et al. (2024). Extreme enhancement-mode operation accumulation channel hydrogen-terminated diamond FETs. *arXiv*, 2408.07216.
 - ✅ **`[zhao2024]`** Zhao, W.; Koizumi, S.; Liao, M. (2024). P-channel MOSFETs on phosphorous-doped n-type diamond. *IEEE Electron Device Letters*, 45(12), 2268. [doi:10.1109/led.2024.3485683](https://doi.org/10.1109/led.2024.3485683)
 - ✅ **`[chu2025]`** Chu, C.; Yang, S.; et al. (2025). GaN/diamond complementary power circuit (reported via Power Electronics Magazine; original: 71st IEEE International Electron Devices Meeting). *IEEE IEDM Technical Digest*, p. 26.8.1.
 - ✅ **`[kawai2025]`** Kawai, S.; Oi, N.; Isobe, T.; Ota, K.; Amazutsumi, K.; Fujishima, T.; Kawarada, H. (2025). Fast power switching with cascode diamond MOSFET-SiC MOSFET/GaN HEMT complementary half-bridge inverter. *APL Electronic Devices*, 1, 046103. [doi:10.1063/5.0290094](https://doi.org/10.1063/5.0290094)
 - 📚 **`[sasama2025]`** Sasama, Y.; Iwasaki, T.; Imura, M.; Watanabe, K.; Taniguchi, T.; Yamaguchi, T. (2025). Enhanced channel mobility of hexagonal boron nitride/hydrogen-terminated diamond heterojunction field-effect transistor. *Applied Physics Letters*, 127(14), 143502.
 
-## Thermal management and diamond-on-chip integration (15)
+## Thermal management and diamond-on-chip integration (16)
 
 - 📚 **`[carslaw1959]`** Carslaw, H. S.; Jaeger, J. C. (1959). Conduction of Heat in Solids (2nd ed.). *Oxford University Press*.
 - ✅ **`[glassbrenner1964]`** Glassbrenner, C. J.; Slack, G. A. (1964). Thermal conductivity of silicon and germanium from 3 K to the melting point. *Physical Review*, 134, A1058. [doi:10.1103/physrev.134.a1058](https://doi.org/10.1103/physrev.134.a1058)
 - 📚 **`[ho1972]`** Ho, C. Y.; Powell, R. W.; Liley, P. E. (1972). Thermal Conductivity of the Elements. *Journal of Physical and Chemical Reference Data*, 1(2), 279-421.
 - ✅ **`[francis2010]`** Francis, D.; Faili, F.; Babic, D.; et al. (2010). Formation and characterization of 4-inch GaN-on-diamond substrates. *Diamond and Related Materials*, 19, 229. [doi:10.1016/j.diamond.2009.08.017](https://doi.org/10.1016/j.diamond.2009.08.017)
+- 📚 **`[msolli2012]`** Msolli, S.; Baazaoui, A.; Dalverny, O.; et al. (2012). Viscoplastic behavior of diamond die attach subjected to high temperature conditions. *EuroSimE 2012*, core.ac.uk 12044321.
 - ✅ **`[cho2014]`** Cho, J.; Li, Y.; Hoke, W. E.; et al. (2014). Phonon scattering in strained transition layers for GaN heteroepitaxy. *Physical Review B*, 89, 115301. [doi:10.1103/physrevb.89.115301](https://doi.org/10.1103/physrevb.89.115301)
 - ✅ **`[moore2014]`** Moore, A. L.; Shi, L. (2014). Emerging challenges and materials for thermal management of electronics. *Materials Today*, 17, 163. [doi:10.1016/j.mattod.2014.04.003](https://doi.org/10.1016/j.mattod.2014.04.003)
 - ✅ **`[pomeroy2014]`** Pomeroy, J. W.; Bernardoni, M.; Dumka, D. C.; Fanning, D. M.; Kuball, M. (2014). Low thermal resistance GaN-on-diamond transistors characterized by three-dimensional Raman thermography mapping. *Applied Physics Letters*, 104, 083513. [doi:10.1063/1.4865583](https://doi.org/10.1063/1.4865583)
@@ -298,7 +304,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[turner2020]`** Turner, M. J.; Langellier, N.; Bainbridge, R.; et al. (2020). Magnetic field fingerprinting of integrated-circuit activity with a quantum diamond microscope. *Physical Review Applied*, 14, 014097. [doi:10.1103/physrevapplied.14.014097](https://doi.org/10.1103/physrevapplied.14.014097)
 - ✅ **`[stuerner2021]`** Stürner, F. M.; Brenneis, A.; Buck, T.; et al. (2021). Integrated and portable magnetometer based on nitrogen-vacancy ensembles in diamond. *Advanced Quantum Technologies*, 4, 2000111. [doi:10.1002/qute.202000111](https://doi.org/10.1002/qute.202000111)
 
-## NV center fabrication and placement (45)
+## NV center fabrication and placement (50)
 
 - ✅ **`[jamieson2005]`** Jamieson, D. N.; Yang, C.; Hopf, T.; et al. (2005). Controlled shallow single-ion implantation in silicon using an active substrate for sub-20-keV ions. *Applied Physics Letters*, 86, 202101. [doi:10.1063/1.1925320](https://doi.org/10.1063/1.1925320)
 - ✅ **`[meijer2005]`** Meijer, J.; Burchard, B.; Domhan, M.; et al. (2005). Generation of single color centers by focused nitrogen implantation. *Applied Physics Letters*, 87, 261909. [doi:10.1063/1.2103389](https://doi.org/10.1063/1.2103389)
@@ -325,15 +331,18 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[mizuochi2014]`** Mizuochi, N. (2014). Single photon emission and quantum information device by using NV center in diamond (in Japanese). *Kogaku (Japanese Journal of Optics)*, 43(8), 376–381.
 - ✅ **`[ohno2014]`** Ohno, K.; Heremans, F. J.; de las Casas, C. F.; et al. (2014). Three-dimensional localization of spins in diamond using 12C implantation. *Applied Physics Letters*, 105, 052406. [doi:10.1063/1.4890613](https://doi.org/10.1063/1.4890613)
 - ✅ **`[bayn2015]`** Bayn, I.; Chen, E. H.; Trusheim, M. E.; et al. (2015). Generation of ensembles of individually resolvable nitrogen vacancies using nanometer-scale apertures in ultrahigh-aspect ratio planar implantation masks. *Nano Letters*, 15, 1751. [doi:10.1021/nl504441m](https://doi.org/10.1021/nl504441m)
+- ✅ **`[hill2016]`** Hill, P.; Liu, H.; Leyman, R.; et al. (2016). Microfabrication of thin film diamond optical devices. *strathprints.strath.ac.uk*, accessed 17 November 2026.
 - ✅ **`[jakobi2016]`** Jakobi, I.; Momenzadeh, S. A.; Favaro de Oliveira, F.; et al. (2016). Efficient creation of dipolar coupled nitrogen-vacancy spin qubits in diamond. *Journal of Physics: Conference Series*, 752, 012001. [doi:10.1088/1742-6596/752/1/012001](https://doi.org/10.1088/1742-6596/752/1/012001)
 - ✅ **`[mclellan2016]`** McLellan, C. A.; Myers, B. A.; Kraemer, S.; et al. (2016). Patterned formation of highly coherent nitrogen-vacancy centers using a focused electron irradiation technique. *Nano Letters*, 16, 2450. [doi:10.1021/acs.nanolett.5b05304](https://doi.org/10.1021/acs.nanolett.5b05304)
 - 📚 **`[mitchell2016]`** Mitchell, M.; Khanaliloo, B.; Lake, D. P.; Masuda, T.; Hadden, J. P.; Barclay, P. E. (2016). Single-crystal diamond low-dissipation cavity optomechanics. *Optica*, 3, 963.
+- 📚 **`[moore2016]`** Moore, M.; Nailer, S. G.; Wierzchowski, W. K. (2016). Optical and X-ray topographic studies of dislocations, growth-sector boundaries, and stacking faults in synthetic diamonds. *Crystals*, 6, 71.
 - ✅ **`[scarabelli2016]`** Scarabelli, D.; Trusheim, M.; Gaathon, O.; Englund, D.; Wind, S. J. (2016). Nanoscale engineering of closely-spaced coupled spins in diamond. *Nano Letters*, 16, 4982. [doi:10.1021/acs.nanolett.6b01692](https://doi.org/10.1021/acs.nanolett.6b01692)
 - ✅ **`[schukraft2016]`** Schukraft, M.; Zheng, J.; Schroeder, T.; et al. (2016). Precision nanoimplantation of nitrogen vacancy centers into diamond photonic crystal cavities and waveguides. *APL Photonics*, 1, 020801. [doi:10.1063/1.4948746](https://doi.org/10.1063/1.4948746)
 - ✅ **`[chen2017]`** Chen, Y.-C.; Salter, P. S.; Knauer, S.; et al. (2017). Laser writing of coherent colour centres in diamond. *Nature Photonics*, 11, 77. [doi:10.1038/nphoton.2016.234](https://doi.org/10.1038/nphoton.2016.234)
 - ✅ **`[favaro2017]`** Favaro de Oliveira, F.; Antonov, D.; Wang, Y.; et al. (2017). Tailoring spin defects in diamond by lattice charging. *Nature Communications*, 8, 15409. [doi:10.1038/ncomms15409](https://doi.org/10.1038/ncomms15409)
 - ✅ **`[ozawa2017]`** Ozawa, H.; Tahara, K.; Ishiwata, H.; Hatano, M.; Iwasaki, T. (2017). Formation of perfectly aligned nitrogen-vacancy-center ensembles in chemical-vapor-deposition-grown diamond (111). *Applied Physics Express*, 10, 045501. [doi:10.7567/apex.10.045501](https://doi.org/10.7567/apex.10.045501)
 - ✅ **`[schroder2017]`** Schroeder, T.; Trusheim, M. E.; Walsh, M.; et al. (2017). Scalable focused ion beam creation of nearly lifetime-limited single quantum emitters in diamond nanostructures. *Nature Communications*, 8, 15376. [doi:10.1038/ncomms15376](https://doi.org/10.1038/ncomms15376)
+- 📚 **`[broadway2018]`** Broadway, D. A.; Dontschuk, N.; Tsai, A.; et al. (2018). Spatial mapping of band bending in semiconductor devices using in-situ quantum sensors. *arXiv*, 1809.04779.
 - ✅ **`[luhmann2018]`** Lühmann, T.; Raatz, N.; John, R.; et al. (2018). Screening and engineering of colour centres in diamond. *Journal of Physics D: Applied Physics*, 51, 483002. [doi:10.1088/1361-6463/aadfab](https://doi.org/10.1088/1361-6463/aadfab)
 - 📚 **`[matsumae2018]`** Matsumae, T.; Kurashima, Y.; Umezawa, H.; Mokuno, Y.; Takagi, H. (2018). Room-temperature bonding of single-crystal diamond and Si using Au/Au atomic diffusion bonding in atmospheric air. *Microelectronic Engineering*, 195, 68.
 - ✅ **`[chen2019]`** Chen, Y.-C.; Griffiths, B.; Weng, L.; et al. (2019). Laser writing of individual nitrogen-vacancy defects in diamond with near-unity yield. *Optica*, 6, 662. [doi:10.1364/optica.6.000662](https://doi.org/10.1364/optica.6.000662)
@@ -342,7 +351,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[luhmann2019]`** Lühmann, T.; John, R.; Wunderlich, R.; Meijer, J.; Pezzagna, S. (2019). Coulomb-driven single defect engineering for scalable qubits and spin sensors in diamond. *Nature Communications*, 10, 4956. [doi:10.1038/s41467-019-12556-0](https://doi.org/10.1038/s41467-019-12556-0)
 - ✅ **`[smith2019]`** Smith, J. M.; Meynell, S. A.; Bleszynski Jayich, A. C.; Meijer, J. (2019). Colour centre generation in diamond for quantum technologies. *Nanophotonics*, 8, 1889. [doi:10.1515/nanoph-2019-0196](https://doi.org/10.1515/nanoph-2019-0196)
 - ✅ **`[vandam2019]`** van Dam, S. B.; Walsh, M.; Degen, M. J.; et al. (2019). Optical coherence of diamond nitrogen-vacancy centers formed by ion implantation and annealing. *Physical Review B*, 99, 161203. [doi:10.1103/physrevb.99.161203](https://doi.org/10.1103/physrevb.99.161203)
+- 📚 **`[zhang2022]`** Zhang, X.; Wei, Q.; Wang, H.-X. (2022). Research studies on kerf quality of cutting single crystal diamond with water-jet guided laser. *Journal of Optoelectronics and Advanced Materials*, 24, 162.
 - 📚 **`[dai2023]`** Dai, C.; Wang, Y.; Lin, P.; Hao, Z.; Wang, C.; Feng, X.; Liu, X. (2023). Pressureless silver sintering die attach for a Schottky barrier diode. *Frontiers in Materials*, 10, 1297827.
+- 📚 **`[mccloskey2024]`** McCloskey, D. J.; Roberts, D.; Rodgers, L. V. H.; et al. (2024). Methods for color center preserving hydrogen-termination of diamond. *arXiv*, 2406.12249.
 - ✅ **`[mibl2024]`** Michigan Ion Beam Laboratory, University of Michigan (2024). Approved rates for use of the Michigan Ion Beam Laboratory (starting 1 September 2024). *mibl.engin.umich.edu*, accessed 10 November 2026.
 - ✅ **`[lattispec2026]`** Adámas Nanotechnologies (sold through LattiSpec) (2026). High NV content plates, 3.2 × 2.4 × 1.2 mm, HPHT type Ib (store listing). *lattispec.com*, accessed 10 November 2026.
 
@@ -468,8 +479,11 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[li2024]`** Li, L.; De Santis, L.; Harris, I. B. W.; et al. (2024). Heterogeneous integration of spin-photon interfaces with a CMOS platform. *Nature*, 630, 70. [doi:10.1038/s41586-024-07371-7](https://doi.org/10.1038/s41586-024-07371-7)
 - ✅ **`[stolk2024]`** Stolk, A. J.; van der Enden, K. L.; Slater, M.-C.; et al. (2024). Metropolitan-scale heralded entanglement of solid-state qubits. *Science Advances*, 10, eadp6442. [doi:10.1126/sciadv.adp6442](https://doi.org/10.1126/sciadv.adp6442)
 
-## Industry, products and news (32)
+## Industry, products and news (42)
 
+- ✅ **`[nttbrl2009]`** NTT Basic Research Laboratories (2009). Research activities 2009, report 02 (diamond transistors in NO2). *rd.ntt*, accessed 17 November 2026.
+- ✅ **`[nttbrl2011]`** NTT Basic Research Laboratories (2011). Research activities 2011, report 05 (Al2O3-passivated diamond transistors). *rd.ntt*, accessed 17 November 2026.
+- ✅ **`[aipnews2018]`** AIP Publishing (2018). Diamond-based circuits can take the heat for advanced applications (news). *publishing.aip.org*, accessed 17 November 2026.
 - ✅ **`[lockheed2019]`** DSIAC (reprinted from GPS World) (2019). Quantum magnetometer senses its place (17 September 2019). *dsiac.dtic.mil*, accessed 16 November 2026.
 - ✅ **`[qnami2019]`** Qnami (distributed by HORIBA) (2019). Quantilever MX specification sheet (release version December 2019). *static.horiba.com*, accessed 16 November 2026.
 - ✅ **`[e6dnv2020]`** Element Six (2020). Element Six launches DNV-B1 quantum-grade diamond (news, 15 June 2020). *e6.com*, accessed 16 November 2026.
@@ -484,13 +498,19 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[ornl2025]`** Oak Ridge National Laboratory (2025). Q&A: inside Quantum Brilliance's quantum computer technology (news, 2 September 2025). *ornl.gov*, accessed 16 November 2026.
 - ✅ **`[akash2026]`** Journal of Electronic Defense (2026). Akash Systems puts GaN-on-diamond in orbit (news, 9 July 2026). *jedonline.com*, accessed 16 November 2026.
 - ✅ **`[ciqtek2026]`** CIQTEK (distributed by Emona) (2026). Diamond Quantum Computer for Education (product page). *emona.com.au*, accessed 16 November 2026.
+- ✅ **`[coherentem152026]`** Coherent (2026). eM15 monocrystalline diamond cutting system (product page). *coherent.com*, accessed 17 November 2026.
+- ✅ **`[coherentqg2026]`** Coherent (2026). Single crystal diamond, quantum grade (datasheet). *coherent.com*, accessed 17 November 2026.
 - ✅ **`[diamondfoundry2026]`** Semiconductor Today (2026). Diamond Foundry unveils first 200 mm-diameter single-crystal diamond (news, 11 November 2026). *semiconductor-today.com*, accessed 16 November 2026.
 - ✅ **`[diamondmaterials2026]`** Diamond Materials GmbH (2026). Processing services (company page). *diamond-materials.com*, accessed 16 November 2026.
+- ✅ **`[diamondmaterialshs2026]`** Diamond Materials GmbH (2026). Diamond heat spreaders (product page). *diamond-materials.com*, accessed 17 November 2026.
 - ✅ **`[e6orbray2026]`** Semiconductor Today (2026). Element Six and Orbray accelerate wafer-scale single-crystal diamond for volume production. *Semiconductor Today (news)*, 16 June 2026.
 - ✅ **`[e6thermal2026]`** Element Six (2026). Thermal management diamond (product page). *e6.com*, accessed 16 November 2026.
 - ✅ **`[fraunhofercmw2026]`** Fraunhofer USA Center Midwest (2026). Diamond electronics (capabilities page). *cmw.fraunhofer.org*, accessed 16 November 2026.
+- ✅ **`[heidelbergumla2026]`** Heidelberg Instruments (2026). µMLA, the tabletop maskless aligner (fact sheet V5.0). *heidelberg-instruments.com (cdn.shopify.com)*, accessed 17 November 2026.
 - ✅ **`[hzdr2026]`** HZDR Innovation GmbH (2026). Ion implantation services. *hzdr-innovation.de*, accessed 16 November 2026.
 - ✅ **`[ibs2026]`** Ion Beam Services (2026). Ion implantation foundry services. *ionbeamservices.com*, accessed 16 November 2026.
+- ✅ **`[kwantek2026]`** Kwan-tek (2026). Quality control of quantum diamonds (service page). *kwan-tek.com*, accessed 17 November 2026.
+- ✅ **`[micromanipulator2026]`** Micromanipulator (2026). A hot chuck designed for your probe station (product page). *micromanipulator.com*, accessed 17 November 2026.
 - ✅ **`[mks2026]`** MKS Instruments (2026). Microwave solutions for single-crystal diamond wafers. *mks.com*, accessed 16 November 2026.
 - ✅ **`[ookuma2026]`** Jiji Press (2026). Diamond semiconductor plant completed in northeastern Japan. *Jiji Press (news)*, 29 May 2026.
 - ✅ **`[orbray2026]`** Orbray Co., Ltd. (2026). Diamond substrates (KENZAN Diamond): product page. *orbray.com*, accessed 16 November 2026.
@@ -499,6 +519,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[pen2026]`** Power Electronics News (2026). Analyzing industry efforts in scaling diamond semiconductor technology. *Power Electronics News*, 19 February 2026.
 - ✅ **`[qbtech2026]`** Quantum Brilliance (2026). Diamond quantum technology (technology overview page). *quantumbrilliance.com*, accessed September 2026.
 - ✅ **`[qnami2026]`** Qnami (distributed by Quantum Design) (2026). ProteusQ specifications. *qd-europe.com*, accessed 16 November 2026.
+- ✅ **`[renishaw2026]`** Renishaw (2026). Carbon and diamond (Raman application page). *renishaw.com*, accessed 17 November 2026.
 - ✅ **`[saxonq2026]`** Greene, T. (2026). Engineers build world's first portable diamond-powered quantum computer (report on SaxonQ; vendor claims, not yet peer reviewed). *Live Science (news)*, 6 August 2026.
 - ✅ **`[sbquantum2026]`** The Quantum Insider (2026). SBQuantum to launch quantum sensor into space as part of the MagQuest challenge (news, 27 March 2026). *thequantuminsider.com*, accessed 16 November 2026.
 - ✅ **`[tqi2026]`** The Quantum Insider (2026). Top diamond NV-centre quantum computing companies in 2026. *The Quantum Insider*, 10 July 2026.
@@ -638,7 +659,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[tsividis2011]`** Tsividis, Y.; McAndrew, C. (2011). Operation and Modeling of the MOS Transistor (3rd ed.). *Oxford University Press*.
 - 📚 **`[razavi2017]`** Razavi, B. (2017). Design of Analog CMOS Integrated Circuits (2nd ed.). *McGraw-Hill*.
 
-## Quantum control, open systems, and error correction (34)
+## Quantum control, open systems, and error correction (35)
 
 - ✅ **`[rabi1937]`** Rabi, I. I. (1937). Space quantization in a gyrating magnetic field. *Physical Review*, 51, 652. [doi:10.1103/physrev.51.652](https://doi.org/10.1103/physrev.51.652)
 - ✅ **`[hahn1950]`** Hahn, E. L. (1950). Spin echoes. *Physical Review*, 80, 580. [doi:10.1103/physrev.80.580](https://doi.org/10.1103/physrev.80.580)
@@ -669,6 +690,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[magesan2011]`** Magesan, E.; Gambetta, J. M.; Emerson, J. (2011). Scalable and robust randomized benchmarking of quantum processes. *Physical Review Letters*, 106, 180504. [doi:10.1103/physrevlett.106.180504](https://doi.org/10.1103/physrevlett.106.180504)
 - ✅ **`[johansson2012]`** Johansson, J. R.; Nation, P. D.; Nori, F. (2012). QuTiP: an open-source Python framework for the dynamics of open quantum systems. *Computer Physics Communications*, 183, 1760. [doi:10.1016/j.cpc.2012.02.021](https://doi.org/10.1016/j.cpc.2012.02.021)
 - ✅ **`[peruzzo2014]`** Peruzzo, A.; McClean, J.; Shadbolt, P.; et al. (2014). A variational eigenvalue solver on a photonic quantum processor. *Nature Communications*, 5, 4213. [doi:10.1038/ncomms5213](https://doi.org/10.1038/ncomms5213)
+- 📚 **`[binder2017]`** Binder, J. M.; Stark, A.; Tomek, N.; et al. (2017). Qudi: a modular python suite for experiment control and data processing. *SoftwareX*, arXiv:1611.09146.
 - ✅ **`[cross2019]`** Cross, A. W.; Bishop, L. S.; Sheldon, S.; Nation, P. D.; Gambetta, J. M. (2019). Validating quantum computers using randomized model circuits. *Physical Review A*, 100, 032328. [doi:10.1103/physreva.100.032328](https://doi.org/10.1103/physreva.100.032328)
 - ✅ **`[gidney2021stim]`** Gidney, C. (2021). Stim: a fast stabilizer circuit simulator. *Quantum*, 5, 497. [doi:10.22331/q-2021-07-06-497](https://doi.org/10.22331/q-2021-07-06-497)
 - ✅ **`[gulka2021]`** Gulka, M.; Wirtitsch, D.; Ivady, V.; et al. (2021). Room-temperature control and electrical readout of individual nitrogen-vacancy nuclear spins. *Nature Communications*, 12, 4421. [doi:10.1038/s41467-021-24494-x](https://doi.org/10.1038/s41467-021-24494-x)
