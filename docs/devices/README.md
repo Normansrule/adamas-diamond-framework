@@ -115,8 +115,6 @@ None: every device's build steps are in the traveler or its extension section.
 
 | Device | Figure of merit | To confirm |
 |---|---|---|
-| QDL-07 | NV⁻ fraction under readout | NV⁻ fraction under electrical control: [grotz2012] shifts an ensemble from NV⁰ to NV⁻ over a ±0.5 V electrolytic gate but states no fraction; needs another source |
-| QDL-19 | Field sensitivity per pixel | Per-pixel sensitivity: the review [levine2019] defines a volume-normalized sensitivity but no per-pixel number was found in the parts read; needs a measured value |
 
 ## How pass/fail is computed
 

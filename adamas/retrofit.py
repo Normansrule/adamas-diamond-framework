@@ -102,7 +102,8 @@ ROUTES = [
      "Ask for roughness and thickness tolerances"),
     ("R16", "P2", "Ion implantation service that lists diamond", "Ion Beam Services (IBS), France", "in production",
      "Lists diamond among implanted substrates; samples up to 12-inch wafers; for SiC, 5 to 400 keV with nitrogen among the species",
-     ["ibs2026"], "Ask for ¹⁵N at the S06 energy and dose; the diamond energy range is not stated"),
+     ["ibs2026"], "Diamond is listed only as a substrate, with no energy range or species for it; the page offers plasma immersion from "
+     "50 V to 20 kV and molecular ions including N₂; ask for ¹⁵N at the S06 energy and dose"),
     ("R17", "P2", "Ion implantation from 10 kV to 6 MV", "HZDR Innovation (Helmholtz-Zentrum Dresden-Rossendorf), Germany", "in production",
      "Species from hydrogen to gold, small samples up to 200 mm wafers", ["hzdr2026"],
      "Also the MeV source for lift-off (R10)"),
@@ -132,7 +133,8 @@ ROUTES = [
      "Interface stable when heated to 1000 °C", ["liang2021"], "For GaN-on-diamond power and radio-frequency devices"),
     ("R26", "P4", "Quantum microchiplets on a photonic chip", "Research (Wan and co-workers)", "on diamond",
      "A 128-channel defect-free array of germanium- and silicon-vacancy diamond microchiplets on an aluminium nitride photonic "
-     "circuit (color centers other than NV)", ["wan2020"], "Proposed here for NV chiplets; not shown with NV"),
+     "circuit (color centers other than NV), measured in a closed-cycle cryostat below 4 K (cryogenic; wording of the preprint)", ["wan2020", "wan2019"],
+     "Proposed here for NV chiplets; not shown with NV or at room temperature"),
     ("R27", "P5", "High-temperature reliability of diamond power devices", "AIST", "on diamond",
      "No change over 1500 hours at 400 °C; operation at 250 °C in a 1 A class device", ["shikata2013"],
      "The package itself is listed as a research item there"),
@@ -154,9 +156,10 @@ ROUTES = [
      "photoluminescence band of a hot-filament chemical vapor deposition (CVD) diamond film (company statement)", ["renishaw2026"],
      "Use for incoming and post-growth inspection; set pass limits from the S01 checks"),
     ("R33", "T1", "Quality control of NV diamond as a service (quantum diamond scan)", "Kwan-tek", "in production",
-     "Measures T1, T2, Hahn-echo T2 and Rabi oscillations of customer NV diamond on an automated bench and returns a report "
-     "(company statement, no numbers)", ["kwantek2026"],
-     "Ask whether patterned chips are accepted for the S18 quantum test, and for the measurement conditions"),
+     "Measures T1, Hahn-echo T2, T2* and Rabi oscillations and takes spectra of customer NV diamond on an automated bench and returns a "
+     "report; accepts millimetre-sized NV diamonds doped in volume or in regions, NV nanodiamonds and other color-center diamonds "
+     "(company statement, no numbers)", ["kwantek2026", "kwantek2024"],
+     "Patterned chips are not mentioned: ask whether they are accepted for the S18 quantum test, and for the measurement conditions"),
     ("R34", "Q1", "Birefringence imaging and X-ray topography of defects", "Research (Moore and co-workers)", "on diamond",
      "Rotating-analyser polarizing microscope at 589 nm: birefringence Δn up to 15 × 10⁻³ at growth-sector boundaries and about "
      "1.8 × 10⁻³ in low-strain regions; X-ray rocking curves about 20 arcsec (high-pressure high-temperature (HPHT) synthetic diamond)", ["moore2016"],
@@ -171,7 +174,7 @@ ROUTES = [
      "Perchloric acid needs a rated fume hood and institutional training"),
     ("R37", "Q1", "Nitrate-sulfuric acid clean followed by hot piranha", "Research (McCloskey and co-workers)", "on diamond",
      "1:20 w/w sodium nitrate in sulfuric acid for 30 min, then 1:4 v/v hydrogen peroxide in sulfuric acid for 10 min, on an "
-     "NV sample", ["mccloskey2024"], "Avoids perchloric acid; preprint, not yet peer reviewed in the source read"),
+     "NV sample", ["mccloskey2024"], "Avoids perchloric acid; published in Advanced Materials Interfaces (2024)"),
     ("R38", "P2", "Staged vacuum anneal to 1200 °C and oxygen re-termination", "Research (Sangtawesin and co-workers)", "on diamond",
      "Vacuum 1 × 10⁻⁷ to 2 × 10⁻⁶ Torr; holds of 11 h at 100 °C, 8 h at 400 °C and 8 h at 800 °C, ramp to 1200 °C over 6 to 12 h "
      "and hold 2 h; then oxygen at 445 to 450 °C and atmospheric pressure for 4 h (diamond etches in oxygen from about 500 °C)",
@@ -205,7 +208,7 @@ ROUTES = [
      "single-crystal plates diced to 2 × 2 mm", ["hill2016"], "Use on the 2 to 4 mm plates of route R01"),
     ("R46", "P6", "Electron-beam lithography and buffered-oxide opening of Al₂O₃", "Research (Qu and co-workers)", "on diamond",
      "Poly(methyl methacrylate) (PMMA) resist patterned by electron beam; 80 nm Pd contacts; 35 nm evaporated plus 15 nm plasma-ALD Al₂O₃; 10:1 buffered oxide etch "
-     "removes the Al₂O₃ over the contacts; contact resistance 11.4 Ω·mm", ["qu2024b"], "Preprint in the source read"),
+     "removes the Al₂O₃ over the contacts; contact resistance 11.4 Ω·mm", ["qu2024b"], "Published in Advanced Electronic Materials (2025); the numbers were read from the preprint"),
     ("R47", "P6", "Pd/Ti/Au contacts and TMAH opening of Al₂O₃", "Research (Liu and co-workers)", "on diamond",
      "Pd/Ti/Au 10/20/100 nm contacts by electron-beam lithography; Al₂O₃ wet-etched in tetramethylammonium hydroxide (TMAH) "
      "for 10 min", ["liu2016"], "An HF-free alternative for the S15 via"),
@@ -223,14 +226,14 @@ ROUTES = [
      "Wafer testing from −65 to 400 °C for 150 to 300 mm wafers (company statement; general tool, not stated for diamond)", ["micromanipulator2026"],
      "Not shown on diamond; holding a 4 mm die on a wafer chuck is this repository's proposal"),
     ("R52", "T1", "High-temperature test of diamond logic", "Research (Liu and co-workers)", "on diamond",
-     "Diamond NOR logic worked at 300 °C and failed at 400 °C (news report)", ["aipnews2018"],
+     "Diamond NOR logic worked at 300 °C and failed at 400 °C (news report of the paper)", ["liu2018", "aipnews2018"],
      "The S17 hot-chuck limit of 400 °C sits at this failure point"),
     ("R53", "T1", "Open-source confocal and ODMR control software (Qudi)", "Research (Binder and co-workers)", "on diamond",
      "Python suite with a confocal scanner and optically detected magnetic resonance (ODMR) logic that sweeps the microwave "
      "frequency and records the fluorescence", ["binder2017"], "Free; drives the S18 confocal setup"),
     ("R54", "T1", "Room-temperature ODMR on a diamond device", "Research (Broadway and co-workers)", "on diamond",
      "532 nm, 300 mW continuous at the sample, 40× objective with numerical aperture (NA) 1.3, room temperature", ["broadway2018"],
-     "The optical conditions for the S18 test on a device chip; preprint in the source read"),
+     "The optical conditions for the S18 test on a device chip (published in Nature Electronics, 2018)"),
     ("R55", "P5", "Laser cutting system for single-crystal diamond (eM15)", "Coherent", "in production",
      "For natural and synthetic single-crystal diamond and CVD wafers; 15 W green (532 nm) laser; 200 × 200 mm travel; 2000 mm/min "
      "(company statement; kerf not stated)", ["coherentem152026"], "Measure the kerf and edge damage on a test plate"),
@@ -263,7 +266,7 @@ PRODUCTS = [
     ("QDL-20", "Adámas Nanotechnologies NV-rich diamond (material)", "in production",
      "NV-rich plates sold with a list price; the nanodiamonds of the cell-thermometry paper came from the same company", ["lattispec2026", "kucsko2013"]),
     ("QDL-12", "SBQuantum diamond magnetometer for the MagQuest challenge", "on diamond",
-     "Quantum diamond magnetometer about the size of a quart of milk, for a space launch in the MagQuest challenge (news report, 27 March 2026; NV not named)", ["sbquantum2026"]),
+     "Quantum diamond magnetometer about the size of a quart of milk, for a space launch in the MagQuest challenge (news report, 27 March 2026); a second news report names NV centers in synthetic diamond; no sensitivity stated", ["sbquantum2026", "qcrsbquantum2026"]),
     ("QDL-12", "Lockheed Martin Dark Ice NV magnetometer", "on diamond",
      "Prototype magnetometer using NV centers in a synthetic diamond the size of a salt crystal (news report, 2019)", ["lockheed2019"]),
 ]

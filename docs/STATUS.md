@@ -2,7 +2,22 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.46.0 (2026-11-17).
+Last updated: v0.47.0 (2026-11-17).
+
+## Open in v0.47.0: open items closed from the sources
+
+v0.47.0 re-read the sources behind the open items of v0.41.0 to v0.46.0. Closed: the last two open device numbers (QDL-07 NV⁻ fraction under bias, 0.55 to 0.6 [meniailava2025]; QDL-19 per-pixel sensitivity, 12.8 nT/√Hz with 0.54 µm pixels [oh2023]); published versions of three preprints (mccloskey2024, qu2024b, broadway2018) and the volume of liu2018; the microchiplet array's temperature (below 4 K, so R26 is cryogenic); the microdisk etch conditions [mitchell2019]; a maser irradiation dose [day2024]; the nanodiamond supplier's sizes [adamasfnd2026]; the NV quality-control service's accepted samples; and a second news report that names NV centers in the SBQuantum magnetometer. What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| QDL-07 and QDL-19 values are from preprints | Both are labeled reported, not demonstrated | The published versions |
+| Maser anneal temperature and time (X25a) | Neither [breeze2018] nor [day2024] states them | Element Six's process or another paper |
+| Etch times of the microdisk undercut (X13a) | [mitchell2019] gives powers, gases and 250 °C but no times; [khanaliloo2015] could not be read | The original paper |
+| Laser-slicing kerf, thickness and wafer size (R11) | The releases of [sakamoto2023] give none; its volume is not confirmed | The full paper |
+| Kerf of the commercial cutter (R55) and numbers for the NV quality-control service (R33) | Not published | A test order |
+| Implantation energy for diamond (R16) | Diamond is listed only as a substrate | Ask the service |
+| Element Six DNV grades, QuantumDiamonds QD m.0, SBQuantum sensitivity | No absolute NV density, field of view or sensitivity published | Datasheets |
+| Verification of the 6 new papers and the corrected ones | Entered by hand from the pages read | `make verify` |
 
 ## Open in v0.46.0: Step Services
 

@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Field sensitivity per pixel | to confirm | Per-pixel sensitivity: the review [levine2019] defines a volume-normalized sensitivity but no per-pixel number was found in the parts read; needs a measured value [levine2019] | — |  |
+| Field sensitivity per pixel | 12800 pT/√Hz | reported: Mean per-pixel sensitivity 12.8 nT/√Hz with 0.54 × 0.54 µm² pixels over a 46 × 46 µm² field of view (preprint; temperature not restated in the part read) [oh2023] | — |  |
 
 ## How to build it
 

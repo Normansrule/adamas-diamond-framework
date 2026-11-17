@@ -67,13 +67,13 @@ ciqtek2026 | CIQTEK (distributed by Emona) | 2026 | Diamond Quantum Computer for
 sbquantum2026 | The Quantum Insider | 2026 | SBQuantum to launch quantum sensor into space as part of the MagQuest challenge (news, 27 March 2026) | thequantuminsider.com | accessed 16 November 2026 | ind | V
 lockheed2019 | DSIAC (reprinted from GPS World) | 2019 | Quantum magnetometer senses its place (17 September 2019) | dsiac.dtic.mil | accessed 16 November 2026 | ind | V
 moore2016 | Moore, M.; Nailer, S. G.; Wierzchowski, W. K. | 2016 | Optical and X-ray topographic studies of dislocations, growth-sector boundaries, and stacking faults in synthetic diamonds | Crystals | 6, 71 | fab | K
-mccloskey2024 | McCloskey, D. J.; Roberts, D.; Rodgers, L. V. H.; et al. | 2024 | Methods for color center preserving hydrogen-termination of diamond | arXiv | 2406.12249 | fab | K
+mccloskey2024 | McCloskey, D. J.; Roberts, D.; Rodgers, L. V. H.; et al. | 2024 | Methods for color center preserving hydrogen-termination of diamond | Advanced Materials Interfaces | 11(24) (arXiv:2406.12249) | fab | K
 wade2017 | Wade, T.; Geis, M. W.; Fedynyshyn, T. H.; et al. | 2017 | Effect of surface roughness and H-termination chemistry on diamond's semiconducting surface conductance | Diamond and Related Materials | 76, 79 | dev | K
-yang2017 | Yang, Y.; Koeck, F. A.; Dutta, M.; et al. | 2017 | Al2O3 dielectric layers on H-terminated diamond: controlling surface conductivity | Journal of Applied Physics | 122, 155304 | dev | K
+yang2017 | Yang, Y.; Koeck, F. A.; Dutta, M.; et al. | 2017 | Al2O3 dielectric layers on H-terminated diamond: Controlling surface conductivity | Journal of Applied Physics | 122, 155304 | dev | K
 hill2016 | Hill, P.; Liu, H.; Leyman, R.; et al. | 2016 | Microfabrication of thin film diamond optical devices | strathprints.strath.ac.uk | accessed 17 November 2026 | fab | V
-qu2024b | Qu, C.; Maini, I.; Guo, Q.; et al. | 2024 | Extreme enhancement-mode operation accumulation channel hydrogen-terminated diamond FETs | arXiv | 2408.07216 | dev | K
+qu2024b | Qu, C.; Maini, I.; Guo, Q.; et al. | 2025 | Extreme enhancement-mode operation accumulation channel hydrogen-terminated diamond FETs with Vth < −6 V and high on-current | Advanced Electronic Materials | 11, 2400770 | dev | K
 liu2016 | Liu, J.; Ohsato, H.; Wang, X.; et al. | 2016 | Design and fabrication of high-performance diamond triple-gate field-effect transistors | Scientific Reports | 6, 34757 | dev | K
-broadway2018 | Broadway, D. A.; Dontschuk, N.; Tsai, A.; et al. | 2018 | Spatial mapping of band bending in semiconductor devices using in-situ quantum sensors | arXiv | 1809.04779 | fab | K
+broadway2018 | Broadway, D. A.; Dontschuk, N.; Tsai, A.; et al. | 2018 | Spatial mapping of band bending in semiconductor devices using in situ quantum sensors | Nature Electronics | 1, 502 | fab | K
 zhang2019 | Zhang, M.; Lin, F.; Wang, W.; et al. | 2019 | Ohmic contact of Pt/Au on hydrogen-terminated single crystal diamond | Coatings | 9, 539 | dev | K
 binder2017 | Binder, J. M.; Stark, A.; Tomek, N.; et al. | 2017 | Qudi: a modular python suite for experiment control and data processing | SoftwareX | arXiv:1611.09146 | ctl | K
 zhang2022 | Zhang, X.; Wei, Q.; Wang, H.-X. | 2022 | Research studies on kerf quality of cutting single crystal diamond with water-jet guided laser | Journal of Optoelectronics and Advanced Materials | 24, 162 | fab | K
@@ -88,3 +88,12 @@ micromanipulator2026 | Micromanipulator | 2026 | A hot chuck designed for your p
 heidelbergumla2026 | Heidelberg Instruments | 2026 | µMLA, the tabletop maskless aligner (fact sheet V5.0) | heidelberg-instruments.com (cdn.shopify.com) | accessed 17 November 2026 | ind | V
 nttbrl2009 | NTT Basic Research Laboratories | 2009 | Research activities 2009, report 02 (diamond transistors in NO2) | rd.ntt | accessed 17 November 2026 | ind | V
 nttbrl2011 | NTT Basic Research Laboratories | 2011 | Research activities 2011, report 05 (Al2O3-passivated diamond transistors) | rd.ntt | accessed 17 November 2026 | ind | V
+liu2018 | Liu, J.; Oosato, H.; Liao, M.; et al. | 2018 | Annealing effects on hydrogenated diamond NOR logic circuits | Applied Physics Letters | 112, 153501 | dev | K
+wan2019 | Wan, N. H.; Lu, T.-J.; Chen, K. C.; et al. | 2019 | Large-scale integration of near-indistinguishable artificial atoms in hybrid photonic circuits (preprint of wan2020) | arXiv | 1911.05265 | net | K
+mitchell2019 | Mitchell, M.; Lake, D. P.; Barclay, P. E. | 2018 | Realizing Q > 300,000 in diamond microdisks for optomechanics via etch optimization | arXiv | 1808.09883 | fab | K
+meniailava2025 | Meniailava, D.; Petrov, M.; Soucek, J.; Nesladek, M. | 2025 | Charge-state stability of single NV centers in HPHT-type IIa diamond | arXiv | 2511.12591 | dop | K
+oh2023 | Oh, S.; Lee, S.-J.; Shim, J. H.; et al. | 2023 | Quantum diamond microscopy with optimized magnetic field sensitivity and sub-ms temporal resolution | arXiv | 2301.05853 | sens | K
+day2024 | Day, T.; Isarov, M.; Pappas, W. J.; et al. | 2024 | A room-temperature solid-state maser amplifier | arXiv | 2405.07486 | dev | K
+adamasfnd2026 | Adámas Nanotechnologies | 2026 | Functionalized red FND information (product page) | adamasnano.com (squarespace host) | accessed 17 November 2026 | ind | V
+kwantek2024 | Kwan-tek | 2024 | Quantum diamond scan (service brochure) | kwan-tek.com | accessed 17 November 2026 | ind | V
+qcrsbquantum2026 | Quantum Computing Report | 2026 | SBQuantum to launch diamond quantum magnetometer for MagQuest challenge (news) | quantumcomputingreport.com | accessed 17 November 2026 | ind | V
