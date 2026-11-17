@@ -267,7 +267,7 @@ Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin
 
 ### Status after v0.47.0 (open items closed)
 
-v0.47.0 changes no model; it re-reads sources. Values that came from preprints are labeled reported, never demonstrated, and the two device numbers it fills carry their conditions (one NV in HPHT diamond under bias; a 0.54 µm pixel over a 46 µm field). A preprint's published version replaces it only where a page printed the journal, volume and article number; DOIs are left to `make apply-verify`. Where a source still states nothing (a maser anneal, an undercut time, a commercial kerf), the text says "not stated" rather than estimating. One route changed meaning: the microchiplet array (R26) is now marked cryogenic because its measurements were made below 4 K.
+v0.47.0 changes no model; it re-reads sources. Values that came from preprints are labeled reported, never demonstrated, and the two device numbers it fills carry their conditions (one NV in HPHT diamond under bias; a 0.54 µm pixel over a 46 µm field). A preprint's published version replaces it only where a page printed the journal and volume (and the article number or pages where printed; the mccloskey2024 article number is still open), and a route whose numbers were read from the preprint says so; DOIs are left to `make apply-verify`. Where a source still states nothing (a maser anneal, an undercut time, a commercial kerf), the text says "not stated" rather than estimating. One route changed meaning: the microchiplet array (R26) is now marked cryogenic because its measurements were made below 4 K.
 
 ### Status after v0.46.0 (Step Services)
 

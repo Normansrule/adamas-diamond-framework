@@ -29,7 +29,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| Field sensitivity per pixel | 12800 pT/√Hz | reported: Mean per-pixel sensitivity 12.8 nT/√Hz with 0.54 × 0.54 µm² pixels over a 46 × 46 µm² field of view (preprint; temperature not restated in the part read) [oh2023] | — |  |
+| Field sensitivity per pixel | 12.8 nT/√Hz | reported: Mean per-pixel sensitivity 12.8 nT/√Hz with 0.54 × 0.54 µm² pixels over a 46 × 46 µm² field of view (preprint; temperature not restated in the part read) [oh2023] | — |  |
 
 ## How to build it
 

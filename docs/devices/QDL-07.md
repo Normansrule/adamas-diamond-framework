@@ -31,7 +31,7 @@ None.
 
 | Figure of merit | Current | Label and conditions | Target | Basis |
 |---|---|---|---|---|
-| NV⁻ fraction under readout | >0.55 | reported: Stable NV⁻ population of 0.55 to 0.6 on one NV in HPHT type IIa diamond at 5 to 20 V bias, room temperature (preprint); [grotz2012] states no fraction [meniailava2025] | — | As high as the gate budget needs (Machine Builder) |
+| NV⁻ fraction under electrical control | ≥0.55 | reported: Stable NV⁻ population of 0.55 to 0.6 on one NV in high-pressure high-temperature (HPHT) type IIa diamond at 5 to 20 V bias, room temperature (preprint); [grotz2012] states no fraction [meniailava2025] | — | As high as the gate budget needs (Machine Builder) |
 
 ## How to build it
 

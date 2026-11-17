@@ -17,7 +17,7 @@ v0.47.0 re-read the sources behind the open items of v0.41.0 to v0.46.0. Closed:
 | Kerf of the commercial cutter (R55) and numbers for the NV quality-control service (R33) | Not published | A test order |
 | Implantation energy for diamond (R16) | Diamond is listed only as a substrate | Ask the service |
 | Element Six DNV grades, QuantumDiamonds QD m.0, SBQuantum sensitivity | No absolute NV density, field of view or sensitivity published | Datasheets |
-| Verification of the 6 new papers and the corrected ones | Entered by hand from the pages read | `make verify` |
+| Verification of the 6 new papers, the corrected ones and 3 new web pages | Entered by hand from the pages read; the mccloskey2024 article number, the oh2023 title and the wan2019 co-authors were read from listings | `make verify` |
 
 ## Open in v0.46.0: Step Services
 

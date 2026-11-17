@@ -174,7 +174,7 @@ ROUTES = [
      "Perchloric acid needs a rated fume hood and institutional training"),
     ("R37", "Q1", "Nitrate-sulfuric acid clean followed by hot piranha", "Research (McCloskey and co-workers)", "on diamond",
      "1:20 w/w sodium nitrate in sulfuric acid for 30 min, then 1:4 v/v hydrogen peroxide in sulfuric acid for 10 min, on an "
-     "NV sample", ["mccloskey2024"], "Avoids perchloric acid; published in Advanced Materials Interfaces (2024)"),
+     "NV sample", ["mccloskey2024"], "Avoids perchloric acid; published in Advanced Materials Interfaces (2024); the numbers were read from the preprint"),
     ("R38", "P2", "Staged vacuum anneal to 1200 °C and oxygen re-termination", "Research (Sangtawesin and co-workers)", "on diamond",
      "Vacuum 1 × 10⁻⁷ to 2 × 10⁻⁶ Torr; holds of 11 h at 100 °C, 8 h at 400 °C and 8 h at 800 °C, ramp to 1200 °C over 6 to 12 h "
      "and hold 2 h; then oxygen at 445 to 450 °C and atmospheric pressure for 4 h (diamond etches in oxygen from about 500 °C)",
@@ -233,7 +233,7 @@ ROUTES = [
      "frequency and records the fluorescence", ["binder2017"], "Free; drives the S18 confocal setup"),
     ("R54", "T1", "Room-temperature ODMR on a diamond device", "Research (Broadway and co-workers)", "on diamond",
      "532 nm, 300 mW continuous at the sample, 40× objective with numerical aperture (NA) 1.3, room temperature", ["broadway2018"],
-     "The optical conditions for the S18 test on a device chip (published in Nature Electronics, 2018)"),
+     "The optical conditions for the S18 test on a device chip (published in Nature Electronics, 2018; the numbers were read from the preprint)"),
     ("R55", "P5", "Laser cutting system for single-crystal diamond (eM15)", "Coherent", "in production",
      "For natural and synthetic single-crystal diamond and CVD wafers; 15 W green (532 nm) laser; 200 × 200 mm travel; 2000 mm/min "
      "(company statement; kerf not stated)", ["coherentem152026"], "Measure the kerf and edge damage on a test plate"),

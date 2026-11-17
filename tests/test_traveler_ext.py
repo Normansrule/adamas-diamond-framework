@@ -99,6 +99,6 @@ def test_v044_parameters_match_their_sources():
     assert "nine orders of magnitude at 30 V" in rect and "[mizuochi2014]" in rect
     assert "not stated there" in r[0] and "(demonstrated)" in r[0]
     e = p["X13a"]["Etch conditions from the same group's later microdisk paper"]            # v0.47.0
-    assert e[1] == "[mitchell2019]" and "250 °C" in e[0] and "1000 W" in e[0] and "30 sccm" in e[0]
+    assert "reported, preprint" in e[0] and e[1] == "[mitchell2019]" and "250 °C" in e[0] and "1000 W" in e[0] and "30 standard cubic centimetres per minute (sccm)" in e[0]
     d = p["X25a"]["Irradiation stated by a later room-temperature maser amplifier"]
-    assert d[1] == "[day2024]" and "3 MeV" in d[0] and "1 × 10¹⁸ cm⁻²" in d[0] and "not stated" in d[0]
+    assert "reported, preprint" in d[0] and d[1] == "[day2024]" and "3 MeV" in d[0] and "1 × 10¹⁸ cm⁻²" in d[0] and "not stated" in d[0]

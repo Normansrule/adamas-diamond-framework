@@ -113,8 +113,7 @@ None: every device's build steps are in the traveler or its extension section.
 
 ## Numbers to confirm from the papers
 
-| Device | Figure of merit | To confirm |
-|---|---|---|
+None.
 
 ## How pass/fail is computed
 

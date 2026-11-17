@@ -109,8 +109,8 @@ def test_confirmed_numbers_match_their_papers():
     assert len(qdl.open_numbers()) == 0
     # closed in v0.47.0 from preprints, so labeled reported, not demonstrated
     c7, c19 = qdl.BY_ID["QDL-07"]["fom"]["nv_minus"]["current"], qdl.BY_ID["QDL-19"]["fom"]["pix"]["current"]
-    assert (c7["value"], c7["refs"], c7["label"], c7["bound"]) == (0.55, ["meniailava2025"], "reported", ">") and "preprint" in c7["conditions"]
-    assert (c19["value"], c19["refs"], c19["label"]) == (12800, ["oh2023"], "reported") and "0.54 × 0.54 µm²" in c19["conditions"]
+    assert (c7["value"], c7["refs"], c7["label"], c7["bound"]) == (0.55, ["meniailava2025"], "reported", "≥") and "preprint" in c7["conditions"]
+    assert (c19["value"], c19["refs"], c19["label"]) == (12.8, ["oh2023"], "reported") and qdl.BY_ID["QDL-19"]["fom"]["pix"]["unit"] == "nT/√Hz" and "0.54 × 0.54 µm²" in c19["conditions"]
 
 
 @pytest.mark.parametrize("dev,i", [(d["id"], i) for d in qdl.DEVICES for i in range(len(d["checks"]))])

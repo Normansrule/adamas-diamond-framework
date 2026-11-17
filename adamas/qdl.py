@@ -505,7 +505,7 @@ DEVICES = [
   "gates": [], "entanglement": [],
   "use_cases": [_g("Raise the probability that both NVs of a pair start in NV⁻", "proposed", ["grotz2012"]),
                 _g("Electrically driven single-photon source", "demonstrated", ["mizuochi2012"])],
-  "fom": {"nv_minus": _fom("NV⁻ fraction under readout", "", "higher", _cur(0.55, "reported", ["meniailava2025"], "Stable NV⁻ population of 0.55 to 0.6 on one NV in HPHT type IIa diamond at 5 to 20 V bias, room temperature (preprint); [grotz2012] states no fraction", bound=">"),
+  "fom": {"nv_minus": _fom("NV⁻ fraction under electrical control", "", "higher", _cur(0.55, "reported", ["meniailava2025"], "Stable NV⁻ population of 0.55 to 0.6 on one NV in high-pressure high-temperature (HPHT) type IIa diamond at 5 to 20 V bias, room temperature (preprint); [grotz2012] states no fraction", bound="≥"),
                            _tgt(None, "As high as the gate budget needs (Machine Builder)"))},
   "route": {"variant": "qubit", "steps": ["S01", "S02", "S03", "S06", "S07", "S13", "S14", "S16", "S18"],
             "overrides": {"S14": "Gate electrodes over the NV region on the QELEC layer."},
@@ -725,7 +725,7 @@ DEVICES = [
   "status": {"label": "demonstrated", "temperature_k": 300, "refs": ["levine2019", "turner2020", "lesage2013"], "note": ""},
   "gates": [], "entanglement": [],
   "use_cases": [_g("Failure analysis of integrated circuits", "demonstrated", ["turner2020"]), _g("Imaging magnetotactic bacteria", "demonstrated", ["lesage2013"])],
-  "fom": {"pix": _fom("Field sensitivity per pixel", "pT/√Hz", "lower", _cur(12800, "reported", ["oh2023"], "Mean per-pixel sensitivity 12.8 nT/√Hz with 0.54 × 0.54 µm² pixels over a 46 × 46 µm² field of view (preprint; temperature not restated in the part read)"), None)},
+  "fom": {"pix": _fom("Field sensitivity per pixel", "nT/√Hz", "lower", _cur(12.8, "reported", ["oh2023"], "Mean per-pixel sensitivity 12.8 nT/√Hz with 0.54 × 0.54 µm² pixels over a 46 × 46 µm² field of view (preprint; temperature not restated in the part read)"), None)},
   "route": {"variant": "sensor", "steps": ["S01", "S02", "S06", "S07", "S18"], "overrides": {"S06": "Shallow dense ensemble layer."},
             "extra": [], "atlas": ["M20", "M22", "M38", "M43"]},
   "layers": ["Sample", "NV ensemble layer", "Diamond", "Camera optics"],
@@ -1082,7 +1082,8 @@ def _index_md(rates: dict) -> str:
           "| Device | Step | Title | Evidence |", "|---|---|---|---|"] + [f"| {a} | {b} | {c} | {e} |" for a, b, c, e in extension_steps()] + [""]
     miss = missing_steps()
     L += ["## Build steps the traveler does not have yet", ""] + (["| Device | Step | Title |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in miss] if miss else ["None: every device's build steps are in the traveler or its extension section."]) + [""]
-    L += ["## Numbers to confirm from the papers", "", "| Device | Figure of merit | To confirm |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in open_numbers()] + [""]
+    L += ["## Numbers to confirm from the papers", ""]
+    L += (["| Device | Figure of merit | To confirm |", "|---|---|---|"] + [f"| {a} | {b} | {c} |" for a, b, c in open_numbers()] if open_numbers() else ["None."]) + [""]
     L += ["## How pass/fail is computed", "",
           "Each check simulates a measurement with a fixed seed, analyzes it with adamas.fitting where a fit applies, and compares it with a sourced threshold "
           "or an ADAMAS design threshold stated as such. Each has a degraded twin with one physical fault, which must fail. The pass rate column is the "

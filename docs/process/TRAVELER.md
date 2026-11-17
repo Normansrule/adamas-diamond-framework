@@ -697,7 +697,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 | Spin coupling | Magnetic tip on the membrane, field gradient about 10⁷ T/m | [ji2022] |
 | Fabrication | No device fabricated; the diamond part follows T1; the membrane and tip are not specified | [ji2022] |
 | Demonstrated diamond resonator (not the proposal's membrane) | Single-crystal diamond microdisks 5.0 to 6.0 µm across and about 940 nm thick, made by quasi-isotropic undercut [khanaliloo2015] (demonstrated): about 400 nm plasma-enhanced CVD (PECVD) Si₃N₄ hard mask, about 250 nm conformal PECVD Si₃N₄ to protect the sidewalls, zero-radio-frequency-power oxygen reactive ion etching (RIE) undercut, mask removed in 49 % hydrofluoric acid (HF) and boiling piranha; intrinsic optical quality factor 6.1 to 6.8 × 10⁴, mechanical quality factor above 9000. Etch powers, times and temperatures are not stated there | [mitchell2016] |
-| Etch conditions from the same group's later microdisk paper | Anisotropic oxygen etch at 10 mTorr, 30 sccm O₂, inductively coupled plasma 1000 W, radio-frequency power swept from 20 to 100 W at 15 °C; undercut by a zero-bias oxygen quasi-isotropic etch at 250 °C (demonstrated; times not stated) | [mitchell2019] |
+| Etch conditions from the same group's later microdisk paper | Anisotropic oxygen etch at 10 mTorr, 30 standard cubic centimetres per minute (sccm) O₂, inductively coupled plasma 1000 W, radio-frequency power swept from 20 to 100 W at 15 °C; undercut by a zero-bias oxygen quasi-isotropic etch at 250 °C (reported, preprint; times not stated) | [mitchell2019] |
 
 | Check | Pass criterion | Source |
 |---|---|---|
@@ -838,7 +838,7 @@ Eleven devices in the Quantum Device Library add one step to T1. Each is written
 |---|---|---|
 | Resonator | Sapphire ring 10 mm outer, 5.1 mm inner diameter, 6.5 mm tall; TE01δ mode at 9.22 GHz; quality factor 55,000 unloaded, 30,000 loaded | [breeze2018] |
 | Diamond | CVD type IIa, 1 ppm nitrogen, laser-cut to 2.1 × 2.1 × 2.6 mm³ with {100} faces, cleaned in nitric acid for 48 h; electron-irradiated and annealed by Element Six (energy, dose and anneal not stated in the paper or its arXiv version); 0.072 ppm NV⁻ and about 0.2 ppm NV⁰ plus NV⁻ | [breeze2018] |
-| Irradiation stated by a later room-temperature maser amplifier | 3 MeV electrons at a fluence of 1 × 10¹⁸ cm⁻², then annealed (anneal temperature and time not stated); about 3 ppm NV⁻ (demonstrated, a different diamond from the one above) | [day2024] |
+| Irradiation stated by a later room-temperature maser amplifier | 3 MeV electrons at a fluence of 1 × 10¹⁸ cm⁻², then annealed (anneal temperature and time not stated); about 3 ppm NV⁻ (reported, preprint; a different diamond from the one above) | [day2024] |
 | Field | About 429.8 mT along an NV axis | [breeze2018] |
 | Pump | 532 nm continuous wave, 400 mW; threshold predicted at about 210 mW; heats the sample by about 35 °C | [breeze2018] |
 
