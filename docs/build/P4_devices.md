@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-**Status: written in full.** Budget: **US$7,000 to 51,000** for the C2 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US$10,000 to 50,000). The high-voltage curve tracer and the photoelectric readout chain are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **go**.
+**Status: written in full.** Budget: **US$7,000 to 51,000** for the C2 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US$10,000 to 50,000). The high-voltage curve tracer and the photoelectric readout chain are not in this total; the [Atlas](ATLAS.md) prices them by the closest listed tool (M18) and partly (M55). Gate verdict in simulation: **go**.
 
 Every input below is **illustrative**: the transistor values are the design values of `adamas.logic` for process design kit 0 (PDK-0), the ones the Transistor Lab and the circuit-simulator (SPICE) models use, chosen inside published ranges; the rest are chosen to look like a typical run. The pass limits are **ADAMAS engineering targets** written into process traveler T1 (steps S08 and S17), not values from the literature. The phase is **simulated**: no ADAMAS hardware has run it.
 

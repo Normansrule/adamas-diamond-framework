@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-**Status: written in full.** Budget: **not priced** (application-specific test benches, shielded rooms and irradiation facilities; no sourced prices). Gate verdict: **go**.
+**Status: written in full.** Budget: **not totalled** (application-specific test benches, shielded rooms and irradiation facilities; published prices for M56 to M59 are in the Atlas, some partial). Gate verdict: **go**.
 
 P8 is not one experiment. It asks, application by application, whether diamond beats the device it would replace, and answers with an **evidence ledger** whose rules are evaluated by code, so an inflated claim fails the build the way a failed measurement fails the earlier phases. Claims and readiness levels are this repository's judgment; the rules check them against the evidence. Nothing here is a new measurement: comparisons are **computed** over sourced parameter ranges or **cited**, and every row is labeled with the evidence behind it.
 

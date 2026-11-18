@@ -755,7 +755,7 @@ def _p4_md() -> str:
 
 {GEN}
 
-**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C2 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,}). The high-voltage curve tracer and the photoelectric readout chain are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
+**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C2 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,}). The high-voltage curve tracer and the photoelectric readout chain are not in this total; the [Atlas](ATLAS.md) prices them by the closest listed tool (M18) and partly (M55). Gate verdict in simulation: **{g['verdict']}**.
 
 Every input below is **illustrative**: the transistor values are the design values of `adamas.logic` for process design kit 0 (PDK-0), the ones the Transistor Lab and the circuit-simulator (SPICE) models use, chosen inside published ranges; the rest are chosen to look like a typical run. The pass limits are **ADAMAS engineering targets** written into process traveler T1 (steps S08 and S17), not values from the literature. The phase is **simulated**: no ADAMAS hardware has run it.
 
@@ -2093,7 +2093,7 @@ def _p8_md() -> str:
 
 {GEN}
 
-**Status: written in full.** Budget: **not priced** (application-specific test benches, shielded rooms and irradiation facilities; no sourced prices). Gate verdict: **{g['verdict']}**.
+**Status: written in full.** Budget: **not totalled** (application-specific test benches, shielded rooms and irradiation facilities; published prices for M56 to M59 are in the Atlas, some partial). Gate verdict: **{g['verdict']}**.
 
 P8 is not one experiment. It asks, application by application, whether diamond beats the device it would replace, and answers with an **evidence ledger** whose rules are evaluated by code, so an inflated claim fails the build the way a failed measurement fails the earlier phases. Claims and readiness levels are this repository's judgment; the rules check them against the evidence. Nothing here is a new measurement: comparisons are **computed** over sourced parameter ranges or **cited**, and every row is labeled with the evidence behind it.
 
@@ -2477,7 +2477,7 @@ def _p3_md() -> str:
 
 {GEN}
 
-**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,} for a complete setup). The RF source for the nuclear spin and the charge-state laser are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **{g['verdict']}**.
+**Status: written in full.** Budget: **US${bill['low']:,} to {bill['high']:,}** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US${bill['headline'][0]:,} to {bill['headline'][1]:,} for a complete setup). The RF source for the nuclear spin and the charge-state laser are not in this total; the [Atlas](ATLAS.md) prices them partly (M53, M54). Gate verdict in simulation: **{g['verdict']}**.
 
 Every input below is **illustrative** (chosen to look like a typical room-temperature confocal setup, not measured), except the ¹⁴N hyperfine constant, which is sourced. The phase is **simulated**: no ADAMAS hardware has run it.
 

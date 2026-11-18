@@ -110,7 +110,7 @@ SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
              {"low end of the listed range": 136000, "high end": 150000},
              "marketplace listing; supplier not named; the page prints $ without a currency code; it does not say which model the range is for or what is included"),
             ("alibabacvd2026", "6 kW, 60 mm CVD diamond machine", "USD", "machine", {"1 to 5 machines, each": 175000, "6 to 23, each": 170000, "24 or more, each": 158000},
-             "marketplace listing; supplier not named; the page says chemical vapor deposition (CVD), not microwave plasma explicitly")],
+             "closest listed machine: a marketplace listing; supplier not named; the page says chemical vapor deposition (CVD), not microwave plasma explicitly")],
     "M02": [("micmoresuperhard2026", "HPHT type Ib single-crystal diamond plates, 3 × 3 to 6 × 6 mm, 1.0 to 1.7 mm thick", "USD", "piece", {"low": 5, "high": 50},
              "marketplace listing; one attribute field says chemical vapor deposition, contradicting the HPHT title; the price is not tied to a size"),
             ("micchenguang2026", "HPHT single-crystal diamond plates, 2 × 2 × 1 to 7 × 7 × 1 mm", "USD", "piece", {"low": 40, "high": 100, "sample": 50},
@@ -133,7 +133,7 @@ PARTIAL = {
     "M55": "the bias electrodes, which are made on M11 to M13 and priced there",
     "M56": "a multichannel power analyzer and a complete double-pulse tester (none with a published price was found)",
     "M57": "proton beam time (the facilities checked quote it on request)",
-    "M59": "the test vehicle and the survey flights (no published contractor rate per line-kilometre was found); the global magnetic-anomaly map EMAG2 v3 is a free download with no licence stated [ncei2025]",
+    "M59": "the test vehicle and the survey flights (no published contractor rate per line-kilometre was found); the global Earth Magnetic Anomaly Grid (EMAG2 v3) is a download with no fee and no licence listed [ncei2025]",
 }
 
 XH018_MIN_MM2 = 10          # EUROPRACTICE minimum charge for X-FAB XH018, in mm² [europractice2026]
@@ -171,9 +171,10 @@ EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 Septem
              "quspin2026": "no date shown",
              "alibabampcvd2026": "no date shown", "alibabacvd2026": "no date shown", "micmoresuperhard2026": "no date shown",
              "micchenguang2026": "no date shown", "dfsubstrate2026": "no date shown", "ucmfs2026": "no date shown",
+             "ncei2025": "published 14 March 2022, modified 25 September 2025 (no fee listed; cited for M59 in text, not as a price)",
              "asuultrafast2026": "page modified 29 June 2026", "geometrics2026": "page modified 14 August 2026"}
 NEW_V048 = {"alibabampcvd2026", "alibabacvd2026", "micmoresuperhard2026", "micchenguang2026", "dfsubstrate2026", "ucmfs2026",
-            "asuultrafast2026", "geometrics2026"}
+            "asuultrafast2026", "geometrics2026", "ncei2025"}
 READ = {k: READ_ON_3 if k in NEW_V048 else (READ_ON_2 if k in {"gatechims2025", "aggiefab2025", "cunyasrc2024", "asuaep2026", "osurc2023", "umdrad2025", "aalto2025", "srs2026",
                                "rigolna2026", "edmundoptics2026", "transcat2026", "infraredcameras2026", "element14sg2026", "twinleaf2026", "quspin2026"}
             else READ_ON + (" and " + READ_ON_2 if k in {"ccmr2026", "wnf2026", "maf2023"} else "")) for k in EFFECTIVE}
@@ -270,7 +271,7 @@ def summary() -> dict:
         ids = [x for x in r if ph in x["phases"]]
         by_phase[ph] = {k: sum(x["kind"] == k for x in ids) for k in kinds} | {"machines": len(ids)}
     return {"machines": len(r), **{k: sum(x["kind"] == k for x in r) for k in kinds}, "by_phase": by_phase,
-            "keys": sorted({q["key"] for x in r for q in x.get("quotes", [])} | {f[0] for f in ACCESS_FEES})}
+            "keys": sorted({q["key"] for x in r for q in x.get("quotes", [])} | {f[0] for f in ACCESS_FEES} | {"ncei2025"})}
 
 
 def _money(cur: str, v: float) -> str:
@@ -348,9 +349,11 @@ above a monthly charge of US${WNF_NOTCH_USD:,} bills tools at {WNF_ABOVE_NOTCH_P
 
 ## What would price the rest
 
-- **Growth (M01 to M03):** quotes from reactor and press makers, and a heteroepitaxy partner; none publish prices.
-- **Laser writing of vacancies (M25):** a research-group collaboration; no service exists.
-- **Navigation platform (M59):** a vehicle and a magnetic-anomaly survey, to be quoted.
+- **Growth (M01 to M03):** a maker's quote would replace the marketplace listings (M01, M02), and a heteroepitaxy
+  partner's quote the substrate that stands in for M03; no maker publishes a price.
+- **Laser writing of vacancies (M25):** a research-group collaboration; no writing service exists, so general
+  femtosecond laser time stands in.
+- **Navigation platform (M59):** the magnetometer rental is priced; the vehicle and the survey flights are still to be quoted.
 - **Closest-tool rows (M04, M05, M08, M09):** a rate sheet that names the diamond tool itself: laser cutting of
   diamond, scaife or diamond polishing, photoluminescence mapping, a polarizing microscope.
 - **Partly priced rows:** the parts named in each row (for example proton beam time for M57).
@@ -370,5 +373,5 @@ def write(path: str = "docs/build/ATLAS.md") -> str:
 
 
 def to_json() -> dict:
-    return {"rows": rows(), "summary": summary(), "kinds": KINDS, "effective": EFFECTIVE, "facility": FACILITY, "access": ACCESS, "read_on": READ, "read_dates": [READ_ON, READ_ON_2],
+    return {"rows": rows(), "summary": summary(), "kinds": KINDS, "effective": EFFECTIVE, "facility": FACILITY, "access": ACCESS, "read_on": READ, "read_dates": [READ_ON, READ_ON_2, READ_ON_3],
             "access_fees": [{"key": k, "listed_as": t, "currency": c, "unit": u, "prices": p} for k, t, c, u, p in ACCESS_FEES]}

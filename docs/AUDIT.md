@@ -267,7 +267,7 @@ Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin
 
 ### Status after v0.48.0 (last machines priced)
 
-A price in the Atlas is a published figure, never a quote estimated by this repository. For the five machines that had none, the only published figures are marketplace listings (growth machines and HPHT plates), a substrate whose growth method is not stated, general femtosecond laser time, and a magnetometer rental. Each is labeled for what it is: marketplace listings say so and that the supplier is not named; stand-ins are marked as the closest listed tool; the navigation test lists what is not priced. A free map is noted in text rather than entered as a zero price.
+A price in the Atlas is a published figure, never a quote estimated by this repository. For the five machines that had none, the only published figures are marketplace listings (growth machines and high-pressure high-temperature (HPHT) plates), a substrate whose growth method is not stated, general femtosecond laser time, and a magnetometer rental. Each is labeled for what it is: marketplace listings say so and that the supplier is not named; stand-ins are marked as the closest listed tool; the navigation test lists what is not priced. A free map is noted in text rather than entered as a zero price.
 
 ### Status after v0.47.0 (open items closed)
 

@@ -10,10 +10,10 @@ The five machines that had no price now carry the published figures that exist, 
 
 | Item | Why it waits | What would close it |
 |---|---|---|
-| M01 growth reactor and M02 HPHT plates come from marketplace listings | The suppliers are not named, the reactor listing does not say which model its range is for, and one plate listing contradicts itself (HPHT title, CVD attribute); no maker publishes a price | A maker's quote |
+| M01 growth reactor and M02 HPHT plates come from marketplace listings | The suppliers are not named, the reactor listing does not say which model its range is for, and one plate listing contradicts itself (high-pressure high-temperature (HPHT) title, chemical vapor deposition (CVD) attribute); no maker publishes a price | A maker's quote |
 | M03 is priced by a substrate, not the heteroepitaxy stack | Diamond Foundry's 18 mm substrate does not state its growth method; no iridium template or heteroepitaxial wafer price was found | A quote from a heteroepitaxy supplier |
 | M25 is priced by general femtosecond laser time | Neither facility mentions diamond or color centers | A laser-writing collaboration or service |
-| M59 covers the magnetometer rental only | The test vehicle and survey flights are not priced; published per-kilometre survey costs found are authors' estimates, not quotes | A survey contractor's rate |
+| M59 covers the magnetometer rental only | The test vehicle and survey flights are not priced; no contractor rate card was found | A survey contractor's rate |
 | Verification of the 9 new pages | Read on 18 November 2026; marketplace pages change without notice | Re-read before buying |
 
 ## Open in v0.47.0: open items closed from the sources

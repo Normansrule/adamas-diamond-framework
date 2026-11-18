@@ -2,7 +2,7 @@
 
 _Generated from `adamas/build_program.py` (`adamas build docs`); every number below is computed by the package._
 
-**Status: written in full.** Budget: **US$24,000 to 116,000** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US$30,000 to 100,000 for a complete setup). The RF source for the nuclear spin and the charge-state laser are not priced yet ([STATUS.md](../STATUS.md)). Gate verdict in simulation: **go**.
+**Status: written in full.** Budget: **US$24,000 to 116,000** for the C1 parts listed below (approximate 2026 street prices from the experiment list, estimates and not quotes; the experiment page gives a reviewer estimate of US$30,000 to 100,000 for a complete setup). The RF source for the nuclear spin and the charge-state laser are not in this total; the [Atlas](ATLAS.md) prices them partly (M53, M54). Gate verdict in simulation: **go**.
 
 Every input below is **illustrative** (chosen to look like a typical room-temperature confocal setup, not measured), except the ¹⁴N hyperfine constant, which is sourced. The phase is **simulated**: no ADAMAS hardware has run it.
 

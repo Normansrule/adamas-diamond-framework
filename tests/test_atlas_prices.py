@@ -114,7 +114,11 @@ def test_partial_rows_say_what_is_left_out_and_every_source_has_dates():
                      ("M56", "transcat2026", "USD", "instrument"), ("M56", "infraredcameras2026", "USD", "camera"), ("M56", "element14sg2026", "SGD", "board"),
                      ("M57", "osurc2023", "USD", "run"), ("M57", "umdrad2025", "USD", "hour"), ("M58", "aalto2025", "EUR", "hour"),
                      ("M58", "twinleaf2026", "USD", "shield"), ("M58", "quspin2026", "USD", "sensor")}
-    assert A.UNPRICED == {}                                                          # v0.48.0 priced the last five
+    assert A.UNPRICED == {} and A.to_json()["read_dates"] == [A.READ_ON, A.READ_ON_2, A.READ_ON_3]
+    new = {(i, k, c, u) for i, qs in A.SOURCED.items() for k, _, c, u, _, _ in qs if i in {"M01", "M02", "M03", "M25", "M59"}}
+    assert new == {("M01", "alibabampcvd2026", "USD", "set"), ("M01", "alibabacvd2026", "USD", "machine"), ("M02", "micmoresuperhard2026", "USD", "piece"),
+                   ("M02", "micchenguang2026", "USD", "piece"), ("M03", "dfsubstrate2026", "USD", "unit"), ("M25", "ucmfs2026", "EUR", "hour"),
+                   ("M25", "asuultrafast2026", "USD", "hour"), ("M59", "geometrics2026", "USD", "day")}                                                          # v0.48.0 priced the last five
     assert {"M03", "M25"} <= A.SUBSTITUTE and "M59" in A.PARTIAL
     for i in ("M01", "M02"):                                                         # marketplace listings say so
         assert all("marketplace listing" in q[5] for q in A.SOURCED[i]), i
