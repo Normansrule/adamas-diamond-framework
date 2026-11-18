@@ -22,6 +22,7 @@ from .atlas import ATLAS
 ROOT = Path(__file__).resolve().parents[1]
 READ_ON = "10 November 2026"     # the date the v0.40.0 pages were read
 READ_ON_2 = "15 November 2026"   # the date the v0.43.0 pages were read (and the extra lines of ccmr2026 and wnf2026)
+READ_ON_3 = "18 November 2026"   # the date the v0.48.0 pages were read
 
 # Where the machine lives and how a group gets time on it.
 FACILITY = {
@@ -104,6 +105,24 @@ SOURCED: dict[str, list[tuple[str, str, str, str, dict, str]]] = {
             ("twinleaf2026", "MS-2 four-layer magnetic shield", "USD", "shield", {"price shown": 14390}, "benchtop shield, 46 mm bore; not a room"),
             ("quspin2026", "QZFM Gen-3 zero-field optically pumped magnetometer", "USD", "sensor",
              {"1 to 3 sensors, each": 10000, "4 to 7, each": 8500, "8 to 15, each": 8000, "16 to 32, each": 7700}, "price per sensor at each order size; triaxial option US$1,250 more per sensor")],
+    # v0.48.0: the last five machines (read 18 November 2026). Marketplace listings name no supplier and are marked so.
+    "M01": [("alibabampcvd2026", "High-power MPCVD diamond growing machine (10, 11.5 or 13 kW models)", "USD", "set",
+             {"low end of the listed range": 136000, "high end": 150000},
+             "marketplace listing; supplier not named; the page prints $ without a currency code; it does not say which model the range is for or what is included"),
+            ("alibabacvd2026", "6 kW, 60 mm CVD diamond machine", "USD", "machine", {"1 to 5 machines, each": 175000, "6 to 23, each": 170000, "24 or more, each": 158000},
+             "marketplace listing; supplier not named; the page says chemical vapor deposition (CVD), not microwave plasma explicitly")],
+    "M02": [("micmoresuperhard2026", "HPHT type Ib single-crystal diamond plates, 3 × 3 to 6 × 6 mm, 1.0 to 1.7 mm thick", "USD", "piece", {"low": 5, "high": 50},
+             "marketplace listing; one attribute field says chemical vapor deposition, contradicting the HPHT title; the price is not tied to a size"),
+            ("micchenguang2026", "HPHT single-crystal diamond plates, 2 × 2 × 1 to 7 × 7 × 1 mm", "USD", "piece", {"low": 40, "high": 100, "sample": 50},
+             "marketplace listing; type Ib or IIa not stated; the price is not tied to a size")],
+    "M03": [("dfsubstrate2026", "18 × 18 mm single-crystal diamond semiconductor substrate", "USD", "unit", {"one": 23, "bundle of five": 115},
+             "growth method not stated; a US$500 handling fee per order, shipping excluded; the terms restrict resale and diamond multiplication; this prices a large substrate, not the heteroepitaxy stack")],
+    "M25": [("ucmfs2026", "Microfabrication of materials with femtosecond laser pulses", "EUR", "hour",
+             {"Complutense University users": 25, "public organizations": 50, "private organizations": 90}, "diamond and color centers are not mentioned"),
+            ("asuultrafast2026", "10 W and 5 W Ti:sapphire femtosecond lasers", "USD", "hour", {"Arizona State University": 24.20, "nonprofit and academic": 30.25},
+             "laser time, not a writing service; US$10 start-up fee and a 1 hour base time; diamond is not mentioned")],
+    "M59": [("geometrics2026", "MagArrow unmanned-aircraft magnetometer, rental", "USD", "day", {"rental": 395},
+             "minimum rental 7 days, plus a one-time US$365 mobilization fee; transport, customs and training excluded")],
 }
 
 # Sourced rows that price only part of the machine: id -> what is not priced.
@@ -114,6 +133,7 @@ PARTIAL = {
     "M55": "the bias electrodes, which are made on M11 to M13 and priced there",
     "M56": "a multichannel power analyzer and a complete double-pulse tester (none with a published price was found)",
     "M57": "proton beam time (the facilities checked quote it on request)",
+    "M59": "the test vehicle and the survey flights (no published contractor rate per line-kilometre was found); the global magnetic-anomaly map EMAG2 v3 is a free download with no licence stated [ncei2025]",
 }
 
 XH018_MIN_MM2 = 10          # EUROPRACTICE minimum charge for X-FAB XH018, in mm² [europractice2026]
@@ -138,7 +158,7 @@ ESTIMATE = {
     "M51": [("C1", "Microwave and control")], "M52": [("C1", "Electronic-grade diamond")],
 }
 # Machines priced by a published tool that is not the same as the Atlas tool; the note on the quote says how it differs.
-SUBSTITUTE = {"M04", "M05", "M08", "M09", "M17", "M18", "M20", "M22", "M23", "M26"}
+SUBSTITUTE = {"M03", "M04", "M05", "M08", "M09", "M17", "M18", "M20", "M22", "M23", "M25", "M26"}
 
 # Effective date of each sourced page as the page states it, and the date it was read.
 EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 September 2023 when first read; on 15 November 2026 the current table showed no date and a new table was listed from 1 January 2027", "ccmr2026": "fiscal year 2027, from 1 July 2026",
@@ -148,21 +168,21 @@ EFFECTIVE = {"wnf2026": "effective 1 March 2026", "maf2023": "effective 1 Septem
              "asuaep2026": "no date shown", "osurc2023": "1 July 2023 to 30 June 2024", "umdrad2025": "effective 1 July 2025 (2026-2027 fee schedule)",
              "aalto2025": "page updated 8 January 2025", "srs2026": "no date shown", "rigolna2026": "no date shown", "edmundoptics2026": "no date shown",
              "transcat2026": "no date shown", "infraredcameras2026": "no date shown", "element14sg2026": "no date shown", "twinleaf2026": "no date shown",
-             "quspin2026": "no date shown"}
-READ = {k: (READ_ON_2 if k in {"gatechims2025", "aggiefab2025", "cunyasrc2024", "asuaep2026", "osurc2023", "umdrad2025", "aalto2025", "srs2026",
+             "quspin2026": "no date shown",
+             "alibabampcvd2026": "no date shown", "alibabacvd2026": "no date shown", "micmoresuperhard2026": "no date shown",
+             "micchenguang2026": "no date shown", "dfsubstrate2026": "no date shown", "ucmfs2026": "no date shown",
+             "asuultrafast2026": "page modified 29 June 2026", "geometrics2026": "page modified 14 August 2026"}
+NEW_V048 = {"alibabampcvd2026", "alibabacvd2026", "micmoresuperhard2026", "micchenguang2026", "dfsubstrate2026", "ucmfs2026",
+            "asuultrafast2026", "geometrics2026"}
+READ = {k: READ_ON_3 if k in NEW_V048 else (READ_ON_2 if k in {"gatechims2025", "aggiefab2025", "cunyasrc2024", "asuaep2026", "osurc2023", "umdrad2025", "aalto2025", "srs2026",
                                "rigolna2026", "edmundoptics2026", "transcat2026", "infraredcameras2026", "element14sg2026", "twinleaf2026", "quspin2026"}
             else READ_ON + (" and " + READ_ON_2 if k in {"ccmr2026", "wnf2026", "maf2023"} else "")) for k in EFFECTIVE}
 
 NO_COST = {"M00": "a computer the user already has; every listed tool is open source"}
 INCLUDED = {"M39": ("M38", "the B1 laser line item includes an acousto-optic modulator or direct modulation")}
 
-UNPRICED = {
-    "M01": "no MPCVD reactor maker publishes a price; the D2 experiment's line item for several reactors is an estimate, not a per-reactor price",
-    "M02": "no HPHT press price is published; type Ib plates are sold (e6cvd.com) but the page does not state the growth method",
-    "M03": "heteroepitaxy stacks (iridium on YSZ, bias-enhanced nucleation) are made in research groups; no service price is published",
-    "M25": "laser writing of vacancies is done in a few research groups; no service price exists",
-    "M59": "a test vehicle and a magnetic-anomaly map; no published rental or survey price was found",
-}
+# v0.48.0 priced the last five (M01, M02, M03, M25, M59); the kind stays for machines added later.
+UNPRICED: dict[str, str] = {}
 
 PLACE = {**{f"M{i:02d}": ("desk", "buy") for i in range(30, 38)}, **{f"M{i:02d}": ("teaching", "buy") for i in range(38, 47)},
          **{f"M{i:02d}": ("research", "buy") for i in range(47, 56)},

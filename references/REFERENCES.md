@@ -1,6 +1,6 @@
 # References
 
-**682 references.** 560 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**691 references.** 569 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -485,7 +485,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[li2024]`** Li, L.; De Santis, L.; Harris, I. B. W.; et al. (2024). Heterogeneous integration of spin-photon interfaces with a CMOS platform. *Nature*, 630, 70. [doi:10.1038/s41586-024-07371-7](https://doi.org/10.1038/s41586-024-07371-7)
 - ✅ **`[stolk2024]`** Stolk, A. J.; van der Enden, K. L.; Slater, M.-C.; et al. (2024). Metropolitan-scale heralded entanglement of solid-state qubits. *Science Advances*, 10, eadp6442. [doi:10.1126/sciadv.adp6442](https://doi.org/10.1126/sciadv.adp6442)
 
-## Industry, products and news (45)
+## Industry, products and news (54)
 
 - ✅ **`[nttbrl2009]`** NTT Basic Research Laboratories (2009). Research activities 2009, report 02 (diamond transistors in NO2). *rd.ntt*, accessed 17 November 2026.
 - ✅ **`[nttbrl2011]`** NTT Basic Research Laboratories (2011). Research activities 2011, report 05 (Al2O3-passivated diamond transistors). *rd.ntt*, accessed 17 November 2026.
@@ -501,23 +501,31 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[kwantek2024]`** Kwan-tek (2024). Quantum diamond scan (service brochure). *kwan-tek.com*, accessed 17 November 2026.
 - ✅ **`[quantumdiamonds2024]`** The Quantum Insider (2024). QuantumDiamonds launches QD m.0 for semiconductor chip failure analysis (news, 1 October 2024). *thequantuminsider.com*, accessed 16 November 2026.
 - ✅ **`[cornes2025]`** Cornes Technologies (Seki Diamond Systems) (2025). SDS6K microwave plasma CVD system catalogue. *cornestech.co.jp*, accessed 16 November 2026.
+- ✅ **`[ncei2025]`** NOAA National Centers for Environmental Information (2025). Earth Magnetic Anomaly Grid (EMAG2) version 3. *ncei.noaa.gov*, accessed 18 November 2026.
 - ✅ **`[olcf2025]`** Oak Ridge Leadership Computing Facility (2025). Q&A: Inside Quantum Brilliance's quantum computer technology. *OLCF news*, 2 September 2025.
 - ✅ **`[ornl2025]`** Oak Ridge National Laboratory (2025). Q&A: inside Quantum Brilliance's quantum computer technology (news, 2 September 2025). *ornl.gov*, accessed 16 November 2026.
 - ✅ **`[adamasfnd2026]`** Adámas Nanotechnologies (2026). Functionalized red FND information (product page). *adamasnano.com (squarespace host)*, accessed 17 November 2026.
 - ✅ **`[akash2026]`** Journal of Electronic Defense (2026). Akash Systems puts GaN-on-diamond in orbit (news, 9 July 2026). *jedonline.com*, accessed 16 November 2026.
+- ✅ **`[alibabacvd2026]`** Alibaba.com (supplier not named) (2026). Synthetic diamond making machine for sale, 6 kW 60 mm CVD (marketplace listing). *alibaba.com*, accessed 18 November 2026.
+- ✅ **`[alibabampcvd2026]`** Alibaba.com (supplier not named) (2026). High-power MPCVD diamond growing machine (marketplace listing). *alibaba.com*, accessed 18 November 2026.
+- ✅ **`[asuultrafast2026]`** Arizona State University Ultrafast Laser Facility (2026). Rates. *cores.research.asu.edu*, accessed 18 November 2026.
 - ✅ **`[ciqtek2026]`** CIQTEK (distributed by Emona) (2026). Diamond Quantum Computer for Education (product page). *emona.com.au*, accessed 16 November 2026.
 - ✅ **`[coherentem152026]`** Coherent (2026). eM15 monocrystalline diamond cutting system (product page). *coherent.com*, accessed 17 November 2026.
 - ✅ **`[coherentqg2026]`** Coherent (2026). Single crystal diamond, quantum grade (datasheet). *coherent.com*, accessed 17 November 2026.
+- ✅ **`[dfsubstrate2026]`** Diamond Foundry (2026). 18 × 18 mm SCD semi substrate (store page). *df.com*, accessed 18 November 2026.
 - ✅ **`[diamondfoundry2026]`** Semiconductor Today (2026). Diamond Foundry unveils first 200 mm-diameter single-crystal diamond (news, 11 November 2026). *semiconductor-today.com*, accessed 16 November 2026.
 - ✅ **`[diamondmaterials2026]`** Diamond Materials GmbH (2026). Processing services (company page). *diamond-materials.com*, accessed 16 November 2026.
 - ✅ **`[diamondmaterialshs2026]`** Diamond Materials GmbH (2026). Diamond heat spreaders (product page). *diamond-materials.com*, accessed 17 November 2026.
 - ✅ **`[e6orbray2026]`** Semiconductor Today (2026). Element Six and Orbray accelerate wafer-scale single-crystal diamond for volume production. *Semiconductor Today (news)*, 16 June 2026.
 - ✅ **`[e6thermal2026]`** Element Six (2026). Thermal management diamond (product page). *e6.com*, accessed 16 November 2026.
 - ✅ **`[fraunhofercmw2026]`** Fraunhofer USA Center Midwest (2026). Diamond electronics (capabilities page). *cmw.fraunhofer.org*, accessed 16 November 2026.
+- ✅ **`[geometrics2026]`** Geometrics (2026). Magnetometer rentals. *geometrics.com*, accessed 18 November 2026.
 - ✅ **`[heidelbergumla2026]`** Heidelberg Instruments (2026). µMLA, the tabletop maskless aligner (fact sheet V5.0). *heidelberg-instruments.com (cdn.shopify.com)*, accessed 17 November 2026.
 - ✅ **`[hzdr2026]`** HZDR Innovation GmbH (2026). Ion implantation services. *hzdr-innovation.de*, accessed 16 November 2026.
 - ✅ **`[ibs2026]`** Ion Beam Services (2026). Ion implantation foundry services. *ionbeamservices.com*, accessed 16 November 2026.
 - ✅ **`[kwantek2026]`** Kwan-tek (2026). Quality control of quantum diamonds (service page). *kwan-tek.com*, accessed 17 November 2026.
+- ✅ **`[micchenguang2026]`** Chenguang Machinery and Electric Equipment Co., Ltd (Made-in-China.com) (2026). Lab grow single crystal diamond HPHT mono crystal diamond plate (marketplace listing). *made-in-china.com*, accessed 18 November 2026.
+- ✅ **`[micmoresuperhard2026]`** More Superhard Products Co., Ltd (Made-in-China.com) (2026). Single crystal diamond stone HPHT synthetic diamond plate (marketplace listing). *made-in-china.com*, accessed 18 November 2026.
 - ✅ **`[micromanipulator2026]`** Micromanipulator (2026). A hot chuck designed for your probe station (product page). *micromanipulator.com*, accessed 17 November 2026.
 - ✅ **`[mks2026]`** MKS Instruments (2026). Microwave solutions for single-crystal diamond wafers. *mks.com*, accessed 16 November 2026.
 - ✅ **`[ookuma2026]`** Jiji Press (2026). Diamond semiconductor plant completed in northeastern Japan. *Jiji Press (news)*, 29 May 2026.
@@ -532,6 +540,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[saxonq2026]`** Greene, T. (2026). Engineers build world's first portable diamond-powered quantum computer (report on SaxonQ; vendor claims, not yet peer reviewed). *Live Science (news)*, 6 August 2026.
 - ✅ **`[sbquantum2026]`** The Quantum Insider (2026). SBQuantum to launch quantum sensor into space as part of the MagQuest challenge (news, 27 March 2026). *thequantuminsider.com*, accessed 16 November 2026.
 - ✅ **`[tqi2026]`** The Quantum Insider (2026). Top diamond NV-centre quantum computing companies in 2026. *The Quantum Insider*, 10 July 2026.
+- ✅ **`[ucmfs2026]`** Complutense University of Madrid, CAI Chemical Technologies (2026). Microfabrication of materials with femtosecond laser pulses (service rates). *cai.ucm.es*, accessed 18 November 2026.
 
 ## Teaching laboratories (1)
 

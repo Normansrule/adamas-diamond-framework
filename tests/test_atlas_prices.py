@@ -55,14 +55,14 @@ def test_phase_machine_lists_are_in_the_atlas_and_counted():
     s = A.summary()
     assert s["machines"] == len(ATLAS) == 60
     assert sum(s[k] for k in A.KINDS) == 60
-    assert (s["sourced"], s["estimate"], s["included"], s["no cost"], s["unpriced"]) == (33, 20, 1, 1, 5)   # as stated in CHANGELOG and AUDIT
-    assert s["by_phase"]["P8"]["unpriced"] == 1 and s["by_phase"]["P4"]["sourced"] == 13
+    assert (s["sourced"], s["estimate"], s["included"], s["no cost"], s["unpriced"]) == (38, 20, 1, 1, 0)   # as stated in CHANGELOG and AUDIT
+    assert s["by_phase"]["P8"]["unpriced"] == 0 and s["by_phase"]["P4"]["sourced"] == 14
 
 
 def test_p6_shuttle_price_and_short_cells():
     assert "70 EUR per Tiny Tapeout tile [tinytapeout2026]" in A.mpw_prices()
     assert f"minimum {A.XH018_MIN_MM2} mm²" in A.mpw_prices() and "not totalled" in B._p6_md()
-    assert A.short_price("M59").startswith("not priced")
+    assert A.short_price("M59").startswith("US$395 per day") and "not priced: the test vehicle" in A.short_price("M59")
     assert all("closest listed tool" in A.short_price(i) for i in A.SUBSTITUTE)
     assert "closest listed tool" not in A.short_price("M12") and A.SUBSTITUTE <= set(A.SOURCED)
     assert A.short_price("M12") == ("US$158 to 569 per hour, E-beam Lithography [wnf2026]; users outside the University of "
@@ -90,6 +90,10 @@ GOLDEN = {
     ("M56", "transcat2026"): (1156,), ("M56", "infraredcameras2026"): (3249,), ("M56", "element14sg2026"): (661.05,),
     ("M57", "osurc2023"): (179, 188), ("M57", "umdrad2025"): (550,), ("M58", "aalto2025"): (40,), ("M58", "twinleaf2026"): (7996, 14390),
     ("M58", "quspin2026"): (10000, 8500, 8000, 7700),
+    # v0.48.0, read 18 November 2026
+    ("M01", "alibabampcvd2026"): (136000, 150000), ("M01", "alibabacvd2026"): (175000, 170000, 158000),
+    ("M02", "micmoresuperhard2026"): (5, 50), ("M02", "micchenguang2026"): (40, 100, 50), ("M03", "dfsubstrate2026"): (23, 115),
+    ("M25", "ucmfs2026"): (25, 50, 90), ("M25", "asuultrafast2026"): (24.20, 30.25), ("M59", "geometrics2026"): (395,)
 }
 
 
@@ -100,7 +104,8 @@ def test_partial_rows_say_what_is_left_out_and_every_source_has_dates():
         assert "**Not priced:** " + A.PARTIAL[i] in A._price_cell(A.entry(i))
     keys = {k for qs in A.SOURCED.values() for k, *_ in qs} | {f[0] for f in A.ACCESS_FEES}
     assert keys <= set(A.EFFECTIVE) and set(A.READ) == set(A.EFFECTIVE)
-    assert all(A.READ[k] in (A.READ_ON, A.READ_ON_2, f"{A.READ_ON} and {A.READ_ON_2}") for k in A.READ)
+    assert all(A.READ[k] in (A.READ_ON, A.READ_ON_2, A.READ_ON_3, f"{A.READ_ON} and {A.READ_ON_2}") for k in A.READ)
+    assert {k for k in A.READ if A.READ[k] == A.READ_ON_3} == A.NEW_V048
     units = {(i, k, c, u) for i, qs in A.SOURCED.items() for k, _, c, u, _, _ in qs if i in {"M04", "M05", "M08", "M09", "M18", "M53", "M54", "M55", "M56", "M57", "M58"}}
     assert units == {("M04", "gatechims2025", "USD", "hour"), ("M05", "ccmr2026", "USD", "hour"), ("M05", "aggiefab2025", "USD", "hour"),
                      ("M08", "cunyasrc2024", "USD", "hour"), ("M08", "ccmr2026", "USD", "hour"), ("M09", "wnf2026", "USD", "hour"),
@@ -109,7 +114,10 @@ def test_partial_rows_say_what_is_left_out_and_every_source_has_dates():
                      ("M56", "transcat2026", "USD", "instrument"), ("M56", "infraredcameras2026", "USD", "camera"), ("M56", "element14sg2026", "SGD", "board"),
                      ("M57", "osurc2023", "USD", "run"), ("M57", "umdrad2025", "USD", "hour"), ("M58", "aalto2025", "EUR", "hour"),
                      ("M58", "twinleaf2026", "USD", "shield"), ("M58", "quspin2026", "USD", "sensor")}
-    assert set(A.UNPRICED) == {"M01", "M02", "M03", "M25", "M59"}
+    assert A.UNPRICED == {}                                                          # v0.48.0 priced the last five
+    assert {"M03", "M25"} <= A.SUBSTITUTE and "M59" in A.PARTIAL
+    for i in ("M01", "M02"):                                                         # marketplace listings say so
+        assert all("marketplace listing" in q[5] for q in A.SOURCED[i]), i
 
 
 def test_sourced_values_match_the_golden_table():

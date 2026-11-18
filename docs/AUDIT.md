@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.48.0 (last machines priced)
+
+A price in the Atlas is a published figure, never a quote estimated by this repository. For the five machines that had none, the only published figures are marketplace listings (growth machines and HPHT plates), a substrate whose growth method is not stated, general femtosecond laser time, and a magnetometer rental. Each is labeled for what it is: marketplace listings say so and that the supplier is not named; stand-ins are marked as the closest listed tool; the navigation test lists what is not priced. A free map is noted in text rather than entered as a zero price.
+
 ### Status after v0.47.0 (open items closed)
 
 v0.47.0 changes no model; it re-reads sources. Values that came from preprints are labeled reported, never demonstrated, and the two device numbers it fills carry their conditions (one NV in HPHT diamond under bias; a 0.54 µm pixel over a 46 µm field). A preprint's published version replaces it only where a page printed the journal and volume (and the article number or pages where printed; the mccloskey2024 article number is still open), and a route whose numbers were read from the preprint says so; DOIs are left to `make apply-verify`. Where a source still states nothing (a maser anneal, an undercut time, a commercial kerf), the text says "not stated" rather than estimating. One route changed meaning: the microchiplet array (R26) is now marked cryogenic because its measurements were made below 4 K.

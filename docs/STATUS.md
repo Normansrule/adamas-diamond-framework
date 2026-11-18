@@ -2,7 +2,19 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.47.0 (2026-11-17).
+Last updated: v0.48.0 (2026-11-18).
+
+## Open in v0.48.0: every Atlas machine has a published price
+
+The five machines that had no price now carry the published figures that exist, each with what it does not cover ([ATLAS.md](build/ATLAS.md)): 38 sourced, 20 estimated, 1 included, 1 at no cost, 0 unpriced. What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| M01 growth reactor and M02 HPHT plates come from marketplace listings | The suppliers are not named, the reactor listing does not say which model its range is for, and one plate listing contradicts itself (HPHT title, CVD attribute); no maker publishes a price | A maker's quote |
+| M03 is priced by a substrate, not the heteroepitaxy stack | Diamond Foundry's 18 mm substrate does not state its growth method; no iridium template or heteroepitaxial wafer price was found | A quote from a heteroepitaxy supplier |
+| M25 is priced by general femtosecond laser time | Neither facility mentions diamond or color centers | A laser-writing collaboration or service |
+| M59 covers the magnetometer rental only | The test vehicle and survey flights are not priced; published per-kilometre survey costs found are authors' estimates, not quotes | A survey contractor's rate |
+| Verification of the 9 new pages | Read on 18 November 2026; marketplace pages change without notice | Re-read before buying |
 
 ## Open in v0.47.0: open items closed from the sources
 

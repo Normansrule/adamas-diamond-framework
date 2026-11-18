@@ -14,9 +14,9 @@ use it, and what it costs. Each price carries its kind:
 - **no cost**: nothing to buy (open-source software on a computer you have).
 - **unpriced**: no published price was found; the reason says why.
 
-Of 60 machines: 33 sourced, 20 estimate, 1 included, 1 no cost, 5 unpriced.
-10 of the sourced rows (M04, M05, M08, M09, M17, M18, M20, M22, M23, M26) are priced by the closest published tool, which is not the
-same tool; their notes say how it differs. 6 (M09, M53, M54, M55, M56, M57) price only part of the machine and say what
+Of 60 machines: 38 sourced, 20 estimate, 1 included, 1 no cost, 0 unpriced.
+12 of the sourced rows (M03, M04, M05, M08, M09, M17, M18, M20, M22, M23, M25, M26) are priced by the closest published tool, which is not the
+same tool; their notes say how it differs. 7 (M09, M53, M54, M55, M56, M57, M59) price only part of the machine and say what
 is left out.
 Prices are not converted between currencies and not summed: most cleanroom and characterization prices are **per hour
 of tool time**, and the hours a phase needs are not modelled here. Hourly rates differ several-fold between academic and
@@ -40,20 +40,20 @@ above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf20
 | P1 | 8 | 1 | 7 | 0 | 0 | 0 |
 | P2 | 10 | 1 | 8 | 1 | 0 | 0 |
 | P3 | 8 | 3 | 5 | 0 | 0 | 0 |
-| P4 | 14 | 13 | 0 | 0 | 0 | 1 |
-| P5 | 13 | 10 | 2 | 0 | 0 | 1 |
+| P4 | 14 | 14 | 0 | 0 | 0 | 0 |
+| P5 | 13 | 11 | 2 | 0 | 0 | 0 |
 | P6 | 8 | 6 | 1 | 0 | 1 | 0 |
-| P7 | 14 | 11 | 0 | 0 | 0 | 3 |
-| P8 | 4 | 3 | 0 | 0 | 0 | 1 |
+| P7 | 14 | 14 | 0 | 0 | 0 | 0 |
+| P8 | 4 | 4 | 0 | 0 | 0 | 0 |
 
 ## Atlas
 
 | ID | Machine | Facility | Access | Phases | Kind | Price |
 |---|---|---|---|---|---|---|
 | M00 | Workstation plus open tools (adamas, Stim, PyMatching, ngspice, Yosys, KLayout, OpenROAD) | Any computer | buy | P0, P6 | **no cost** | no cost: a computer the user already has; every listed tool is open source |
-| M01 | Microwave plasma chemical vapor deposition (MPCVD) reactor | Diamond growth and wafering laboratory or fab | partner or facility access | P4, P7 | **unpriced** | unpriced: no MPCVD reactor maker publishes a price; the D2 experiment's line item for several reactors is an estimate, not a per-reactor price |
-| M02 | High-pressure high-temperature (HPHT) press, or purchased HPHT seeds | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: no HPHT press price is published; type Ib plates are sold (e6cvd.com) but the page does not state the growth method |
-| M03 | Heteroepitaxy stack deposition (iridium on YSZ/Si or sapphire, bias-enhanced nucleation) | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **unpriced** | unpriced: heteroepitaxy stacks (iridium on YSZ, bias-enhanced nucleation) are made in research groups; no service price is published |
+| M01 | Microwave plasma chemical vapor deposition (MPCVD) reactor | Diamond growth and wafering laboratory or fab | partner or facility access | P4, P7 | **sourced** | High-power MPCVD diamond growing machine (10, 11.5 or 13 kW models): US$136,000 low end of the listed range, US$150,000 high end per set [alibabampcvd2026] (marketplace listing; supplier not named; the page prints $ without a currency code; it does not say which model the range is for or what is included); 6 kW, 60 mm CVD diamond machine: US$175,000 1 to 5 machines, each, US$170,000 6 to 23, each, US$158,000 24 or more, each per machine [alibabacvd2026] (marketplace listing; supplier not named; the page says chemical vapor deposition (CVD), not microwave plasma explicitly) |
+| M02 | High-pressure high-temperature (HPHT) press, or purchased HPHT seeds | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **sourced** | HPHT type Ib single-crystal diamond plates, 3 × 3 to 6 × 6 mm, 1.0 to 1.7 mm thick: US$5 low, US$50 high per piece [micmoresuperhard2026] (marketplace listing; one attribute field says chemical vapor deposition, contradicting the HPHT title; the price is not tied to a size); HPHT single-crystal diamond plates, 2 × 2 × 1 to 7 × 7 × 1 mm: US$40 low, US$100 high, US$50 sample per piece [micchenguang2026] (marketplace listing; type Ib or IIa not stated; the price is not tied to a size) |
+| M03 | Heteroepitaxy stack deposition (iridium on YSZ/Si or sapphire, bias-enhanced nucleation) | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **sourced** | **Closest listed tool, not the same:** 18 × 18 mm single-crystal diamond semiconductor substrate: US$23 one, US$115 bundle of five per unit [dfsubstrate2026] (growth method not stated; a US$500 handling fee per order, shipping excluded; the terms restrict resale and diamond multiplication; this prices a large substrate, not the heteroepitaxy stack) |
 | M04 | Laser cutting and slicing | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **sourced** | **Closest listed tool, not the same:** Laser Machining Lab, class 1, 2 and 3 tools: US$28 Georgia Tech and US academic, class 1, US$39 Georgia Tech and US academic, class 2, US$50 Georgia Tech and US academic, class 3, US$47 foreign academic and industry, class 1, US$53 foreign academic and industry, class 2, US$51 foreign academic and industry, class 3 per hour [gatechims2025] (rates as printed (class 3 is below class 2 for foreign academic and industry users); femtosecond laser machining of glass, sapphire and metal; the page does not say which tool is in which class and does not mention diamond) |
 | M05 | Lapping, polishing, scaife or chemo-mechanical polishing | Diamond growth and wafering laboratory or fab | partner or facility access | P7 | **sourced** | **Closest listed tool, not the same:** Allied Multiprep Polishers: US$33.99 Cornell internal per hour [ccmr2026] (the sheet does not say it polishes diamond); Struers Rotopol: US$36.40 Cornell internal per hour [ccmr2026] (the sheet does not say it polishes diamond); G&P CMP: US$55 Texas A&M per hour [aggiefab2025] (chemical-mechanical polisher, not stated for diamond; outside academic users pay 150 % and industry 300 % of the listed rate (the page prints no dollar figure for them)) |
 | M06 | Raman mapping | Shared characterization facility | hourly user rate | P4, P7 | **sourced** | Raman: US$34 academic, US$40 outside academic, US$126 industry per hour [maf2023]; WITec Alpha300R / Renishaw InVia Raman: US$49.95 Cornell internal per hour [ccmr2026] |
@@ -75,7 +75,7 @@ above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf20
 | M22 | High-vacuum annealing furnace (800–1200 °C) | University cleanroom | hourly user rate | P5 | **sourced** | **Closest listed tool, not the same:** RTA: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (closest listed tool: rapid thermal anneal, not a high-vacuum 1200 °C furnace) |
 | M23 | Secondary-ion mass spectrometry (SIMS) | Shared characterization facility | hourly user rate | P5, P7 | **sourced** | **Closest listed tool, not the same:** ToF-SIMS: US$90 academic, US$100 outside academic, US$225 industry per hour [maf2023] (time-of-flight SIMS; depth profiles of implanted nitrogen are often done on dynamic SIMS, which is not priced here) |
 | M24 | Atomic force microscopy (AFM) | Shared characterization facility | hourly user rate | P4, P5 | **sourced** | AFM: US$22 academic, US$26 outside academic, US$126 industry per hour [maf2023]; Asylum MFP3D AFM: US$49.40 Cornell internal per hour [ccmr2026] |
-| M25 | Laser writing of vacancies (detect-and-repair) | Research laboratory (tier C) | partner or facility access | P5 | **unpriced** | unpriced: laser writing of vacancies is done in a few research groups; no service price exists |
+| M25 | Laser writing of vacancies (detect-and-repair) | Research laboratory (tier C) | partner or facility access | P5 | **sourced** | **Closest listed tool, not the same:** Microfabrication of materials with femtosecond laser pulses: 25 EUR Complutense University users, 50 EUR public organizations, 90 EUR private organizations per hour [ucmfs2026] (diamond and color centers are not mentioned); 10 W and 5 W Ti:sapphire femtosecond lasers: US$24.20 Arizona State University, US$30.25 nonprofit and academic per hour [asuultrafast2026] (laser time, not a writing service; US$10 start-up fee and a 1 hour base time; diamond is not mentioned) |
 | M26 | Wafer or die bonder (thermocompression, hybrid) | University cleanroom | hourly user rate | P6 | **sourced** | **Closest listed tool, not the same:** Wafer Bonder: US$89 academic (UW and non-UW), US$267 industry per hour [wnf2026] (wafer bonder; no die or flip-chip bonder rate was found) |
 | M27 | Dicing (laser or saw) | University cleanroom | hourly user rate | P6, P7 | **sourced** | Dicing Saw: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (saw only; laser dicing is not priced) |
 | M28 | Wire bonder and package | University cleanroom | hourly user rate | P6 | **sourced** | Wire Bonder: US$63 academic (UW and non-UW), US$189 industry per hour [wnf2026] (packages not included) |
@@ -109,7 +109,7 @@ above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf20
 | M56 | Converter test bench (double-pulse tester, power analyzer, thermal camera) | Application facility (test bench; shielded room; irradiation; vehicle) | partner or facility access | P8 | **sourced** | GW Instek GPM-8213G digital AC power meter with GPIB: US$1,156 price shown per instrument [transcat2026] (reseller; a power meter, not a multichannel power analyzer; tariff surcharges may apply); FLIR E8 Pro thermal camera: US$3,249 regular price per camera [infraredcameras2026] (reseller; shown sold out when read); Infineon EVALDCLINKDPTTOBO1 800 V double-pulse test board: 661.05 SGD excluding goods and services tax (GST) per board [element14sg2026] (reseller; the device-under-test board only, not a complete tester). **Not priced:** a multichannel power analyzer and a complete double-pulse tester (none with a published price was found) |
 | M57 | Irradiation access (gamma, proton) | Application facility (test bench; shielded room; irradiation; vehicle) | partner or facility access | P8 | **sourced** | Gamma Irradiator Use (Cobalt-60): US$179 Oregon State University (OSU) internal, US$188 external per run [osurc2023] (includes staff time; sheet for 1 July 2023 to 30 June 2024, no newer sheet was found); Irradiator: US$550 listed rate per hour [umdrad2025] (2 hour minimum, 150 % off hours; university and government discounts not printed; the facility describes a panoramic cobalt-60 irradiator). **Not priced:** proton beam time (the facilities checked quote it on request) |
 | M58 | Magnetically shielded room or gradiometer setup | Application facility (test bench; shielded room; irradiation; vehicle) | partner or facility access | P8 | **sourced** | DC (shielded room in Magnet House 4th floor): 40 EUR all users, VAT 0 % per hour [aalto2025] (a shielded room for hourly use; the page does not say whether the shielding is magnetic or radio-frequency, and does not explain the name DC); MS-1L four-layer magnetic shield: US$7,996 price shown per shield [twinleaf2026] (benchtop shield, 30 mm bore; not a room); MS-2 four-layer magnetic shield: US$14,390 price shown per shield [twinleaf2026] (benchtop shield, 46 mm bore; not a room); QZFM Gen-3 zero-field optically pumped magnetometer: US$10,000 1 to 3 sensors, each, US$8,500 4 to 7, each, US$8,000 8 to 15, each, US$7,700 16 to 32, each per sensor [quspin2026] (price per sensor at each order size; triaxial option US$1,250 more per sensor) |
-| M59 | Navigation test platform with a magnetic-anomaly map | Application facility (test bench; shielded room; irradiation; vehicle) | partner or facility access | P8 | **unpriced** | unpriced: a test vehicle and a magnetic-anomaly map; no published rental or survey price was found |
+| M59 | Navigation test platform with a magnetic-anomaly map | Application facility (test bench; shielded room; irradiation; vehicle) | partner or facility access | P8 | **sourced** | MagArrow unmanned-aircraft magnetometer, rental: US$395 rental per day [geometrics2026] (minimum rental 7 days, plus a one-time US$365 mobilization fee; transport, customs and training excluded). **Not priced:** the test vehicle and the survey flights (no published contractor rate per line-kilometre was found); the global magnetic-anomaly map EMAG2 v3 is a free download with no licence stated [ncei2025] |
 
 ## What would price the rest
 
@@ -126,18 +126,25 @@ above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf20
 
 - [aalto2025]: page updated 8 January 2025; read on 15 November 2026
 - [aggiefab2025]: effective 1 October 2025; read on 15 November 2026
+- [alibabacvd2026]: no date shown; read on 18 November 2026
+- [alibabampcvd2026]: no date shown; read on 18 November 2026
 - [asuaep2026]: no date shown; read on 15 November 2026
+- [asuultrafast2026]: page modified 29 June 2026; read on 18 November 2026
 - [ccmr2026]: fiscal year 2027, from 1 July 2026; read on 10 November 2026 and 15 November 2026
 - [cunyasrc2024]: effective 1 July 2024; read on 15 November 2026
+- [dfsubstrate2026]: no date shown; read on 18 November 2026
 - [e6cvd2026]: no date shown; read on 10 November 2026
 - [edmundoptics2026]: no date shown; read on 15 November 2026
 - [element14sg2026]: no date shown; read on 15 November 2026
 - [europractice2026]: 2026 schedule; read on 10 November 2026
 - [gatechims2025]: effective 1 September 2025; read on 15 November 2026
+- [geometrics2026]: page modified 14 August 2026; read on 18 November 2026
 - [infraredcameras2026]: no date shown; read on 15 November 2026
 - [lattispec2026]: no date shown; read on 10 November 2026
 - [maf2023]: effective 1 September 2023 when first read; on 15 November 2026 the current table showed no date and a new table was listed from 1 January 2027; read on 10 November 2026 and 15 November 2026
 - [mibl2024]: from 1 September 2024; read on 10 November 2026
+- [micchenguang2026]: no date shown; read on 18 November 2026
+- [micmoresuperhard2026]: no date shown; read on 18 November 2026
 - [osurc2023]: 1 July 2023 to 30 June 2024; read on 15 November 2026
 - [quspin2026]: no date shown; read on 15 November 2026
 - [rigolna2026]: no date shown; read on 15 November 2026
@@ -145,7 +152,8 @@ above a monthly charge of US$5,000 bills tools at 33 % of the hourly rate [wnf20
 - [tinytapeout2026]: no date shown; read on 10 November 2026
 - [transcat2026]: no date shown; read on 15 November 2026
 - [twinleaf2026]: no date shown; read on 15 November 2026
+- [ucmfs2026]: no date shown; read on 18 November 2026
 - [umdrad2025]: effective 1 July 2025 (2026-2027 fee schedule); read on 15 November 2026
 - [wnf2026]: effective 1 March 2026; read on 10 November 2026 and 15 November 2026
 
-Sources: [aalto2025] [aggiefab2025] [asuaep2026] [ccmr2026] [cunyasrc2024] [e6cvd2026] [edmundoptics2026] [element14sg2026] [europractice2026] [gatechims2025] [infraredcameras2026] [lattispec2026] [maf2023] [mibl2024] [osurc2023] [quspin2026] [rigolna2026] [srs2026] [tinytapeout2026] [transcat2026] [twinleaf2026] [umdrad2025] [wnf2026]
+Sources: [aalto2025] [aggiefab2025] [alibabacvd2026] [alibabampcvd2026] [asuaep2026] [asuultrafast2026] [ccmr2026] [cunyasrc2024] [dfsubstrate2026] [e6cvd2026] [edmundoptics2026] [element14sg2026] [europractice2026] [gatechims2025] [geometrics2026] [infraredcameras2026] [lattispec2026] [maf2023] [mibl2024] [micchenguang2026] [micmoresuperhard2026] [osurc2023] [quspin2026] [rigolna2026] [srs2026] [tinytapeout2026] [transcat2026] [twinleaf2026] [ucmfs2026] [umdrad2025] [wnf2026]
