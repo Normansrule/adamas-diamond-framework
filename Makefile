@@ -7,7 +7,7 @@ all: refs test figures
 test:            ## unit tests plus citation check (use "python -m pytest", not a bare pytest on PATH)
 	$(PY) -m pytest -q
 
-figures:         ## regenerate all 53 figures and the equations animation into docs/img/
+figures:         ## regenerate all figures and the equations animation into docs/img/
 	$(PY) examples/make_all_figures.py
 
 refs:            ## rebuild references.bib and REFERENCES.md, then check every [bibkey]

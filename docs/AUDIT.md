@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.50.0 (error correction against both error types)
+
+The nine-qubit code's failure probability is a closed-form result checked by exhaustive decoding, labeled simulated. The 0.079 break-even holds only for the stated noise model (independent bit and phase flips of equal probability, perfect gates); it is not a threshold for NV hardware, and no nine-qubit code on room-temperature NV registers is claimed.
+
 ### Status after v0.49.0 (Fab Journey photos)
 
 A photo is shown only with a license read from Wikimedia Commons by code, never one typed from a search result. The build container cannot reach Commons, so this release ships the fetcher, its license filter and its tests, and the page rendering (checked with a stand-in image that was removed before commit); the photos arrive when `make photos` runs on a machine that can reach Commons. Until then every step says no open photo is logged, as before. Captions say when a photo shows a related tool rather than the diamond process itself (S03, S19).

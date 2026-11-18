@@ -64,7 +64,9 @@ Here k sets what each check lets through when the true value sits exactly on its
 - **Multi-cell arrays:** P6's outline includes them; no model links two cells yet (P5 gives the pair yield, the link between cells is open, [STATUS.md](../STATUS.md)).
 - **Photoelectric readout** (Atlas M55) through the chiplet: no noise model yet; the checks here assume optical readout.
 - **Heating by the on-chip driver** and **green light leaking through the filter** (QDL-27 failure modes): no thermal or optical model of the assembly.
-- **Phase errors** in the repetition code: the three-qubit code corrects bit flips only.
+- **Both error types at once:** the three-qubit code corrects bit flips, or phase flips in the Hadamard basis, but not both. The nine-qubit code [shor1995] corrects one of each. With independent bit and phase flips of probability p on every qubit, and perfect encoding, syndrome measurement and correction gates, it fails less often than one unencoded qubit only below p = 0.079 (`adamas.qec.shor9_break_even`; simulated, an exact formula checked by decoding all 2⁹ error patterns of each type; a property of the code under this noise model, not a hardware threshold). It needs nine qubits per logical qubit, three times the register of one P6 cell, so it would need linked cells, which are not modeled (proposed). Figure 64 compares the codes.
+
+  ![Codes against both error types](../img/fig64_qec_codes.png)
 
 ## Failure modes
 

@@ -1432,6 +1432,8 @@ def _p6_md() -> str:
     verdict = ("All simulated checks pass and every degraded twin fails, so the analysis can tell a good chiplet from a faulty one; the gate is decided by the numbers measured on your assembly."
                if g["verdict"] == "go" and not (bc["pass"] or bd["pass"] or bq["pass"])
                else f"On this run a simulated check fails or a degraded twin passes; a correct run fails about {100 * (1 - rates['gate']):.1f} % of the time, so repeat it before changing the analysis.")
+    from .qec import shor9_break_even
+    _shor9_be = shor9_break_even()
     text = f"""# P6 · Integration: diamond chiplets on silicon control
 
 {GEN}
@@ -1498,7 +1500,9 @@ The degraded twins, one fault each. The last column is how often the faulty run 
 - **Multi-cell arrays:** P6's outline includes them; no model links two cells yet (P5 gives the pair yield, the link between cells is open, [STATUS.md](../STATUS.md)).
 - **Photoelectric readout** (Atlas M55) through the chiplet: no noise model yet; the checks here assume optical readout.
 - **Heating by the on-chip driver** and **green light leaking through the filter** (QDL-27 failure modes): no thermal or optical model of the assembly.
-- **Phase errors** in the repetition code: the three-qubit code corrects bit flips only.
+- **Both error types at once:** the three-qubit code corrects bit flips, or phase flips in the Hadamard basis, but not both. The nine-qubit code [shor1995] corrects one of each. With independent bit and phase flips of probability p on every qubit, and perfect encoding, syndrome measurement and correction gates, it fails less often than one unencoded qubit only below p = {_shor9_be:.3f} (`adamas.qec.shor9_break_even`; simulated, an exact formula checked by decoding all 2⁹ error patterns of each type; a property of the code under this noise model, not a hardware threshold). It needs nine qubits per logical qubit, three times the register of one P6 cell, so it would need linked cells, which are not modeled (proposed). Figure 64 compares the codes.
+
+  ![Codes against both error types](../img/fig64_qec_codes.png)
 
 ## Failure modes
 

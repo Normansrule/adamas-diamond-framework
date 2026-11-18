@@ -2,7 +2,17 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.49.0 (2026-11-18).
+Last updated: v0.50.0 (2026-11-18).
+
+## Open in v0.50.0: error correction against both error types
+
+`adamas.qec` adds the phase-flip code and the nine-qubit code [shor1995] (Figure 64, [P6](build/P6_integration.md)). What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Noise model | Bit and phase flips are taken as independent with equal probability on every qubit; a real register has a different relaxation time T₁ and coherence time T₂ for each qubit (electron and nuclei), so the two error types are not equally likely | Measured T₁ and T₂ of each register qubit in a biased-noise model |
+| Errors during correction | The codes assume perfect encoding, syndrome measurement and correction gates | A circuit-level model like `adamas.circuit_qec` for the nine-qubit code |
+| Nine qubits in hardware | One P6 cell has three register qubits; nine need linked cells, which are not modeled | A cell-to-cell link model (see Open in v0.37.0) |
 
 ## Open in v0.49.0: Fab Journey photos
 
@@ -170,7 +180,7 @@ The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with 
 | Multi-cell arrays | No model links two cells yet | A cell-to-cell link model (photonic or dipolar) driven by P5's pair yield |
 | Photoelectric readout through the chiplet (M55) | No noise model of the readout chain | A photocurrent noise model checked against a measurement |
 | Heating and green-light leakage (QDL-27 failure modes) | No thermal or optical model of the assembly | A thermal model of the driver and a filter-leakage measurement |
-| Phase errors in the repetition code | The three-qubit code corrects bit flips only | A phase-flip or larger code in `adamas.qec` |
+| Phase errors in the repetition code | Closed for independent flips with perfect gates in v0.50.0 (circuit-level and hardware items are in Open in v0.50.0): `adamas.qec` adds the phase-flip code and the nine-qubit code [shor1995], checked by exhaustive decoding | — |
 
 ## Open in v0.36.0: build phase P5 (placement)
 
