@@ -48,7 +48,7 @@
   #printAll section{break-after:page;padding:8px 0}#printAll .box,#printAll .safety{background:#fff;border-color:#999;color:#000}
   #printAll .plate{background:#fff}#printAll .xs text{fill:#000}#printAll .note{color:#333}
 }
-</style></head><body>
+@media print{.photo a[href]::after{content:" (" attr(href) ")";word-break:break-all}}.photo{margin:12px 0 0}.photo img{display:block;max-width:100%;max-height:420px;border-radius:8px;background:#fff}</style></head><body>
 <main class="wrap">
 <section class="block" style="padding:50px 0 4px" id="lede"><p class="eyebrow">Fab Journey</p>
   <h1 style="font-size:clamp(30px,4.6vw,56px);margin:6px 0 10px">Build it, <span class="grad">one step at a time</span></h1>
@@ -108,7 +108,7 @@ function stepHTML(s, n, total, print = false) {
     <div class="box"><h3>Do this</h3><p style="margin:0">${esc(s.action)}</p>${s.why ? `<p class="note"><b>Why:</b> ${esc(s.why)}</p>` : ''}${s.refs.length ? `<p class="note">Sources: ${s.refs.map(r => `[${esc(r)}]`).join(' ')}</p>` : ''}</div>
     ${s.parts.length || (s.equipment || []).length ? `<div class="box"><h3>Parts and machines</h3><div class="tray">${s.parts.map(p => `<span class="part"><b>${esc(p.id)}</b> ${esc(p.name)}</span>`).join('')}</div>${s.equipment ? `<p class="note">Traveler equipment: ${esc(s.equipment.join('; '))}</p>` : ''}</div>` : ''}
     <div class="box"><h3>${s.diagram.kind === 'section' ? 'Cross-section' : s.diagram.kind === 'setup' ? 'Setup' : s.diagram.kind === 'yield' ? 'Placement yield' : s.diagram.kind === 'spc' ? 'Control limits' : 'Decision'}</h3>${diagram(s.diagram)}
-      <p class="note">${s.photo.status === 'photo' ? `Photo: ${esc(s.photo.title)}, ${esc(s.photo.author)}, ${esc(s.photo.license)}` : esc(s.photo.note)}</p></div>
+      ${s.photo.status === 'photo' ? `<figure class="photo"><img loading="lazy" src="img/photos/${encodeURIComponent(s.photo.file)}" alt="${esc(s.photo.title)}"><figcaption class="note">Photo: ${esc(s.photo.title)}, by ${esc(s.photo.author)}, ${s.photo.license_url && s.photo.license_url.startsWith('https://') ? `<a href="${esc(s.photo.license_url)}" rel="noopener">${esc(s.photo.license)}</a>` : esc(s.photo.license)}, via Wikimedia Commons (resized), ${s.photo.source.startsWith('https://commons.wikimedia.org/') ? `<a href="${esc(s.photo.source)}" rel="noopener">source</a>` : ''}.${s.photo.note ? ' ' + esc(s.photo.note) : ''}</figcaption></figure>` : `<p class="note">${esc(s.photo.note)}</p>`}</div>
     ${cks || crit ? `<div class="box"><h3>Checkpoint</h3>${cks ? `<div class="tscroll"><table class="tbl"><tr><th>Test (simulated)</th><th>Result</th><th></th></tr>${cks}</table></div>` : ''}${crit ? `<p class="note">Measure on your sample (ADAMAS = limit chosen by this project, proposed):</p><div class="tscroll"><table class="tbl"><tr><th>Criterion</th><th>Limits</th><th>Source</th></tr>${crit}</table></div>` : ''}</div>` : ''}
     ${s.safety.length ? `<div class="safety"><h3 class="box-h">Safety</h3>${esc(s.safety.join(' '))}<p class="note" style="color:inherit">${esc(J.training)}</p></div>` : ''}
     ${s.time || s.cost ? `<p class="note">Whole experiment: ${esc(s.time)}${s.cost ? `; US$${s.cost[0].toLocaleString('en-US')} to ${s.cost[1].toLocaleString('en-US')} (estimates from the experiment card, not quotes)` : ''}</p>` : ''}

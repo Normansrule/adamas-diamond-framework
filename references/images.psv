@@ -1,4 +1,6 @@
-# ADAMAS photo log (v0.32.0). One row per photo shown anywhere in the project:
-# file (under docs/img/photos/) | title | author | source URL | license | credit line | Fab Journey step ID
-# Allowed licenses: public domain, CC0, CC BY, CC BY-SA (tests/test_journey.py checks every row and that the file exists).
-# Never log an AI-generated image as a photo. Empty in v0.32.0: Commons candidates are listed in docs/STATUS.md until each license is checked by hand.
+# ADAMAS photo log. One row per photo shown anywhere in the project, written by `python -m adamas.photos` from the
+# Wikimedia Commons API (license, author and source are copied from Commons, never typed by hand):
+# file (under docs/img/photos/) | title | author | source URL | license | credit line | Fab Journey step ID | note | license URL
+# Allowed licenses: public domain, CC0, CC BY, CC BY-SA (any version). tests/test_journey.py checks every row and that the file exists.
+# Each photo keeps its own license (not the repository's MIT license); the files are 1024-pixel copies of the originals.
+# Never log an AI-generated image as a photo.

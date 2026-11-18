@@ -1,6 +1,6 @@
 # ADAMAS developer shortcuts. Run inside the conda environment:  conda activate adamas
 PY := python
-.PHONY: all test figures animations loop-gif trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place action-golden app desktop desktop-check clean
+.PHONY: all test photos figures animations loop-gif trailer notebooks traveler experiments examples glossary validation paper talk poster explorer orfs site serve web-test refs verify apply-verify spice rtl synth layout place action-golden app desktop desktop-check clean
 
 all: refs test figures
 
@@ -49,6 +49,9 @@ explorer:        ## rebuild docs/index.html (interactive explorer) and the poste
 
 orfs:            ## install the PDK-0 platform + DIA-4 into ~/orfs and run OpenROAD in Docker (host shell, not inside a container)
 	bash circuits/digital/openroad/run_orfs.sh
+
+photos:          ## fetch openly licensed Fab Journey photos from Wikimedia Commons (license read from Commons; needs internet), then rebuild docs
+	$(PY) -m adamas.photos && $(PY) -m adamas build docs
 
 site:            ## build the website (landing page, every lab, explorer) into site/
 	$(PY) -m adamas.site site

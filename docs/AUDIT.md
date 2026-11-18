@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.49.0 (Fab Journey photos)
+
+A photo is shown only with a license read from Wikimedia Commons by code, never one typed from a search result. The build container cannot reach Commons, so this release ships the fetcher, its license filter and its tests, and the page rendering (checked with a stand-in image that was removed before commit); the photos arrive when `make photos` runs on a machine that can reach Commons. Until then every step says no open photo is logged, as before. Captions say when a photo shows a related tool rather than the diamond process itself (S03, S19).
+
 ### Status after v0.48.0 (last machines priced)
 
 A price in the Atlas is a published figure, never a quote estimated by this repository. For the five machines that had none, the only published figures are marketplace listings (growth machines and high-pressure high-temperature (HPHT) plates), a substrate whose growth method is not stated, general femtosecond laser time, and a magnetometer rental. Each is labeled for what it is: marketplace listings say so and that the supplier is not named; stand-ins are marked as the closest listed tool; the navigation test lists what is not priced. A free map is noted in text rather than entered as a zero price.

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from adamas import atlas, journey, traveler
+from adamas import atlas, journey, photos, traveler
 
 ROOT = Path(__file__).resolve().parents[1]
 KEYS = set(re.findall(r"@\w+\{([^,]+),", (ROOT / "references" / "references.bib").read_text(encoding="utf-8")))
@@ -80,8 +80,8 @@ def test_placement_yield_is_a_probability_and_peaks_near_one_nv_per_site():
 
 def test_photo_log_rows_are_open_licensed_credited_and_exist():
     for r in journey.images():
-        assert r["license"] in journey.LICENSES, r
-        assert r["author"] and r["source"].startswith("http") and r["credit"], r
+        assert photos.license_ok(r["license"]) == r["license"], r                    # an allowed license, as adamas.photos writes it
+        assert r["author"] and r["source"].startswith(photos.SOURCE_PREFIX) and r["credit"], r
         assert (ROOT / "docs" / "img" / "photos" / r["file"]).exists(), r
     shown = [s for L in journey.LEVELS for s in journey.steps(L["id"]) if s["photo"]["status"] == "photo"]
     assert len(shown) == len([r for r in journey.images() if r.get("step")])
@@ -90,3 +90,31 @@ def test_photo_log_rows_are_open_licensed_credited_and_exist():
 def test_generated_pages_are_current():
     for name, text in journey.documents().items():
         assert (ROOT / "docs" / "journey" / name).read_text(encoding="utf-8") == text, "run: adamas build docs"
+
+
+def test_photo_fetch_keeps_only_open_licenses_and_never_guesses():
+    ok = {"public domain": "public domain", "Public domain": "public domain", "PD-USGov-NASA": "public domain", "CC0": "CC0",
+          "CC BY 2.0": "CC BY 2.0", "CC BY-SA 4.0": "CC BY-SA 4.0", "cc-by-sa-3.0": None, "CC BY-NC 2.0": None,
+          "CC BY-ND 4.0": None, "Fair use": None, "": None, "CC BY-NC-SA 2.0": None, "PD-Russia": None, "PD-textlogo": None,
+          "PD": None, "GFDL": None, "CC BY-SA 2.0 de": None, "Attribution": None}
+    assert {k: photos.license_ok(k) for k in ok} == ok
+    def reply(lic, artist="<a href='x'>A.&nbsp;Person</a>", thumb="https://upload.wikimedia.org/x.jpg", src="https://commons.wikimedia.org/wiki/File:X.jpg", **more):
+        meta = {"LicenseShortName": {"value": lic}, "Artist": {"value": artist}, "Credit": {"value": "Own work"},  # shape of a Commons API reply;
+                "LicenseUrl": {"value": "https://creativecommons.org/licenses/by-sa/4.0"}, **{k: {"value": v} for k, v in more.items()}}  # test data, not a real file
+        return {"query": {"pages": {"1": {"imageinfo": [{"descriptionurl": src, "thumburl": thumb, "mime": "image/jpeg", "extmetadata": meta}]}}}}
+    f = photos.parse(reply("CC BY-SA 4.0"), "File:X.jpg")
+    assert f["ok"] and f["license"] == "CC BY-SA 4.0" and f["author"] == "A. Person"
+    assert not photos.parse(reply("CC BY-NC 2.0"), "File:X.jpg")["ok"]
+    assert not photos.parse(reply("CC BY 4.0", artist=""), "File:X.jpg")["ok"]                  # "Own work" credit is not an author
+    assert not photos.parse(reply("CC BY 4.0", artist="Unknown author"), "File:X.jpg")["ok"]
+    assert photos.parse(reply("Public domain", artist=""), "File:X.jpg")["author"] == "Own work"
+    assert not photos.parse(reply("CC BY 4.0", Restrictions="trademarked"), "File:X.jpg")["ok"]
+    assert not photos.parse(reply("CC BY 4.0", thumb="https://upload.wikimedia.org/x.svg.png".replace(".png", "")), "File:X.jpg")["ok"]
+    assert not photos.parse(reply("CC BY 4.0", src="javascript:alert(1)"), "File:X.jpg")["ok"]
+    assert photos.parse(reply("CC BY 4.0", thumb="https://upload.wikimedia.org/x.svg/1024px-x.svg.png"), "File:X.jpg")["ext"] == "png"
+    assert not photos.parse({"query": {"pages": {"-1": {"missing": ""}}}}, "File:X.jpg")["ok"]
+    r = dict(zip(photos.FIELDS, photos.row("S19", "File:X.jpg", f, "note").split(" | ")))
+    assert r["file"] == "s19-x.jpg" and r["license"] == "CC BY-SA 4.0" and r["step"] == "S19" and "via Wikimedia Commons" in r["credit"]
+    assert r["license_url"].startswith("https://creativecommons.org/")
+    ids = {s["id"] for L in journey.LEVELS for s in journey.steps(L["id"])}
+    assert all(step in ids and t.startswith("File:") and note for step, t, note in photos.CANDIDATES)

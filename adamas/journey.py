@@ -19,7 +19,8 @@ measured on your own sample; the page says so instead of inventing a result.
 Photos. Only public-domain, CC0, CC BY or CC BY-SA photos may appear, each logged in references/images.psv with its
 author, source and license, and checked by tests/test_journey.py. No AI-generated image is ever shown as a photo. In
 v0.32.0 the log is empty: the Wikimedia Commons candidates could not be license-checked from the build container, so
-every step shows its diagram and says that no open photo is logged yet.
+every step shows its diagram and says that no open photo is logged yet. From v0.49.0 `python -m adamas.photos` reads each
+candidate's license from Wikimedia Commons, keeps only the allowed ones, and writes the log (adamas.photos).
 """
 from __future__ import annotations
 
@@ -30,7 +31,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGES = ROOT / "references" / "images.psv"
-LICENSES = ("public domain", "CC0", "CC BY", "CC BY-SA")
+LICENSES = ("public domain", "CC0", "CC BY", "CC BY-SA")   # any version of CC BY and CC BY-SA (adamas.photos.license_ok)
 TRAINING = ("Hazardous steps need your institution's laser, chemical, cleanroom and high-voltage training before you "
             "start; these notes do not replace it.")
 
@@ -166,13 +167,14 @@ def cells_to_write(cells: int, yield_per_cell: float) -> float:
 
 # --------------------------------------------------------------------------------------------------- photos
 def images() -> list[dict]:
-    """Rows of references/images.psv: file | title | author | source | license | credit (comments start with #)."""
+    """Rows of references/images.psv (columns: adamas.photos.FIELDS; comments start with #)."""
+    from .photos import FIELDS
     rows = []
     if IMAGES.exists():
         for line in IMAGES.read_text(encoding="utf-8").splitlines():
             if line.strip() and not line.startswith("#"):
                 f = [x.strip() for x in line.split("|")]
-                rows.append(dict(zip(("file", "title", "author", "source", "license", "credit", "step"), f)))
+                rows.append(dict(zip(FIELDS, f)))
     return rows
 
 
@@ -335,7 +337,13 @@ def _level_md(L: dict) -> str:
         elif d["kind"] == "spc":
             out += [f"**Control limits ({len(d['limits'])} traveler checks with a limit):** " + "; ".join(
                 f"{x['step']} {x['check']} {'≥ ' + str(x['min']) if x['min'] is not None else ''}{' ≤ ' + str(x['max']) if x['max'] is not None else ''} {x['unit']}".replace("  ", " ") for x in d["limits"]), ""]
-        out += ["**Photo:** " + (f"{s['photo']['title']}, {s['photo']['author']}, {s['photo']['license']}" if s["photo"]["status"] == "photo" else s["photo"]["note"]), ""]
+        ph = s["photo"]
+        md = lambda t: re.sub(r"([\\`*_\[\]<>])", r"\\\1", t)           # author and title text are data, not markdown
+        lic = (f"[{ph['license']}]({ph['license_url']})" if ph.get("license_url") else ph.get("license", ""))
+        out += ([f"![{md(ph['title'])}](../img/photos/{ph['file']})", "",
+                 f"**Photo:** {md(ph['title'])}, by {md(ph['author'])}, {lic}, via Wikimedia Commons (resized), [source]({ph['source']}). "
+                 f"{ph.get('note', '')}".rstrip(), ""]
+                if ph["status"] == "photo" else ["**Photo:** " + ph["note"], ""])
         for c in s["checkpoints"]:
             v = "pass" if c["pass"] else ("fail" if c["pass"] is False else "computed")
             out += [f"**Checkpoint (simulated, `{c['python']}`):** {c['what']}: {c['value']} → **{v}**", ""]
@@ -354,7 +362,7 @@ def _level_md(L: dict) -> str:
 
 
 def _index_md() -> str:
-    out = ["# Fab Journey", "", GEN, "", "The build, step by step, at four scopes. Diagrams are code-drawn and schematic; photos appear only when an openly licensed one is logged in references/images.psv (none yet).", "",
+    out = ["# Fab Journey", "", GEN, "", "The build, step by step, at four scopes. Diagrams are code-drawn and schematic; photos appear only when an openly licensed one is logged in references/images.psv " + (f"({len(images())} logged)." if images() else "(none yet: run `python -m adamas.photos`, which needs access to Wikimedia Commons)."), "",
            "| Level | Name | Steps | Scope |", "|---|---|---|---|"]
     out += [f"| [{L['id']}]({L['id']}.md) | {L['name']} | {len(steps(L['id']))} | {L['scope']} |" for L in LEVELS]
     return "\n".join(out + [""])

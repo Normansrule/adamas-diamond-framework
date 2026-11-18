@@ -2,7 +2,7 @@
 
 _Generated from `adamas/journey.py` (`adamas build docs`); do not edit by hand._
 
-The build, step by step, at four scopes. Diagrams are code-drawn and schematic; photos appear only when an openly licensed one is logged in references/images.psv (none yet).
+The build, step by step, at four scopes. Diagrams are code-drawn and schematic; photos appear only when an openly licensed one is logged in references/images.psv (none yet: run `python -m adamas.photos`, which needs access to Wikimedia Commons).
 
 | Level | Name | Steps | Scope |
 |---|---|---|---|
