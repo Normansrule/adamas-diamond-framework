@@ -1542,6 +1542,10 @@ P7_D0_CM2 = 2.0              # mean killer-defect density, cm^-2 (illustrative; 
 P7_DEFECT_MONITORS = 10      # defect-monitor wafers inspected in full to measure D0, apart from the product wafers (illustrative)
 P7_RING_MM = 4.0             # degraded twin: dies whose centre is within this of the edge exclusion lose growth uniformity
 P7_RING_FAIL = 0.5           # ... and fail with this extra probability (illustrative)
+P7_ALPHA = 0.5               # clustered-defect line: gamma-distributed density with cluster parameter alpha [stapper1983] (illustrative)
+P7_CLUSTER_DIE_MM = 10.0     # a product-sized die for the clustering check: A D0 = 2, where the yield models differ (illustrative)
+P7_BOOT = 200                # bootstrap resamples of the monitor sites for the uncertainty of a predicted yield
+P7_CLUSTER_RUNS = 200        # simulated clustered lines over which both yield models are judged
 
 
 def _k7() -> float:
@@ -1660,6 +1664,42 @@ def p7_good_dies_table(d0_cm2: float, areas_mm2=(1.0, 9.0, 25.0, 100.0)) -> list
 
 
 
+def p7_clustered(seed: int = 7, alpha: float = P7_ALPHA, die_mm: float = P7_CLUSTER_DIE_MM) -> dict:
+    """A line whose killer defects cluster: each die site's density is drawn from a gamma distribution with mean D0 and
+    cluster parameter alpha, so the counts per site are negative-binomial and the expected yield is Stapper's
+    (1 + A D0 / alpha)^(-alpha) [stapper1983]. D0 and alpha are fitted to the defect-monitor counts (alpha by the method
+    of moments, adamas.wafer.fit_cluster_alpha); the product yield is then compared with the Poisson, Murphy and fitted
+    negative-binomial predictions, each judged within k sigma, where sigma combines the binomial spread of the measured
+    yield and the bootstrap spread of the prediction (P7_BOOT resamples of the monitor sites). This is the yield-model
+    meaning of clustering (density varies from die to die); a spatial cluster map is not modeled."""
+    from .wafer import fit_cluster_alpha, murphy_yield, negative_binomial_yield
+    r = _rng7(seed, 2); sites = p7_die_sites(die_mm=die_mm); n = sites.shape[0] * P7_MONITOR_WAFERS; n_m = sites.shape[0] * P7_DEFECT_MONITORS
+    a_cm2, area = (die_mm / 10) ** 2, die_mm ** 2
+    dens = lambda m: r.gamma(alpha, P7_D0_CM2 / alpha, m)       # noqa: E731
+    good = r.poisson(a_cm2 * dens(n)) == 0
+    c = r.poisson(a_cm2 * dens(n_m))
+    def predict(cc):
+        d0 = float(cc.mean() / a_cm2); al = fit_cluster_alpha(cc)
+        return {"poisson": math.exp(-a_cm2 * d0), "murphy": murphy_yield(area, d0), "nb": negative_binomial_yield(area, d0, al)}, d0, al
+    pred, d0, al = predict(c)
+    boot = [predict(c[r.integers(0, n_m, n_m)])[0] for _ in range(P7_BOOT)]
+    y = float(good.mean()); k = _k7(); out = {}
+    for m in ("poisson", "murphy", "nb"):
+        sp = float(np.std([b[m] for b in boot], ddof=1)); sigma = math.hypot(math.sqrt(y * (1 - y) / n), sp)
+        out[m] = {"y_pred": pred[m], "diff": y - pred[m], "sigma": sigma, "pass": bool(abs(y - pred[m]) <= k * sigma)}
+    return {"alpha_true": alpha, "alpha_fit": al, "d0_cm2": d0, "y_meas": y, "y_true": negative_binomial_yield(area, P7_D0_CM2, alpha), "die_mm": die_mm,
+            "dies": int(n), "monitor_sites": int(n_m), "k": k, "models": out}
+
+
+@lru_cache(maxsize=2)
+def p7_clustered_rates(runs: int = P7_CLUSTER_RUNS) -> dict:
+    """How often each yield model agrees with the measured yield of a clustered line (seeds 7000 + i)."""
+    res = [p7_clustered(7000 + i) for i in range(runs)]
+    al = [x["alpha_fit"] for x in res if math.isfinite(x["alpha_fit"])]
+    return {"runs": runs, **{m: sum(x["models"][m]["pass"] for x in res) / runs for m in ("poisson", "murphy", "nb")},
+            "alpha_median": float(np.median(al)) if al else math.inf, "alpha_finite": len(al) / runs}
+
+
 def p7_bill() -> dict:
     """Parts and price range for P7: the D2 part list (estimates from adamas.experiments, not quotes)."""
     from .experiments import EXPERIMENTS
@@ -1708,13 +1748,15 @@ def p7_figure(out: str | Path = "docs/img") -> Path:
     a = ax[3]; xx = np.linspace(0.01, 2.0, 200)
     a.plot(xx, np.exp(-xx), color=INK, lw=1.2, ls="--", label="Poisson e^(−AD₀)")
     a.plot(xx, [murphy_yield(100 * x, 1.0) for x in xx], color=INK, lw=1.8, label="Murphy [murphy1964]")
+    from .wafer import negative_binomial_yield
+    a.plot(xx, [negative_binomial_yield(100 * x, 1.0, P7_ALPHA) for x in xx], color=INK, lw=1.2, ls=":", label=f"negative binomial, α = {P7_ALPHA:g} (illustrative, not fitted to these points) [stapper1983]")
     for y, col, lab in ((g["yield"], COLORS["Diamond"], "correct line"), (b["yield"], RED, "edge-ring twin")):
         ad = (P7_DIE_MM / 10) ** 2 * y["d0_cm2"]
         a.errorbar([ad], [y["y_meas"]], yerr=[y["k"] * y["sigma"]], fmt="o", color=col, ms=6, capsize=3, label=f"{lab}: measured, ±kσ")
     a.legend(fontsize=8, loc="upper right"); a.set_ylim(0, 1.05)
     a.set_title("4. Product yield against A·D₀ from defect-monitor wafers", fontsize=10.5)
     a.set_xlabel("die area × killer-defect density, A·D₀"); a.set_ylabel("yield")
-    return _finish(fig, out, "fig60_build_p7.png", "simulated and analyzed by adamas.build_program (illustrative inputs; 2-inch wafer [kim2021]); [shewhart1931] [murphy1964]")
+    return _finish(fig, out, "fig60_build_p7.png", "simulated and analyzed by adamas.build_program (illustrative inputs; 2-inch wafer [kim2021]); [shewhart1931] [murphy1964] [stapper1983]")
 
 
 def _p7_rates_note(rates: dict) -> str:
@@ -1744,6 +1786,12 @@ def _p7_md() -> str:
     pct = lambda v: f"{100 * v:.1f} %"   # noqa: E731
     money = lambda v: f"${v / 1e6:g} M"   # noqa: E731
     bill = p7_bill(); table = p7_good_dies_table(y["d0_cm2"])
+    cl0, clr = p7_clustered(), p7_clustered_rates()
+    alpha_note = '' if clr['alpha_finite'] == 1 else f" (over the {100 * clr['alpha_finite']:.1f} % of runs whose counts were over-dispersed)"
+    from .wafer import murphy_yield, negative_binomial_yield, poisson_yield
+    def _spread(die_mm):
+        ys = (poisson_yield(die_mm ** 2, P7_D0_CM2), murphy_yield(die_mm ** 2, P7_D0_CM2), negative_binomial_yield(die_mm ** 2, P7_D0_CM2, P7_ALPHA))
+        return 100 * (max(ys) - min(ys))
     machines = ", ".join(f"{k} {atlas.tool(k)}" for k in P7_MACHINES).replace("YSZ", "yttria-stabilized zirconia (YSZ)", 1)
     hazards = " ".join(dict.fromkeys(h for sid in ("S03", "S17") for h in st[sid]["safety"]))
     verdict = ("Both simulated checks pass and both degraded twins fail, so the analysis can tell a stable, defect-limited line from a drifting or edge-limited one; the gate is decided by the numbers measured on your line."
@@ -1826,9 +1874,23 @@ At the measured D₀ = {y['d0_cm2']:.2f} cm⁻², usable diameter {P7_WAFER_MM -
 
 Yield falls steeply with die area, so at this D₀ small dies (sensors, discrete switches) get by far the most good dies per wafer, and large dies (qubit arrays, large power switches) need a lower D₀. Which product pays for the line also needs each product's price and test cost, which are not sourced ([STATUS.md](../STATUS.md)).
 
+## Clustered defects (simulated)
+
+Killer defects often cluster: some dies collect several while others have none, which raises yield at a given D₀ compared with the Poisson model. Stapper's negative-binomial model [stapper1983] describes this with a cluster parameter α: Y = (1 + A·D₀/α)^(−α) (`adamas.wafer.negative_binomial_yield`). Small α means strong clustering; α → ∞ is the Poisson model. α is measured from defect-monitor counts binned on the product die's area (α measured on one area does not carry over to another): the counts per site spread more than Poisson, with variance m + m²/α for mean m, so α = m²/(s² − m) (`adamas.wafer.fit_cluster_alpha`, method of moments).
+
+A simulated line (`adamas.build_program.p7_clustered`) draws each site's density from a gamma distribution with mean D₀ = {P7_D0_CM2:g} cm⁻² and α = {P7_ALPHA:g} (illustrative), on a {P7_CLUSTER_DIE_MM:g} mm product die where A·D₀ = {(P7_CLUSTER_DIE_MM / 10) ** 2 * P7_D0_CM2:g} and the models differ (true yield {pct(cl0['y_true'])}); each line has {cl0['dies']} product dies and {cl0['monitor_sites']} monitor sites of that size. One such line cannot tell the models apart (its yield is uncertain by about ±{100 * cl0['models']['nb']['sigma']:.0f} percentage points); repeating it can. Over {clr['runs']} simulated lines, the measured product yield agreed within k sigma (bootstrap spread of the prediction plus binomial spread of the yield) with each model as below; a correct model is expected to agree in about {pct(P7_TEST_COVERAGE)} of runs (binomial standard error over {clr['runs']} runs: {100 * math.sqrt(P7_TEST_COVERAGE * (1 - P7_TEST_COVERAGE) / clr['runs']):.1f} points).
+
+| Model fitted to the monitor counts | Runs that agree |
+|---|---|
+| Poisson, e^(−A·D₀) | {pct(clr['poisson'])} |
+| Murphy [murphy1964] | {pct(clr['murphy'])} |
+| Negative binomial with fitted α [stapper1983] | {pct(clr['nb'])} |
+
+The median fitted α was {clr['alpha_median']:.2f}{alpha_note}. On the {P7_DIE_MM:g} mm monitor die (A·D₀ = {(P7_DIE_MM / 10) ** 2 * P7_D0_CM2:g}) the three models at the same D₀ and α differ by {_spread(P7_DIE_MM):.1f} percentage points, against {_spread(P7_CLUSTER_DIE_MM):.1f} on the product die, so clustering matters most for large dies. This models die-to-die variation of density; a spatial cluster map (defects grouped in regions of a wafer) is not modeled.
+
 ## Not yet simulated
 
-- **Spatially clustered defects:** each die's density is drawn independently; real defects cluster (Stapper's negative-binomial model [stapper1983]), which raises yield at a given D₀ and widens wafer-to-wafer spread.
+- **Spatial cluster maps:** clustering enters only through the die-to-die spread of density (above); where on the wafer the clusters sit is not modeled.
 - **Small drifts:** cumulative-sum (CUSUM) or exponentially weighted moving-average (EWMA) charts.
 - **Several parameters at once:** only R_c is charted; a line charts every traveler check (threshold, sheet resistance, leakage, NV yield).
 - **Defect density's effect on leakage and coherence:** dislocation densities by substrate class are in `adamas.wafer`, but no model links them to leakage current or T₂ yet.

@@ -79,9 +79,23 @@ At the measured D₀ = 2.21 cm⁻², usable diameter 47 mm. Gross dies come from
 
 Yield falls steeply with die area, so at this D₀ small dies (sensors, discrete switches) get by far the most good dies per wafer, and large dies (qubit arrays, large power switches) need a lower D₀. Which product pays for the line also needs each product's price and test cost, which are not sourced ([STATUS.md](../STATUS.md)).
 
+## Clustered defects (simulated)
+
+Killer defects often cluster: some dies collect several while others have none, which raises yield at a given D₀ compared with the Poisson model. Stapper's negative-binomial model [stapper1983] describes this with a cluster parameter α: Y = (1 + A·D₀/α)^(−α) (`adamas.wafer.negative_binomial_yield`). Small α means strong clustering; α → ∞ is the Poisson model. α is measured from defect-monitor counts binned on the product die's area (α measured on one area does not carry over to another): the counts per site spread more than Poisson, with variance m + m²/α for mean m, so α = m²/(s² − m) (`adamas.wafer.fit_cluster_alpha`, method of moments).
+
+A simulated line (`adamas.build_program.p7_clustered`) draws each site's density from a gamma distribution with mean D₀ = 2 cm⁻² and α = 0.5 (illustrative), on a 10 mm product die where A·D₀ = 2 and the models differ (true yield 44.7 %); each line has 180 product dies and 90 monitor sites of that size. One such line cannot tell the models apart (its yield is uncertain by about ±7 percentage points); repeating it can. Over 200 simulated lines, the measured product yield agreed within k sigma (bootstrap spread of the prediction plus binomial spread of the yield) with each model as below; a correct model is expected to agree in about 97.5 % of runs (binomial standard error over 200 runs: 1.1 points).
+
+| Model fitted to the monitor counts | Runs that agree |
+|---|---|
+| Poisson, e^(−A·D₀) | 0.5 % |
+| Murphy [murphy1964] | 1.5 % |
+| Negative binomial with fitted α [stapper1983] | 98.5 % |
+
+The median fitted α was 0.50. On the 3 mm monitor die (A·D₀ = 0.18) the three models at the same D₀ and α differ by 2.2 percentage points, against 31.2 on the product die, so clustering matters most for large dies. This models die-to-die variation of density; a spatial cluster map (defects grouped in regions of a wafer) is not modeled.
+
 ## Not yet simulated
 
-- **Spatially clustered defects:** each die's density is drawn independently; real defects cluster (Stapper's negative-binomial model [stapper1983]), which raises yield at a given D₀ and widens wafer-to-wafer spread.
+- **Spatial cluster maps:** clustering enters only through the die-to-die spread of density (above); where on the wafer the clusters sit is not modeled.
 - **Small drifts:** cumulative-sum (CUSUM) or exponentially weighted moving-average (EWMA) charts.
 - **Several parameters at once:** only R_c is charted; a line charts every traveler check (threshold, sheet resistance, leakage, NV yield).
 - **Defect density's effect on leakage and coherence:** dislocation densities by substrate class are in `adamas.wafer`, but no model links them to leakage current or T₂ yet.

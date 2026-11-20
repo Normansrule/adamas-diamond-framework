@@ -2,7 +2,17 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.50.0 (2026-11-18).
+Last updated: v0.51.0 (2026-11-20).
+
+## Open in v0.51.0: clustered killer defects
+
+[P7](build/P7_pilot_line.md) now fits Stapper's negative-binomial yield [stapper1983] with a cluster parameter measured from the defect-monitor counts. What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| The cluster parameter α = 0.5 and the 10 mm product die | Illustrative; no diamond inspection data give α | α fitted to counts from real defect-monitor wafers |
+| Where clusters sit on the wafer | Clustering enters only as die-to-die spread of density | A spatial wafer-map model (for example correlated density fields) fitted to inspection maps |
+| The P7 gate itself | Still judges the monitor die with Murphy's model, where the models differ by 2.2 percentage points | Choose the model from the fitted α once real counts exist |
 
 ## Open in v0.50.0: error correction against both error types
 
@@ -163,7 +173,7 @@ The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with 
 |---|---|---|
 | Illustrative inputs | The wafer-to-wafer spread of contact resistance, the killer-defect density (2 cm⁻²), the edge exclusion and both faults are chosen, not measured. The 2-inch wafer size [kim2021] and the 3 mm monitor die are the only fixed inputs; P4's contact resistance is itself illustrative | Values from a pilot-line run |
 | Cost per good die and the product decision | No sourced wafer, test or product price; D2's part list is a planning estimate | Quotes and product prices |
-| Clustered defects | Each die's density is drawn independently; real defects cluster [stapper1983] | A negative-binomial wafer-map model fitted to inspection data |
+| Clustered defects | Partly closed in v0.51.0: a negative-binomial yield with a fitted cluster parameter [stapper1983]; spatial cluster maps are still open (Open in v0.51.0) | A spatial wafer-map model fitted to inspection data |
 | Small drifts and several parameters | Only a Shewhart chart of one parameter | CUSUM or EWMA charts over every traveler check |
 | Defect density to leakage and coherence | No model links dislocation density to leakage current or T₂ | Measured leakage and T₂ against etch-pit density |
 | Product qualification | No sourced reliability criteria per product | Qualification standards for each product line |

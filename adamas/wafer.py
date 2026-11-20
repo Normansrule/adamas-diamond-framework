@@ -3,6 +3,9 @@
 Gross dies per wafer (standard edge-loss approximation, see [plummer2000]):
     DPW = pi (d/2)^2 / A  -  pi d / sqrt(2 A)
 Yield models: Poisson Y = exp(-A D0); Murphy Y = ((1 - exp(-A D0)) / (A D0))^2 ([murphy1964], [stapper1983]).
+Negative binomial (clustered defects, [stapper1983]): Y = (1 + A D0 / alpha)^(-alpha); a gamma-distributed density with
+cluster parameter alpha gives negative-binomial counts per die, with variance m + m^2 / alpha for mean count m. Small alpha
+means strong clustering; alpha -> infinity is Poisson.
 """
 from __future__ import annotations
 import math
@@ -39,6 +42,25 @@ def poisson_yield(die_area_mm2: float, d0_per_cm2: float) -> float:
 def murphy_yield(die_area_mm2: float, d0_per_cm2: float) -> float:
     x = die_area_mm2 * 1e-2 * d0_per_cm2
     return 1.0 if x == 0 else (-math.expm1(-x) / x) ** 2   # expm1 keeps precision when A*D0 is tiny
+
+
+def negative_binomial_yield(die_area_mm2: float, d0_per_cm2: float, alpha: float) -> float:
+    """Stapper's clustered-defect yield [stapper1983]; alpha = inf gives the Poisson yield."""
+    if not alpha > 0:
+        raise ValueError("cluster parameter alpha must be positive")
+    x = die_area_mm2 * 1e-2 * d0_per_cm2
+    return math.exp(-x) if math.isinf(alpha) else (1 + x / alpha) ** (-alpha)
+
+
+def fit_cluster_alpha(counts) -> float:
+    """Cluster parameter alpha from defect counts per site by the method of moments, alpha = m^2 / (s^2 - m);
+    inf when the counts are no more spread than Poisson (no clustering detected)."""
+    import numpy as np
+    c = np.asarray(counts, dtype=float)
+    if c.size < 2:
+        return math.inf
+    m, v = float(c.mean()), float(c.var(ddof=1))
+    return math.inf if v <= m or m == 0 else m * m / (v - m)
 
 
 def good_dies(diameter_mm: float, die_area_mm2: float, d0_per_cm2: float) -> float:
