@@ -64,7 +64,22 @@ The degraded twins, one fault each. The last column is how often the faulty run 
 | Control chart | contact residue raises R_c by 4σ from wafer 31 (illustrative) | 4 wafers outside; first alarm at wafer 31 | no | 1.9 % |
 | Yield | non-uniform growth near the edge: dies within 4 mm of the edge exclusion fail half the time (illustrative) | Y = 77.3 % against 82.2 % predicted; edge ring 43.8 %, centre 83.2 % | no | 0.0 % |
 
-Against the 97.47 % design per check: the control-chart check passes correct runs about as often as designed (97.4 %); the yield check passes correct runs about as often as designed (98.0 %). Here a correct run sits exactly on the model each check tests (a stable process; a yield set by random killer defects), so its pass rate is the check's coverage: at least the design for the chart (slightly conservative, because the judged wafers share the estimated limits) and the design for large samples for the yield check (normal approximation). Over 1000 runs the gate passes 95.4 % of correct runs, consistent with the 95 % it is designed for. The chart's twin shifts by 4σ because limits this wide catch a 1σ drift only slowly; small drifts need a cumulative-sum or moving-average chart (not yet simulated).
+Against the 97.47 % design per check: the control-chart check passes correct runs about as often as designed (97.4 %); the yield check passes correct runs about as often as designed (98.0 %). Here a correct run sits exactly on the model each check tests (a stable process; a yield set by random killer defects), so its pass rate is the check's coverage: at least the design for the chart (slightly conservative, because the judged wafers share the estimated limits) and the design for large samples for the yield check (normal approximation). Over 1000 runs the gate passes 95.4 % of correct runs, consistent with the 95 % it is designed for. The chart's twin shifts by 4σ because limits this wide catch a 1σ drift only slowly; small drifts need a chart that accumulates evidence over several wafers (next section).
+
+## Small drifts: CUSUM and EWMA charts (simulated)
+
+A cumulative-sum (CUSUM) chart [page1954] adds up how far each wafer sits from the phase I mean, z (in units of the phase I standard deviation s), less a reference value k = 0.5, and alarms when the running sum passes a threshold h. An exponentially weighted moving-average (EWMA) chart [roberts1959] tracks e = λz + (1 − λ)e with λ = 0.2 and alarms when e leaves its limits. Both remember earlier wafers, so a small lasting shift builds up; the Shewhart chart judges each wafer alone. k and λ are ADAMAS design choices (k is half the shift the chart is tuned to catch).
+
+To compare them fairly, each chart's threshold is set by simulation (20,000 stable lines, `adamas.build_program.p7_drift_charts`) so that a stable line raises a false alarm with the gate's design probability, 2.5 % over 20 judged wafers; the thresholds are higher than they would be with a known mean and spread because the limits come from only 20 phase I wafers. The gate's own Student-t limit is slightly stricter and is shown too. Each chart then runs on 2,000 lines whose R_c rises by 1σ (illustrative) and stays there for the last 10 judged wafers; a line that alarmed before the shift is not counted as a catch:
+
+| Chart | Alarm threshold (Shewhart, EWMA: standard deviations of the statistic; CUSUM: h in units of s) | Lines caught after the shift (of 2,000) | Caught within 5 shifted wafers |
+|---|---|---|---|
+| Shewhart, the P7 gate's Student-t limit [shewhart1931] | 3.8 | 145 | 62 |
+| Shewhart, threshold set by simulation | 3.7 | 160 | 71 |
+| CUSUM, k = 0.5 [page1954] | 8.4 | 647 | 152 |
+| EWMA, λ = 0.2 [roberts1959] | 4.0 | 551 | 173 |
+
+At the same false-alarm rate, CUSUM and EWMA catch a 1σ shift within 10 wafers several times as often as the Shewhart chart, but most such shifts still go unseen that soon: a line that must catch them needs more wafers, a smaller spread, or a test on the cause (for example a contact-residue check).
 
 ## Products: good dies per 2-inch wafer
 
@@ -96,7 +111,6 @@ The median fitted α was 0.50. On the 3 mm monitor die (A·D₀ = 0.18) the thre
 ## Not yet simulated
 
 - **Spatial cluster maps:** clustering enters only through the die-to-die spread of density (above); where on the wafer the clusters sit is not modeled.
-- **Small drifts:** cumulative-sum (CUSUM) or exponentially weighted moving-average (EWMA) charts.
 - **Several parameters at once:** only R_c is charted; a line charts every traveler check (threshold, sheet resistance, leakage, NV yield).
 - **Defect density's effect on leakage and coherence:** dislocation densities by substrate class are in `adamas.wafer`, but no model links them to leakage current or T₂ yet.
 - **Product qualification:** reliability tests per product (temperature, humidity, high-voltage life) need sourced criteria.
@@ -112,4 +126,4 @@ The median fitted α was 0.50. On the 3 mm monitor die (A·D₀ = 0.18) the thre
 
 *Which product line pays for the line?* Both simulated checks pass and both degraded twins fail, so the analysis can tell a stable, defect-limited line from a drifting or edge-limited one; the gate is decided by the numbers measured on your line. The simulation can rank products by good dies per wafer, which favours small dies; the economic answer needs sourced wafer, test and product prices. Go to P8 when one product's measured cost per good die is below its price.
 
-Sources: [kim2021] [qu2024] [schreck2017] [e6orbray2026] [shewhart1931] [murphy1964] [stapper1983]
+Sources: [kim2021] [qu2024] [schreck2017] [e6orbray2026] [shewhart1931] [murphy1964] [stapper1983] [page1954] [roberts1959]

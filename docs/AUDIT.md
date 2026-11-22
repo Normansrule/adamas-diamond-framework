@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.52.0 (small drifts in the pilot line)
+
+The CUSUM and EWMA comparison is simulated, with thresholds calibrated by simulation rather than taken from published tables, so all three charts share one false-alarm rate. It shows that charts with memory catch a small drift more often; it does not show that a 1σ drift is the one that matters for a diamond line. page1954 and roberts1959 are entered by hand (status K) until `make verify` runs.
+
 ### Status after v0.51.0 (clustered killer defects)
 
 The negative-binomial result is simulated with illustrative inputs (α = 0.5, a 10 mm die); it shows that the yield model must be chosen from the measured spread of defect counts, not that diamond defects cluster with this α. The 98.5 % agreement rate is over 200 simulated lines with a target coverage of 97.47 % per check, within the run-to-run uncertainty.

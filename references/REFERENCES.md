@@ -1,6 +1,6 @@
 # References
 
-**691 references.** 569 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**693 references.** 569 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -94,11 +94,13 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[schreck2025]`** Schreck, M.; Peter, T. (2025). Wafer bow in diamond heteroepitaxy: causes, their analytical description, and viable solutions. *Journal of Applied Physics*, 137(1), 015108.
 - ✅ **`[e6cvd2026]`** Element Six (2026). Element Six CVD online store: electronic-grade single-crystal plates. *e6cvd.com*, accessed 10 November 2026.
 
-## Silicon baseline (13)
+## Silicon baseline (15)
 
 - ✅ **`[czochralski1918]`** Czochralski, J. (1918). Ein neues Verfahren zur Messung der Kristallisationsgeschwindigkeit der Metalle. *Zeitschrift fuer Physikalische Chemie*, 92, 219. [doi:10.1515/zpch-1918-9212](https://doi.org/10.1515/zpch-1918-9212)
 - 📚 **`[shewhart1931]`** Shewhart, W. A. (1931). Economic Control of Quality of Manufactured Product. *D. Van Nostrand*.
 - 📚 **`[teal1950]`** Teal, G. K.; Little, J. B. (1950). Growth of germanium single crystals. *Physical Review*, 78, 647.
+- 📚 **`[page1954]`** Page, E. S. (1954). Continuous inspection schemes. *Biometrika*, 41(1-2), 100.
+- 📚 **`[roberts1959]`** Roberts, S. W. (1959). Control chart tests based on geometric moving averages. *Technometrics*, 1(3), 239.
 - ✅ **`[murphy1964]`** Murphy, B. T. (1964). Cost-size optima of monolithic integrated circuits. *Proceedings of the IEEE*, 52, 1537. [doi:10.1109/proc.1964.3442](https://doi.org/10.1109/proc.1964.3442)
 - ✅ **`[dealgrove1965]`** Deal, B. E.; Grove, A. S. (1965). General relationship for the thermal oxidation of silicon. *Journal of Applied Physics*, 36, 3770. [doi:10.1063/1.1713945](https://doi.org/10.1063/1.1713945)
 - 📚 **`[moore1965]`** Moore, G. E. (1965). Cramming more components onto integrated circuits. *Electronics*, 38(8), 114.

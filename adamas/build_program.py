@@ -1544,6 +1544,11 @@ P7_RING_MM = 4.0             # degraded twin: dies whose centre is within this o
 P7_RING_FAIL = 0.5           # ... and fail with this extra probability (illustrative)
 P7_ALPHA = 0.5               # clustered-defect line: gamma-distributed density with cluster parameter alpha [stapper1983] (illustrative)
 P7_CLUSTER_DIE_MM = 10.0     # a product-sized die for the clustering check: A D0 = 2, where the yield models differ (illustrative)
+P7_DRIFT_SIGMA = 1.0         # small-drift twin: Rc rises by this many sigma from wafer 31 (illustrative)
+P7_CUSUM_K = 0.5             # CUSUM reference value, in sigma: half the drift it is tuned to catch [page1954] (ADAMAS design choice)
+P7_EWMA_LAMBDA = 0.2         # EWMA weight of the newest wafer [roberts1959] (ADAMAS design choice)
+P7_CAL_RUNS = 20000          # simulated in-control lines that set each chart's alarm threshold
+P7_DRIFT_RUNS = 2000         # simulated drifting lines over which detection is counted
 P7_BOOT = 200                # bootstrap resamples of the monitor sites for the uncertainty of a predicted yield
 P7_CLUSTER_RUNS = 200        # simulated clustered lines over which both yield models are judged
 
@@ -1596,6 +1601,50 @@ def p7_spc(seed: int = 7, shift_sigma: float = 0.0) -> dict:
     return {**lim, "baseline": base.tolist(), "monitor": mon.tolist(), "out_of_control": out, "shift_sigma": shift_sigma,
             "n_baseline": P7_BASELINE_WAFERS, "n_monitor": P7_MONITOR_WAFERS, "shift_wafer": P7_BASELINE_WAFERS + P7_SHIFT_FROM + 1,
             "first_alarm": (P7_BASELINE_WAFERS + out[0] + 1) if out else None, "pass": not out}
+
+
+def _p7_chart_stats(z: np.ndarray, m: int = P7_BASELINE_WAFERS) -> dict:
+    """Largest statistic over the judged wafers of each chart, per simulated line. z: (lines, wafers) judged values
+    standardized by the phase I mean and standard deviation. Shewhart: |z| / sqrt(1 + 1/m) [shewhart1931]; two-sided
+    CUSUM [page1954]: C+ = max(0, C+ + z - k), C- = max(0, C- - z - k); EWMA [roberts1959]: e = lambda z + (1 - lambda) e,
+    divided by its standard deviation sqrt(lambda / (2 - lambda) (1 - (1 - lambda)^(2t)))."""
+    k, lam = P7_CUSUM_K, P7_EWMA_LAMBDA
+    cp = np.zeros(z.shape[0]); cm = np.zeros(z.shape[0]); e = np.zeros(z.shape[0])
+    cus = np.zeros_like(z); ew = np.zeros_like(z)
+    for t in range(z.shape[1]):
+        cp = np.maximum(0, cp + z[:, t] - k); cm = np.maximum(0, cm - z[:, t] - k); cus[:, t] = np.maximum(cp, cm)
+        e = lam * z[:, t] + (1 - lam) * e
+        ew[:, t] = np.abs(e) / math.sqrt(lam / (2 - lam) * (1 - (1 - lam) ** (2 * (t + 1))))
+    return {"shewhart": np.abs(z) / math.sqrt(1 + 1 / m), "cusum": cus, "ewma": ew}
+
+
+def _p7_lines(rng: np.random.Generator, runs: int, shift_sigma: float) -> np.ndarray:
+    base = rng.normal(0, 1, (runs, P7_BASELINE_WAFERS)); mon = rng.normal(0, 1, (runs, P7_MONITOR_WAFERS))
+    mon[:, P7_SHIFT_FROM:] += shift_sigma
+    return (mon - base.mean(axis=1, keepdims=True)) / base.std(axis=1, ddof=1, keepdims=True)
+
+
+@lru_cache(maxsize=2)
+def p7_drift_charts(drift_sigma: float = P7_DRIFT_SIGMA) -> dict:
+    """Shewhart, CUSUM and EWMA charts judged on the same footing: each chart's alarm threshold is set by simulation so
+    that an in-control line of 20 judged wafers raises a false alarm with the same probability, 1 - P7_TEST_COVERAGE.
+    Then each is run on lines whose Rc drifts up by drift_sigma from wafer 31: the fraction of lines with an alarm, and
+    the median number of drifted wafers processed before the first alarm (counting the alarm wafer)."""
+    cal = _p7_chart_stats(_p7_lines(np.random.default_rng([7, 7, 3]), P7_CAL_RUNS, 0.0))
+    thr = {c: float(np.quantile(v.max(axis=1), P7_TEST_COVERAGE)) for c, v in cal.items()}
+    from scipy.stats import t as student
+    a_pt = 1 - P7_TEST_COVERAGE ** (1 / P7_MONITOR_WAFERS)
+    thr["gate"] = float(student.ppf(1 - a_pt / 2, P7_BASELINE_WAFERS - 1))      # the P7 gate's own Student-t limit
+    st = _p7_chart_stats(_p7_lines(np.random.default_rng([7, 7, 4]), P7_DRIFT_RUNS, drift_sigma))
+    st["gate"] = st["shewhart"]
+    out = {"drift_sigma": drift_sigma, "runs": P7_DRIFT_RUNS, "cal_runs": P7_CAL_RUNS, "shifted": P7_MONITOR_WAFERS - P7_SHIFT_FROM}
+    for c, v in st.items():
+        al = v > thr[c]; pre = al[:, :P7_SHIFT_FROM].any(axis=1); after = al[:, P7_SHIFT_FROM:]
+        caught = after.any(axis=1) & ~pre                     # a line that alarmed before the drift would have stopped there
+        fast = after[:, :5].any(axis=1) & ~pre
+        out[c] = {"threshold": thr[c], "alarm_rate": float(al.any(axis=1).mean()), "caught": int(caught.sum()),
+                  "caught_within_5": int(fast.sum()), "detected_after_shift": float(caught.mean())}
+    return out
 
 
 def p7_yield(seed: int = 7, ring: bool = False) -> dict:
@@ -1787,6 +1836,22 @@ def _p7_md() -> str:
     money = lambda v: f"${v / 1e6:g} M"   # noqa: E731
     bill = p7_bill(); table = p7_good_dies_table(y["d0_cm2"])
     cl0, clr = p7_clustered(), p7_clustered_rates()
+    dr = p7_drift_charts()
+    _drift_md = (f"A cumulative-sum (CUSUM) chart [page1954] adds up how far each wafer sits from the phase I mean, z (in units of the phase I standard deviation s), "
+                 f"less a reference value k = {P7_CUSUM_K:g}, and alarms when the running sum passes a threshold h. An exponentially weighted moving-average (EWMA) chart "
+                 f"[roberts1959] tracks e = λz + (1 − λ)e with λ = {P7_EWMA_LAMBDA:g} and alarms when e leaves its limits. Both remember earlier wafers, so a small lasting "
+                 f"shift builds up; the Shewhart chart judges each wafer alone. k and λ are ADAMAS design choices (k is half the shift the chart is tuned to catch).\n\n"
+                 f"To compare them fairly, each chart's threshold is set by simulation ({dr['cal_runs']:,} stable lines, `adamas.build_program.p7_drift_charts`) "
+                 f"so that a stable line raises a false alarm with the gate's design probability, {pct(1 - P7_TEST_COVERAGE)} over {P7_MONITOR_WAFERS} judged wafers; "
+                 f"the thresholds are higher than they would be with a known mean and spread because the limits come from only {P7_BASELINE_WAFERS} phase I wafers. "
+                 f"The gate's own Student-t limit is slightly stricter and is shown too. Each chart then runs on {dr['runs']:,} lines whose R_c rises by "
+                 f"{dr['drift_sigma']:g}σ (illustrative) and stays there for the last {dr['shifted']} judged wafers; a line that alarmed before the shift is not counted as a catch:\n\n"
+                 f"| Chart | Alarm threshold (Shewhart, EWMA: standard deviations of the statistic; CUSUM: h in units of s) | Lines caught after the shift (of {dr['runs']:,}) | Caught within 5 shifted wafers |\n|---|---|---|---|\n"
+                 + "\n".join(f"| {name} | {dr[c]['threshold']:.1f} | {dr[c]['caught']:,} | {dr[c]['caught_within_5']:,} |"
+                              for c, name in (("gate", "Shewhart, the P7 gate's Student-t limit [shewhart1931]"), ("shewhart", "Shewhart, threshold set by simulation"),
+                                              ("cusum", f"CUSUM, k = {P7_CUSUM_K:g} [page1954]"), ("ewma", f"EWMA, λ = {P7_EWMA_LAMBDA:g} [roberts1959]")))
+                 + f"\n\nAt the same false-alarm rate, CUSUM and EWMA catch a {dr['drift_sigma']:g}σ shift within {dr['shifted']} wafers several times as often as the Shewhart chart, "
+                   "but most such shifts still go unseen that soon: a line that must catch them needs more wafers, a smaller spread, or a test on the cause (for example a contact-residue check).")
     alpha_note = '' if clr['alpha_finite'] == 1 else f" (over the {100 * clr['alpha_finite']:.1f} % of runs whose counts were over-dispersed)"
     from .wafer import murphy_yield, negative_binomial_yield, poisson_yield
     def _spread(die_mm):
@@ -1862,7 +1927,11 @@ The degraded twins, one fault each. The last column is how often the faulty run 
 | Control chart | contact residue raises R_c by {P7_RC_SHIFT_SIGMA:g}σ from wafer {P7_BASELINE_WAFERS + P7_SHIFT_FROM + 1} (illustrative) | {len(bs['out_of_control'])} wafers outside; first alarm at wafer {bs['first_alarm']} | {yes(bs['pass'])} | {pct(rates['degraded']['spc'])} |
 | Yield | non-uniform growth near the edge: dies within {P7_RING_MM:g} mm of the edge exclusion fail half the time (illustrative) | Y = {pct(by['y_meas'])} against {pct(by['y_pred'])} predicted; edge ring {pct(by['ring_yield'])}, centre {pct(by['centre_yield'])} | {yes(by['pass'])} | {pct(rates['degraded']['yield'])} |
 
-{_p7_rates_note(rates)} The chart's twin shifts by {P7_RC_SHIFT_SIGMA:g}σ because limits this wide catch a 1σ drift only slowly; small drifts need a cumulative-sum or moving-average chart (not yet simulated).
+{_p7_rates_note(rates)} The chart's twin shifts by {P7_RC_SHIFT_SIGMA:g}σ because limits this wide catch a 1σ drift only slowly; small drifts need a chart that accumulates evidence over several wafers (next section).
+
+## Small drifts: CUSUM and EWMA charts (simulated)
+
+{_drift_md}
 
 ## Products: good dies per 2-inch wafer
 
@@ -1891,7 +1960,6 @@ The median fitted α was {clr['alpha_median']:.2f}{alpha_note}. On the {P7_DIE_M
 ## Not yet simulated
 
 - **Spatial cluster maps:** clustering enters only through the die-to-die spread of density (above); where on the wafer the clusters sit is not modeled.
-- **Small drifts:** cumulative-sum (CUSUM) or exponentially weighted moving-average (EWMA) charts.
 - **Several parameters at once:** only R_c is charted; a line charts every traveler check (threshold, sheet resistance, leakage, NV yield).
 - **Defect density's effect on leakage and coherence:** dislocation densities by substrate class are in `adamas.wafer`, but no model links them to leakage current or T₂ yet.
 - **Product qualification:** reliability tests per product (temperature, humidity, high-voltage life) need sourced criteria.

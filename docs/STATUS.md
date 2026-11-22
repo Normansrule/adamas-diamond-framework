@@ -2,7 +2,17 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.51.0 (2026-11-20).
+Last updated: v0.52.0 (2026-11-22).
+
+## Open in v0.52.0: small drifts in the pilot line
+
+[P7](build/P7_pilot_line.md) now compares CUSUM [page1954] and EWMA [roberts1959] charts with the Shewhart chart at equal false-alarm rate. What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| k = 0.5σ, λ = 0.2 and the 1σ drift | ADAMAS design choices and an illustrative drift | Tune them to the smallest drift that matters for a product, from P4 and P7 data |
+| Several parameters at once | Only contact resistance is charted | A chart for each traveler check, or a multivariate chart, with the false-alarm rate shared across them |
+| Verification of page1954 and roberts1959 | Entered by hand from their Crossref records | `make verify` |
 
 ## Open in v0.51.0: clustered killer defects
 
@@ -174,7 +184,7 @@ The [Atlas](build/ATLAS.md) (`adamas.atlas_prices`) prices the 60 machines with 
 | Illustrative inputs | The wafer-to-wafer spread of contact resistance, the killer-defect density (2 cm⁻²), the edge exclusion and both faults are chosen, not measured. The 2-inch wafer size [kim2021] and the 3 mm monitor die are the only fixed inputs; P4's contact resistance is itself illustrative | Values from a pilot-line run |
 | Cost per good die and the product decision | No sourced wafer, test or product price; D2's part list is a planning estimate | Quotes and product prices |
 | Clustered defects | Partly closed in v0.51.0: a negative-binomial yield with a fitted cluster parameter [stapper1983]; spatial cluster maps are still open (Open in v0.51.0) | A spatial wafer-map model fitted to inspection data |
-| Small drifts and several parameters | Only a Shewhart chart of one parameter | CUSUM or EWMA charts over every traveler check |
+| Small drifts and several parameters | Small drifts partly closed in v0.52.0 (CUSUM and EWMA on contact resistance); still one parameter only | Charts over every traveler check |
 | Defect density to leakage and coherence | No model links dislocation density to leakage current or T₂ | Measured leakage and T₂ against etch-pit density |
 | Product qualification | No sourced reliability criteria per product | Qualification standards for each product line |
 | Verification of shewhart1931 | Entered by hand; Crossref is not reachable from the build container | `make verify` |
