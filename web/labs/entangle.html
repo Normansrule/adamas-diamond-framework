@@ -50,20 +50,27 @@
     <svg id="chshSvg" viewBox="0 0 640 260" role="img" aria-label="CHSH value S against pair visibility, with the local bound 2 and the quantum bound 2 root 2"></svg>
     <p class="en-note" id="chshNote"></p>
   </section>
+  <section class="card en-card" aria-labelledby="hbs">
+    <h2 id="hbs">4. Each qubit alone on the Bloch sphere</h2>
+    <div id="blochPair"></div>
+    <p class="en-note">Nothing Alice does to her qubit changes Bob's arrow, whatever its length [ghirardi1980]. For a Bell pair that arrow is the center of the sphere, so Bob sees 50/50 whatever she does. The pair stays correlated; neither qubit carries a message.</p>
+  </section>
   <section class="card en-card" aria-labelledby="h4s">
-    <h2 id="h4s">4. What has been done, and what is only proposed</h2>
+    <h2 id="h4s">5. What has been done, and what is only proposed</h2>
     <div style="overflow-x:auto"><table class="en-tl" id="tl"><tr><th>Year</th><th>What</th><th>Label</th></tr></table></div>
   </section>
   <div class="explain card"><div class="levels"><button data-l="k">I am 10</button><button data-l="s">Student</button><button data-l="r">Researcher</button></div>
     <div class="lvl" data-l="k">Imagine two magic coins that always land the same way, even far apart. When Bob flips his, he just sees heads or tails at random, half and half. Alice cannot choose how her coin lands, so she cannot make Bob's coin say anything. Only when they call each other and compare lists do they see the coins matched. The phone call is the message; the coins just make the call more useful.</div>
     <div class="lvl" data-l="s">For a shared pair v|Φ⁺⟩⟨Φ⁺| + (1 − v)I/4 measured along angles a and b, the joint probability is P(k, l) = (1 + (−1)^(k+l) v cos(a − b))/4. Summing over Alice's outcome k gives 1/2 for each of Bob's outcomes, whatever a is: Bob's statistics carry no trace of Alice's choice (no-communication theorem). Teleportation uses the pair plus two classical bits to move an unknown qubit with fidelity (1 + v)/2; without the bits Bob holds I/2. Doing without entanglement (measure, phone, re-prepare) gives 2/3 on average, so a pair helps only if v &gt; 1/3. The Bell (CHSH, Clauser–Horne–Shimony–Holt) value S = 2√2 v exceeds the local-hidden-variable bound 2 when v &gt; 1/√2.</div>
     <div class="lvl" data-l="r">The browser uses the closed forms above; <code>adamas.entangle</code> computes the same quantities with full density matrices and the node tests compare them at fixed inputs. <code>no_signaling_check</code> applies random measurements and unitaries to random two-qubit states and finds Bob's reduced state unchanged to round-off. NV-to-NV entanglement, Bell violation and teleportation are demonstrated only at cryogenic temperature, with photons carrying the entanglement [bernien2013] [hensen2015] [pompili2021] [hermans2022]. Storing pre-shared entanglement in room-temperature ¹³C memories [maurer2012] is proposed, not shown. Not modelled: photon loss, heralding rates, memory decoherence during the classical delay.</div>
-    <p class="src">Sources: [ghirardi1980] [bennett1993] [clauser1969] [cirelson1980] [wootters1982] [ekert1991] [bennett1992] [bernien2013] [hensen2015] [kalb2017] [humphreys2018] [pompili2021] [hermans2022] [stolk2024] [maurer2012]. Generated write-up: docs/ENTANGLEMENT.md.</p></div>
+    <p class="src">Sources: [ghirardi1980] [bennett1993] [clauser1969] [cirelson1980] [wootters1982] [ekert1991] [wootters1998] [bennett1992] [bernien2013] [hensen2015] [kalb2017] [humphreys2018] [pompili2021] [hermans2022] [stolk2024] [maurer2012]. Generated write-up: docs/ENTANGLEMENT.md.</p></div>
 </div></div></main>
 <script type="module">
 import { boot, data } from '../assets/site.js';
 import * as EN from '../assets/sim/entangle.js';
+import { mountBloch } from '../assets/blochview.js';
 boot('Entanglement');
+mountBloch(document.getElementById('blochPair'), 'entangle');
 const $ = id => document.getElementById(id);
 const COL = { a: 'var(--teal)', b: 'var(--gold)', red: 'var(--red)', violet: 'var(--violet)', green: 'var(--green)' };
 let bit = 0, withBits = true, revealed = false;

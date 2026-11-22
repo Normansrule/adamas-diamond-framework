@@ -235,3 +235,16 @@ html{scrollbar-color:rgba(148,190,220,.35) var(--bg);caret-color:var(--teal);acc
 /* v0.28: Addressing Lab and Gate Bias Lab */
 .ad-top{display:grid;grid-template-columns:1fr 1.25fr;gap:14px}@media(max-width:1000px){.ad-top{grid-template-columns:1fr}}
 .tilebtn{background:none;border:0;padding:0;font:inherit;font-weight:700;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+/* Bloch-sphere view (assets/blochview.js, v0.53.0): the arrow is the only bold mark; status is text, never color alone */
+.bloch{margin:0;display:grid;gap:6px;min-width:0}.bloch svg{width:100%;max-width:460px;display:block;height:auto}
+.bloch figcaption{font-size:13.5px}.bloch .st{display:inline-block;font:600 11px var(--mono);padding:2px 7px;border-radius:3px;border:1px solid rgba(111,243,255,.5);color:var(--cyan)}
+.bs-ball{fill:rgba(45,226,230,.05);stroke:rgba(148,190,220,.45);stroke-width:1}
+.bs-ring{fill:none;stroke:rgba(148,190,220,.55);stroke-width:1}.bs-back{fill:none;stroke:rgba(148,190,220,.3);stroke-width:1;stroke-dasharray:3 4}
+.bs-axis{stroke:rgba(148,190,220,.4);stroke-width:1}.bs-lab{fill:var(--mute);font:500 11px var(--mono)}
+.bs-arrow{stroke:var(--red);stroke-width:3;stroke-linecap:round}.bs-arrowh{fill:var(--red)}
+.bs-spin{stroke:var(--violet);stroke-width:1.2;opacity:.45}.bs-spinh{fill:var(--violet);opacity:.45}
+.bs-ghost{stroke:var(--gold);stroke-width:1.5;stroke-dasharray:4 3}.bs-ghosth{fill:var(--gold)}
+.bs-trail{fill:none;stroke:var(--teal);stroke-width:1.6;opacity:.8}.bs-dot{fill:var(--teal);opacity:.85}
+.bs-step{margin:0;font:500 12.5px var(--mono);color:var(--ink);min-height:2.6em}.bs-read{margin:0;font:500 12px var(--mono);color:var(--mute)}
+.bs-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.bs-scrub{display:flex;gap:8px;align-items:center;font:500 12px var(--mono);color:var(--mute);flex:1 1 160px}.bs-scrub input{flex:1;min-width:100px}
+@media print{.bs-ctl{display:none}.bs-ball{fill:none;stroke:#555}.bs-ring,.bs-axis{stroke:#555}.bs-back{stroke:#888}.bs-lab{fill:#222}}

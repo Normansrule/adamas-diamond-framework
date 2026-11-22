@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.53.0 (qubits on the Bloch sphere)
+
+Every Bloch-sphere picture is simulated from exact solutions: the Bloch equations agree with the Lindblad master equation to 1e-10 on random inputs, and |r|² + C² = 1 is checked on 50 random pure states. Only T₁, T₂ (cited), the thermal z (computed) and the pumped z (simulated by `adamas.photophysics`) are physical inputs; all pulse and detuning values in the scenes are illustrative and say so. The scenes show what one spin or one pair does; they make no claim about gate fidelity or about how NV qubits compare with superconducting qubits.
+
 ### Status after v0.52.0 (small drifts in the pilot line)
 
 The CUSUM and EWMA comparison is simulated, with thresholds calibrated by simulation rather than taken from published tables, so all three charts share one false-alarm rate. It shows that charts with memory catch a small drift more often; it does not show that a 1σ drift is the one that matters for a diamond line. page1954 and roberts1959 are entered by hand (status K) until `make verify` runs.

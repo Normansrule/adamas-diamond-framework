@@ -68,6 +68,8 @@ def site_data() -> dict:
     data["entangle"] = entangle.to_json()
     from . import retrofit
     data["retrofit"] = retrofit.to_json()
+    from . import bloch
+    data["bloch"] = bloch.to_json()
     net = ROOT / "circuits" / "digital" / "dia4_netlist.v"
     if net.exists():
         sys.path.insert(0, str(ROOT / "circuits" / "digital"))

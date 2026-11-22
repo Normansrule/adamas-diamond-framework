@@ -2,7 +2,19 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.52.0 (2026-11-22).
+Last updated: v0.53.0 (2026-11-22).
+
+## Open in v0.53.0: qubits on the Bloch sphere
+
+[BLOCH.md](BLOCH.md) and the new Bloch-sphere scenes explain the qubit with the Bloch equations [bloch1946], gates as turns and entanglement shrinking each qubit's arrow [wootters1998]. What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Scene parameters (Rabi frequencies, detunings, ensemble spreads, pulse lengths, the 1 kHz detuning of the relaxation scene) | Illustrative, chosen so each effect is visible; labeled so in every caption | Replace them with a device's measured values once the B1 and S18 experiments run |
+| The two-level picture | The NV ground state has three levels (mₛ = 0, ±1); the sphere shows the (0, −1) pair, and the reset scene assumes mₛ = ±1 are equally populated | A three-level (spin-1) view, or a measured pumped population per level |
+| Nuclear-spin memory, nuclear-spin gyroscope (QDL-23), maser, simulator and the devices with no single-spin picture | Their qubit is a nuclear spin or an ensemble with different times, or there is no qubit; no scene is shown rather than a wrong one | Scenes with nuclear-spin T₁ and T₂ and ensemble models, from sources |
+| The Qubit Lab's own T₁ | Its ensemble relaxes toward the north pole (optical pumping), while `adamas.bloch` relaxes toward the thermal z ≈ 0 in the dark | Use `bloch.evolve` in the Qubit Lab with a light on/off switch |
+| Verification of bloch1946 and wootters1998 | Entered by hand | `make verify` |
 
 ## Open in v0.52.0: small drifts in the pilot line
 

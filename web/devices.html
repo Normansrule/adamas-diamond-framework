@@ -73,6 +73,8 @@ ul.plain{margin:0;padding-left:18px;font-size:13.5px}
 <script type="module">
 import { boot, data } from './assets/site.js';
 import * as Q from './assets/sim/qdl.js';
+import { mountBloch } from './assets/blochview.js';
+import { DEVICE_SCENE, DEVICE_EXTRA, DEVICE_NOTE } from './assets/sim/blochscenes.js';
 boot('Device Library');
 const DATA = await data(), $ = id => document.getElementById(id), Dt = DATA.qdl, DEV = Dt.devices, RF = DATA.retrofit || { products: [], colors: {} };
 const onMarket = id => RF.products.filter(p => p.device === id);
@@ -174,11 +176,13 @@ function detail() {
     <div class="cols"><div class="box"><h3>Use cases</h3>${rows(d.use_cases, 'None listed.')}</div>
       <div class="box"><h3>Figures of merit</h3>${fom(d)}</div></div>
     ${d.id === 'QDL-04' ? liveCoupler() : ''}
+    ${DEVICE_SCENE[d.id] ? `<div class="box"><h3>Its qubit on the Bloch sphere</h3><div class="cols"><div data-bloch="${DEVICE_SCENE[d.id]}"></div>${DEVICE_EXTRA[d.id] ? `<div data-bloch="${DEVICE_EXTRA[d.id]}"></div>` : ''}</div></div>` : ''}
     <div class="cols"><div class="box"><h3>How to build it</h3>${route(d)}</div>
       <div class="box"><h3>Pass/fail checks</h3>${checks(d)}<h3 style="margin-top:14px">Failure modes</h3><ul class="plain">${d.failures.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       <h3 style="margin-top:14px">Open problems</h3><ul class="plain">${d.open_problems.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       <p class="note">Labs: ${lk.labs.map(h => `<a href="${esc(h)}">${esc(h.replace('labs/', '').replace('.html', ''))}</a>`).join(', ') || '—'} · Experiments: ${esc(lk.experiments.join(', ') || '—')} · Write-up: docs/devices/${d.id}.md</p></div></div>`;
   wireLive($('detail'));
+  $('detail').querySelectorAll('[data-bloch]').forEach(el => mountBloch(el, el.dataset.bloch, DATA.bloch, DEVICE_NOTE[sel] || ''));
 }
 function pick(id, focus) {
   sel = id; try { window.history.replaceState(null, '', '#' + id); } catch (e) { /* file:// */ }

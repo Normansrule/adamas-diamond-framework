@@ -69,8 +69,10 @@
 </main>
 <script type="module">
 import { boot, data } from './assets/site.js';
+import { mountBloch } from './assets/blochview.js';
+import { STEP_SCENE, STEP_NOTE } from './assets/sim/blochscenes.js';
 boot('Fab Journey');
-const $ = id => document.getElementById(id), J = (await data()).journey;
+const DATA = await data(), $ = id => document.getElementById(id), J = DATA.journey;
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const badge = s => `<span class="st ${esc(s)}">${esc(s)}</span>`;
 let lv = 'L0', k = 0;
@@ -110,6 +112,7 @@ function stepHTML(s, n, total, print = false) {
     <div class="box"><h3>${s.diagram.kind === 'section' ? 'Cross-section' : s.diagram.kind === 'setup' ? 'Setup' : s.diagram.kind === 'yield' ? 'Placement yield' : s.diagram.kind === 'spc' ? 'Control limits' : 'Decision'}</h3>${diagram(s.diagram)}
       ${s.photo.status === 'photo' ? `<figure class="photo"><img loading="lazy" src="img/photos/${encodeURIComponent(s.photo.file)}" alt="${esc(s.photo.title)}"><figcaption class="note">Photo: ${esc(s.photo.title)}, by ${esc(s.photo.author)}, ${s.photo.license_url && s.photo.license_url.startsWith('https://') ? `<a href="${esc(s.photo.license_url)}" rel="noopener">${esc(s.photo.license)}</a>` : esc(s.photo.license)}, via Wikimedia Commons (resized), ${s.photo.source.startsWith('https://commons.wikimedia.org/') ? `<a href="${esc(s.photo.source)}" rel="noopener">source</a>` : ''}.${s.photo.note ? ' ' + esc(s.photo.note) : ''}</figcaption></figure>` : `<p class="note">${esc(s.photo.note)}</p>`}</div>
     ${cks || crit ? `<div class="box"><h3>Checkpoint</h3>${cks ? `<div class="tscroll"><table class="tbl"><tr><th>Test (simulated)</th><th>Result</th><th></th></tr>${cks}</table></div>` : ''}${crit ? `<p class="note">Measure on your sample (ADAMAS = limit chosen by this project, proposed):</p><div class="tscroll"><table class="tbl"><tr><th>Criterion</th><th>Limits</th><th>Source</th></tr>${crit}</table></div>` : ''}</div>` : ''}
+    ${STEP_SCENE[s.id] ? `<div class="box"><h3>The qubit on the Bloch sphere</h3><div data-bloch="${STEP_SCENE[s.id]}" data-step-id="${esc(s.id)}"></div></div>` : ''}
     ${s.safety.length ? `<div class="safety"><h3 class="box-h">Safety</h3>${esc(s.safety.join(' '))}<p class="note" style="color:inherit">${esc(J.training)}</p></div>` : ''}
     ${s.time || s.cost ? `<p class="note">Whole experiment: ${esc(s.time)}${s.cost ? `; US$${s.cost[0].toLocaleString('en-US')} to ${s.cost[1].toLocaleString('en-US')} (estimates from the experiment card, not quotes)` : ''}</p>` : ''}
     ${s.troubleshoot.length ? `<div class="box"><h3>Troubleshooting</h3><div class="tscroll"><table class="tbl"><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>${s.troubleshoot.map(t => `<tr><td>${esc(t.symptom)}</td><td>${esc(t.cause)}</td><td>${esc(t.fix)}</td></tr>`).join('')}</table></div></div>` : ''}`;
@@ -123,13 +126,14 @@ function wireOne(root0, inp) { const root = inp.closest('.gate');
     root.querySelector('[data-g="sites"]').textContent = isFinite(c) ? `(${(2 * c).toLocaleString('en-US')} implant sites)` : ''; };
   inp.oninput = upd; upd();
 }
+function wireBloch(root) { root.querySelectorAll('[data-bloch]').forEach(el => mountBloch(el, el.dataset.bloch, DATA.bloch, STEP_NOTE[el.dataset.stepId] || '')); }
 function render(focus) {
   const L = level(), S = L.steps; k = Math.min(Math.max(k, 0), S.length - 1);
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === lv)));
   $('scope').textContent = L.scope;
   $('steps').innerHTML = S.map((s, i) => `<li><button class="sbtn" type="button" data-i="${i}"${i === k ? ' aria-current="step"' : ''}><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(s.title)}</span></button></li>`).join('');
   $('steps').querySelectorAll('.sbtn').forEach(b => b.onclick = () => { k = +b.dataset.i; render(true); });
-  $('view').innerHTML = stepHTML(S[k], k + 1, S.length); wireGate($('view'));
+  $('view').innerHTML = stepHTML(S[k], k + 1, S.length); wireGate($('view')); wireBloch($('view'));
   $('prevStep').disabled = k === 0; $('nextStep').disabled = k === S.length - 1;
   try { window.history.replaceState(null, '', `#${lv}-${k + 1}`); } catch (e) { /* file:// */ }
   if (focus) $('view').focus();
@@ -138,7 +142,7 @@ document.querySelectorAll('.tab').forEach(b => b.onclick = () => { lv = b.datase
 $('prevStep').onclick = () => { k--; render(true); }; $('nextStep').onclick = () => { k++; render(true); };
 function fillPrint() { const L = level();
   $('printAll').innerHTML = `<h1>Fab Journey ${esc(L.id)}: ${esc(L.name)}</h1><p>${esc(L.scope)}</p>` + L.steps.map((s, i) => `<section class="plate">${stepHTML(s, i + 1, L.steps.length, true)}</section>`).join('');
-  wireGate($('printAll')); }
+  wireGate($('printAll')); wireBloch($('printAll')); }
 window.addEventListener('beforeprint', fillPrint);           // Ctrl+P / Cmd+P prints the whole scope too
 $('printLv').onclick = () => { fillPrint(); if (typeof window.print === 'function') window.print(); };
 window.addEventListener('hashchange', () => { const h = (window.location.hash || '').slice(1).split('-');
