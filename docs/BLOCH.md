@@ -33,6 +33,17 @@ the Hahn-echo T₂, as if each spin's static detuning were refocused; an arrow p
 pumps it up: the simulated optical pumping of `adamas.photophysics` gives z = 0.80 in the (0, −1) pair, taking mₛ = ±1 as
 equally populated.
 
+## Light and shots in the Qubit Lab (v0.54.0)
+
+With T₁ or T₂ set, every spin of the Qubit Lab's ensemble follows these equations exactly, each with its own static
+detuning. The echo then shows what it can and cannot do: it undoes the static spread (T₂*) but still decays as e^(−τ/T₂).
+Green light adds a pumping rate γ_p that drives z toward the optical-reset value above and removes x and y at the same rate,
+because the optical cycle destroys the phase. This is a schematic model with an illustrative γ_p = 0.5 per µs, checked
+against the Lindblad equation with pumping both ways plus dephasing. A shot is an ideal projective measurement: the fraction
+of mₛ = −1 outcomes in n shots scatters by √(p(1 − p)/n), the quantum projection noise [itano1993]; for p = 0.5 and
+100 shots that is 0.05. Real room-temperature readout adds photon shot noise on top (Device
+Library QDL-05).
+
 ## Gates are turns
 
 Every single-qubit gate is, up to a global phase, a rotation R_n(θ) = exp(−iθ n·σ/2) of the arrow [nielsen2010]

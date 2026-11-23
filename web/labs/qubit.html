@@ -9,14 +9,18 @@
   <div class="ctl" id="tauCtl"><label>Pulse angle / free time <b id="tauV"></b></label><input type="range" id="tau" min="0" max="100" value="50"></div>
   <div class="ctl" id="epsCtl" hidden><label>π-pulse mistiming ε <b id="epsV"></b></label><input type="range" id="eps" min="-20" max="20" value="0" aria-label="Pi-pulse mistiming epsilon, tenths of a microsecond; limited to plus or minus tau"></div>
   <div class="ctl" id="customCtl" style="display:none"><label>Your sequence</label>
-    <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" data-add="x90">π/2ₓ</button><button class="btn small" data-add="x180">πₓ</button><button class="btn small" data-add="y90">π/2ᵧ</button><button class="btn small" data-add="w1">wait 1 µs</button><button class="btn small" data-add="clr">clear</button></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" data-add="x90">π/2ₓ</button><button class="btn small" data-add="x180">πₓ</button><button class="btn small" data-add="y90">π/2ᵧ</button><button class="btn small" data-add="w1">wait 1 µs</button><button class="btn small" data-add="gH" title="ideal Hadamard gate: a turn of π about (x + z)/√2">H</button><button class="btn small" data-add="gS" title="ideal S gate: π/2 about z">S</button><button class="btn small" data-add="gT" title="ideal T gate: π/4 about z">T</button><button class="btn small" data-add="L10">green light 10 µs</button><button class="btn small" data-add="clr">clear</button></div>
     <div id="custList" style="font:12px var(--mono);color:var(--mute);margin-top:8px"></div></div>
   <div class="ctl"><label>Rabi frequency Ω <b id="omV"></b></label><input type="range" id="om" min="1" max="20" value="5"></div>
   <div class="ctl"><label>Detuning δ <b id="deV"></b></label><input type="range" id="de" min="-40" max="40" value="0"></div>
   <div class="ctl"><label>Dephasing T₂* <b id="t2V"></b></label><input type="range" id="t2" min="0" max="60" value="20"></div>
   <div class="ctl"><label>Ensemble size <b id="nV"></b></label><input type="range" id="n" min="1" max="80" value="40"></div>
+  <div class="ctl"><label>Relaxation T₁ <b id="t1V"></b></label><input type="range" id="t1" min="0" max="60" value="0" aria-label="T1, logarithmic slider from off to 100 milliseconds"></div>
+  <div class="ctl"><label>Coherence T₂ (what an echo cannot undo) <b id="t2hV"></b></label><input type="range" id="t2h" min="0" max="60" value="0" aria-label="T2, logarithmic slider from off to 100 milliseconds; held at or below 2 T1"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" id="nvRoom" title="T1 = 6 ms [jarmola2012], T2 = 1.8 ms [balasubramanian2009]">Room-temperature NV times</button><button class="btn small" id="relaxOff">No relaxation</button></div>
   <div style="display:flex;gap:8px"><button class="btn primary" id="run" data-icon="play">Run sequence</button><button class="btn" id="reset">Reset</button></div>
   <div class="kpis"><div class="kpi"><b id="kP">0.00</b><span>P(mₛ = −1)</span></div><div class="kpi"><b id="kF">1.00</b><span>Red glow (relative)</span></div><div class="kpi"><b id="kT">0.00</b><span>Elapsed (µs)</span></div></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px"><button class="btn small" id="measure">Measure 100 shots</button><span id="shotOut" aria-live="polite" style="font:12.5px var(--mono);color:var(--mute)"></span></div>
 </aside>
 <div>
   <div class="stage"><canvas id="bloch" style="height:460px"></canvas><div class="hud" id="hud">|0⟩ bright · top&nbsp;&nbsp;|−1⟩ dim · bottom</div></div>
@@ -26,21 +30,33 @@
     <div class="lvl" data-l="k">The arrow is a tiny magnet inside the diamond. A microwave "pushes" it around the ball. Pointing up means it glows brighter red; pointing down means a bit dimmer. With many arrows at once, each spins at a slightly different speed, so they spread out, unless you flip them all halfway through (that's the echo) and they line back up.</div>
     <div class="lvl" data-l="s">In the rotating frame a resonant drive rotates the spin about x at the Rabi frequency Ω; a detuning δ tilts the rotation axis to (Ω, 0, δ). During free time each spin precesses about z at its own δ. A Gaussian spread of static detunings gives the Ramsey decay exp(−(τ/T₂*)²); a π pulse in the middle of the free time reverses every spin's accumulated phase, which is the Hahn echo.</div>
     <div class="lvl" data-l="r">Ensemble of N two-level Bloch vectors (mₛ = 0, −1 subspace) with quasi-static detunings δᵢ ~ N(δ, σ), σ = √2/(2πT₂*). Pulses are exact rotations about (Ω cos φ, Ω sin φ, δᵢ); readout maps ⟨z⟩ to fluorescence with 30% contrast. The x–x–x echo returns the spin to mₛ = 0; experiments use a final −x or y pulse to map onto contrast. Same model as <code>adamas.nv</code> and the JavaScript is unit-tested (web/tests).</div>
-    <p class="src">Sources: [rabi1937] [ramsey1950] [hahn1950] [jelezko2004a] [childress2006] [gruber1997] [doherty2013]</p></div>
+    <div class="lvl" data-l="r" style="margin-top:8px">With T₁ or T₂ set, every spin instead follows the exact Bloch equations [bloch1946] (adamas.bloch, checked against the Lindblad master equation): x and y decay with T₂, z relaxes with T₁ to the thermal value (<span data-zeq>about 2 × 10⁻⁴</span> at 300 K, so in the dark the arrow ends at the center); T₁ alone sets T₂ to its limit 2T₁, and the echo then decays as e^(−τ/T₂): it undoes the static spread T₂*, not T₂. Green light pumps toward the simulated optical-reset value at an illustrative <span data-pump>0.5</span> per µs and erases the phase. H, S and T are ideal, instantaneous gates [nielsen2010]. A shot is an ideal projective measurement; 100 of them scatter by √(p(1 − p)/100) [itano1993]; real room-temperature readout adds photon noise on top (QDL-05).</div>
+    <p class="src">Sources: [rabi1937] [ramsey1950] [hahn1950] [jelezko2004a] [childress2006] [gruber1997] [doherty2013] [bloch1946] [jarmola2012] [balasubramanian2009] [nielsen2010] [itano1993]</p></div>
 </div></div></main>
 <script type="module">
-import { boot, fitCanvas } from '../assets/site.js';
+import { boot, fitCanvas, data } from '../assets/site.js';
 import * as B from '../assets/sim/bloch.js';
 import { loop } from '../assets/eqloop.js';
 boot('Qubit');
 const $ = id => document.getElementById(id);
 let kind = 'rabi', custom = [];
-const P = () => ({ rabiMHz: +$('om').value, detuningMHz: +$('de').value / 10, t2starUs: +$('t2').value / 10, t1Us: 0, n: +$('n').value });
+const BL = (await data().catch(() => ({}))).bloch || {}, Z_PUMP = BL.reset_z ?? 1, Z_EQ = BL.thermal_z ?? 0;
+document.querySelectorAll('[data-pump]').forEach(e => e.textContent = String(B.PUMP_PER_US));
+if (BL.thermal_z) document.querySelectorAll('[data-zeq]').forEach(e => e.textContent = BL.thermal_z.toExponential(1));
+const logUs = k => +k ? 10 ** (+k / 10 - 1) : 0;                 // slider 1..60 -> 0.126 µs .. 100 ms (0 = off)
+const toK = us => Math.round(10 * (Math.log10(us) + 1));
+const fmtUs = us => !us ? "off" : us >= 1000 ? `${+(us / 1000).toPrecision(2)} ms` : `${+us.toPrecision(2)} µs`;
+const exact = {};                                                 // preset values the log slider cannot hit exactly
+const t1Us = () => exact.t1 ?? logUs($('t1').value), t2Raw = () => exact.t2 ?? logUs($('t2h').value);
+const t2hUs = () => { const t1 = t1Us(), t2 = t2Raw(); return t1 ? (t2 ? Math.min(t2, 2 * t1) : 2 * t1) : t2; };   // T2 <= 2 T1 (T1 alone sets T2 = 2 T1)
+const P = () => ({ rabiMHz: +$('om').value, detuningMHz: +$('de').value / 10, t2starUs: +$('t2').value / 10, t1Us: t1Us(), t2Us: t2hUs(), zEq: Z_EQ, zPump: Z_PUMP, n: +$('n').value });
 const tau = () => kind === 'rabi' ? (+$('tau').value / 100) * 4 * Math.PI : (+$('tau').value / 100) * 6;
 const epsRaw = () => +$('eps').value / 10, eps = () => Math.max(-tau(), Math.min(tau(), epsRaw()));   // µs, echo only; |ε| ≤ τ so both waits stay positive
 function labels() {
   $('omV').textContent = `${$('om').value} MHz`; $('deV').textContent = `${(+$('de').value / 10).toFixed(1)} MHz`;
   $('t2V').textContent = +$('t2').value ? `${(+$('t2').value / 10).toFixed(1)} µs` : 'off'; $('nV').textContent = $('n').value;
+  $('t1V').textContent = fmtUs(t1Us()); $('t2hV').textContent = fmtUs(t2hUs()) + (t1Us() && !t2Raw() ? ' (2 T₁, the limit)' : t2hUs() < t2Raw() ? ' (held at 2 T₁)' : '');
+  $('t1').setAttribute('aria-valuetext', $('t1V').textContent); $('t2h').setAttribute('aria-valuetext', $('t2hV').textContent);
   $('tauV').textContent = kind === 'rabi' ? `${(tau() / Math.PI).toFixed(2)} π` : `${tau().toFixed(2)} µs`;
   $('epsV').textContent = `${eps().toFixed(1)} µs${Math.abs(epsRaw()) > tau() ? ' (limited to ±τ)' : ''}`; $('epsCtl').hidden = kind !== 'echo';
   syncLoop();
@@ -49,9 +65,13 @@ $('seq').onclick = e => { const b = e.target.closest('button'); if (!b) return; 
   $('seq').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
   $('customCtl').style.display = kind === 'custom' ? '' : 'none'; $('tauCtl').style.display = kind === 'custom' ? 'none' : ''; mountLoop(); labels(); curve(); };
 document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
-  const a = b.dataset.add; if (a === 'clr') custom = []; else custom.push(a === 'w1' ? { op: 'wait', t: 1 } : { op: a[0], angle: (a.endsWith('90') ? 0.5 : 1) * Math.PI });
-  $('custList').textContent = custom.map(s => s.op === 'wait' ? `wait ${s.t}µs` : `${s.angle === Math.PI ? 'π' : 'π/2'}${s.op}`).join(' → ') || 'empty'; });
+  const a = b.dataset.add; if (a === 'clr') custom = [];
+  else custom.push(a === 'w1' ? { op: 'wait', t: 1 } : a === 'L10' ? { op: 'light', t: 10 } : a[0] === 'g' ? { op: 'gate', name: a[1] } : { op: a[0], angle: (a.endsWith('90') ? 0.5 : 1) * Math.PI });
+  $('custList').textContent = custom.map(s => s.op === 'wait' ? `wait ${s.t}µs` : s.op === 'light' ? `green ${s.t}µs` : s.op === 'gate' ? s.name : `${s.angle === Math.PI ? 'π' : 'π/2'}${s.op}`).join(' → ') || 'empty'; });
 ['om', 'de', 't2', 'n', 'tau', 'eps'].forEach(id => $(id).oninput = () => { labels(); curve(); });
+$('t1').oninput = () => { delete exact.t1; labels(); curve(); }; $('t2h').oninput = () => { delete exact.t2; labels(); curve(); };
+$('nvRoom').onclick = () => { exact.t1 = BL.t1_us ?? 6000; exact.t2 = BL.t2_us ?? 1800; $("t1").value = toK(exact.t1); $("t2h").value = toK(exact.t2); labels(); curve(); };
+$('relaxOff').onclick = () => { delete exact.t1; delete exact.t2; $('t1').value = 0; $('t2h').value = 0; labels(); curve(); };
 
 // ---- equation in the loop: the panel follows the lab's sliders; nudging a symbol in the panel moves the slider ----
 let EQ = null, EQKIND = null;
@@ -80,15 +100,15 @@ async function mountLoop() {
 // ---- sweep curve (2-D canvas) ----
 function curve() {
   if (kind === 'custom') { const { g, w, h } = fitCanvas($('curve'), 220); g.clearRect(0, 0, w, h); $('curveHud').textContent = 'Custom sequences show only the live sphere.'; return; }
-  const max = kind === 'rabi' ? 4 * Math.PI : 6, xs = [...Array(160)].map((_, i) => max * i / 159), ys = B.sweep({ ...P(), n: 120 }, kind, xs, eps());
+  const max = kind === 'rabi' ? 4 * Math.PI : 6, xs = [...Array(160)].map((_, i) => max * i / 159), ys = B.sweep({ ...P(), n: P().t1Us || P().t2Us ? 48 : 120 }, kind, xs, eps());
   const { g, w, h } = fitCanvas($('curve'), 220); g.clearRect(0, 0, w, h);
   const X = x => 40 + (w - 60) * x / max, Y = y => h - 28 - (h - 50) * y;
   g.strokeStyle = 'rgba(148,190,220,.2)'; for (let k = 0; k <= 4; k++) { g.beginPath(); g.moveTo(40, Y(k / 4)); g.lineTo(w - 20, Y(k / 4)); g.stroke(); }
   const grad = g.createLinearGradient(0, 0, w, 0); grad.addColorStop(0, '#2de2e6'); grad.addColorStop(1, '#9d7bff');
   g.strokeStyle = grad; g.lineWidth = 2.5; g.beginPath(); xs.forEach((x, i) => i ? g.lineTo(X(x), Y(ys[i])) : g.moveTo(X(x), Y(ys[i]))); g.stroke();
-  g.fillStyle = '#ff5d6c'; g.beginPath(); g.arc(X(tau()), Y(B.sweep({ ...P(), n: 120 }, kind, [tau()], eps())[0]), 6, 0, 7); g.fill();
+  g.fillStyle = '#ff5d6c'; g.beginPath(); g.arc(X(tau()), Y(B.sweep({ ...P(), n: P().t1Us || P().t2Us ? 48 : 120 }, kind, [tau()], eps())[0]), 6, 0, 7); g.fill();
   g.fillStyle = '#8ea3b5'; g.font = '12px Inter'; g.fillText(kind === 'rabi' ? 'pulse angle (units of π)' : 'free evolution τ (µs)', w / 2 - 60, h - 6); g.fillText('P(−1)', 4, 20);
-  $('curveHud').textContent = { rabi: 'Rabi oscillation: final P(−1) versus pulse angle', ramsey: 'Ramsey: π/2 – τ – π/2, decays with T₂*', echo: eps() ? `Echo with the π pulse ${eps().toFixed(1)} µs late: only the mistiming dephases` : 'Echo: π/2 – τ/2 – π – τ/2 – π/2 stays refocused' }[kind];
+  $('curveHud').textContent = { rabi: 'Rabi oscillation: final P(−1) versus pulse angle', ramsey: 'Ramsey: π/2 – τ – π/2, decays with T₂*', echo: P().t2Us > 0 ? `Echo: undoes the static spread T₂*, but still decays with T₂${eps() ? `, and the π pulse ${eps().toFixed(1)} µs late adds dephasing` : ''}` : eps() ? `Echo with the π pulse ${eps().toFixed(1)} µs late: only the mistiming dephases` : 'Echo: π/2 – τ/2 – π – τ/2 – π/2 stays refocused' }[kind];
 }
 
 // ---- 3-D Bloch sphere ----
@@ -112,6 +132,11 @@ function setMean(m) { const v = toV(m), L = v.length(); meanArrow.setDirection(L
 const tip = [], trail = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xff8a9a })); scene.add(trail);
 function size() { const w = cv.clientWidth, h = cv.clientHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); } addEventListener('resize', size); size();
 let frames = null, fi = 0;
+let shotSeed = 1;
+$('measure').onclick = () => {     // ideal projective shots of the current mean state: the counts scatter by the projection noise
+  const m = frames && fi > 0 ? frames[fi - 1].m : [0, 0, 1], p1 = (1 - m[2]) / 2, n = 100, k = B.shots(p1, n, B.mulberry32(shotSeed++));
+  $('shotOut').textContent = `state on the sphere: ${k} of ${n} shots read mₛ = −1 (expected ${(100 * p1).toFixed(0)} ± ${(100 * B.projectionNoise(p1, n)).toFixed(0)}); ideal shots, no readout noise`;
+};
 function kpis(m, t) { const p = (1 - m[2]) / 2; $('kP').textContent = p.toFixed(2); $('kF').textContent = (1 - .3 * p).toFixed(2); $('kT').textContent = t.toFixed(2); }
 function reset() { frames = null; tip.length = 0; trail.geometry.setFromPoints([]); const s = B.makeEnsemble(P()); setSpins(s.map(x => x.v)); setMean(B.mean(s)); kpis([0, 0, 1], 0); }
 $('reset').onclick = reset;

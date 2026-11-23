@@ -49,7 +49,7 @@ PANELS = {
            "eps": {"sym": "ε", "name": "π-pulse mistiming τ₂ − τ₁", "unit": "µs", "min": -2, "max": 2, "digits": 2, "src": "pulse placement; 0 for a centred echo"},
            "t2s": {"sym": "T₂*", "name": "dephasing time", "unit": "µs", "min": 0.1, "max": 6, "digits": 2, "src": "spread of static detunings"}},
   "units": ["MHz × µs = 1"],
-  "assumptions": [{"id": "static", "text": "static noise only: real spins also lose T₂ (not modelled here)"}, {"id": "hard", "text": "hard pulses"}],
+  "assumptions": [{"id": "static", "text": "this equation keeps static noise only: real spins also lose T₂ (set T₂ in the Qubit Lab to see it)"}, {"id": "hard", "text": "hard pulses"}],
   "refs": ["hahn1950", "delange2010"], "derivation": ["Chapter 6", "docs/06_nv_center_physics.md"]},
  "contrast": {
   "lab": "labs/photon.html", "title": "Readout contrast you can measure", "python": "adamas.photophysics.measured_contrast",

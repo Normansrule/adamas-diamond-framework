@@ -40,6 +40,7 @@ PAULI = (SX, SY, SZ)
 
 T1_ROOM_US = 6000.0          # [jarmola2012], as adamas.opensys.cz_gate_fidelity(t1_ms=6.0)
 T2_ROOM_US = 1800.0          # [balasubramanian2009], as adamas.qdl.T2_ROOM_MS
+PUMP_PER_US = 0.5            # green-light pumping rate in the Qubit Lab: illustrative (v0.54.0)
 
 GATES = {                    # name -> 2 x 2 unitary [nielsen2010]
     "X": SX, "Y": SY, "Z": SZ,
@@ -74,13 +75,16 @@ def _rate(t_us: float) -> float:
     return 0.0 if t_us is None or not math.isfinite(t_us) or t_us <= 0 else 1.0 / t_us
 
 
-def generator(rabi_mhz=0.0, detuning_mhz=0.0, phase=0.0, t1_us=math.inf, t2_us=math.inf, z_eq=0.0) -> np.ndarray:
-    """4 x 4 matrix A with d/dt (x, y, z, 1) = A (x, y, z, 1): the Bloch equations [bloch1946]."""
+def generator(rabi_mhz=0.0, detuning_mhz=0.0, phase=0.0, t1_us=math.inf, t2_us=math.inf, z_eq=0.0,
+              pump_per_us=0.0, z_pump=1.0) -> np.ndarray:
+    """4 x 4 matrix A with d/dt (x, y, z, 1) = A (x, y, z, 1): the Bloch equations [bloch1946].
+    Green light (v0.54.0) adds a pumping rate pump_per_us that drives z toward z_pump and, because the optical cycle
+    destroys the phase, removes x and y at the same rate (a schematic model; the rate is an illustrative input)."""
     w = 2 * math.pi * np.array([rabi_mhz * math.cos(phase), rabi_mhz * math.sin(phase), detuning_mhz])
-    g1, g2 = _rate(t1_us), _rate(t2_us)
+    g1, g2, gp = _rate(t1_us), _rate(t2_us), max(0.0, pump_per_us)
     a = np.zeros((4, 4))
-    a[:3, :3] = [[-g2, -w[2], w[1]], [w[2], -g2, -w[0]], [-w[1], w[0], -g1]]
-    a[2, 3] = g1 * z_eq
+    a[:3, :3] = [[-g2 - gp, -w[2], w[1]], [w[2], -g2 - gp, -w[0]], [-w[1], w[0], -g1 - gp]]
+    a[2, 3] = g1 * z_eq + gp * z_pump
     return a
 
 
@@ -99,7 +103,8 @@ def trajectory(r0, t_us: float, steps: int = 200, **p) -> np.ndarray:
     return np.array(out)
 
 
-def lindblad_evolve(r0, t_us: float, rabi_mhz=0.0, detuning_mhz=0.0, phase=0.0, t1_us=math.inf, t2_us=math.inf, z_eq=0.0):
+def lindblad_evolve(r0, t_us: float, rabi_mhz=0.0, detuning_mhz=0.0, phase=0.0, t1_us=math.inf, t2_us=math.inf, z_eq=0.0,
+                    pump_per_us=0.0, z_pump=1.0):
     """The same evolution from the Lindblad master equation [lindblad1976] (adamas.opensys.liouvillian), as a check."""
     from .opensys import liouvillian
     w = 2 * math.pi * np.array([rabi_mhz * math.cos(phase), rabi_mhz * math.sin(phase), detuning_mhz])
@@ -114,9 +119,19 @@ def lindblad_evolve(r0, t_us: float, rabi_mhz=0.0, detuning_mhz=0.0, phase=0.0, 
               math.sqrt(g1 * (1 - z_eq) / 2) * np.array([[0, 0], [1, 0]], dtype=complex)]     # |0> -> |1>
     if gphi > 0:
         c.append(math.sqrt(gphi / 2) * SZ)
+    if pump_per_us > 0:                       # pumping both ways toward z_pump, plus dephasing so x, y also decay at the pump rate
+        gp = pump_per_us
+        c += [math.sqrt(gp * (1 + z_pump) / 2) * np.array([[0, 1], [0, 0]], dtype=complex),
+              math.sqrt(gp * (1 - z_pump) / 2) * np.array([[0, 0], [1, 0]], dtype=complex), math.sqrt(gp / 4) * SZ]
     rho = density_matrix(r0)
     v = expm(liouvillian(h, c) * t_us) @ rho.reshape(-1, order="F")
     return bloch_vector(v.reshape(2, 2, order="F"))
+
+
+def projection_noise(p: float, shots: int) -> float:
+    """Standard deviation of the measured fraction of m_s = -1 outcomes in `shots` ideal projective measurements:
+    sqrt(p (1 - p) / shots), quantum projection noise [itano1993]."""
+    return math.sqrt(max(0.0, p * (1 - p)) / shots)
 
 
 def rotation(axis, angle: float) -> np.ndarray:
@@ -252,6 +267,7 @@ def golden() -> dict:
         ([1, 0, 0], 2.0, dict(detuning_mhz=0.4, t1_us=50.0, t2_us=8.0, z_eq=0.2)),
         ([0.3, -0.5, 0.6], 1.3, dict(rabi_mhz=2.0, detuning_mhz=-0.8, phase=-1.1, t1_us=7.0, t2_us=3.0, z_eq=-0.4)),
         ([0, 0, -1], 9000.0, dict(t1_us=T1_ROOM_US, t2_us=T2_ROOM_US, z_eq=thermal_z())),
+        ([0.4, 0.5, -0.6], 2.5, dict(rabi_mhz=1.5, detuning_mhz=0.2, t1_us=30.0, t2_us=6.0, pump_per_us=0.5, z_pump=0.8)),
     ]
     evo = [{"r0": list(map(float, r0)), "t": t, "p": p, "r": evolve(r0, t, **p).tolist()} for r0, t, p in cases]
     gates = {}
@@ -260,7 +276,8 @@ def golden() -> dict:
         gates[g] = {"axis": n.tolist(), "angle": th,
                     "images": [apply_gate(r, u).tolist() for r in ([0, 0, 1], [1, 0, 0], [0, 1, 0], [0.2, -0.3, 0.5])]}
     ent = [[t, reduced_bloch(partly_entangled(t)).tolist(), concurrence(partly_entangled(t))] for t in (0, 0.2, math.pi / 8, 0.6, math.pi / 4, 1.3)]
-    return {"evolve": evo, "gates": gates, "entangled": ent, "thermal_z": thermal_z(), "reset_z": reset_z(),
+    noise = [[p, n, projection_noise(p, n)] for p, n in ((0.5, 100), (0.1, 1000), (0.93, 37))]
+    return {"evolve": evo, "gates": gates, "entangled": ent, "noise": noise, "pump_per_us": PUMP_PER_US, "thermal_z": thermal_z(), "reset_z": reset_z(),
             "t1_us": T1_ROOM_US, "t2_us": T2_ROOM_US}
 
 
@@ -323,6 +340,17 @@ center, not to the top**: started on the equator, it has length {np.linalg.norm(
 the Hahn-echo T₂, as if each spin's static detuning were refocused; an arrow precessing freely decays faster, with T₂*. Green light
 pumps it up: the simulated optical pumping of `adamas.photophysics` gives z = {rz:.2f} in the (0, −1) pair, taking mₛ = ±1 as
 equally populated.
+
+## Light and shots in the Qubit Lab (v0.54.0)
+
+With T₁ or T₂ set, every spin of the Qubit Lab's ensemble follows these equations exactly, each with its own static
+detuning. The echo then shows what it can and cannot do: it undoes the static spread (T₂*) but still decays as e^(−τ/T₂).
+Green light adds a pumping rate γ_p that drives z toward the optical-reset value above and removes x and y at the same rate,
+because the optical cycle destroys the phase. This is a schematic model with an illustrative γ_p = {PUMP_PER_US:g} per µs, checked
+against the Lindblad equation with pumping both ways plus dephasing. A shot is an ideal projective measurement: the fraction
+of mₛ = −1 outcomes in n shots scatters by √(p(1 − p)/n), the quantum projection noise [itano1993]; for p = 0.5 and
+100 shots that is {projection_noise(0.5, 100):.2f}. Real room-temperature readout adds photon shot noise on top (Device
+Library QDL-05).
 
 ## Gates are turns
 

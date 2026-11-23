@@ -174,7 +174,7 @@
   "assumptions": [
    {
     "id": "static",
-    "text": "static noise only: real spins also lose T₂ (not modelled here)"
+    "text": "this equation keeps static noise only: real spins also lose T₂ (set T₂ in the Qubit Lab to see it)"
    },
    {
     "id": "hard",

@@ -16,7 +16,8 @@ def test_bloch_equations_match_lindblad(seed):
     rng = np.random.default_rng(seed)
     r0 = rng.normal(size=3); r0 *= rng.uniform(0, 1) / np.linalg.norm(r0)
     t1 = rng.uniform(1, 20); p = dict(rabi_mhz=rng.uniform(0, 4), detuning_mhz=rng.uniform(-2, 2), phase=rng.uniform(-3, 3),
-                                      t1_us=t1, t2_us=rng.uniform(0.2, 2 * t1), z_eq=rng.uniform(-1, 1))
+                                      t1_us=t1, t2_us=rng.uniform(0.2, 2 * t1), z_eq=rng.uniform(-1, 1),
+                                      pump_per_us=rng.uniform(0, 1) if seed % 2 else 0.0, z_pump=rng.uniform(-1, 1))
     t = rng.uniform(0.1, 5)
     assert np.allclose(B.evolve(r0, t, **p), B.lindblad_evolve(r0, t, **p), atol=1e-10)
 
@@ -73,3 +74,11 @@ def test_golden_and_document_are_current():
         assert np.allclose(a["r"], b["r"], atol=1e-12)
     assert g["reset_z"] == pytest.approx(new["reset_z"], abs=1e-12)
     assert (ROOT / "docs" / "BLOCH.md").read_text(encoding="utf-8") == B.document()
+
+
+def test_green_light_pumps_to_the_reset_value_and_projection_noise():
+    z = B.reset_z()
+    r = B.evolve([0.6, 0.3, -0.7], 40.0, pump_per_us=0.5, z_pump=z, t1_us=B.T1_ROOM_US, t2_us=B.T2_ROOM_US, z_eq=B.thermal_z())
+    assert abs(r[0]) < 1e-8 and abs(r[1]) < 1e-8 and r[2] == pytest.approx(z, abs=1e-3)
+    assert B.projection_noise(0.5, 100) == pytest.approx(0.05)
+    assert B.projection_noise(0.0, 10) == 0.0

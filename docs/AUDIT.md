@@ -265,6 +265,10 @@ Deferred or open: the experiment-ID rename of E29 (the two ID lists are explaine
 
 Copper's thermal conductivity [ho1972] and the high-pressure plate size [stoupin2016] are now sourced; the addressing issue (section 2c) has a tested model and lab (`adamas.addressing`), and the gate-bias argument has a Stim-checked propagation model (`adamas.gatebias`). What remains deferred or assumed, and why, is kept in one place: [STATUS.md](STATUS.md).
 
+### Status after v0.54.0 (a fuller Qubit Lab)
+
+The lab's relaxation, light and shots are simulated: each spin follows the exact Bloch equations (checked against the Lindblad equation, now including the pumping term), and the echo's e^(−τ/T₂) decay is checked against the closed form. The pumping rate is illustrative and the shots are ideal; both are labeled in the lab and in STATUS. Nothing here is a measurement.
+
 ### Status after v0.53.0 (qubits on the Bloch sphere)
 
 Every Bloch-sphere picture is simulated from exact solutions: the Bloch equations agree with the Lindblad master equation to 1e-10 on random inputs, and |r|² + C² = 1 is checked on 50 random pure states. Only T₁, T₂ (cited), the thermal z (computed) and the pumped z (simulated by `adamas.photophysics`) are physical inputs; all pulse and detuning values in the scenes are illustrative and say so. The scenes show what one spin or one pair does; they make no claim about gate fidelity or about how NV qubits compare with superconducting qubits.

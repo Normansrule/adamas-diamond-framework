@@ -1,6 +1,7 @@
 // Two-level NV spin (ms = 0, ms = -1) as an ensemble of Bloch vectors. Pure module, no DOM; unit-tested with node.
 // Driven rotation about (Omega, 0, delta) in the rotating frame [rabi1937] [jelezko2004a]; free precession at the detuning;
-// T2* from a Gaussian spread of static detunings, refocused by a pi pulse [hahn1950]; T1 relaxation toward ms = 0.
+// T2* from a Gaussian spread of static detunings, refocused by a pi pulse [hahn1950]; T1 and T2 by the exact Bloch equations
+// (v0.54.0; before, T1 relaxed toward ms = 0), and green light pumping toward ms = 0.
 // Fluorescence: ms = 0 bright, ms = -1 about 30% dimmer [gruber1997] [doherty2013].
 
 export function rotate(v, axis, angle) {            // Rodrigues rotation of vector v about unit axis
@@ -22,27 +23,31 @@ export function makeEnsemble(p) {
   return spins;
 }
 
+// v0.54.0: when T1, T2 or green light is set, every spin follows the exact Bloch equations (evolve, below) with its own
+// detuning, so relaxation goes to the thermal z (about 0 at room temperature) in the dark and to zPump under light.
+const relaxing = p => (p.t1Us > 0 && Number.isFinite(p.t1Us)) || (p.t2Us > 0 && Number.isFinite(p.t2Us));
+const bp = (p, s, extra) => ({ detuningMHz: s.d, t1Us: p.t1Us > 0 ? p.t1Us : Infinity, t2Us: p.t2Us > 0 ? p.t2Us : Infinity, zEq: p.zEq || 0, ...extra });
+
 export function pulse(spins, p, axisName, angle) {  // angle in radians; duration angle / (2 pi Omega)
   const om = p.rabiMHz, t = Math.abs(angle) / (2 * Math.PI * om), phi = axisName === 'y' ? Math.PI / 2 : 0;
+  if (relaxing(p)) { for (const s of spins) s.v = evolve(s.v, t, bp(p, s, { rabiMHz: om, phase: phi + (angle < 0 ? Math.PI : 0) })); return t; }
+  const ph = phi + (angle < 0 ? Math.PI : 0);         // a negative angle is the same pulse with its phase shifted by pi
   for (const s of spins) {
-    const w = Math.hypot(om, s.d), ax = [om * Math.cos(phi) / w, om * Math.sin(phi) / w, s.d / w];
-    s.v = rotate(s.v, ax, Math.sign(angle) * 2 * Math.PI * w * t);
+    const w = Math.hypot(om, s.d), ax = [om * Math.cos(ph) / w, om * Math.sin(ph) / w, s.d / w];
+    s.v = rotate(s.v, ax, 2 * Math.PI * w * t);
   }
-  relax(spins, p, t);
   return t;
 }
 
-export function wait(spins, p, tUs) {
+export function wait(spins, p, tUs, light = false) {
+  if (relaxing(p) || light) { for (const s of spins) s.v = evolve(s.v, tUs, bp(p, s, light ? { pumpPerUs: p.pumpPerUs || PUMP_PER_US, zPump: p.zPump ?? 1 } : {})); return tUs; }
   for (const s of spins) s.v = rotate(s.v, [0, 0, 1], 2 * Math.PI * s.d * tUs);
-  relax(spins, p, tUs);
   return tUs;
 }
+export const PUMP_PER_US = 0.5;      // illustrative optical pumping rate (per microsecond) for the green-light op
 
-function relax(spins, p, t) {
-  if (!p.t1Us || p.t1Us <= 0) return;
-  const k = Math.exp(-t / p.t1Us);
-  for (const s of spins) s.v = [s.v[0] * k, s.v[1] * k, 1 - (1 - s.v[2]) * k];
-}
+// An ideal gate (no duration, no error): a turn of every spin by `frac` of the gate's rotation [nielsen2010].
+export function gate(spins, name, frac = 1) { for (const s of spins) s.v = applyGate(s.v, name, frac); return 0; }
 
 export function mean(spins) {
   const m = [0, 0, 0]; for (const s of spins) { m[0] += s.v[0]; m[1] += s.v[1]; m[2] += s.v[2]; }
@@ -59,7 +64,8 @@ export function run(p, seq, framesPerStep = 24) {
   frames.push({ time, m: mean(spins), spins: spins.map(s => s.v.slice()) });
   for (const step of seq) {
     for (let k = 0; k < framesPerStep; k++) {
-      if (step.op === 'wait') time += wait(spins, p, step.t / framesPerStep);
+      if (step.op === 'wait' || step.op === 'light') time += wait(spins, p, step.t / framesPerStep, step.op === 'light');
+      else if (step.op === 'gate') time += gate(spins, step.name, 1 / framesPerStep);
       else time += pulse(spins, p, step.op, step.angle / framesPerStep);
       frames.push({ time, m: mean(spins), spins: spins.map(s => s.v.slice()) });
     }
@@ -86,22 +92,38 @@ export function sweep(p, kind, taus, eps = 0) {    // final P(ms=-1) versus tau 
 // Bloch equations [bloch1946]: dr/dt = 2 pi W x r - (x/T2, y/T2, (z - zEq)/T1), W = (Om cos phi, Om sin phi, delta), solved
 // exactly with the matrix exponential of the 4 x 4 affine generator (scaling and squaring of a Taylor series).
 const rate = t => (t > 0 && Number.isFinite(t)) ? 1 / t : 0;
-export function generator({ rabiMHz = 0, detuningMHz = 0, phase = 0, t1Us = Infinity, t2Us = Infinity, zEq = 0 } = {}) {
-  const w = [rabiMHz * Math.cos(phase), rabiMHz * Math.sin(phase), detuningMHz].map(x => 2 * Math.PI * x), g1 = rate(t1Us), g2 = rate(t2Us);
-  return [[-g2, -w[2], w[1], 0], [w[2], -g2, -w[0], 0], [-w[1], w[0], -g1, g1 * zEq], [0, 0, 0, 0]];
+export function generator({ rabiMHz = 0, detuningMHz = 0, phase = 0, t1Us = Infinity, t2Us = Infinity, zEq = 0, pumpPerUs = 0, zPump = 1 } = {}) {
+  const w = [rabiMHz * Math.cos(phase), rabiMHz * Math.sin(phase), detuningMHz].map(x => 2 * Math.PI * x), g1 = rate(t1Us), g2 = rate(t2Us), gp = Math.max(0, pumpPerUs);
+  return [[-g2 - gp, -w[2], w[1], 0], [w[2], -g2 - gp, -w[0], 0], [-w[1], w[0], -g1 - gp, g1 * zEq + gp * zPump], [0, 0, 0, 0]];
 }
-const mm = (A, B) => A.map((r, i) => B[0].map((_, j) => r.reduce((s, a, k) => s + a * B[k][j], 0)));
-export function expm4(A) {
-  const nrm = Math.max(...A.map(r => r.reduce((s, x) => s + Math.abs(x), 0)));
-  const sq = Math.max(0, Math.ceil(Math.log2(nrm / 0.25)) + 1), sc = 1 / 2 ** sq, B = A.map(r => r.map(x => x * sc));
-  let E = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], T = E;
-  for (let k = 1; k <= 20; k++) { T = mm(T, B).map(r => r.map(x => x / k)); E = E.map((r, i) => r.map((x, j) => x + T[i][j])); }
-  for (let k = 0; k < sq; k++) E = mm(E, E);
-  return E;
+function mul4(a, b) {                                // 4 x 4 product on flat arrays (row major)
+  const c = new Float64Array(16);
+  for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) { const x = a[4 * i + k]; if (x) for (let j = 0; j < 4; j++) c[4 * i + j] += x * b[4 * k + j]; }
+  return c;
 }
+function expmFlat(a) {                                // scaling and squaring of a Taylor series
+  let nrm = 0; for (let i = 0; i < 4; i++) nrm = Math.max(nrm, Math.abs(a[4 * i]) + Math.abs(a[4 * i + 1]) + Math.abs(a[4 * i + 2]) + Math.abs(a[4 * i + 3]));
+  const sq = Math.max(0, Math.ceil(Math.log2(nrm / 0.25)) + 1), sc = 1 / 2 ** sq, b = a.map(x => x * sc);
+  let e = new Float64Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]), t = e.slice();
+  for (let k = 1; k <= 12; k++) { t = mul4(t, b); for (let i = 0; i < 16; i++) { t[i] /= k; e[i] += t[i]; } }
+  for (let k = 0; k < sq; k++) e = mul4(e, e);
+  return e;
+}
+const CACHE = new Map();
+export function expm4(A) { const e = expmFlat(Float64Array.from(A.flat())); return [0, 1, 2, 3].map(i => Array.from(e.subarray(4 * i, 4 * i + 4))); }
 export function evolve(r0, tUs, p) {
-  const E = expm4(generator(p).map(r => r.map(x => x * tUs))), v = [...r0, 1];
-  return [0, 1, 2].map(i => E[i].reduce((s, a, k) => s + a * v[k], 0));
+  const { rabiMHz = 0 } = p || {};
+  if (!rabiMHz) {                                     // no drive: exact closed form (free precession, decay, relaxation)
+    const { detuningMHz = 0, t1Us = Infinity, t2Us = Infinity, zEq = 0, pumpPerUs = 0, zPump = 1 } = p || {};
+    const g1 = rate(t1Us) + Math.max(0, pumpPerUs), g2 = rate(t2Us) + Math.max(0, pumpPerUs), zInf = g1 ? (rate(t1Us) * zEq + Math.max(0, pumpPerUs) * zPump) / g1 : 0;
+    const a = 2 * Math.PI * detuningMHz * tUs, c = Math.cos(a), s = Math.sin(a), k2 = Math.exp(-g2 * tUs), k1 = Math.exp(-g1 * tUs);
+    return [(r0[0] * c - r0[1] * s) * k2, (r0[0] * s + r0[1] * c) * k2, g1 ? zInf + (r0[2] - zInf) * k1 : r0[2]];
+  }
+  const key = `${rabiMHz}|${p.detuningMHz}|${p.phase}|${p.t1Us}|${p.t2Us}|${p.zEq}|${p.pumpPerUs}|${p.zPump}|${tUs}`;
+  let e = CACHE.get(key);                             // ensembles reuse the same pulse on the same detunings: compute once
+  if (!e) { if (CACHE.size > 50000) CACHE.clear(); e = expmFlat(Float64Array.from(generator(p).flat().map(x => x * tUs))); CACHE.set(key, e); }
+  const v = [r0[0], r0[1], r0[2], 1];
+  return [0, 1, 2].map(i => e[4 * i] * v[0] + e[4 * i + 1] * v[1] + e[4 * i + 2] * v[2] + e[4 * i + 3]);
 }
 export function trajectory(r0, tUs, steps, p) {
   const E = expm4(generator(p).map(r => r.map(x => x * tUs / steps))), out = [r0.slice()];
@@ -119,3 +141,6 @@ export const reducedBloch = t => [0, 0, Math.cos(2 * t)];
 export const concurrence = t => Math.abs(Math.sin(2 * t));
 export const purity = r => (1 + r[0] * r[0] + r[1] * r[1] + r[2] * r[2]) / 2;
 export const pMinus1 = r => (1 - r[2]) / 2;
+// Ideal projective shots: how many of n land on m_s = -1, and the projection noise sqrt(p (1 - p) / n) [itano1993].
+export function shots(p1, n, rng = mulberry32(11)) { let k = 0; for (let i = 0; i < n; i++) k += rng() < p1; return k; }
+export const projectionNoise = (p1, n) => Math.sqrt(Math.max(0, p1 * (1 - p1)) / n);

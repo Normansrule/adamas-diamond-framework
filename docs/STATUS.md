@@ -2,7 +2,18 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.53.0 (2026-11-22).
+Last updated: v0.54.0 (2026-11-23).
+
+## Open in v0.54.0: a fuller Qubit Lab
+
+The [Qubit Lab](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html) now runs on the exact Bloch equations with T₁, T₂, green light, ideal gates and projective shots ([BLOCH.md](BLOCH.md)). What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| The green-light model | Schematic: one pumping rate (0.5 per µs, illustrative) drives z to the simulated reset value and erases x and y; the real optical cycle has several rates and a singlet shelf | Use the rate equations of `adamas.photophysics` during the light step, or a measured pumping time |
+| Readout noise | A shot is an ideal projective measurement; room-temperature readout adds photon shot noise and the limited contrast | A photon-counting model of one shot, from the QDL-05 readout numbers |
+| Gates | H, S and T are ideal and instantaneous; real ones are pulses with errors | Gates built from detuned, finite pulses with the lab's Ω and δ |
+| Verification of itano1993 | Entered by hand | `make verify` |
 
 ## Open in v0.53.0: qubits on the Bloch sphere
 
@@ -13,7 +24,7 @@ Last updated: v0.53.0 (2026-11-22).
 | Scene parameters (Rabi frequencies, detunings, ensemble spreads, pulse lengths, the 1 kHz detuning of the relaxation scene) | Illustrative, chosen so each effect is visible; labeled so in every caption | Replace them with a device's measured values once the B1 and S18 experiments run |
 | The two-level picture | The NV ground state has three levels (mₛ = 0, ±1); the sphere shows the (0, −1) pair, and the reset scene assumes mₛ = ±1 are equally populated | A three-level (spin-1) view, or a measured pumped population per level |
 | Nuclear-spin memory, nuclear-spin gyroscope (QDL-23), maser, simulator and the devices with no single-spin picture | Their qubit is a nuclear spin or an ensemble with different times, or there is no qubit; no scene is shown rather than a wrong one | Scenes with nuclear-spin T₁ and T₂ and ensemble models, from sources |
-| The Qubit Lab's own T₁ | Its ensemble relaxes toward the north pole (optical pumping), while `adamas.bloch` relaxes toward the thermal z ≈ 0 in the dark | Use `bloch.evolve` in the Qubit Lab with a light on/off switch |
+| The Qubit Lab's own T₁ | Closed in v0.54.0: with T₁ or T₂ set, the lab uses the exact Bloch equations and relaxes to the thermal z in the dark; green light is a separate step | — |
 | Verification of bloch1946 and wootters1998 | Entered by hand | `make verify` |
 
 ## Open in v0.52.0: small drifts in the pilot line
