@@ -1,6 +1,6 @@
 # References
 
-**693 references.** 569 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
+**698 references.** 569 are verified (marked ✅): matched against Crossref on title, year, first author, and volume by `tools/verify_refs.py`, or checked against an online source while the repository was built. 484 carry a Digital Object Identifier (DOI) fetched from Crossref; none is typed by hand, so a mistyped DOI can never point at the wrong paper. Entries marked 📚 are books, reports, conference papers, or items still awaiting review; human decisions about those are recorded in `references/verification_overrides.psv`.
 
 Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if a key is missing here.
 
@@ -224,8 +224,9 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[aller2025]`** Aller, H. T.; Pfeifer, T. W.; Mamun, A.; et al. (2025). Low thermal resistance of diamond-AlGaN interfaces achieved using carbide interlayers. *Advanced Materials Interfaces*, 12(3), 2400575.
 - 📚 **`[xu2025]`** Xu, B.; Mu, F.; Liu, Y.; Guo, R.; Hu, S.; Shiomi, J. (2025). Record-low thermal boundary resistance at bonded GaN/diamond interface by controlling ultrathin heterogeneous amorphous layer. *Acta Materialia*, 282, 120458.
 
-## Nitrogen-vacancy (NV) center physics (60)
+## Nitrogen-vacancy (NV) center physics (61)
 
+- 📚 **`[bloch1946]`** Bloch, F. (1946). Nuclear induction. *Physical Review*, 70, 460.
 - ✅ **`[davies1976]`** Davies, G.; Hamer, M. F. (1976). Optical studies of the 1.945 eV vibronic band in diamond. *Proceedings of the Royal Society A*, 348, 285. [doi:10.1098/rspa.1976.0039](https://doi.org/10.1098/rspa.1976.0039)
 - ✅ **`[loubser1978]`** Loubser, J. H. N.; van Wyk, J. A. (1978). Electron spin resonance in the study of diamond. *Reports on Progress in Physics*, 41, 1201. [doi:10.1088/0034-4885/41/8/002](https://doi.org/10.1088/0034-4885/41/8/002)
 - ✅ **`[gruber1997]`** Gruber, A.; Draebenstedt, A.; Tietz, C.; et al. (1997). Scanning confocal optical microscopy and magnetic resonance on single defect centers. *Science*, 276, 2012. [doi:10.1126/science.276.5321.2012](https://doi.org/10.1126/science.276.5321.2012)
@@ -364,10 +365,13 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - ✅ **`[mibl2024]`** Michigan Ion Beam Laboratory, University of Michigan (2024). Approved rates for use of the Michigan Ion Beam Laboratory (starting 1 September 2024). *mibl.engin.umich.edu*, accessed 10 November 2026.
 - ✅ **`[lattispec2026]`** Adámas Nanotechnologies (sold through LattiSpec) (2026). High NV content plates, 3.2 × 2.4 × 1.2 mm, HPHT type Ib (store listing). *lattispec.com*, accessed 10 November 2026.
 
-## Quantum computing with diamond spins (77)
+## Quantum computing with diamond spins (80)
 
+- 📚 **`[itano1993]`** Itano, W. M.; Bergquist, J. C.; Bollinger, J. J.; et al. (1993). Quantum projection noise: population fluctuations in two-level systems. *Physical Review A*, 47, 3554.
 - ✅ **`[kane1998]`** Kane, B. E. (1998). A silicon-based nuclear spin quantum computer. *Nature*, 393, 133. [doi:10.1038/30156](https://doi.org/10.1038/30156)
+- 📚 **`[wootters1998]`** Wootters, W. K. (1998). Entanglement of formation of an arbitrary state of two qubits. *Physical Review Letters*, 80, 2245.
 - ✅ **`[divincenzo2000]`** DiVincenzo, D. P. (2000). The physical implementation of quantum computation. *Fortschritte der Physik*, 48, 771. [doi:10.1002/3527603182.ch1](https://doi.org/10.1002/3527603182.ch1)
+- 📚 **`[nielsen2002]`** Nielsen, M. A. (2002). A simple formula for the average gate fidelity of a quantum dynamical operation. *Physics Letters A*, 303, 249.
 - ✅ **`[barrett2005]`** Barrett, S. D.; Kok, P. (2005). Efficient high-fidelity quantum computation using matter qubits and linear optics. *Physical Review A*, 71, 060310. [doi:10.1103/physreva.71.060310](https://doi.org/10.1103/physreva.71.060310)
 - ✅ **`[wrachtrup2006]`** Wrachtrup, J.; Jelezko, F. (2006). Processing quantum information in diamond. *Journal of Physics: Condensed Matter*, 18, S807. [doi:10.1088/0953-8984/18/21/s08](https://doi.org/10.1088/0953-8984/18/21/s08)
 - ✅ **`[dutt2007]`** Gurudev Dutt, M. V.; Childress, L.; Jiang, L.; et al. (2007). Quantum register based on individual electronic and nuclear spin qubits in diamond. *Science*, 316, 1312. [doi:10.1126/science.1139831](https://doi.org/10.1126/science.1139831)
@@ -679,7 +683,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[tsividis2011]`** Tsividis, Y.; McAndrew, C. (2011). Operation and Modeling of the MOS Transistor (3rd ed.). *Oxford University Press*.
 - 📚 **`[razavi2017]`** Razavi, B. (2017). Design of Analog CMOS Integrated Circuits (2nd ed.). *McGraw-Hill*.
 
-## Quantum control, open systems, and error correction (35)
+## Quantum control, open systems, and error correction (36)
 
 - ✅ **`[rabi1937]`** Rabi, I. I. (1937). Space quantization in a gyrating magnetic field. *Physical Review*, 51, 652. [doi:10.1103/physrev.51.652](https://doi.org/10.1103/physrev.51.652)
 - ✅ **`[hahn1950]`** Hahn, E. L. (1950). Spin echoes. *Physical Review*, 80, 580. [doi:10.1103/physrev.80.580](https://doi.org/10.1103/physrev.80.580)
@@ -690,6 +694,7 @@ Cite in the docs and code as `[key]`. `python tools/check_citations.py` fails if
 - 📚 **`[gorini1976]`** Gorini, V.; Kossakowski, A.; Sudarshan, E. C. G. (1976). Completely positive dynamical semigroups of N-level systems. *Journal of Mathematical Physics*, 17, 821.
 - ✅ **`[lindblad1976]`** Lindblad, G. (1976). On the generators of quantum dynamical semigroups. *Communications in Mathematical Physics*, 48, 119. [doi:10.1007/bf01608499](https://doi.org/10.1007/bf01608499)
 - ✅ **`[gullion1990]`** Gullion, T.; Baker, D. B.; Conradi, M. S. (1990). New, compensated Carr-Purcell sequences. *Journal of Magnetic Resonance*, 89, 479. [doi:10.1016/0022-2364(90)90331-3](https://doi.org/10.1016/0022-2364(90)90331-3)
+- 📚 **`[wimperis1994]`** Wimperis, S. (1994). Broadband, narrowband, and passband composite pulses for use in advanced NMR experiments. *Journal of Magnetic Resonance, Series A*, 109, 221.
 - ✅ **`[shor1995]`** Shor, P. W. (1995). Scheme for reducing decoherence in quantum computer memory. *Physical Review A*, 52, R2493. [doi:10.1103/physreva.52.r2493](https://doi.org/10.1103/physreva.52.r2493)
 - ✅ **`[steane1996]`** Steane, A. M. (1996). Error correcting codes in quantum theory. *Physical Review Letters*, 77, 793. [doi:10.1103/physrevlett.77.793](https://doi.org/10.1103/physrevlett.77.793)
 - 📚 **`[gottesman1997]`** Gottesman, D. (1997). Stabilizer codes and quantum error correction (doctoral thesis). *California Institute of Technology; arXiv*, quant-ph/9705052.

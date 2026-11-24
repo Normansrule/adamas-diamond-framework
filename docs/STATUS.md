@@ -2,7 +2,18 @@
 
 This file lists everything in ADAMAS that is not finished, so nothing is skipped silently. Each item says whether it was fixed, why it waits, and what would close it. It is updated with every release; the audit's fix status is in [AUDIT.md §9](AUDIT.md#9-fix-status-in-v0270).
 
-Last updated: v0.54.0 (2026-11-23).
+Last updated: v0.55.0 (2026-11-24).
+
+## Open in v0.55.0: real pulses and composite pulses
+
+`adamas.bloch` models pulses with amplitude and detuning errors and the BB1 (broadband composite pulse no. 1 of Wimperis) [wimperis1994] (Figure 66, [BLOCH.md](BLOCH.md)). What is still open:
+
+| Item | Why it waits | What would close it |
+|---|---|---|
+| Error sizes | The 10 %, 15 % and 20 % amplitude errors and the drive spread are illustrative | The measured drive inhomogeneity of an NV ensemble or a drive line (QDL-08) |
+| Decoherence during the composite pulse | BB1 is five times as long for θ = π; the comparison uses exact rotations with no decay | Run the comparison with the lab's T₂ and report where the longer pulse stops paying off |
+| Detuning-robust composite pulses | BB1 corrects amplitude errors only; no detuning-robust pulse is modeled | Find a cited detuning-robust composite pulse and add it |
+| Verification of wimperis1994 and nielsen2002 | Entered by hand | `make verify` |
 
 ## Open in v0.54.0: a fuller Qubit Lab
 
@@ -12,7 +23,7 @@ The [Qubit Lab](https://normansrule.github.io/adamas-diamond-framework/labs/qubi
 |---|---|---|
 | The green-light model | Schematic: one pumping rate (0.5 per µs, illustrative) drives z to the simulated reset value and erases x and y; the real optical cycle has several rates and a singlet shelf | Use the rate equations of `adamas.photophysics` during the light step, or a measured pumping time |
 | Readout noise | A shot is an ideal projective measurement; room-temperature readout adds photon shot noise and the limited contrast | A photon-counting model of one shot, from the QDL-05 readout numbers |
-| Gates | H, S and T are ideal and instantaneous; real ones are pulses with errors | Gates built from detuned, finite pulses with the lab's Ω and δ |
+| Gates | Partly closed in v0.55.0: pulses with amplitude and detuning errors and the BB1 composite pulse are modeled; H, S and T in Build mode are still ideal | H, S and T built from finite, detuned pulses with the lab's Ω and δ |
 | Verification of itano1993 | Entered by hand | `make verify` |
 
 ## Open in v0.53.0: qubits on the Bloch sphere

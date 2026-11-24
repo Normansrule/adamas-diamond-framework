@@ -199,6 +199,101 @@ def reset_z() -> float:
     return (p0 - pm) / (p0 + pm)
 
 
+# ---- v0.55.0: real pulses and composite pulses ----
+def pulse_unitary(theta: float, phase: float = 0.0, amp_error: float = 0.0, detuning_ratio: float = 0.0) -> np.ndarray:
+    """A pulse meant to turn the arrow by theta about (cos phase, sin phase, 0), with the drive amplitude off by a fraction
+    amp_error and the drive detuned by detuning_ratio = delta / Omega. Its length is the nominal theta / (2 pi Omega), so the
+    real turn is theta sqrt((1 + e)^2 + f^2) about ((1 + e) cos phase, (1 + e) sin phase, f) (the Bloch equations, no decay)."""
+    e, f = amp_error, detuning_ratio
+    axis = np.array([(1 + e) * math.cos(phase), (1 + e) * math.sin(phase), f])
+    return rotation(axis, theta * float(np.linalg.norm(axis)))
+
+
+def bb1_phase(theta: float) -> float:
+    """phi1 = arccos(-theta / (4 pi)) of the BB1 composite pulse [wimperis1994]."""
+    return math.acos(-theta / (4 * math.pi))
+
+
+def bb1_sequence(theta: float, phase: float = 0.0) -> list[tuple[float, float]]:
+    """BB1 [wimperis1994]: theta_phase, then pi at phase + phi1, 2 pi at phase + 3 phi1, pi at phase + phi1, as (angle, phase)."""
+    p1 = bb1_phase(theta)
+    return [(theta, phase), (math.pi, phase + p1), (2 * math.pi, phase + 3 * p1), (math.pi, phase + p1)]
+
+
+def sequence_unitary(seq, amp_error: float = 0.0, detuning_ratio: float = 0.0) -> np.ndarray:
+    u = I2.copy()
+    for th, ph in seq:
+        u = pulse_unitary(th, ph, amp_error, detuning_ratio) @ u
+    return u
+
+
+def average_fidelity(u: np.ndarray, v: np.ndarray) -> float:
+    """Average gate fidelity of u against the target v for one qubit, (|Tr v^dagger u|^2 + 2) / 6 [nielsen2002]."""
+    return (abs(np.trace(v.conj().T @ u)) ** 2 + 2) / 6
+
+
+def infidelity(kind: str, theta: float = math.pi, amp_error: float = 0.0, detuning_ratio: float = 0.0) -> float:
+    """1 - F of a plain pulse ('plain') or a BB1 composite pulse ('bb1') against the ideal turn by theta about x."""
+    target = rotation([1, 0, 0], theta)
+    if kind not in ("plain", "bb1"):
+        raise ValueError(f"unknown pulse kind {kind!r}")
+    seq = [(theta, 0.0)] if kind == "plain" else bb1_sequence(theta)
+    return 1 - average_fidelity(sequence_unitary(seq, amp_error, detuning_ratio), target)
+
+
+def scaling_exponent(kind: str, theta: float = math.pi, e1: float = 1e-2, e2: float = 2e-2) -> float:
+    """Log-log slope of the infidelity against a small amplitude error: 2 for a plain pulse, 6 for BB1 (both are tested)."""
+    return math.log(infidelity(kind, theta, e2) / infidelity(kind, theta, e1)) / math.log(e2 / e1)
+
+
+_SUP = {2: "²", 4: "⁴", 6: "⁶"}
+
+
+def _sci(x: float) -> str:
+    """x as 'm × 10⁻ⁿ' with one decimal in the mantissa."""
+    m, e = f"{x:.1e}".split("e")
+    return f"{m} × 10{str(int(e)).translate(str.maketrans('-0123456789', '⁻⁰¹²³⁴⁵⁶⁷⁸⁹'))}"
+
+
+def composite_figure(out="docs/img"):
+    """Figure 66: a plain pi pulse against the BB1 composite pulse [wimperis1994] when the drive amplitude is off (simulated)."""
+    from pathlib import Path
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    fig = plt.figure(figsize=(14, 5.8))
+    ax = fig.add_subplot(1, 2, 1)
+    es = np.logspace(-3, np.log10(0.3), 120)
+    ax.loglog(es, [infidelity("plain", math.pi, e) for e in es], color="#d1495b", lw=2.4, label=f"plain π pulse: 1 − F ∝ ε{_SUP[round(scaling_exponent('plain'))]}")
+    ax.loglog(es, [max(infidelity("bb1", math.pi, e), 1e-18) for e in es], color="#00798c", lw=2.4, label=f"BB1 composite π [wimperis1994]: ∝ ε{_SUP[round(scaling_exponent('bb1'))]}")
+    ax.loglog(es, [infidelity("bb1", math.pi, 0.0, e) for e in es], color="#00798c", lw=1.4, ls="--", label="BB1 against a detuning δ/Ω instead: no gain")
+    ax.loglog(es, [infidelity("plain", math.pi, 0.0, e) for e in es], color="#d1495b", lw=1.4, ls="--", label="plain π against a detuning δ/Ω")
+    ax.set_xlabel("Drive amplitude error ε (fraction); dashed: detuning δ/Ω"); ax.set_ylabel("Gate infidelity 1 − F [nielsen2002]")
+    ax.set_ylim(1e-14, 1); ax.legend(fontsize=8.5, loc="lower right"); ax.set_title("A composite pulse cancels amplitude errors, not detuning", fontsize=10.5)
+    ax = fig.add_subplot(1, 2, 2, projection="3d")
+    u, v = np.linspace(0, 2 * np.pi, 40), np.linspace(0, np.pi, 20)
+    ax.plot_wireframe(np.outer(np.cos(u), np.sin(v)), np.outer(np.sin(u), np.sin(v)), np.outer(np.ones_like(u), np.cos(v)), color="#b8c4cc", lw=0.4, alpha=0.5)
+    e = 0.2
+    for kind, col, lw, zo in (("bb1", "#00798c", 1.4, 2), ("plain", "#d1495b", 3.0, 3)):
+        seq = [(math.pi, 0.0)] if kind == "plain" else bb1_sequence(math.pi)
+        r, pts = np.array([0.0, 0.0, 1.0]), []
+        for th, ph in seq:
+            for k in range(1, 41):
+                pts.append(apply_gate(r, pulse_unitary(th * k / 40, ph, e)))
+            r = pts[-1]
+        pts = np.array(pts)
+        ax.plot(*pts.T, color=col, lw=lw, zorder=zo, label=f"{'plain π' if kind == 'plain' else 'BB1 π'}: ends at z = {r[2]:.3f}")
+    ax.text(0, 0, 1.25, "|0⟩", ha="center"); ax.text(0, 0, -1.35, "|1⟩ (target)", ha="center")
+    ax.set_xlim(-1, 1); ax.set_ylim(-1, 1); ax.set_zlim(-1, 1); ax.set_box_aspect((1, 1, 1)); ax.set_axis_off(); ax.view_init(elev=18, azim=-60)
+    ax.set_title(f"Both with the drive {e:.0%} too strong (illustrative)", fontsize=10.5)
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.08), fontsize=9, frameon=False)
+    fig.suptitle("Real pulses on the Bloch sphere: plain versus composite (simulated: exact rotations, no decay)", fontsize=12)
+    fig.tight_layout()
+    p = out / "fig66_composite.png"; fig.savefig(p, dpi=150); plt.close(fig)
+    return p
+
+
 def figure(out="docs/img"):
     """Figure 65: the qubit on the Bloch sphere. (a) relaxation with the room-temperature T1 and T2 of an NV spin;
     (b) gates as rotations; (c) entanglement shrinks each qubit's own arrow (simulated: exact formulas)."""
@@ -277,7 +372,13 @@ def golden() -> dict:
                     "images": [apply_gate(r, u).tolist() for r in ([0, 0, 1], [1, 0, 0], [0, 1, 0], [0.2, -0.3, 0.5])]}
     ent = [[t, reduced_bloch(partly_entangled(t)).tolist(), concurrence(partly_entangled(t))] for t in (0, 0.2, math.pi / 8, 0.6, math.pi / 4, 1.3)]
     noise = [[p, n, projection_noise(p, n)] for p, n in ((0.5, 100), (0.1, 1000), (0.93, 37))]
-    return {"evolve": evo, "gates": gates, "entangled": ent, "noise": noise, "pump_per_us": PUMP_PER_US, "thermal_z": thermal_z(), "reset_z": reset_z(),
+    comp = []
+    for th in (math.pi / 2, math.pi):
+        for e, f in ((0.0, 0.0), (0.1, 0.0), (-0.2, 0.05)):
+            comp.append({"theta": th, "e": e, "f": f, "bb1_phase": bb1_phase(th),
+                         "plain": apply_gate([0, 0, 1], pulse_unitary(th, 0.0, e, f)).tolist(),
+                         "bb1": apply_gate([0, 0, 1], sequence_unitary(bb1_sequence(th), e, f)).tolist()})
+    return {"evolve": evo, "gates": gates, "entangled": ent, "noise": noise, "composite": comp, "pump_per_us": PUMP_PER_US, "thermal_z": thermal_z(), "reset_z": reset_z(),
             "t1_us": T1_ROOM_US, "t2_us": T2_ROOM_US}
 
 
@@ -308,7 +409,7 @@ def document() -> str:
     end = evolve([1, 0, 0], 3 * T2_ROOM_US, detuning_mhz=0.001, t1_us=T1_ROOM_US, t2_us=T2_ROOM_US, z_eq=zq)
     return f"""# The qubit on the Bloch sphere
 
-*Generated by `adamas.bloch` (`python -m adamas.cli build docs`); do not edit by hand. Figure 65: [docs/img/fig65_bloch.png](img/fig65_bloch.png).*
+*Generated by `adamas.bloch` (`python -m adamas.cli build docs`); do not edit by hand. Figure 65: [docs/img/fig65_bloch.png](img/fig65_bloch.png); Figure 66: [docs/img/fig66_composite.png](img/fig66_composite.png).*
 
 Every Bloch-sphere picture in ADAMAS (the [Qubit Lab](https://normansrule.github.io/adamas-diamond-framework/labs/qubit.html),
 the Device Library, the Fab Journey and the Entanglement Lab) is computed from the formulas below. The browser twin
@@ -352,6 +453,20 @@ of mₛ = −1 outcomes in n shots scatters by √(p(1 − p)/n), the quantum pr
 100 shots that is {projection_noise(0.5, 100):.2f}. Real room-temperature readout adds photon shot noise on top (Device
 Library QDL-05).
 
+## Real pulses and composite pulses (v0.55.0)
+
+A real pulse is a turn with errors. If the drive amplitude is off by a fraction ε (for example across an ensemble, or a
+badly calibrated line), the arrow turns by (1 + ε)θ; if the drive is detuned by δ, the turning axis tilts toward z, to (Ω, 0, δ).
+The average gate fidelity of a one-qubit operation U against its target V is F = (|Tr V†U|² + 2)/6 [nielsen2002].
+A plain π pulse loses 1 − F = {infidelity("plain", math.pi, 0.1):.4f} at ε = 0.1, growing as ε{_SUP[round(scaling_exponent("plain"))]}.
+The BB1 (broadband composite pulse no. 1 of Wimperis) [wimperis1994] follows the turn θ with π, 2π and π turns at phases φ₁, 3φ₁ and φ₁, where
+φ₁ = arccos(−θ/4π) ({math.degrees(bb1_phase(math.pi)):.2f}° for θ = π); the extra turns undo the amplitude error to high order:
+1 − F = {_sci(infidelity("bb1", math.pi, 0.1))} at ε = 0.1, growing as ε{_SUP[round(scaling_exponent("bb1"))]}. BB1 does not help against
+detuning (at δ/Ω = 0.1: plain {infidelity("plain", math.pi, 0, 0.1):.4f}, BB1 {infidelity("bb1", math.pi, 0, 0.1):.4f}), and for θ = π it takes
+five times as long, so it trades decoherence for calibration error. Figure 66; the Qubit Lab has a drive-spread slider and a
+BB1 π button, and the Device Library's drive line (QDL-08) shows the comparison on an ensemble. All values are simulated
+with exact rotations and no decay; the error sizes are illustrative.
+
 ## Gates are turns
 
 Every single-qubit gate is, up to a global phase, a rotation R_n(θ) = exp(−iθ n·σ/2) of the arrow [nielsen2010]
@@ -382,6 +497,7 @@ A Bell pair leaves both arrows at the center. Nothing Alice does to her qubit ch
 | Ramsey | free precession turns a field into a phase | electron-spin sensing devices (QDL-12, 17, 19, 20, 21, 24); Fab Journey B1.4 |
 | Echo | the π pulse refocuses the fan of spins | QDL-18; Fab Journey B1.5 |
 | Gates | X, Y, Z, H, S, T as turns, with buttons | QDL-01 |
+| Composite pulse | a drive spread fans the spins after a plain π; BB1 closes the fan | QDL-08 |
 | Relaxation | T₂ shrinks the arrow on the equator; T₁ brings an arrow from \\|1⟩ to the center | QDL-01 |
 | Reset | green light pumps the arrow up | QDL-06; Fab Journey B1.1 |
 | Readout | the arrow is projected to a pole | QDL-05 |

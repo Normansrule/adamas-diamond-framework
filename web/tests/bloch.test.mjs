@@ -45,3 +45,24 @@ test('ideal gates in a sequence: H then S from |0> ends on +y', () => {
 test('shots: the fraction stays within 5 projection-noise widths', () => {
   const n = 4000, k = B.shots(0.3, n); assert.ok(Math.abs(k / n - 0.3) < 5 * B.projectionNoise(0.3, n));
 });
+test('composite pulses: plain and BB1 images match Python', () => {
+  for (const c of G.composite) {
+    assert.ok(close(B.bb1Phase(c.theta), c.bb1_phase));
+    B.sequenceImage([0, 0, 1], [{ angle: c.theta, phase: 0 }], c.e, c.f).forEach((x, i) => assert.ok(close(x, c.plain[i]), `plain ${i}`));
+    B.sequenceImage([0, 0, 1], B.bb1Sequence(c.theta), c.e, c.f).forEach((x, i) => assert.ok(close(x, c.bb1[i]), `bb1 ${i}`));
+  }
+});
+test('the lab pulse() path (per-spin drive and detuning, with and without the Bloch-equation solver) matches sequenceImage', () => {
+  for (const relax of [{}, { t1Us: 1e9, t2Us: 1e9 }]) for (const th of [Math.PI / 2, Math.PI]) {
+    const spins = [{ v: [0, 0, 1], d: 0.5, a: 1.1 }], p = { rabiMHz: 5, ...relax };
+    for (const st of B.bb1Sequence(th)) B.pulse(spins, p, st.phase, st.angle);
+    const want = B.sequenceImage([0, 0, 1], B.bb1Sequence(th), 0.1, 0.1);
+    spins[0].v.forEach((x, i) => assert.ok(Math.abs(x - want[i]) < 1e-6, `${JSON.stringify(relax)} θ=${th} ${i}: ${x} vs ${want[i]}`));
+  }
+});
+test('ensemble with a drive spread: BB1 brings the mean much closer to |1> than a plain pi pulse', () => {
+  const p = { rabiMHz: 5, t2starUs: 0, t1Us: 0, n: 60, ampSpread: 0.15 };
+  const plain = B.run(p, [{ op: 'x', angle: Math.PI }], 4).at(-1).m[2], bb1 = B.run(p, B.bb1Sequence(Math.PI), 4).at(-1).m[2];
+  assert.ok(plain > -0.97 && bb1 < -0.995, `${plain} ${bb1}`);
+  const same = B.run({ ...p, ampSpread: 0 }, [{ op: 'x', angle: Math.PI }], 4).at(-1).m[2]; assert.ok(close(same, -1, 1e-9));
+});

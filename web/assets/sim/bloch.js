@@ -19,7 +19,8 @@ export function mulberry32(seed) { return () => { seed |= 0; seed = seed + 0x6D2
 export function makeEnsemble(p) {
   const rng = mulberry32(7), sigma = p.t2starUs > 0 ? Math.SQRT2 / (2 * Math.PI * p.t2starUs) : 0;   // MHz, exp(-(t/T2*)^2)
   const spins = [];
-  for (let i = 0; i < (p.n || 64); i++) spins.push({ v: [0, 0, 1], d: (p.detuningMHz || 0) + sigma * gaussian(rng) });
+  for (let i = 0; i < (p.n || 64); i++) spins.push({ v: [0, 0, 1], d: (p.detuningMHz || 0) + sigma * gaussian(rng), a: 1 });
+  if (p.ampSpread > 0) { const r2 = mulberry32(8); for (const s of spins) s.a = 1 + p.ampSpread * gaussian(r2); }   // drive strength varies spin to spin (v0.55.0)
   return spins;
 }
 
@@ -29,11 +30,13 @@ const relaxing = p => (p.t1Us > 0 && Number.isFinite(p.t1Us)) || (p.t2Us > 0 && 
 const bp = (p, s, extra) => ({ detuningMHz: s.d, t1Us: p.t1Us > 0 ? p.t1Us : Infinity, t2Us: p.t2Us > 0 ? p.t2Us : Infinity, zEq: p.zEq || 0, ...extra });
 
 export function pulse(spins, p, axisName, angle) {  // angle in radians; duration angle / (2 pi Omega)
-  const om = p.rabiMHz, t = Math.abs(angle) / (2 * Math.PI * om), phi = axisName === 'y' ? Math.PI / 2 : 0;
-  if (relaxing(p)) { for (const s of spins) s.v = evolve(s.v, t, bp(p, s, { rabiMHz: om, phase: phi + (angle < 0 ? Math.PI : 0) })); return t; }
+  // axisName: 'x', 'y', or a drive phase in radians (composite pulses). The length is set by the nominal Omega; a spin whose
+  // drive is a times stronger turns a times as far (amplitude error).
+  const om = p.rabiMHz, t = Math.abs(angle) / (2 * Math.PI * om), phi = typeof axisName === 'number' ? axisName : axisName === 'y' ? Math.PI / 2 : 0;
   const ph = phi + (angle < 0 ? Math.PI : 0);         // a negative angle is the same pulse with its phase shifted by pi
+  if (relaxing(p)) { for (const s of spins) s.v = evolve(s.v, t, bp(p, s, { rabiMHz: om * (s.a ?? 1), phase: ph })); return t; }
   for (const s of spins) {
-    const w = Math.hypot(om, s.d), ax = [om * Math.cos(ph) / w, om * Math.sin(ph) / w, s.d / w];
+    const oa = om * (s.a ?? 1), w = Math.hypot(oa, s.d), ax = [oa * Math.cos(ph) / w, oa * Math.sin(ph) / w, s.d / w];
     s.v = rotate(s.v, ax, 2 * Math.PI * w * t);
   }
   return t;
@@ -66,7 +69,7 @@ export function run(p, seq, framesPerStep = 24) {
     for (let k = 0; k < framesPerStep; k++) {
       if (step.op === 'wait' || step.op === 'light') time += wait(spins, p, step.t / framesPerStep, step.op === 'light');
       else if (step.op === 'gate') time += gate(spins, step.name, 1 / framesPerStep);
-      else time += pulse(spins, p, step.op, step.angle / framesPerStep);
+      else time += pulse(spins, p, step.op === 'p' ? step.phase : step.op, step.angle / framesPerStep);
       frames.push({ time, m: mean(spins), spins: spins.map(s => s.v.slice()) });
     }
   }
@@ -144,3 +147,14 @@ export const pMinus1 = r => (1 - r[2]) / 2;
 // Ideal projective shots: how many of n land on m_s = -1, and the projection noise sqrt(p (1 - p) / n) [itano1993].
 export function shots(p1, n, rng = mulberry32(11)) { let k = 0; for (let i = 0; i < n; i++) k += rng() < p1; return k; }
 export const projectionNoise = (p1, n) => Math.sqrt(Math.max(0, p1 * (1 - p1)) / n);
+
+// ---- v0.55.0: composite pulses. BB1 [wimperis1994]: theta, then pi, 2 pi, pi at phases phi1, 3 phi1, phi1, phi1 = arccos(-theta / 4 pi).
+export const bb1Phase = theta => Math.acos(-theta / (4 * Math.PI));
+export function bb1Sequence(theta, phase = 0) { const p1 = bb1Phase(theta);
+  return [{ op: 'p', angle: theta, phase }, { op: 'p', angle: Math.PI, phase: phase + p1 }, { op: 'p', angle: 2 * Math.PI, phase: phase + 3 * p1 }, { op: 'p', angle: Math.PI, phase: phase + p1 }]; }
+// One spin's Bloch vector after a sequence, with amplitude error e and detuning ratio f = delta / Omega (twin of adamas.bloch).
+export function sequenceImage(r, seq, e = 0, f = 0) {
+  for (const st of seq) { const ax = [(1 + e) * Math.cos(st.phase), (1 + e) * Math.sin(st.phase), f], n = Math.hypot(...ax);
+    r = rotate(r, ax.map(x => x / n), st.angle * n); }
+  return r;
+}

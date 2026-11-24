@@ -82,3 +82,16 @@ def test_green_light_pumps_to_the_reset_value_and_projection_noise():
     assert abs(r[0]) < 1e-8 and abs(r[1]) < 1e-8 and r[2] == pytest.approx(z, abs=1e-3)
     assert B.projection_noise(0.5, 100) == pytest.approx(0.05)
     assert B.projection_noise(0.0, 10) == 0.0
+
+
+def test_composite_pulses():
+    assert B.scaling_exponent("plain") == pytest.approx(2, abs=0.01)
+    assert B.scaling_exponent("bb1") == pytest.approx(6, abs=0.01)
+    for th in (math.pi / 2, math.pi):                       # BB1 with no error is exactly the target turn
+        assert B.infidelity("bb1", th) == pytest.approx(0, abs=1e-12)
+        assert B.infidelity("bb1", th, 0.1) < B.infidelity("plain", th, 0.1) / 100
+    # no gain against detuning: within a factor of two of the plain pulse
+    assert 0.5 < B.infidelity("bb1", math.pi, 0, 0.1) / B.infidelity("plain", math.pi, 0, 0.1) < 2
+    assert B.bb1_phase(math.pi) == pytest.approx(math.acos(-0.25))
+    u = B.pulse_unitary(math.pi, 0.3, 0.0, 0.0)              # an exact pulse is the rotation about its phase axis
+    assert B.average_fidelity(u, B.rotation([math.cos(0.3), math.sin(0.3), 0], math.pi)) == pytest.approx(1)

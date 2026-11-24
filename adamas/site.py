@@ -144,7 +144,7 @@ def gallery_items() -> list[dict]:
     import ast
     import re
     caps = {}
-    for f in ["figures.py", "figures_expert.py", "figures_apps.py", "animations.py", "build_program.py"]:
+    for f in ["figures.py", "figures_expert.py", "figures_apps.py", "animations.py", "build_program.py", "bloch.py"]:
         src = (ROOT / "adamas" / f).read_text(encoding="utf-8")
         for node in ast.parse(src).body:
             if isinstance(node, ast.FunctionDef):

@@ -37,3 +37,7 @@ test('Entanglement: a Bell pair leaves each arrow at the center', () => {
 test('every mapped device and step names a scene that exists', () => {
   for (const v of [...Object.values(DEVICE_SCENE), ...Object.values(DEVICE_EXTRA), ...Object.values(STEP_SCENE)]) assert.ok(SCENES[v], v);
 });
+test('Composite scene: BB1 ends much closer to |1> than the plain pulse', () => {
+  const f = SCENES.composite(D).frames, k = f.findIndex((x, j) => j > 0 && x.newTrail);
+  assert.ok(f[k - 1].r[2] > -0.97 && f.at(-1).r[2] < -0.995, `${f[k - 1].r[2]} ${f.at(-1).r[2]}`);
+});

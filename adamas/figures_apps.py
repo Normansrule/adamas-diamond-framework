@@ -800,6 +800,12 @@ def fig_bloch(out: Path) -> Path:
     return figure(out)
 
 
+def fig_composite(out: Path) -> Path:
+    """Figure 66: plain versus BB1 composite pulses under amplitude and detuning errors (adamas.bloch.composite_figure)."""
+    from .bloch import composite_figure
+    return composite_figure(out)
+
+
 def fig_build_p8(out: Path) -> Path:
     """Figure 61: P8's comparison and evidence ledger (adamas.build_program.p8_figure)."""
     from .build_program import p8_figure
@@ -815,7 +821,7 @@ def fig_build_p1(out: Path) -> Path:
 ABBR_ = {"Si": "silicon", "4H-SiC": "silicon carbide", "GaN": "gallium nitride", "Diamond": "diamond (holes)"}
 
 
-ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action, fig_build_p1, fig_build_p2, fig_build_p3, fig_build_p4, fig_build_p5, fig_build_p6, fig_build_p7, fig_build_p8, fig_retrofit_map, fig_step_coverage, fig_qec_codes, fig_bloch]
+ALL = [fig_ron_temperature, fig_converter_loss, fig_application_map, fig_thermal_ceiling, fig_radar, fig_quantum_sizing, fig_readiness, fig_pdk0_die, fig_published_gate_check, fig_placed_dia4, fig_resource_estimate, fig_process_flow, fig_thermal_budget, fig_cross_sections, fig_expected_tier_a, fig_expected_tier_b, fig_expected_tier_cd, fig_experiment_ladder, fig_a1_kit, fig_uncertainty, fig_xzzx_native, fig_xzzx_machine, fig_what_to_measure, fig_equations_in_action, fig_build_p1, fig_build_p2, fig_build_p3, fig_build_p4, fig_build_p5, fig_build_p6, fig_build_p7, fig_build_p8, fig_retrofit_map, fig_step_coverage, fig_qec_codes, fig_bloch, fig_composite]
 
 
 def make_all(out: str | Path = "docs/img") -> list[Path]:

@@ -61,6 +61,16 @@ export const SCENES = {
       frames: [{ r: [1, 0, 0], label: 'start: on the equator after a π/2 pulse about y', newTrail: true }, ...a, { r: [0, 0, -1], label: 'next: start at |1⟩ (mₛ = −1)', newTrail: true }, ...b],
       caption: `Room-temperature NV (nitrogen-vacancy) spin: Hahn-echo T₂ = ${t2Us / 1000} ms [balasubramanian2009] shrinks an arrow on the equator, then T₁ = ${t1Us / 1000} ms [jarmola2012] brings an arrow from |1⟩ to the center. The decay shown is echo-limited, as if each spin's static detuning were refocused; an arrow precessing freely decays faster, with T₂*. The slow 1 kHz turn (illustrative) only makes the shrinking visible. In the dark the arrow ends at the center, not the top: at 300 K the thermal z is only ${zEq.toExponential(1)} (adamas.bloch.thermal_z). Bloch equations [bloch1946]; time compressed.` };
   },
+  composite: () => {
+    const p = { rabiMHz: 5, t2starUs: 0, t1Us: 0, n: 24, ampSpread: 0.15 };
+    const a = ensembleFrames(p, [{ op: 'x', angle: Math.PI }], 30, ['plain π pulse: each spin turns by its own drive strength']);
+    const b = ensembleFrames(p, B.bb1Sequence(Math.PI), 20, ['BB1: the π turn', 'BB1: π at φ₁', 'BB1: 2π at 3φ₁', 'BB1: π at φ₁: the fan closes']);
+    b[0] = { ...b[0], label: 'again from |0⟩, now with the BB1 composite π pulse', newTrail: true };
+    const end = (f, name) => ({ ...f.at(-1), label: `${name} done: mean z ${f.at(-1).r[2].toFixed(3).replace('-', '−')} (target −1)` });
+    return { title: 'A composite pulse closes the fan', status: 'simulated',
+      frames: [...a.slice(0, -1), end(a, 'plain π'), ...b.slice(0, -1), end(b, 'BB1 π')],
+      caption: 'Each faint arrow is one spin whose drive is a little stronger or weaker (15 % spread, illustrative), as across an ensemble or a long drive line. A plain π pulse leaves them fanned out around |1⟩. The BB1 (broadband composite pulse no. 1 of Wimperis) [wimperis1994] adds π, 2π and π turns at chosen phases, so the infidelity grows only as ε⁶ (plain pulse: ε²), at five times the length for θ = π; it does not help against detuning. Exact rotations, no decay (adamas.bloch, Figure 66). The slider steps back to the plain pulse.' };
+  },
   reset: d => {
     const z = d.reset_z, frames = [];
     for (let k = 0; k <= 40; k++) frames.push({ r: [0, 0, z * k / 40], label: k ? `green light on: polarizing, z ${f2(z * k / 40)}` : 'start: unpolarized, at the center' });
@@ -85,7 +95,7 @@ export const SCENES = {
 
 // Which scene each Device Library device shows (devices with no single-spin picture show none). The relaxation scene
 // uses electron-spin times, so it goes with the electron-spin qubit cell; QDL-01 shows it as a second scene.
-export const DEVICE_EXTRA = { 'QDL-01': 'relax' };
+export const DEVICE_EXTRA = { 'QDL-01': 'relax', 'QDL-08': 'composite' };
 export const DEVICE_SCENE = { 'QDL-01': 'gates', 'QDL-03': 'entangle', 'QDL-04': 'entangle', 'QDL-05': 'readout', 'QDL-06': 'reset',
   'QDL-08': 'rabi', 'QDL-10': 'entangle', 'QDL-11': 'entangle', 'QDL-12': 'ramsey', 'QDL-13': 'entangle', 'QDL-14': 'entangle', 'QDL-15': 'entangle',
   'QDL-16': 'entangle', 'QDL-17': 'ramsey', 'QDL-18': 'echo', 'QDL-19': 'ramsey', 'QDL-20': 'ramsey', 'QDL-21': 'ramsey',
